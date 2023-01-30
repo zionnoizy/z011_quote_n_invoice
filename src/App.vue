@@ -7,7 +7,7 @@ import { db } from '@/firebase'
 <template>
   <header>
     <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-    (v0.01-Iron Barbs)
+    
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
     </div>
