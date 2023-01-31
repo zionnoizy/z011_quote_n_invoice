@@ -1,4 +1,4 @@
-import Vue from 'vue';
+
 import {createRouter, createWebHistory} from 'vue-router'
 const Login = () => import('@/views/Login.vue');
 const Register = () => import('@/views/Register.vue');
@@ -9,9 +9,11 @@ const Register = () => import('@/views/Register.vue');
 const router = createRouter({
     history: createWebHistory(),
   routes:[
-      {path: "/", name: "Login", component: Login},
-      {path: "/register", name: "Register",component: Register},
-      //{path: "/home", name: "home",component: Home,meta: {requiresAuth: true,}},
+    //, meta: {requiresGuest: true},
+      {path: "/", name: "Login", component: Login },
+      {path: "/register", name: "Register", component: Register },
+    //   {path: "/dashboard", name: "Dashboard", component: Dashboard,  auth: true },
+      //{path: '', component: LoggedInLayout,children: [{path: '/login',name: 'Login',component: Login},{title: 'Dashboard',path: '/',name: 'dashboard',component: Dashboard, auth: true},]}
   ]
 
 })
