@@ -2,7 +2,7 @@
     <div class="dashboard">
         <p> test17 </p>
 
-        <p> welcome back.</p>
+        <p> Weclome Back.</p>
 
         <!-- <button @click="signOut">Logout</button> -->
     </div>
