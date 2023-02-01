@@ -3,9 +3,9 @@
 
 <p>Welcome to CMS Quote-N-Invoice. You are Currnetly in the Page: </p> <router-view/>
 
-<router-link :to="{name: 'Login'}">Login</router-link> | 
+<router-link :to="{name: '/'}">Login</router-link> | 
 <router-link :to="{name: 'Register'}">Register</router-link> |
-<p>Companies Managing Systems Ltd.</p>
+<p>Companies Management Systems Ltd.</p>
 
 </template>
 

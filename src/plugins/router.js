@@ -2,17 +2,18 @@
 import {createRouter, createWebHistory} from 'vue-router'
 const Login = () => import('@/views/Login.vue');
 const Register = () => import('@/views/Register.vue');
-
-
+const Dashboard = () => import('@/views/Dashboard.vue');
+const Empty = () => import('@/views/Empty.vue');
 
 
 const router = createRouter({
     history: createWebHistory(),
   routes:[
-    //, meta: {requiresGuest: true},
-      {path: "/", name: "Login", component: Login },
+    //, meta: {requiresGuest: true} meta: {requiresVisitor: true},
+      {path: "/", component: Login },
       {path: "/register", name: "Register", component: Register },
-    //   {path: "/dashboard", name: "Dashboard", component: Dashboard,  auth: true },
+      {path: "/dashboard", name: "Dashboard", component: Dashboard,  auth: true },
+      {path: "/empty", name: "Empty", component: Empty},
       //{path: '', component: LoggedInLayout,children: [{path: '/login',name: 'Login',component: Login},{title: 'Dashboard',path: '/',name: 'dashboard',component: Dashboard, auth: true},]}
   ]
 

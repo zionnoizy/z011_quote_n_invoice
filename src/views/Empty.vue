@@ -1,5 +1,5 @@
 <template>
-    <div class="Login">
+    <div class="empty">
 
         <p>[unknown99]</p>
         <p>Empty Redirection Page.</p>
@@ -9,6 +9,6 @@
 
 <script>
 export default{
-    name: 'Login',
+    name: 'empty',
 }
 </script>
