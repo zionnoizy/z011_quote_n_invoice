@@ -4,6 +4,24 @@
 
         <p> Weclome Back. {{ this_usr_name }} </p>
 
+        <div class="bg-green-500 w-full block">
+            <div class="w-24 h-24 float-right p-10">
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <button class="blue-400">View Client</button>
+                    </div>
+                    <div>
+                        <button class="indigo-400">View Product</button>
+                    </div>
+                    <div>
+                        <button class="blue-700">Add Client</button>
+                    </div>
+                    <div>
+                        <button class="indigo-700">Add Product</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <h2>
             <button>Quote</button> |
             <button>Invoice</button> |
