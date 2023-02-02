@@ -10,6 +10,7 @@
             <button>Product</button> |
             <button>Clients</button>
         </h2>
+        
         <!-- <button @click="signOut">Logout</button> -->
     </div>
 </template>

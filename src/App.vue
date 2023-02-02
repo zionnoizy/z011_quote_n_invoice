@@ -3,7 +3,7 @@
 
 <p>Welcome to CMS Quote-N-Invoice. You are Currnetly in the Page: </p> <router-view/>
 
-<router-link :to="{name: '/'}">Login</router-link> | 
+<router-link to="/" exact><a>Login</a></router-link> | 
 <router-link :to="{name: 'Register'}">Register</router-link> |
 <p>Companies Management Systems Ltd.</p>
 
@@ -12,15 +12,15 @@
 <script>
 
 export default {
-  name: 'app'
+  name: 'app' 
 
 }
 </script>
 
 <style >
 body{
-  background: #2c3e50;
-  color: #FFF;
+  background: #2c3e50 !important;
+  color: #FFF!important;
 }
 #app{
   font-family: Avenir, Arial, Helvetica, sans-serif;
@@ -29,6 +29,19 @@ body{
   text-align: center;
 }
 a{
-  color: inherit
+  color: #FFF!important;
 }
+a:hover {
+   color: #FFF!important;
+}
+/* button,
+.button{
+  cursor: pointer;
+  padding: 16px 24px;
+  border-radius: 10px;
+  border: none;
+  font-size: 12px;
+  margin-right: 8px;
+  
+} */
 </style>

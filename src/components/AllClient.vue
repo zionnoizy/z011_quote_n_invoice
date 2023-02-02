@@ -1,10 +1,11 @@
 <template>
-    <div class="AllInvoice">
+    <div class="AllClient">
         
     </div>
 </template>
     
     
     
-<script>
+<script lang="scss">
+
 </script>

@@ -11,7 +11,8 @@
 
             <p v-if="err_msg">{{ err_msg }}</p>
 
-            <p><button @click="login">Login</button></p>
+            <p><button class="" @click="login">Login</button></p>
+            
 
         <p>Need an account? <router-link :to="{name: 'Register'}">Register Here</router-link></p>
         

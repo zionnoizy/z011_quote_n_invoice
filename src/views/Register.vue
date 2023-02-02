@@ -9,6 +9,8 @@
         <!-- <p v-if="err_msg">{{ err_msg }}</p> -->
         <p><button @click="register">Register</button></p>
         <p>Have an account already? Login Here</p>
+
+        
     </div>
 
 </template>
