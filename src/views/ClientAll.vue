@@ -4,14 +4,21 @@
         <p>test21</p>
         <p>Coming Soon. Show all Client Page.</p>
 
-        <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
-    <div class="grid grid-rows-4 grid-flow-col gap-4">
-  <div>01</div>
-  <!-- ... -->
-  <div>09</div>
-</div>
+        
+    <div class="grid grid-cols-5">
+      <div class="business_card">
+        <div class="c_name">[ClientName]</div>
+        <div class="c_address">[ClientAddress]</div>
+        <div class="c_email">[ClientEmail]</div>
+        <div class="c_phone">[ClientPhone]</div>
+      </div>
+
+      <!-- ... -->
+      <div class="business_card" >02</div>
+      <div class="business_card">09</div>
+      <div class="business_card">18</div>
+
+    </div>
 
         
     </div>
@@ -23,3 +30,13 @@ export default{
     name: 'ClientAll',
 }
 </script>
+
+<style>
+.business_card{
+  border-radius: 25px;
+  border: 2px solid #73AD21;
+  padding: 20px;
+  width: 200px;
+  height: 150px;
+}
+</style>

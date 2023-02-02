@@ -2,7 +2,7 @@
     <div class="dashboard">
         <p> test19 </p>
 
-        <p> Weclome Back {{ this_usr_name }} </p>
+        <p class="text-3xl font-bold underline"> Weclome Back {{ this_usr_name }} </p>
 
         <ul>
             <li><router-link :to="{name: 'QIAll' }">All </router-link></li>

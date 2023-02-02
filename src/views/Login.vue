@@ -6,8 +6,8 @@
         <h1>Login Quote N Invoice Account </h1>
 
 
-            <p><input type="text" placeholder="Email" v-model="email" /></p>
-            <p><input type="password" placeholder="Password" v-model="password" /></p>
+            <p><input type="text" placeholder="Email" style=" color: #2c3e50 !important;" v-model="email" /></p>
+            <p><input type="password" placeholder="Password" style=" color: #2c3e50 !important;" v-model="password" /></p>
 
             <p v-if="err_msg">{{ err_msg }}</p>
 
