@@ -1,5 +1,5 @@
 <template>
-    <div class="Register">
+    <div class="register">
 
         <p>test08</p>
 
@@ -20,15 +20,13 @@
 <script setup>
 import { ref } from 'vue';
 import { createUserWithEmailAndPassword } from "firebase/auth";
-
 import { useRouter } from 'vue-router';
 import { auth } from "@/firebase.js";
+
 const email = ref("");
 const password = ref("");
 const router = useRouter();
-
 const register = () => {
-    //console.log(getAuth);
     createUserWithEmailAndPassword(auth, email.value, password.value)
     .then((data) =>{
         console.log('Successfully Registered To Quote N Invoice!');
@@ -41,3 +39,8 @@ const register = () => {
     })
 }
 </script>
+<style>
+#register{
+    text-align: center;
+}
+</style>

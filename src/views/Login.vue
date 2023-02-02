@@ -59,3 +59,8 @@ const login = () => {
 
 }
 </script>
+<style>
+#login{
+    text-align: center;
+}
+</style>

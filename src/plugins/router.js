@@ -3,7 +3,15 @@ import {createRouter, createWebHistory} from 'vue-router'
 const Login = () => import('@/views/Login.vue');
 const Register = () => import('@/views/Register.vue');
 const Dashboard = () => import('@/views/Dashboard.vue');
-const ViewClient = () => import('@/components/ViewClient.vue');
+
+const QuoteAll = () => import('@/views/QuoteAll.vue');
+const QuoteDetails = () => import('@/views/QuoteDetails.vue');
+const InvoiceAll = () => import('@/views/InvoiceAll.vue');
+const QIAll = () => import('@/views/QIAll.vue');
+
+const ClientAll = () => import('@/views/ClientAll.vue');
+const ClientAdd = () => import('@/views/ClientAdd.vue');
+
 const Empty = () => import('@/views/Empty.vue');
 
 
@@ -15,12 +23,22 @@ const router = createRouter({
       {path: "/register", name: "Register", component: Register },
       {
         path: "/dashboard", 
-        name: "Dashboard", 
-        component: Dashboard,  
+        name: "Dashboard",
+        component: Dashboard,
         auth: true,
-        children: [{path: '/viewclient',name: 'ViewClient',component: ViewClient}]
+        alians: "/home",
+        children: [{path: 'quoteinvoice',name: 'QIAll',component: QIAll},
+        {path: 'quote',name: 'QuoteAll',component: QuoteAll},
+        {path: 'invoice',name: 'InvoiceAll',component: InvoiceAll}]
       },
-      {path: "/empty", name: "Empty", component: Empty},
+    //   {path: '/quote', name: 'QuoteAll', component: QuoteAll},
+      {path: '/dashboard/quote/:id', name: 'QuoteDetails', component: QuoteDetails, props: true},
+
+      {path: '/dashboard/all_client',name: 'ClientAll',component: ClientAll},
+      {path: '/dashboard/add_client',name: 'ClientAdd',component: ClientAdd},
+
+    //   {path: 'invoice/:id', name: 'InvoiceDetail', component: InvoiceDetail},
+    //   {path: "/empty", name: "Empty", component: Empty},
     //   {path: '', component: LoggedInLayout,children: [{path: '/login',name: 'Login',component: Login},{title: 'Dashboard',path: '/',name: 'dashboard',component: Dashboard, auth: true},]}
   ]
 

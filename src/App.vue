@@ -34,7 +34,7 @@ a{
 a:hover {
    color: #FFF!important;
 }
-/* button,
+button,
 .button{
   cursor: pointer;
   padding: 16px 24px;
@@ -43,5 +43,5 @@ a:hover {
   font-size: 12px;
   margin-right: 8px;
   
-} */
+}
 </style>
