@@ -44,4 +44,15 @@ button,
   margin-right: 8px;
   
 }
+
+input,
+.input{
+  color: #2c3e50 !important;
+}
+
+textarea,
+.textarea{
+  color: #2c3e50 !important;
+  resize: none;
+}
 </style>

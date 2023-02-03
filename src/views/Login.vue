@@ -15,7 +15,7 @@
             
 
         <p>Need an account? <router-link :to="{name: 'Register'}">Register Here</router-link></p>
-        
+        <p>(DEBUG ONLY test003@cms.com	hwong2881)</p>
     </div>
 </template>
 

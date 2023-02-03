@@ -4,20 +4,13 @@
         <p>test21</p>
         <p>Coming Soon. Show all Client Page.</p>
 
-        
+        <ClientAdd></ClientAdd>
+
+      <!--loop message-->
     <div class="grid grid-cols-5">
-      <div class="business_card">
-        <div class="c_name">[ClientName]</div>
-        <div class="c_address">[ClientAddress]</div>
-        <div class="c_email">[ClientEmail]</div>
-        <div class="c_phone">[ClientPhone]</div>
+      <div class="business_card" v-for="c in messages">
+        <p :value="c.fullname" type="text"></p>
       </div>
-
-      <!-- ... -->
-      <div class="business_card" >02</div>
-      <div class="business_card">09</div>
-      <div class="business_card">18</div>
-
     </div>
 
         
@@ -26,8 +19,27 @@
 
 
 <script>
+import { setDoc } from '@firebase/firestore';
+
 export default{
     name: 'ClientAll',
+    components: {},
+    methods: {
+      /*
+      UpdateClient:function(msg){
+        setDoc(doc(db, 'msg', msg.id),{
+          text: msg.text,
+          data: msg.data
+        })
+      },
+      DeleteClient:function(msg){
+        deleteDoc(doc(db, 'msg', msg.id),{
+          text: msg.text,
+          data: msg.data
+        })
+      }
+      */
+    }
 }
 </script>
 

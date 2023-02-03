@@ -34,7 +34,7 @@ const router = createRouter({
     //   {path: '/quote', name: 'QuoteAll', component: QuoteAll},
       {path: '/dashboard/quote/:id', name: 'QuoteDetails', component: QuoteDetails, props: true},
 
-      {path: '/dashboard/all_client',name: 'ClientAll',component: ClientAll},
+    //   {path: '/dashboard/all_client',name: 'ClientAll',component: ClientAll},
       {path: '/dashboard/add_client',name: 'ClientAdd',component: ClientAdd},
 
     //   {path: 'invoice/:id', name: 'InvoiceDetail', component: InvoiceDetail},
