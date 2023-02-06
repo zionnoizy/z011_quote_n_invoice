@@ -9,22 +9,23 @@
         <form @sumbit.prevent="addClient">
           <div>
             <label>Client Company Name</label>
-            <input ref="client_cpy" type="text" />
+            <input ref="client_cpyname" type="text" />
           </div>
 
           <h2>Client Full Address</h2>
-          <div class="grid grid-cols-1 ">
+
+          <div class="grid grid-cols-2 gap-3">
             
-            <div><label>Address Line1 </label> <textarea ref="address_1" placeholder="Address Line1" id="txtArea" ></textarea></div>
-            <div><label>Address Line2 (Optional)</label> <textarea ref="address_2" placeholder="Address Line2" id="txtArea" ></textarea></div>
-            <div><label>City</label> <textarea ref="city" placeholder="City" id="txtArea" ></textarea></div>
-            <div><label>Post Code</label> <textarea ref="post_code" placeholder="Post Code" id="txtArea" ></textarea></div>
-            <div  class="hidden" ><label>Counrty</label> <textarea ref="country" placeholder="Post Code" id="txtArea" ></textarea></div>
+            <div><label>Address Line1 </label> </div><div> <input ref="address_1" placeholder="Address Line1" id="txtArea" required/></div>
+            <div><label>Address Line2 (Optional)</label>  </div><div> <input ref="address_2" placeholder="Address Line2" id="txtArea" /></div>
+            <div><label>City</label> </div><div><input ref="city" placeholder="City" id="txtArea" required/></div>
+            <div><label>Post Code</label> </div><div> <input ref="post_code" placeholder="Post Code" id="txtArea" required/></div>
+            <div  class="hidden" ><label>Country</label> </div><div class="hidden"> <input ref="country" placeholder="Country" id="txtArea" required/></div>
           
           </div>
         </form>
         <!---------------------------------->
-        <button :disabled="!typedClientInfo">Add Client Information </button>
+        <button @click="createClient" >Add Client Information </button>
 
     </div>
 </template>
@@ -32,41 +33,47 @@
 
 <script>
 import { db, auth } from "@/firebase.js";
+import { collection, addDoc, DocumentReference } from "firebase/firestore";
+import { serverTimestamp } from 'firebase/firestore'
 import { ref } from 'vue';
+
+
 export default{
-    name: 'empty',
+    name: 'ClientAdd',
     components: {},
     methods:{
-      AddNewClient:function(){
-        addDoc(collection(db, 'messages'),{
-          text:this.$refs.client_cpy.value,
-          data:Date.now()
-        });
+      async createClient() {
+        console.log("[ClientAdd] create new client.");
+
+        const db_id = firebase.firestore();
+        const get_id = db_id.collection('all_clients').doc();
+        const c_id = get_id.id;
+
+        
+        const ref = collection(db, 'all_clients');
+        
+        const obj_ref ={
+          c_fullname:this.$refs.client_cpyname.value,
+          c_address_1:this.$refs.address_1.value,
+          c_address_2:this.$refs.address_2.value,
+          c_city:this.$refs.city.value,
+          c_post_code:this.$refs.post_code.value,
+          c_insert_date: serverTimestamp(),
+          c_cid: c_id,
+        }
+
+        const doc_ref = await addDoc(ref, obj_ref);
       }
     },
-    data:()=>{
-      return{
-        c_company: ref([])
-      }
-    },
-    mounted(){
-      const lastestQuery = query(collection(db, "company"),orderBy('date'));
-      onSnapshot(latesrQuery, (snapshot)=>{
-        this.c_comapny = snapshot.docs.map((doc=>{
-          return{
 
-          }
-        }))
-      })
-    }
 }
 
-const addClient = () => {
-  const newClient = {
-    id: '',
-    content: 
-  }
-}
+// const addClient = () => {
+//   const newClient = {
+//     id: '',
+//     content: 
+//   }
+// }
 </script>
 
 <style>

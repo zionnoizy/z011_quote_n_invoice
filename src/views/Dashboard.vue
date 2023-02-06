@@ -4,13 +4,15 @@
 
         <p class="text-3xl font-bold underline"> Weclome Back {{ this_usr_name }} </p>
 
-        <ul>
-            <li><router-link :to="{name: 'QIAll' }">All </router-link></li>
-            <li><router-link :to="{name: 'QuoteAll' }">Quote</router-link></li>
-            <li><router-link :to="{name: 'InvoiceAll' }">Invoice</router-link></li>
+        <div class="grid grid-cols-3 gap3">
+        
+            <div><router-link :to="{name: 'QIAll' }">All </router-link></div>
+            <div><router-link :to="{name: 'QuoteAll' }">Quote</router-link></div>
+            <div><router-link :to="{name: 'InvoiceAll' }">Invoice</router-link></div>
             
-        </ul>
-
+        
+        </div>
+        
         <router-view></router-view>
         <!--[btn-for-client-product]-->
         <!-- <div class="bg-green-500 w-full block">

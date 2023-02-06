@@ -4,12 +4,21 @@
         <p>test21</p>
         <p>Coming Soon. Show all Client Page.</p>
 
-        <ClientAdd></ClientAdd>
+        <client-add></client-add>
 
+        <button>CHANGE</button>
       <!--loop message-->
     <div class="grid grid-cols-5">
-      <div class="business_card" v-for="c in messages">
-        <p :value="c.fullname" type="text"></p>
+
+      <div class="business_card" v-for="c in messages" v-bind:key="c['.key']"> 
+        
+        <div>
+          <p>{{ c.c_fullname }}</p>
+          <p contenteditable :value="c.c_fullname" type="text"></p>
+        </div>
+
+        <button @click="editClient(c['.key'])">Edit</button>
+        <button>Delete</button>
       </div>
     </div>
 
@@ -20,25 +29,30 @@
 
 <script>
 import { setDoc } from '@firebase/firestore';
-
+import ClientAdd from "@/components/ClientAdd.vue";
 export default{
     name: 'ClientAll',
-    components: {},
+    components: {
+      ClientAdd,
+    },
     methods: {
-      /*
+
       UpdateClient:function(msg){
-        setDoc(doc(db, 'msg', msg.id),{
+        setDoc(doc(db, 'all_clients', msg.id),{
           text: msg.text,
           data: msg.data
         })
       },
-      DeleteClient:function(msg){
-        deleteDoc(doc(db, 'msg', msg.id),{
-          text: msg.text,
-          data: msg.data
-        })
+      deleteClient(id){
+        if (window.confirm("do you really want to delete? The system cannot undo.")){
+          db.child(id).remove().then(() =>{
+            alert("successully deleted.");
+          }).catch((error) => {
+            console.log(error);
+          })
+        }
       }
-      */
+
     }
 }
 </script>

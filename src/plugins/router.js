@@ -10,7 +10,7 @@ const InvoiceAll = () => import('@/views/InvoiceAll.vue');
 const QIAll = () => import('@/views/QIAll.vue');
 
 const ClientAll = () => import('@/views/ClientAll.vue');
-const ClientAdd = () => import('@/views/ClientAdd.vue');
+// const ClientAdd = () => import('@/views/ClientAdd.vue');
 
 const Empty = () => import('@/views/Empty.vue');
 
@@ -33,10 +33,8 @@ const router = createRouter({
       },
     //   {path: '/quote', name: 'QuoteAll', component: QuoteAll},
       {path: '/dashboard/quote/:id', name: 'QuoteDetails', component: QuoteDetails, props: true},
-
-    //   {path: '/dashboard/all_client',name: 'ClientAll',component: ClientAll},
-      {path: '/dashboard/add_client',name: 'ClientAdd',component: ClientAdd},
-
+      {path: '/dashboard/all_client',name: 'ClientAll',component: ClientAll},
+    //   {path: '/dashboard/add_client',name: 'ClientAdd',component: ClientAdd},
     //   {path: 'invoice/:id', name: 'InvoiceDetail', component: InvoiceDetail},
     //   {path: "/empty", name: "Empty", component: Empty},
     //   {path: '', component: LoggedInLayout,children: [{path: '/login',name: 'Login',component: Login},{title: 'Dashboard',path: '/',name: 'dashboard',component: Dashboard, auth: true},]}
