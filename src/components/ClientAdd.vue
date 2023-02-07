@@ -7,25 +7,25 @@
         <p> client address is in UK / outside of UK</p>
 
         <form @sumbit.prevent="addClient">
-          <div>
-            <label>Client Company Name</label>
-            <input ref="client_cpyname" type="text" />
+          <div class="grid grid-cols-2 gap-2" >
+            <div><label>Client Company Name*</label></div>
+            <div><input ref="client_cpyname" type="text" required/></div>
           </div>
 
           <h2>Client Full Address</h2>
 
           <div class="grid grid-cols-2 gap-3">
-            
-            <div><label>Address Line1 </label> </div><div> <input ref="address_1" placeholder="Address Line1" id="txtArea" required/></div>
+
+            <div><label>Address Line1* </label> </div><div> <input ref="address_1" placeholder="Address Line1" id="txtArea"  required/></div>
             <div><label>Address Line2 (Optional)</label>  </div><div> <input ref="address_2" placeholder="Address Line2" id="txtArea" /></div>
-            <div><label>City</label> </div><div><input ref="city" placeholder="City" id="txtArea" required/></div>
-            <div><label>Post Code</label> </div><div> <input ref="post_code" placeholder="Post Code" id="txtArea" required/></div>
-            <div  class="hidden" ><label>Country</label> </div><div class="hidden"> <input ref="country" placeholder="Country" id="txtArea" required/></div>
+            <div><label>City*</label> </div><div><input ref="city" placeholder="City" id="txtArea" required/></div>
+            <div><label>Post Code*</label> </div><div> <input ref="post_code" placeholder="Post Code" id="txtArea" required/></div>
+            <div  class="hidden" ><label>Country*</label> </div><div class="hidden"> <input ref="country" placeholder="Country" id="txtArea" required/></div>
           
           </div>
         </form>
         <!---------------------------------->
-        <button @click="createClient" >Add Client Information </button>
+        <button @click="createClient" class="btn btn-info" >Add Client Information </button>
 
     </div>
 </template>
