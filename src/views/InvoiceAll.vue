@@ -8,6 +8,6 @@
     
 <script>
 export default {
-    name: "AllInvoice"
+    name: "AllInvoice",
 }
 </script>

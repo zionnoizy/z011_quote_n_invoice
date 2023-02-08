@@ -39,16 +39,10 @@
 
         <div class="grid grid-cols-2 gap-2">
             <div>
-                <button class="btn btn-primary btn-lg"> <router-link :to="{name: 'ClientAll' }"> View Client </router-link> </button> -->
+                <button class="btn btn-primary btn-lg"> <router-link :to="{name: 'ClientAll' }"> View / Add Client </router-link> </button>
             </div>
             <div>
-                <button class="btn btn-success btn-lg">View Product</button>
-            </div>
-            <div>
-                <button class="btn btn-primary btn-lg"> <router-link :to="{name: 'ClientAdd' }"> Add Client </router-link> </button>
-            </div>
-            <div>
-                <button class="btn btn-success btn-lg">Add Product</button>
+                <button class="btn btn-success btn-lg"><router-link :to="{name: 'ProductAll' }"> View / Add Product </router-link></button>
             </div>
         </div>
         

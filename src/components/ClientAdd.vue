@@ -48,7 +48,6 @@ export default{
         const db_id = firebase.firestore();
         const get_id = db_id.collection('all_clients').doc();
         const c_id = get_id.id;
-
         
         const ref = collection(db, 'all_clients');
         

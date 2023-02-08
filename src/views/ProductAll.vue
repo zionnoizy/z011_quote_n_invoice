@@ -8,6 +8,7 @@
 
 
 <script>
+import ProductAdd from "@/components/ProductAdd.vue";
 export default{
     name: 'ProductAll',
     components: {
