@@ -6,7 +6,8 @@
 
       <p> The Sell Will Auto-Generate After Typing Cost & Margin Sessions. </p>
 
-      <form @sumbit.prevent="addClient">
+
+      <form @sumbit.prevent="addProduct">
 
         
 
@@ -22,9 +23,9 @@
     <th scope="col">Code#</th>
     <th scope="col">Name</th>
     <th scope="col">Catagory</th>
-    <th scope="col">Product Cost</th>
-    <th scope="col">Product Margin</th>
-    <th scope="col">Product Sell</th>
+    <th scope="col">&#163; Product Cost</th>
+    <th scope="col">Product Margin &percnt;</th>
+    <th scope="col">= Product Sell</th>
   </tr>
 </thead>
 <tbody>
@@ -36,13 +37,12 @@
      </th>
 
 
-     <td> <input ref="Code" placeholder="Product Code" id="pi_code" required/> </td>
-
-      <td> <input  ref="Item Name" placeholder="Item Name" id="pi_name" required/> </td>
+    <td> <input ref="Code" placeholder="Product Code" id="pi_code" required/> </td>
+    <td> <input ref="Item Name" placeholder="Item Name" id="pi_name" required/> </td>
     <td> <input ref="Category" placeholder="Product Category" id="pi_catrgory" required/> </td>
-    <td> <input ref="Product Cost (£)" placeholder="Product Cost (digit only)" id="pi_cost" v-on:keypress="NumbersOnly" required /> </td>
-    <td> <input ref="Product Margin (%)" placeholder="Product Margin (digit only)" id="pi_margin" onkeypress='return event.charCode >= 48 && event.charCode <= 57' required /> </td>
-    <td> <input ref="Product Sell (£)" placeholder="Product Sell" id="pi_sell" disabled /> </td>
+    <td> <input ref="Product Cost (£)" placeholder="Product Cost (digit only)" id="pi_cost" v-on:keypress="NumbersOnly" @input="CalculateSell" required /> </td>
+    <td> <input ref="Product Margin (%)" placeholder="Product Margin (digit only)" id="pi_margin" onkeypress='return event.charCode >= 48 && event.charCode <= 57' @input="CalculateSell" required /> </td>
+    <td> <input ref="Product Sell (£)" placeholder="Product Sell" id="pi_sell" @input="CalculateSell"   /> </td>
 
   </tr>
 
@@ -51,15 +51,16 @@
     <td> {{ p.p_fullname }} </td>
     <td> {{ p.p_catagory }} </td>
     <td> {{ p.p_cost }} </td>
-    <td><div contenteditable>BB  {{ p.p_margin }} </div></td>
+    <td> <div contenteditable>BB  {{ p.p_margin }} </div> </td>
     <td> {{ p.p_sell }} </td>
   </tr>
   <tr>
     <th scope="row">-</th>
     <td>Example1</td>
     <td>Example2</td>
-    <td>Example3</td>
+    <td >Example3</td>
   </tr>
+  
 </tbody>
 </table>
 
@@ -115,7 +116,19 @@ export default{
         return true;
       }
 
-    }
+    },
+    CalculateSell(){
+
+      const cost = document.getElementById('pi_cost').value;
+      const margin = document.getElementById('pi_margin').value;
+      const tmp_ans = +cost + (+(cost / 100) * margin);
+
+      console.log("[ProductAdd]" + cost + " " + margin + " " + tmp_ans);
+
+
+      document.getElementById('pi_sell').value = tmp_ans;
+
+    },
     
   },
 

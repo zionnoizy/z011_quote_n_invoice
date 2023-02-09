@@ -110,7 +110,7 @@ export default{
       ClientAdd,
     },
     methods: {
-      async getTodos() {
+      async getTodos() { 
         var todosRef = await firebase.firestore().collection("all_clients");
         /*
         firebase.firestore().collection("all_clients").get().then(function(querySnapshot){
