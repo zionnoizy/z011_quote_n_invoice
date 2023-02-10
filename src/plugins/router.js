@@ -27,15 +27,15 @@ const router = createRouter({
         component: Dashboard,
         auth: true,
         alians: "/home",
-        children: [{path: 'quoteinvoice',name: 'QIAll',component: QIAll},
-        {path: 'quote',name: 'QuoteAll',component: QuoteAll},
-        {path: 'invoice',name: 'InvoiceAll',component: InvoiceAll}]
+        children: [ {path: 'quoteinvoice',name: 'QIAll',component: QIAll},
+                    {path: 'quote',name: 'QuoteAll',component: QuoteAll},
+                    {path: 'invoice',name: 'InvoiceAll',component: InvoiceAll}
+                  ]
       },
-    //   {path: '/quote', name: 'QuoteAll', component: QuoteAll},
       {path: '/dashboard/quote/:id', name: 'QuoteDetails', component: QuoteDetails, props: true},
-      {path: '/dashboard/all_client',name: 'ClientAll',component: ClientAll},
-      {path: '/dashboard/all_product',name: 'ProductAll',component: ProductAll},
-      {path: '/dashboard/all_category',name: 'CategoryAll',component: CategoyAddAll},
+      {path: '/dashboard/all_client', name: 'ClientAll',component: ClientAll},
+      {path: '/dashboard/all_product', name: 'ProductAll',component: ProductAll},
+      {path: '/dashboard/all_category', name: 'CategoryAll',component: CategoyAddAll},
     //   {path: '/dashboard/add_client',name: 'ClientAdd',component: ClientAdd},
     //   {path: 'invoice/:id', name: 'InvoiceDetail', component: InvoiceDetail},
     //   {path: "/empty", name: "Empty", component: Empty},

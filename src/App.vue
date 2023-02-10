@@ -5,7 +5,7 @@
 
 <router-link to="/" exact><a>Login</a></router-link> | 
 <router-link :to="{name: 'Register'}">Register</router-link> |
-<p>Companies Management Systems Ltd.</p>
+<p>©Companies Management Systems Ltd.</p>
 
 </template>
 
@@ -55,9 +55,17 @@ textarea,
   color: #2c3e50 !important;
   resize: none;
 }
-.link{
+.link:hover{
 
     text-decoration: underline;
 }
 
+.dashboard_txt{
+  font-size: 200%;
+
+}
+/* add product, category */
+.red::-webkit-input-placeholder{
+color:red;
+}
 </style>

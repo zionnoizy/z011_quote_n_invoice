@@ -1,15 +1,19 @@
 <template>
+    <!--this page is components only-->
     <div class="ClientAdd">
 
         <p>test20</p>
         <p>Add Client Page.</p>
 
+
+
         <p> client address is in UK / outside of UK</p>
 
         <form @sumbit.prevent="addClient">
+
           <div class="grid grid-cols-2 gap-2" >
             <div><label>Client Company Name*</label></div>
-            <div><input ref="client_cpyname" type="text" required/></div>
+            <div><input ref="client_cpyname" type="text" placeholder="Client Company Name" required/></div>
           </div>
 
           <h2>Client Full Address</h2>

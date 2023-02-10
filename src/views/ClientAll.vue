@@ -2,12 +2,11 @@
     <div class="ClientAll">
         <!--https://pbs.twimg.com/media/DrM0nIdU0AEhG5b.jpg-->
         <p>test21</p>
-        <p ><router-link to="{name: './'}" exact><a><strong class="link">Dashboard</strong></a></router-link>  > All Clients</p>
+
+        <p class="dashboard_txt" ><router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  > All Clients</p>
 
         <client-add></client-add>
 
-        <button>CHANGE</button>
-      <!--loop message vv-bind:key="all_clients.c_cid"-->
       <p>...................................................</p>
 
       <div class="px-5 mx-5 grid grid-cols-2 gap-1 ">
@@ -28,7 +27,7 @@
       </div>
       </div>
 
-    <div class="px-5 mx-5 grid grid-cols-5 gap-2 ">
+    <div class="px-5 mx-5 grid grid-cols-5 gap-3 ">
 
       <div class="business_card" v-for="c in all_clients" > 
         
@@ -49,29 +48,19 @@
         </div>
 
         <div class="btn-group" role="group" aria-label="section preference">
-  <input
-    type="radio"
-    class="btn-check"
-    name="section"
-    id="option1"
+        <input type="radio" class="btn-check" name="section" id="option1"/>
 
+        <label class="btn btn-secondary" for="option1">
+          Edit
+        </label>
 
-  />
-  <label class="btn btn-secondary" for="option1">
-    Edit
-  </label>
+        <input type="radio" class="btn-check" name="section" id="option2"/>
 
-  <input
-    type="radio"
-    class="btn-check"
-    name="section"
-    id="option2"
+        <label class="btn btn-secondary" for="option2">
+          Delete
+        </label>
 
-  />
-  <label class="btn btn-secondary" for="option2">
-    Delete
-  </label>
-</div>
+        </div>
 
 
       </div>
@@ -110,35 +99,15 @@ export default{
       ClientAdd,
     },
     methods: {
-      async getTodos() { 
-        var todosRef = await firebase.firestore().collection("all_clients");
-        /*
-        firebase.firestore().collection("all_clients").get().then(function(querySnapshot){
-          this.all_clients = querySnapshot;
-          querySnapshot.forEach(function(doc){
-            console.log("1.");
-            this.all_clients.push(doc.data());
-          });
-        });
-        */
-        
-        todosRef.onSnapshot(snap => {
+      async getAllClient() { 
+        var all_client_ref = await firebase.firestore().collection("all_clients");
+
+        all_client_ref.onSnapshot(snap => {
             this.all_clients = [];
             
             snap.forEach(d => {
                 var client = d.data();
-                // client.c_fullname = d.c_fullname,
-                // client.c_address_1 = d.c_address_1,
-                // client.c_address_2 = d.c_address_2,
-                // client.c_city = d.c_city,
-                // client.c_insert_date = d.c_insert_date,
-                // client.c_post_code = d.c_post_code,
-                // client.c_cid = d.data();
-
-
                 this.all_clients.push(client);
-
-                
             });
         });
         
@@ -162,14 +131,14 @@ export default{
 
     },
     created() {
-    this.getTodos();
+    this.getAllClient();
     },
 }
 </script>
 
 <style>
 .business_card{
-  border-radius: 25px;
+
   border: 2px solid #73AD21;
   padding: 20px;
   width: 275px;

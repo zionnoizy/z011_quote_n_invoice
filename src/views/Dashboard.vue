@@ -2,6 +2,19 @@
     <div class="dashboard">
         <p> test19 </p>
 
+        <div class="container">
+            <div class="row">
+                <div class="col-8">
+                    <p class="text-3xl font-bold underline"> Weclome Back To CMS-QuoteIn {{ this_usr_name }} </p>
+                </div>
+
+                <div class="col-4">
+                    <button class="btn btn-primary btn-lg mb-3"> <router-link :to="{name: 'ClientAll' }"> View / Add Client </router-link> </button>
+                    <button class="btn btn-success btn-lg mb-3"> <router-link :to="{name: 'ProductAll' }"> View / Add Product </router-link></button>
+                </div>
+            </div>
+        </div>
+
         <p class="text-3xl font-bold underline"> Weclome Back {{ this_usr_name }} </p>
 
         <div class="grid grid-cols-3 gap3">

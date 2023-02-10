@@ -1,35 +1,31 @@
 <template>
+  <!--this page is components only-->
   <div class="ProductAdd">
 
       <p>test29</p>
-      <p>Add Client Page.</p>
 
-      <p> The Sell Will Auto-Generate After Typing Cost & Margin Sessions. </p>
-
+      <p>= The Sell Will Auto-Generate After Typing Cost & Margin Sessions. </p>
 
       <form @sumbit.prevent="addProduct">
-
-        
-
-        <h2>Product Full List</h2>
+  
         <button class="" @click="createProduct" > New Product[+] </button>
         
         <table class="table table-dark" >
 
 
-          <thead >
-  <tr>
-    <th scope="col">Add/ Delete</th>
-    <th scope="col">Code#</th>
-    <th scope="col">Name</th>
-    <th scope="col">Catagory</th>
-    <th scope="col">&#163; Product Cost</th>
-    <th scope="col">Product Margin &percnt;</th>
-    <th scope="col">= Product Sell</th>
-  </tr>
-</thead>
-<tbody>
-  <tr >
+          <thead>
+          <tr>
+            <th scope="col">Add/ Delete</th>
+            <th scope="col">Code#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Catagory</th>
+            <th scope="col">&#163; Product Cost</th>
+            <th scope="col">Product Margin &percnt;</th>
+            <th scope="col">= Product Sell</th>
+          </tr>
+          </thead>
+    <tbody>
+      <tr>
 
     <th scope="row">
 
@@ -42,7 +38,7 @@
     <td> <input ref="Category" placeholder="Product Category" id="pi_catrgory" required/> </td>
     <td> <input ref="Product Cost (£)" placeholder="Product Cost (digit only)" id="pi_cost" v-on:keypress="NumbersOnly" @input="CalculateSell" required /> </td>
     <td> <input ref="Product Margin (%)" placeholder="Product Margin (digit only)" id="pi_margin" onkeypress='return event.charCode >= 48 && event.charCode <= 57' @input="CalculateSell" required /> </td>
-    <td> <input ref="Product Sell (£)" placeholder="Product Sell" id="pi_sell" @input="CalculateSell"   /> </td>
+    <td> <input ref="Product Sell (£)" placeholder="Product Sell" id="pi_sell" @input="CalculateSell"   disabled/> </td>
 
   </tr>
 
@@ -173,4 +169,10 @@ function validate_p_input(){
 .red::-webkit-input-placeholder{
 color:red;
 }
+.input:disabled{
+  border-color: white;
+  background-color: white;
+  color: #FFF;
+}
+
 </style>
