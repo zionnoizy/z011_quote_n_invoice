@@ -1,6 +1,6 @@
 <template>
     <div class="AllQI">
-        comming soon - will show all quote & invoice.
+        =comming soon - will show all quote & invoice.=
     </div>
 </template>
     
