@@ -2,8 +2,6 @@
   <!--this page is components only-->
   <div class="ProductAdd">
 
-      <p>test29</p>
-
       <p>= The Sell Will Auto-Generate After Typing Cost & Margin Sessions. </p>
 
       <form @sumbit.prevent="addProduct">
@@ -15,13 +13,13 @@
 
           <thead>
           <tr>
-            <th scope="col">Add/ Delete</th>
-            <th scope="col">Code#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Catagory</th>
-            <th scope="col">&#163; Product Cost</th>
-            <th scope="col">Product Margin &percnt;</th>
-            <th scope="col">= Product Sell</th>
+            <th scope="col">[Add/ Delete]</th>
+            <th scope="col">[Code#]</th>
+            <th scope="col">[Name]</th>
+            <th scope="col">[Catagory]</th>
+            <th scope="col">[&#163; Product Cost]</th>
+            <th scope="col">[Product Margin &percnt;]</th>
+            <th scope="col">[= Product Sell]</th>
           </tr>
           </thead>
     <tbody>
@@ -29,27 +27,20 @@
 
     <th scope="row">
 
-      <div><button class="btn btn-info"   @click="createProduct" > [+] </button> </div>
+      <div><button class="btn btn-info"   @click.prevent="createProduct" > [+] </button> </div>
      </th>
 
 
-    <td> <input ref="Code" placeholder="Product Code" id="pi_code" required/> </td>
-    <td> <input ref="Item Name" placeholder="Item Name" id="pi_name" required/> </td>
-    <td> <input ref="Category" placeholder="Product Category" id="pi_catrgory" required/> </td>
-    <td> <input ref="Product Cost (£)" placeholder="Product Cost (digit only)" id="pi_cost" v-on:keypress="NumbersOnly" @input="CalculateSell" required /> </td>
-    <td> <input ref="Product Margin (%)" placeholder="Product Margin (digit only)" id="pi_margin" onkeypress='return event.charCode >= 48 && event.charCode <= 57' @input="CalculateSell" required /> </td>
-    <td> <input ref="Product Sell (£)" placeholder="Product Sell" id="pi_sell" @input="CalculateSell"   disabled/> </td>
+    <td> <input ref="p_code" placeholder="Product Code" id="pi_code" required/> </td>
+    <td> <input ref="p_enter" placeholder="Item Name" id="pi_name" required/> </td>
+    <td> <input ref="p_category" placeholder="Product Category" id="pi_catrgory" required/> </td>
+    <td> <input ref="p_cost" placeholder="Product Cost (digit only)" id="pi_cost" v-on:keypress="NumbersOnly" @input="CalculateSell" required /> </td>
+    <td> <input ref="p_margin" placeholder="Product Margin (digit only)" id="pi_margin" onkeypress='return event.charCode >= 48 && event.charCode <= 57' @input="CalculateSell" required /> </td>
+    <td> <input ref="p_sell" placeholder="Product Sell" id="pi_sell" @input="CalculateSell" disabled/> </td>
 
   </tr>
 
-  <tr v-for="p in all_products" >
-    <th scope="row"> {{ p.p_code }} </th>
-    <td> {{ p.p_fullname }} </td>
-    <td> {{ p.p_catagory }} </td>
-    <td> {{ p.p_cost }} </td>
-    <td> <div contenteditable>BB  {{ p.p_margin }} </div> </td>
-    <td> {{ p.p_sell }} </td>
-  </tr>
+  
   <tr>
     <th scope="row">-</th>
     <td>Example1</td>
@@ -71,33 +62,58 @@
 
 
 <script>
-import { db, auth } from "@/firebase.js";
-import { collection, addDoc } from "firebase/firestore";
+import { db, auth, increment } from "@/firebase.js";
+import { collection, addDoc, DocumentSnapshot } from "firebase/firestore";
 import { ref } from 'vue';
-
+import { serverTimestamp } from 'firebase/firestore';
 
 export default{
   name: 'ProductAdd',
+  
   components: {},
   methods:{
     
     async createProduct(){
       validate_p_input();
-      /*
-      if (ture){
+      console.log("[ProductAdd] create new Category.");
+      
+
         console.log("[ProductAdd] create new product");
 
         const db_id = firebase.firestore();
-        const get_id = db_id.collection('all_products');
+        const get_id = db_id.collection('all_products').doc();
         const p_id = get_id.id;
+        
+        console.log("[ProductAdd] id. " + p_id);
+
+
+        //const increment = firebase.firestore.FieldValue.increment(1);
 
         const ref = collection(db, 'all_products');
-        const obj_pro = {
 
-          p_fullname
+        const obj_ref = {
+          p_code: this.$refs.p_code.value,
+          p_fullname: this.$refs.p_enter.value,
+          p_category: this.$refs.p_category.value,
+          p_cost: this.$refs.p_cost.value,
+          p_margin: this.$refs.p_margin.value,
+          p_sell: this.$refs.p_sell.value,
+          p_quantity: 0,
+          p_insert_date: serverTimestamp(),
+          p_edit_date: serverTimestamp(),
         }
-      }
-      */
+
+        const doc_ref = await addDoc(ref, obj_ref);
+        console.log("[ProductAdd] not end. ")
+        /*
+        const exp_ref = db_id.collection("all_products").doc()
+        return db_id.runTransaction(t => {
+          return t.get(exp_ref).then(doc => {
+            const newCount = doc.data().p_quantity +1
+            t.update(exp_ref, {p_quantity: newCount})
+          })
+        })
+        */
     },
     
     NumbersOnly(e){

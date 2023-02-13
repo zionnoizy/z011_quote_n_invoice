@@ -12,6 +12,9 @@ const QIAll = () => import('@/views/QIAll.vue');
 const ClientAll = () => import('@/views/ClientAll.vue');
 const ProductAll = () => import('@/views/ProductAll.vue');
 const CategoyAddAll = () => import('@/views/CategoyAddAll.vue');
+
+const QuoteAdd = () => import('@/views/QuoteAdd.vue');
+
 const Empty = () => import('@/views/Empty.vue');
 
 
@@ -36,6 +39,8 @@ const router = createRouter({
       {path: '/dashboard/all_client', name: 'ClientAll',component: ClientAll},
       {path: '/dashboard/all_product', name: 'ProductAll',component: ProductAll},
       {path: '/dashboard/all_category', name: 'CategoryAll',component: CategoyAddAll},
+
+      {path: '/dashboard/add_quote', name: 'QuoteAdd', component: QuoteAdd},
     //   {path: '/dashboard/add_client',name: 'ClientAdd',component: ClientAdd},
     //   {path: 'invoice/:id', name: 'InvoiceDetail', component: InvoiceDetail},
     //   {path: "/empty", name: "Empty", component: Empty},

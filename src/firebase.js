@@ -20,7 +20,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const db2 = getFirestore();
-const fv = firebase.firestore.FieldValue;
+const increment = firebase.firestore.FieldValue.increment;
 //const analytics = getAnalytics();
 
-export { fv, app, db, db2, auth }
+export {  app, auth, db, db2, increment }

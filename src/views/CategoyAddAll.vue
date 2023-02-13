@@ -22,7 +22,7 @@
 
         <div class="px-5 mx-5 grid grid-cols-2 gap-1" v-for="ca in all_categorys">
             <div class=""  >
-                {{ ca.category_fullname }}
+                {{ ca.cat_fullname }}
             </div> 
 
             <div class="">
@@ -41,10 +41,10 @@ export default{
     setup() {},
     data(){
         return{
-            all_category: [],
-            client:{
-                category_fullname: null,
-                category_counter: null,
+            all_categorys: [],
+            category:{
+                cat_fullname: null,
+                cat_counter: null,
             }
         }
     },

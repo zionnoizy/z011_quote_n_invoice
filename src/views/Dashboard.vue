@@ -6,6 +6,7 @@
             <div class="row">
                 <div class="col-8">
                     <p class="text-3xl font-bold underline"> Weclome Back To CMS-QuoteIn {{ this_usr_name }} </p>
+                    <button class="btn btn-primary btn-lg mb-3"> <router-link :to="{name: 'QuoteAdd' }"> Add New Quote </router-link> </button>
                 </div>
 
                 <div class="col-4">
@@ -17,16 +18,10 @@
 
         <p class="text-3xl font-bold underline"> Weclome Back {{ this_usr_name }} </p>
 
-        <div class="grid grid-cols-3 gap3">
         
-            <div><router-link :to="{name: 'QIAll' }">All </router-link></div>
-            <div><router-link :to="{name: 'QuoteAll' }">Quote</router-link></div>
-            <div><router-link :to="{name: 'InvoiceAll' }">Invoice</router-link></div>
-            
-        
-        </div>
         
         <router-view></router-view>
+
         <!--[btn-for-client-product]-->
         <!-- <div class="bg-green-500 w-full block">
 
