@@ -16,44 +16,20 @@
             </div>
         </div>
 
-        <p class="text-3xl font-bold underline"> Weclome Back {{ this_usr_name }} </p>
+        <p class="text-3xl font-bold underline"> Weclome Back! </p>
 
         
         
-        <router-view></router-view>
-
-        <!--[btn-for-client-product]-->
-        <!-- <div class="bg-green-500 w-full block">
-
-            <div class="w-24 h-24 float-right p-10">
-
-                <div class="grid grid-cols-2 gap-2">
-
-                    <div>
-                         <button> <router-link :to="{name: 'ViewClient' }"> View Client </router-link> </button> -->
-                    <!-- </div>
-                    <div>
-                        <button class="indigo-400">View Product</button>
-                    </div>
-                    <div>
-                            <button class="blue-700"> <router-link :to="{name: 'AddClient' }"> Add Client </router-link> </button>
-                    </div>
-                    <div>
-                        <button class="indigo-700">Add Product</button>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-
-        <div class="grid grid-cols-2 gap-2">
-            <div>
-                <button class="btn btn-primary btn-lg"> <router-link :to="{name: 'ClientAll' }"> View / Add Client </router-link> </button>
-            </div>
-            <div>
-                <button class="btn btn-success btn-lg"><router-link :to="{name: 'ProductAll' }"> View / Add Product </router-link></button>
-            </div>
+        <div class="grid grid-cols-3 ">
+        
+            <div><router-link :to="{name: 'QIAll' }">All </router-link></div>
+            <div><router-link :to="{name: 'QuoteAll' }">Quote</router-link></div>
+            <div><router-link :to="{name: 'InvoiceAll' }">Invoice</router-link></div>
+        
+    
         </div>
         
+        <router-view></router-view>
         <!-- <button @click="signOut">Logout</button> -->
     </div>
 </template>
