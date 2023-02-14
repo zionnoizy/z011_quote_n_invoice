@@ -11,6 +11,7 @@
 
 <script>
 
+
 export default {
   name: 'app' 
 
@@ -67,5 +68,13 @@ textarea,
 /* add product, category */
 .red::-webkit-input-placeholder{
 color:red;
+}
+
+.client_card{
+
+border: 2px solid #73AD21;
+padding: 20px;
+width: 275px;
+height: 175px;
 }
 </style>

@@ -29,7 +29,7 @@
 
     <div class="px-5 mx-5 grid grid-cols-5 gap-3 ">
 
-      <div class="business_card" v-for="c in all_clients" > 
+      <div class="client_card" v-for="c in all_clients" > 
         
         <div class="row">
           <div>
@@ -47,20 +47,7 @@
 
         </div>
 
-        <div class="btn-group" role="group" aria-label="section preference">
-        <input type="radio" class="btn-check" name="section" id="option1"/>
-
-        <label class="btn btn-secondary" for="option1">
-          Edit
-        </label>
-
-        <input type="radio" class="btn-check" name="section" id="option2"/>
-
-        <label class="btn btn-secondary" for="option2">
-          Delete
-        </label>
-
-        </div>
+        
 
 
       </div>
@@ -99,6 +86,7 @@ export default{
       ClientAdd,
     },
     methods: {
+
       async getAllClient() { 
         var all_client_ref = await firebase.firestore().collection("all_clients");
 
@@ -113,6 +101,7 @@ export default{
         
         
       },
+
       UpdateClient:function(msg){
         setDoc(doc(db, 'all_clients', msg.id),{
           text: msg.text,
@@ -137,11 +126,5 @@ export default{
 </script>
 
 <style>
-.business_card{
 
-  border: 2px solid #73AD21;
-  padding: 20px;
-  width: 275px;
-  height: 175px;
-}
 </style>
