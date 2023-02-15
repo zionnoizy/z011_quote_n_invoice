@@ -28,7 +28,8 @@
     <th scope="row">
 
       <div><button class="btn btn-info"   @click.prevent="createProduct" > [+] </button> </div>
-     </th>
+      
+    </th>
 
 
     <td> <input ref="p_code" placeholder="Product Code" id="pi_code" required/> </td>
@@ -75,21 +76,24 @@ export default{
     
     async createProduct(){
       validate_p_input();
-      console.log("[ProductAdd] create new Category.");
+      console.log("[ProductAdd-createProduct] create new Category.");
       
 
-        console.log("[ProductAdd] create new product");
+        console.log("[ProductAdd-createProduct] create new product");
 
         const db_id = firebase.firestore();
         const get_id = db_id.collection('all_products').doc();
         const p_id = get_id.id;
+
+
         
-        console.log("[ProductAdd] id. " + p_id);
+        console.log("[ProductAdd-createProduct] id. " + p_id);
 
 
         //const increment = firebase.firestore.FieldValue.increment(1);
-
-        const ref = collection(db, 'all_products');
+        //UPDATE: https://saveyourtime.medium.com/firebase-cloud-firestore-add-set-update-delete-get-data-6da566513b1b
+        const ref = collection(db, 'all_products', p_id); //how to add sepcific id
+        let aaaaaaaaa;
 
         const obj_ref = {
           p_code: this.$refs.p_code.value,
@@ -101,19 +105,25 @@ export default{
           p_quantity: 0,
           p_insert_date: serverTimestamp(),
           p_edit_date: serverTimestamp(),
+          pid: p_id,
         }
+        //const doc_ref = await   .child(docRef.id)
+        addDoc(ref, obj_ref)
+        .then(docRef => {
+            console.log("[ProductAdd-createProduct] Document has been added successfully" + docRef.id); 
+            aaaaaaaaa = docRef.id.toString();
+            console.log("[ProductAdd-createProduct] product id?1   "  + docRef.id.toString() + " " + aaaaaaaaa);
 
-        const doc_ref = await addDoc(ref, obj_ref);
-        console.log("[ProductAdd] not end. ")
-        /*
-        const exp_ref = db_id.collection("all_products").doc()
-        return db_id.runTransaction(t => {
-          return t.get(exp_ref).then(doc => {
-            const newCount = doc.data().p_quantity +1
-            t.update(exp_ref, {p_quantity: newCount})
-          })
+
+
         })
-        */
+        console.log("[ProductAdd-createProduct] product id?2   "  + aaaaaaaaa);
+
+        
+        
+        
+        console.log("[ProductAdd-createProduct] not end. ")
+
     },
     
     NumbersOnly(e){

@@ -1,3 +1,4 @@
+
 <template>
 
     <div class="QuoteAdd">
@@ -9,55 +10,150 @@
 
         <button href="@/assets/files/quote_instruction.pdf" download>Downlaod Instruction</button>
         
-        <label>BILL TO</label>
-        <button type="button" data-bs-toggle="modal" data-bs-target="#choose_bill_to" v-on:click="this.getAllClient();" >Choose Address </button>
-        <div class="modal fade" id="choose_bill_to" tabindex="-1" aria-labelledby="" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
+        <div class="grid grid-cols-3 gap-1">
+            <div> <p class="text-2xl underline">Bill To + Ship To</p> 
+            <!---------------------BILL-SHIP-TO-------------------------------------->
+            <label>BILL TO</label>
 
-                <div class="modal-content">
+                <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button" data-bs-toggle="modal" data-bs-target="#choose_bill_to" v-on:click="this.getAllClient();" >Choose Address </button>
+                <div class="modal fade" id="choose_bill_to" tabindex="-1" aria-labelledby="" aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                        <!-------------------modal//BillTo------------------------->
+                        <div class="modal-content text-black">
 
-                    <div class="modal-header">
-                        <h4 class="modal-title"> Add Bill-To </h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close" v-on:click="showBillToModal=false">X</button>
-                    </div>
-                    <div class="modal-body">
+                            <div class="modal-header">
+                                <h4 class="modal-title"> Add Bill-To </h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close" v-on:click="showBillToModal=false">X</button>
+                            </div>
+                            <div class="modal-body">
 
-                        <div class="px-5 mx-5 grid grid-cols-3 gap-2 text-white ">
-                            <div class="" v-for="c, i in all_clients" >       
-                            <div class="client_card row" @click="ChooseBillTo($event,c, i)">
-                                <div>
-                                <strong>{{ c.c_fullname }}</strong>
+                                <div class="px-5 mx-5 grid grid-cols-3 gap-2  ">
+                                    <div class="" v-for="c, i in all_clients" >       
+                                    <div class="client_card row" @click="ChooseBillTo($event,c, i)">
+                                        <div>
+                                        <strong>{{ c.c_fullname }}</strong>
+                                        </div>
+                                        <div>
+                                        <strong>{{ c.c_address_1 }}</strong>
+                                        </div>
+                                        <div>
+                                        <strong>{{ c.c_address_2 }}</strong>
+                                        </div>
+                                        <div>
+                                        <p>{{ c.c_city }}, {{ c.c_post_code }} </p>
+                                        </div>
+
+                                    </div>
+
+                                    
+
+
+                                    </div>
                                 </div>
-                                <div>
-                                <strong>{{ c.c_address_1 }}</strong>
-                                </div>
-                                <div>
-                                <strong>{{ c.c_address_2 }}</strong>
-                                </div>
-                                <div>
-                                <p>{{ c.c_city }}, {{ c.c_post_code }} </p>
-                                </div>
+
 
                             </div>
-
-                            
-
-
+                            <div class="modal-footer">
+                                <button type="submit"  class="btn btn-success" v-on:click="submitManufacturer()" >Submit Manufacturer </button>
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                             </div>
                         </div>
-
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit"  class="btn btn-success" v-on:click="submitManufacturer()" >Submit Manufacturer </button>
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
+
+                <label>SHIP TO</label>
+                <button class="choose_address_btn border btn btn-secondary btn-square-lg"  type="button " data-bs-toggle="modal" data-bs-target="#choose_ship_to" >Choose Client </button>
+                <div class="modal fade" id="choose_ship_to" tabindex="-1" aria-labelledby="" aria-hidden="true">
+                    
+                    <div class="modal-dialog modal-xl">
+                        <!-------------------modal//ShipTo------------------------->
+                        <div class="modal-content text-black">
+
+                            <div class="modal-header">
+                                <h4 class="modal-title"> Add Bill-To </h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close" v-on:click="showBillToModal=false"> X </button>
+                            </div>
+
+                            <div class="modal-body">
+
+                                <div class="px-5 mx-5 grid grid-cols-3 gap-2  ">
+                                    <div class="" v-for="c, i in all_clients" >       
+                                    <div class="client_card row" @click="ChooseBillTo($event,c, i)">
+                                        <div>
+                                        <strong>{{ c.c_fullname }}</strong>
+                                        </div>
+                                        <div>
+                                        <strong>{{ c.c_address_1 }}</strong>
+                                        </div>
+                                        <div>
+                                        <strong>{{ c.c_address_2 }}</strong>
+                                        </div>
+                                        <div>
+                                        <p>{{ c.c_city }}, {{ c.c_post_code }} </p>
+                                        </div>
+
+                                    </div>
+
+                                    
+
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit"  class="btn btn-success" v-on:click="submitManufacturer()" >Submit Manufacturer </button>
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!---------------------[END] BILL-SHIP-TO-------------------------------------->
+            </div>
+            
+            <!--2/3-->
+            <div> <p class="text-2xl underline">Add Products of Goods (1/10)</p> 
+            
+                <input ref="p_code" placeholder="Product Code" id="pi_code" disabled/>
+                <input ref="p_enter" placeholder="Item Name" id="pi_name" @input="suggesting()" v-model="suggestions_product_name" required/>
+                <!--only shown if typing-->
+                <!--v-for="(s, i) in suggestions" v-bind:ley="i"-->
+                <!--v-on:click.prevent="autocomplete_p(i)"> {{ s.suggestions_product_name }}-->
+                <datalist>
+                    <option>AAAA</option> 
+                    <option>BBBB</option>
+
+                </datalist>
+                 <!--only shown if typing-->
+                <input ref="p_category" placeholder="Product Category" id="pi_catrgory" disabled/>
+                <input ref="p_cost" placeholder="Product Cost (digit only)" id="pi_cost"  disabled />
+                <input ref="p_margin" placeholder="Product Margin (digit only)" id="pi_margin" disabled />
+                <input ref="p_sell" placeholder="Product Sell" id="pi_sell"  disabled/>
+            
+            </div>
+
+            <div> <p class="text-2xl underline">Final Calculation</p> 
+
+                <input ref="q_subtotal" placeholder="Subtotal" id="q_subtotal"  disabled/>
+
+                <input ref="q_vat" placeholder="Vat" id="q_vat"  />
+
+                <input ref="q_shipping" placeholder="Shipping" id="q_shipping"  />
+
+                <input ref="q_total" placeholder="Total" id="q_total"  disabled/>
+            
+            </div>
+
+
+            <div> 
+                <button class="preview_btn" @click.prevent="writePDF"> Preview </button>
             </div>
         </div>
 
-        <label>SHIP TO</label>
-        <button type="button" data-bs-toggle="modal" data-bs-target="#choose_ship_to" >Choose Client </button>
+
+
+        
 
 
         
@@ -77,6 +173,7 @@ export default{
       
         return{
           all_clients: [],
+
           client:{
             c_fullname: null,
             c_address_1: null,
@@ -87,36 +184,81 @@ export default{
             c_cid: null,
           },
 
+          suggestions_product: [],
+          suggestions_flag: false,
+          suggestions_product_name: '',
+
+
         }
     },
     methods:{
         
 
         async getAllClient() { 
-            console.log("[QuoteAdd] print-1" );
-        var all_client_ref = await firebase.firestore().collection("all_clients");
-        all_client_ref.onSnapshot(snap => {
-            this.all_clients = [];
-            
-            snap.forEach(d => {
-                console.log("[QuoteAdd] print" );
+            console.log("[QuoteAdd-getAllClient] print-1" );
+            var all_client_ref = await firebase.firestore().collection("all_clients");
+            all_client_ref.onSnapshot(snap => {
+                this.all_clients = [];
+                
+                snap.forEach(d => {
+                    console.log("[QuoteAdd-getAllClient] print" );
 
-                var client = d.data();
-                this.all_clients.push(client);
+                    var client = d.data();
+                    this.all_clients.push(client);
+                });
             });
-        });
-        
-        
         },
         ChooseBillTo(ev, c, i){
-            console.log("comming soon, click client and retrieve text." + ev + "  "  + i);
-            console.log("you have chosen" + c.c_fullname);
+            console.log("[QuoteAdd-ChooseBillTo] comming soon, click client and retrieve text." + ev + "  "  + i);
+            console.log("[QuoteAdd-ChooseBillTo] you have chosen" + c.c_fullname);
             
         },
-      created() {
+        writePDF(){
+            console.log("[QuoteAdd-writePDF] write pdf");
+        },
+
+        show_typing_product_suggestions(){
+
+            this.show_product_suggestions = true;
+
+        },
         
-      },
-    }
+        async getAllProducts() { 
+
+            var all_product_ref = await firebase.firestore().collection("all_products");
+
+            all_product_ref.onSnapshot((snapshot) => {
+                this.suggestions_product = [];
+
+                snapshot.forEach(d => {
+
+                    console.log("[QuoteAdd ]" + d.id);
+                    const suggestions_product_name = {
+
+                        p_fullname: d.data().p_fullname,
+                    }
+                    this.suggestions_product.push(suggestions_product_name);
+
+                })
+            })
+            
+
+        },
+        suggestionSelected(i) {
+
+            this.suggestions_product_name = this.suggestions_product[i].suggestions_product_name;
+        },
+        
+        suggesting(){
+            console.log("[QuoteAdd]-suggesting  turn on suggestions_flag");
+            this.suggestions_flag = true;
+        }
+    },
+    created() {
+
+        this.getAllProducts();
+            
+    },
 }
 
 </script>
@@ -125,6 +267,11 @@ export default{
 
 .client_card:hover{
     background-color: #323829;
+}
+
+.choose_address_btn{
+    width: 250px;
+    height: 250px;
 }
 
 </style>
