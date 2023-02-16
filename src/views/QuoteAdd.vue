@@ -116,15 +116,13 @@
             <div> <p class="text-2xl underline">Add Products of Goods (1/10)</p> 
             
                 <input ref="p_code" placeholder="Product Code" id="pi_code" disabled/>
-                <input ref="p_enter" placeholder="Item Name" id="pi_name" @input="suggesting()" v-model="suggestions_product_name" required/>
-                <!--only shown if typing-->
-                <!--v-for="(s, i) in suggestions" v-bind:ley="i"-->
-                <!--v-on:click.prevent="autocomplete_p(i)"> {{ s.suggestions_product_name }}-->
-                <datalist>
-                    <option>AAAA</option> 
-                    <option>BBBB</option>
+                <input list="s_product" ref="p_enter" v-model="s_product_name" placeholder="Item Name" id="pi_name" @input="suggesting()"  required/>
 
+
+                <datalist id="s_product">
+                    <option v-for="(s, i) in s_product">{{s.p_fullname}}</option> 
                 </datalist>
+
                  <!--only shown if typing-->
                 <input ref="p_category" placeholder="Product Category" id="pi_catrgory" disabled/>
                 <input ref="p_cost" placeholder="Product Cost (digit only)" id="pi_cost"  disabled />
@@ -147,7 +145,7 @@
 
 
             <div> 
-                <button class="preview_btn" @click.prevent="writePDF"> Preview </button>
+                <button class="preview_btn" @click.prevent="writePDF" download> Preview </button>
             </div>
         </div>
 
@@ -166,6 +164,7 @@
 <script>
 import jsPDF from 'jspdf'
 import "jspdf/dist/polyfills.es.js";
+import {PDFDocument, StandardFonts, rgb} from 'pdf-lib'
 export default{
     name: 'QuoteAdd',
     setup() {},
@@ -184,9 +183,10 @@ export default{
             c_cid: null,
           },
 
-          suggestions_product: [],
-          suggestions_flag: false,
-          suggestions_product_name: '',
+          s_product: [],
+          s_product_name: '',
+          s_flag: false,
+          
 
 
         }
@@ -213,8 +213,24 @@ export default{
             console.log("[QuoteAdd-ChooseBillTo] you have chosen" + c.c_fullname);
             
         },
-        writePDF(){
-            console.log("[QuoteAdd-writePDF] write pdf");
+        async writePDF(){
+            console.log("[QuoteAdd-writePDF] write pdf.");
+
+            const pdfDoc = await PDFDocument.create();
+            const page = pdfDoc.addPage()
+            const { width, height } = page.getSize()
+            const fontSize = 30
+            page.drawText('Creating PDFs in JavaScript is awesome!', {
+                x: 50,
+                y: height - 4 * fontSize,
+                size: fontSize,
+
+                color: rgb(0, 0.53, 0.71),
+            })
+
+            const pdfBytes =  await pdfDoc.save();
+            console.log("[QuoteAdd-writePDF] write pdf." + pdfBytes);
+
         },
 
         show_typing_product_suggestions(){
@@ -228,16 +244,13 @@ export default{
             var all_product_ref = await firebase.firestore().collection("all_products");
 
             all_product_ref.onSnapshot((snapshot) => {
-                this.suggestions_product = [];
+                this.s_product = [];
 
                 snapshot.forEach(d => {
 
-                    console.log("[QuoteAdd ]" + d.id);
-                    const suggestions_product_name = {
+                    var s_product_name =d.data();
 
-                        p_fullname: d.data().p_fullname,
-                    }
-                    this.suggestions_product.push(suggestions_product_name);
+                    this.s_product.push(s_product_name);
 
                 })
             })
@@ -246,12 +259,12 @@ export default{
         },
         suggestionSelected(i) {
 
-            this.suggestions_product_name = this.suggestions_product[i].suggestions_product_name;
+            this.s_product_name = this.s_product[i].s_product_name;
         },
         
         suggesting(){
-            console.log("[QuoteAdd]-suggesting  turn on suggestions_flag");
-            this.suggestions_flag = true;
+            console.log("[QuoteAdd]-suggesting  turn on s_flag");
+            this.s_flag = true;
         }
     },
     created() {

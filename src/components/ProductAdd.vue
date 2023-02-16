@@ -111,7 +111,6 @@ export default{
         addDoc(ref, obj_ref)
         .then(docRef => {
             console.log("[ProductAdd-createProduct] Document has been added successfully" + docRef.id); 
-            aaaaaaaaa = docRef.id.toString();
             console.log("[ProductAdd-createProduct] product id?1   "  + docRef.id.toString() + " " + aaaaaaaaa);
 
 

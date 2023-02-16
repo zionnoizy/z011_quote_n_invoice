@@ -15,6 +15,7 @@ const CategoyAddAll = () => import('@/views/CategoyAddAll.vue');
 
 const QuoteAdd = () => import('@/views/QuoteAdd.vue');
 
+const Test = () => import('@/views/Test.vue');
 const Empty = () => import('@/views/Empty.vue');
 
 
@@ -43,7 +44,7 @@ const router = createRouter({
       {path: '/dashboard/add_quote', name: 'QuoteAdd', component: QuoteAdd},
     //   {path: '/dashboard/add_client',name: 'ClientAdd',component: ClientAdd},
     //   {path: 'invoice/:id', name: 'InvoiceDetail', component: InvoiceDetail},
-    //   {path: "/empty", name: "Empty", component: Empty},
+      {path: "/test", name: "Test", component: Test},
     //   {path: '', component: LoggedInLayout,children: [{path: '/login',name: 'Login',component: Login},{title: 'Dashboard',path: '/',name: 'dashboard',component: Dashboard, auth: true},]}
   ]
 
