@@ -29,8 +29,12 @@
     
         </div>
         
+        <div v-if="user">
+            You're logged in as {{user.displayName}}
+        </div>
+
         <router-view></router-view>
-        <!-- <button @click="signOut">Logout</button> -->
+        <button @click="sign_out">Logout</button>
     </div>
 </template>
 
@@ -39,6 +43,9 @@ import { ref } from 'vue';
 import {onBeforeMount } from 'vue'
 import router from '../plugins/router';
 
+import { auth } from "@/firebase.js";
+import { signOut } from 'firebase/auth'
+
 /*
 const auth = getAuth();
 onAuthStateChanged(auth, user => {
@@ -46,13 +53,13 @@ onAuthStateChanged(auth, user => {
 */
 const name = ref("");
 onBeforeMount(() => {
-    /*
+    
     const user = firebase.auth().currentUser;
-    console.log("[DashboardDebug] " + user);
+    console.log("[Dashboard-onBeforeMount] " + user);
     if (user){
         this_usr_name.value = user.email.split(['@'])[0];
     }
-    */
+   
 });
 
     
@@ -65,8 +72,9 @@ onBeforeMount(() => {
     */
          
 
-const signOut = () =>{
-    firebase.auth().signOut()
+const sign_out = () =>{
+    signOut(auth)
+    commit('CLEAR_USER')
     router.push('/')
 }
 

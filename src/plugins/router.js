@@ -1,5 +1,6 @@
 
 import {createRouter, createWebHistory} from 'vue-router'
+import { auth } from "@/firebase.js";
 const Login = () => import('@/views/Login.vue');
 const Register = () => import('@/views/Register.vue');
 const Dashboard = () => import('@/views/Dashboard.vue');
@@ -15,7 +16,7 @@ const CategoyAddAll = () => import('@/views/CategoyAddAll.vue');
 
 const QuoteAdd = () => import('@/views/QuoteAdd.vue');
 
-const Test = () => import('@/views/Test.vue');
+const QuickerQuoteIn = () => import('@/views/QuickerQuoteIn.vue');
 const Empty = () => import('@/views/Empty.vue');
 
 
@@ -30,7 +31,7 @@ const router = createRouter({
         name: "Dashboard",
         component: Dashboard,
         auth: true,
-        alians: "/home",
+        meta: { requiredAuth: true},
         children: [ {path: 'quoteinvoice',name: 'QIAll',component: QIAll},
                     {path: 'quote',name: 'QuoteAll',component: QuoteAll},
                     {path: 'invoice',name: 'InvoiceAll',component: InvoiceAll}
@@ -44,10 +45,37 @@ const router = createRouter({
       {path: '/dashboard/add_quote', name: 'QuoteAdd', component: QuoteAdd},
     //   {path: '/dashboard/add_client',name: 'ClientAdd',component: ClientAdd},
     //   {path: 'invoice/:id', name: 'InvoiceDetail', component: InvoiceDetail},
-      {path: "/test", name: "Test", component: Test},
+      {path: "/quicker-quote-in", name: "QuickerQuoteIn", component: QuickerQuoteIn},
     //   {path: '', component: LoggedInLayout,children: [{path: '/login',name: 'Login',component: Login},{title: 'Dashboard',path: '/',name: 'dashboard',component: Dashboard, auth: true},]}
   ]
 
+})
+
+router.beforeEach(( to, from, next) => {
+    const curr_usr = firebase.auth().currentUser;
+    const requires_auth = to.matched.some(record => record.meta.requires_auth);
+
+
+    console.log("[router.js]   " + requires_auth + "    " + curr_usr);
+
+   
+
+    
+    if (requires_auth && !curr_usr){
+        const loginpath = window.location.pathname;
+        console.log("[router.js]   false cur_usr" );
+        next("/")
+    }
+    else if(requires_auth && curr_usr){
+        console.log("[router.js] true cur_usr" );
+        next()
+    }
+    else{
+        next()
+    }
+
+
+    
 })
         /*
         {

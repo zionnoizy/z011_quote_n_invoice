@@ -1,11 +1,12 @@
 <template>
 <p>test11</p>
 
-<p>Welcome to CMS Quote-N-Invoice. You are Currnetly in the Page: </p> <router-view/>
+<p>Welcome to CMS Quote-N-Invoice.</p> 
+<router-view></router-view>
 
 <router-link to="/" exact><a>Login</a></router-link> | 
 <router-link :to="{name: 'Register'}">Register</router-link> |
-<p>©Companies Management Systems Ltd.</p>
+<p>©2023 Companies Management Systems Ltd.</p>
 
 </template>
 
