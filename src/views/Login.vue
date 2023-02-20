@@ -1,9 +1,9 @@
 <template>
-    <div class="login">
+    <div class="login  py-12 sm:px-6 lg:px-8">
 
-        <p>test15</p>
+        <img alt="Vue logo" class="logo justify-center mx-auto" src="../assets/cms_logo_small.png" />
         
-        <h1>Login Quote N Invoice Account </h1>
+        <h1>Login QuoteiN Account </h1>
 
 
         <p class="pb-3"><input class="form-control" type="text" placeholder="Email" style=" color: #2c3e50 !important;" v-model="email" /></p>
@@ -34,6 +34,7 @@ const router = useRouter();
 const login = () => {
     signInWithEmailAndPassword(auth, email.value, password.value)
     .then((data) =>{
+        //context.commit('SET_USER', response.user);
         console.log('Successfully Login!');
         router.push('/dashboard');
     })

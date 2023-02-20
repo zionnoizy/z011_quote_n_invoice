@@ -1,7 +1,7 @@
 <template>
     <div class="dashboard">
         <p> test19 </p>
-
+        <div class="card-header">Welcome, {{my_email}}</div>
         <div class="container">
             <div class="row">
                 <div class="col-8">
@@ -38,38 +38,53 @@
     </div>
 </template>
 
-<script setup>
+<script>
 import { ref } from 'vue';
 import {onBeforeMount } from 'vue'
 import router from '../plugins/router';
 
 import { auth } from "@/firebase.js";
 import { signOut } from 'firebase/auth'
-
-/*
-const auth = getAuth();
-onAuthStateChanged(auth, user => {
-});
-*/
+import {computed} from "vue";
 const name = ref("");
-onBeforeMount(() => {
-    
-    const user = firebase.auth().currentUser;
-    console.log("[Dashboard-onBeforeMount] " + user);
-    if (user){
-        this_usr_name.value = user.email.split(['@'])[0];
-    }
-   
-});
 
-    
-    /*
-    mounted(){
-        let usr = localStorage.getItem('user-info');
-        if (!usr){
-            this.$router.push({name:'Register'})
+export default{
+    name:"Dashboard",
+    setup(){
+
+
+        firebase.auth().onAuthStateChanged(function(user) {
+            console.log(user);
+            if (user) {
+                // User is signed in.
+                var displayName = user.displayName;
+                var email = user.email;
+                my_email.value = email;
+                var emailVerified = user.emailVerified;
+                var photoURL = user.photoURL;
+                var isAnonymous = user.isAnonymous;
+                var uid = user.uid;
+                var providerData = user.providerData;
+                // ...
+            } else {
+                // User is signed out.
+                // ...
+            }
+        });
     },
-    */
+    beforeMount() {
+    
+        const user = firebase.auth().currentUser;
+        console.log("[Dashboard-onBeforeMount] " + user);
+        if (user){
+            this_usr_name.value = user.email.split(['@'])[0];
+        }
+   
+    },
+};
+
+
+
          
 
 const sign_out = () =>{
@@ -77,6 +92,7 @@ const sign_out = () =>{
     commit('CLEAR_USER')
     router.push('/')
 }
+
 
 
 </script>
