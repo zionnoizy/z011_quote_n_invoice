@@ -1,7 +1,7 @@
 <template>
     <div class="dashboard">
         <p> test19 </p>
-        <div class="card-header">Welcome, {{my_email}}</div>
+        <div class="card-header">Welcome, {{ my_email }} </div>
         <div class="container">
             <div class="row">
                 <div class="col-8">
@@ -50,16 +50,25 @@ const name = ref("");
 
 export default{
     name:"Dashboard",
+    data(){
+        return{
+            my_email: null,
+        }
+    },
     setup(){
 
 
         firebase.auth().onAuthStateChanged(function(user) {
-            console.log(user);
+            
             if (user) {
                 // User is signed in.
+                console.log("[Dashboard] signin");
                 var displayName = user.displayName;
+                
                 var email = user.email;
                 my_email.value = email;
+                var email_split = email.split(['@'])[0];
+                
                 var emailVerified = user.emailVerified;
                 var photoURL = user.photoURL;
                 var isAnonymous = user.isAnonymous;
@@ -72,6 +81,7 @@ export default{
             }
         });
     },
+   
     beforeMount() {
     
         const user = firebase.auth().currentUser;

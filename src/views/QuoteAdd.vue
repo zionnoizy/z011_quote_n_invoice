@@ -10,7 +10,7 @@
 
         <button href="@/assets/files/quote_instruction.pdf" download>Downlaod Instruction</button>
         
-        <div class="grid grid-cols-3 gap-1">
+        <div class="grid grid-cols-1 gap-1">
             <div> <p class="text-2xl underline">Bill To + Ship To</p> 
             <!---------------------BILL-SHIP-TO-------------------------------------->
             <label>BILL TO</label>
