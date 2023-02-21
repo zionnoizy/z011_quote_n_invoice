@@ -7,7 +7,12 @@
       <form @sumbit.prevent="addProduct">
   
         <button class="" @click="createProduct" > New Product[+] </button>
-        
+
+        <input ref="p_code" placeholder="Search By Name" id="pi_code" disabled/>
+
+        <button type="button" class="btn btn-lg btn-primary" disabled>Deep Serach</button>
+        <button type="button" class="btn btn-lg btn-secondary " disabled>Data Add Propioty</button>
+        <button type="button" class="btn btn-lg btn-secondary " disabled>Alphabet</button>
         <table class="table table-dark" >
 
 

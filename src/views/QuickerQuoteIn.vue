@@ -92,7 +92,7 @@
 
 
     <button class="btn btn-primary btn-lg mb-3" @click="writePDF2_Q">DOWNLOAD QUOTATION </button>
-
+    <button class="btn btn-warning btn-lg mb-3" @click="writePDF2_I">DOWNLOAD INVOICE </button>    
 </template>
 
 
@@ -109,29 +109,24 @@ export default{
     name: 'empty',
     methods:{
         async writePDF2_Q(){
-
             //bill_in
             let input0 = document.getElementsByTagName("input")[0].value;
             let input1 = document.getElementsByTagName("input")[1].value;
             let input2 = document.getElementsByTagName("input")[2].value;
             let input3 = document.getElementsByTagName("input")[3].value;
             let input4 = document.getElementsByTagName("input")[4].value;
-
             //ship_to
             let input5 = document.getElementsByTagName("input")[5].value;
             let input6 = document.getElementsByTagName("input")[6].value;
             let input7 = document.getElementsByTagName("input")[7].value;
             let input8 = document.getElementsByTagName("input")[8].value;
             let input9 = document.getElementsByTagName("input")[9].value;
-
             //ship_to
             let input10 = document.getElementsByTagName("input")[10].value;
             let input11 = document.getElementsByTagName("input")[11].value;
             let input12 = document.getElementsByTagName("input")[12].value;
-
             //PO
-            let input13 = document.getElementsByTagName("input")[13].value;
-
+            //let input13 = document.getElementsByTagName("input")[13].value;
             //ship_to
             let input14 = document.getElementsByTagName("input")[14].value;
             let input15 = document.getElementsByTagName("input")[15].value;
@@ -171,7 +166,7 @@ export default{
             
             //14_PO.
             doc.setFontSize(14);
-            doc.text(input13, 151, 117);
+            doc.text("N/A", 151, 117);
 
             //15_Product Description *6
             doc.setFontSize(8);
@@ -186,6 +181,37 @@ export default{
 
             //
             doc.save("a4.pdf");
+        },
+        async writePDF2_I(){
+            //bill_in
+            let input0 = document.getElementsByTagName("input")[0].value;
+            let input1 = document.getElementsByTagName("input")[1].value;
+            let input2 = document.getElementsByTagName("input")[2].value;
+            let input3 = document.getElementsByTagName("input")[3].value;
+            let input4 = document.getElementsByTagName("input")[4].value;
+            //ship_to
+            let input5 = document.getElementsByTagName("input")[5].value;
+            let input6 = document.getElementsByTagName("input")[6].value;
+            let input7 = document.getElementsByTagName("input")[7].value;
+            let input8 = document.getElementsByTagName("input")[8].value;
+            let input9 = document.getElementsByTagName("input")[9].value;
+            //ship_to
+            let input10 = document.getElementsByTagName("input")[10].value;
+            let input11 = document.getElementsByTagName("input")[11].value;
+            let input12 = document.getElementsByTagName("input")[12].value;
+            //PO[*]
+            let input13 = document.getElementsByTagName("input")[13].value;
+            //ship_to
+            let input14 = document.getElementsByTagName("input")[14].value;
+            let input15 = document.getElementsByTagName("input")[15].value;
+            let input16 = document.getElementsByTagName("input")[16].value;
+            let input17 = document.getElementsByTagName("input")[17].value;
+            let input18 = document.getElementsByTagName("input")[18].value;
+            let input19 = document.getElementsByTagName("input")[19].value;
+            const doc = new jsPDF();  
+            doc.addImage(cms_empty_quotein, "JPEG",0,0,210,297);
+            doc.save("quicker_invoice.pdf");
+
         },
     }
 }
