@@ -16,6 +16,8 @@
 
         <p>Need an account? <router-link :to="{name: 'Register'}">Register Here</router-link></p>
         <p>(DEBUG ONLY test003@cms.com	hwong2881)</p>
+
+        <img alt="" class="position-absolute bottom-0 end-0" src="../assets/contact-form-bg.png" style="z-index:-999; ;;" />
     </div>
 </template>
 

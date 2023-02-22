@@ -1,5 +1,5 @@
 <template>
-    <div class="QuoteDetails">
+    <div class="OneQuote">
 
         <p> coming soon - view specific quote.</p>
         <p> The quote id is {{ $route.params.id }}</p>
@@ -11,7 +11,7 @@
 <script>
 
 export default{
-    name: "QuoteDetails",
+    name: "OneQuote",
     data(){
         return{
             id: this.$route.params.id

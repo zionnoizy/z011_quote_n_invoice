@@ -8,6 +8,8 @@
 <router-link :to="{name: 'Register'}">Register</router-link> |
 <p>©2023 Companies Management Systems Ltd.</p>
 
+
+
 </template>
 
 <script>
@@ -79,5 +81,11 @@ width: 275px;
 height: 175px;
 }
 /* */
+tr:hover {
+    background-color: #1d9a6a;
+}
 
+tr:hover td {
+    background-color: transparent; /* or #000 */
+}
 </style>

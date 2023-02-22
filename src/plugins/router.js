@@ -6,7 +6,7 @@ const Register = () => import('@/views/Register.vue');
 const Dashboard = () => import('@/views/Dashboard.vue');
 
 const QuoteAll = () => import('@/views/QuoteAll.vue');
-const QuoteDetails = () => import('@/views/QuoteDetails.vue');
+const OneQuote = () => import('@/views/OneQuote.vue');
 const InvoiceAll = () => import('@/views/InvoiceAll.vue');
 const QIAll = () => import('@/views/QIAll.vue');
 
@@ -37,7 +37,7 @@ const router = createRouter({
                     {path: 'invoice',name: 'InvoiceAll',component: InvoiceAll}
                   ]
       },
-      {path: '/dashboard/quote/:id', name: 'QuoteDetails', component: QuoteDetails, props: true},
+      {path: '/dashboard/quote/:id', name: 'OneQuote', component: OneQuote, props: true},
       {path: '/dashboard/all_client', name: 'ClientAll',component: ClientAll},
       {path: '/dashboard/all_product', name: 'ProductAll',component: ProductAll},
       {path: '/dashboard/all_category', name: 'CategoryAll',component: CategoyAddAll},

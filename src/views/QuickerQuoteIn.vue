@@ -138,7 +138,7 @@ export default{
             //https://www.youtube.com/watch?v=GHTrsUtmQTo&ab_channel=RedStapler
             console.log("[QuickerQuoteIn-writePDF2 ]" + "   " + input5);
             const doc = new jsPDF();  
-            doc.addImage(cms_empty_quotein, "JPEG",0,0,210,297);
+            doc.addImage(cms_empty_quote, "JPEG",0,0,210,297);
             
             //1_set one addresses font
             doc.setFontSize(8);
