@@ -1,7 +1,33 @@
 <template>
+
+
+
+
     <div class="dashboard">
+
+        <section class="warehouse_background" :style="{ backgroundImage: `url(${ warehouse })` }">
+            <h2 class="info_head text-4xl font-sans-b mb-16 text-left max-w-lg uppercase lg:ml-16 mt-12 text-white" >
+                Welcome Back To CMS-QuoteIn
+            </h2>
+
+            <div class="col-4 grid grid-cols-1 lg:grid-col-2 gap-2" style="z-index: 2;">
+                    <div> <button class="btn  btn-lg mt-5 mb-4 font-weight-bold" 
+                        style="background-color: #a1ccfe !important; border: none; height: 55px;"> 
+                        <router-link :to="{name: 'ClientAll' }"> View / Add Client </router-link> </button> 
+                    </div>
+                    <div> <button class="btn btn-success btn-lg mb-4 font-weight-bold"
+                        > 
+                        <router-link :to="{name: 'ProductAll' }"> View / Add Product </router-link></button> 
+                    </div>
+            </div>
+
+        </section>
+
+
+
+        
         <p> test19 </p>
-        <div class="card-header">Welcome, {{ my_email }} </div>
+
         <div class="container">
             <div class="row">
                 <div class="col-8">
@@ -9,10 +35,7 @@
                     <button class="btn btn-primary btn-lg mb-3"> <router-link :to="{name: 'QuoteAdd' }"> Add New Quote </router-link> </button>
                 </div>
 
-                <div class="col-4">
-                    <button class="btn btn-primary btn-lg mb-3"> <router-link :to="{name: 'ClientAll' }"> View / Add Client </router-link> </button>
-                    <button class="btn btn-success btn-lg mb-3"> <router-link :to="{name: 'ProductAll' }"> View / Add Product </router-link></button>
-                </div>
+                
             </div>
         </div>
 
@@ -23,17 +46,23 @@
         <div class="grid grid-cols-3 ">
         
             <div><router-link :to="{name: 'QIAll' }">All </router-link></div>
+
             <div><router-link :to="{name: 'QuoteAll' }">Quote</router-link></div>
+
             <div><router-link :to="{name: 'InvoiceAll' }">Invoice</router-link></div>
         
     
         </div>
         
+
+        <transition name="fade" mode="out-in">
+        <router-view class="anime_height"></router-view>
+        </transition>
+
+
         <div v-if="user">
             You're logged in as {{user.displayName}}
         </div>
-
-        <router-view></router-view>
         <button @click="sign_out">Logout</button>
     </div>
 </template>
@@ -48,11 +77,14 @@ import { signOut } from 'firebase/auth'
 import {computed} from "vue";
 const name = ref("");
 
+
+import warehouse from "@/assets/Warehouse_Nologo.png";
 export default{
     name:"Dashboard",
     data(){
         return{
             my_email: null,
+            warehouse: warehouse,
         }
     },
     setup(){
@@ -115,6 +147,25 @@ const sign_out = () =>{
 }
 .product_from{
     transition: translateX(700px);
+}
+
+</style>
+
+<style>
+.warehouse_background{
+    filter: brightness(70%) saturate(140%);
+
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: bottom;
+    background-size: cover;
+    display: flex;
+    z-index: -2;
+}
+
+
+.anime_height > div  {
+  transition: height 0.2s;
 }
 
 </style>

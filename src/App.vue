@@ -13,7 +13,7 @@
 </template>
 
 <script>
-
+import right_corner from '@/assets/cms_logo_small.png'
 
 export default {
   name: 'app' 

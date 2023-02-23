@@ -92,7 +92,9 @@
 
 
     <button class="btn btn-primary btn-lg mb-3" @click="writePDF2_Q">DOWNLOAD QUOTATION </button>
-    <button class="btn btn-warning btn-lg mb-3" @click="writePDF2_I">DOWNLOAD INVOICE </button>    
+    <button class="btn btn-warning btn-lg mb-3" @click="writePDF2_I">DOWNLOAD INVOICE </button> 
+    <button class="btn btn-warning btn-lg mb-3" @click="test_write">Debug Button </button>   
+    <button class="btn btn-warning btn-lg mb-3" @click="test_write2">Debug Button 2 </button>  
 </template>
 
 
@@ -102,7 +104,7 @@
 import { jsPDF } from "jspdf";
 import "jspdf/dist/polyfills.es.js"; //for old prowser
 import { PDFDocument } from 'pdf-lib';
-
+import autoTable from 'jspdf-autotable'
 
 
 export default{
@@ -213,6 +215,50 @@ export default{
             doc.save("quicker_invoice.pdf");
 
         },
+        async test_write(){
+            const doc = new jsPDF()
+
+            // It can parse html:
+            // <table id="my-table"><!-- ... --></table>
+            
+            doc.addImage(cms_empty_quote, "JPEG",0,0,210,297);
+            autoTable(doc, { html: '#my-table' });
+            autoTable(doc, {
+                startY: doc.autoTableEndPosY() + 105, //important
+                columnStyles: {
+    0: {cellWidth: 20},
+    1: {cellWidth: 80},
+    2: {cellWidth: 80},
+    // etc
+  },
+  tableWidth: 'auto',
+  margin: {top: 0, right: 2, bottom: 0, left: 2}, //important2
+            head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
+            body: [
+                ['David', 'david@example.com', 'Sweden'],
+                ['Castille', 'castille@example.com', 'Spain'],
+                ['Castille', 'castille@example.com', 'Spain'],
+                ['Castille', 'castille@example.com', 'Spain'],
+                ['Castille', 'castille@example.com', 'Spain'],
+                ['Castille', 'castille@example.com', 'Spain'],
+                ['Castille', 'castille@example.com', 'Spain'],
+                ['Castille', 'castille@example.com', 'Spain'],
+                ['Castille', 'castille@example.com', 'Spain'],
+                ['Castille', 'castille@example.com', 'Spain'],
+                // ...
+            ],
+            })
+            doc.text('SUB TOTAL', 42, doc.lastAutoTable.finalY + 20)
+            doc.text('100', 152, doc.lastAutoTable.finalY + 20)
+
+            doc.text('VAT', 42, doc.lastAutoTable.finalY + 25)
+            doc.text('50', 152, doc.lastAutoTable.finalY + 25)
+
+            doc.text('SHIPPING. HANDLING', 42, doc.lastAutoTable.finalY + 30)
+            doc.text('150', 152, doc.lastAutoTable.finalY + 30)
+            doc.save('table.pdf')
+
+        }
     }
 }
 

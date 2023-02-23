@@ -16,7 +16,14 @@ export default{
         return{
             id: this.$route.params.id
         }
-    }
+    },
+    methods:{
+
+        downloadOneQuote(){
+            // https://www.youtube.com/watch?v=CGrNNGrKCJU&ab_channel=AdnanAfzal    [(9:55)]
+        }, 
+
+    },
 
 }
 </script>

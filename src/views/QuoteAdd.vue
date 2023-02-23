@@ -139,7 +139,7 @@
             
                 <p>the product code/ category/ cost/ margin/ sell will not shown unless an input element lost its focus </p>
 
-                <input list="s_product" ref="p_enter"  v-model="s_product_name" placeholder="Item Name" id="p_enter" @input="suggesting()" @blur="ChooseProduct();" required/>
+                <input list="s_product" ref="p_enter"  v-model="s_product_name" placeholder="Item Name" id="p_enter" @input="suggesting()" @blur="EnterProduct();" required/>
 
 
                 <datalist id="s_product">
@@ -153,11 +153,11 @@
 
 
                  <!--only shown if typing-->
-                <input ref="p_code" placeholder="Product Code" @input="ChooseProduct" id="p_code"  disabled/>
-                <input ref="p_category" placeholder="Product Category" id="p_category" @input="ChooseProduct" disabled/>
-                <input ref="p_cost" placeholder="Product Cost (digit only)" id="p_cost" @input="ChooseProduct"  disabled />
-                <input ref="p_margin" placeholder="Product Margin (digit only)" id="p_margin" @input="ChooseProduct" disabled />
-                <input ref="p_sell" placeholder="Product Sell" id="p_sell1" @input="ChooseProduct(); CalculateTotal()" disabled/>
+                <input ref="p_code" placeholder="Product Code" @input="EnterProduct" id="p_code"  disabled/>
+                <input ref="p_category" placeholder="Product Category" id="p_category" @input="EnterProduct" disabled/>
+                <input ref="p_cost" placeholder="Product Cost (digit only)" id="p_cost" @input="EnterProduct"  disabled />
+                <input ref="p_margin" placeholder="Product Margin (digit only)" id="p_margin" @input="EnterProduct" disabled />
+                <input ref="p_sell" placeholder="Product Sell" id="p_sell1" @input="EnterProduct(); CalculateTotal()" disabled/>
             
             </div>
             <!--3/3-->
@@ -233,11 +233,15 @@ import { onMounted } from 'vue';
 
 import { getStorage, ref, uploadBytes, uploadBytesResumable, ref2 as firebaseStorageRef, getDownloadURL } from "firebase/storage";
 import { serverTimestamp } from 'firebase/firestore'
+import { save_2_storage, test2_storage } from '../firebase';
 
 
 export default{
     name: 'QuoteAdd',
     setup() {
+
+        
+
         const s_product2 = reactive([]);
         onMounted(async () => {
             
@@ -267,9 +271,6 @@ export default{
             //
             showBillToModal:false,
           all_clients1: [],
-            
-            
-
           all_clients2: [],
           hidden_bill_fullname: null,
           hidden_bill_address_1: null,
@@ -311,7 +312,7 @@ export default{
           p_sell: null,
           p_category: null,
 
-          
+          return_base64: null,
         }
     },
     methods:{
@@ -357,11 +358,11 @@ export default{
 
             
         },
-        async ChooseProduct(){
+        async EnterProduct(){
 
             const typed_product = document.getElementById('p_enter').value;
-            console.log("[><QuoteAdd-ChoosePRODUCT] ");
-            console.log("[><QuoteAdd-ChoosePRODUCT] typed_product" + typed_product);
+            console.log("[><QuoteAdd-EnterProduct] ");
+            console.log("[><QuoteAdd-EnterProduct] typed_product" + typed_product);
 
             var one_product_ref = await firebase.firestore().collection("all_products").where("p_fullname", "==", typed_product);
             one_product_ref
@@ -380,7 +381,7 @@ export default{
 
                     console.log(d.data().p_code);
 
-                    console.log("[><QuoteAdd-ChoosePRODUCT]loop=1 " + one_product);
+                    console.log("[><QuoteAdd-EnterProduct]loop=1 " + one_product);
 
                     this.o_products.push(one_product);
                 })
@@ -457,12 +458,20 @@ export default{
             clone.setAttribute('src',string);
             a.parentNode.replaceChild(clone,a);
 
+            var base64 = doc.output('datauri');
+            this.return_base64 = base64;
+
+
+
+
         },
         //https://medium.com/runthatline/uploading-files-to-firebase-cloud-storage-using-vue-3-and-the-composition-api-d8370d1c03f7
         uploadQuotePDF(e){
             //[1]generate PDF
-            
-            
+            console.log("[uploadQuotePDF] + ");
+            test2_storage("", this.return_base64); 
+
+            console.log("[uploadQuotePDF] ++ ");
             var e = document.createElement('embed');
             e.width="100%";
             e.height="100%";
@@ -481,7 +490,7 @@ export default{
             x.document.write(embed);
             x.document.close();
             */
-            doc.save("./tmp/a4.pdf");
+            //doc.save("./tmp/a4.pdf");
 
             //const file = e.target.files[0];
             const storage = getStorage();
@@ -501,8 +510,8 @@ export default{
             const path_string = "/all_quote/" + today_year + "/" + month_folder + "/"
             console.log(path_string);
             
-            //
-            const storageref = ref(storage, path_string + today_year);
+            // storage ref + upload task
+            const storageref = ref(storage, path_string);
             const uploadtask = uploadBytesResumable(storageref, DATA_HERE);
 
             uploadtask.on(
