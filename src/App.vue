@@ -1,7 +1,7 @@
 <template>
-<p>test11</p>
 
-<p>Welcome to CMS Quote-N-Invoice.</p> 
+
+<!--ACCOUNCEMENT CAN BE IN HERE <p>Welcome to CMS Quote-N-Invoice.</p>  -->
 <router-view></router-view>
 
 <router-link to="/" exact><a>Login</a></router-link> | 

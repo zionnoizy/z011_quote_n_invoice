@@ -1,18 +1,18 @@
 <template>
   <!--this page is components only-->
   <div class="ProductAdd">
-
-      <p>= The Sell Will Auto-Generate After Typing Cost & Margin Sessions. </p>
+      <p class="pb-2">= Purpose: User can ADD + UPDATE + DELETE products they created, all products will reflect on quote pages </p>
+      <p class="pb-20">= *The Sell Will Auto-Generate After Typing Cost & Margin Sessions. </p>
 
       <form @sumbit.prevent="addProduct">
   
-        <button class="" @click="createProduct" > New Product[+] </button>
+        <!-- <button class="" @click="createProduct" > New Product[+] </button> -->
 
-        <input ref="p_code" placeholder="Search By Name" id="pi_code" disabled/>
+        <!-- <input ref="p_code" placeholder="Search By Name" id="pi_code" disabled/> -->
 
-        <button type="button" class="btn btn-lg btn-primary" disabled>Deep Serach</button>
-        <button type="button" class="btn btn-lg btn-secondary " disabled>Data Add Propioty</button>
-        <button type="button" class="btn btn-lg btn-secondary " disabled>Alphabet</button>
+        <!-- <button type="button" class="btn btn-lg btn-primary" disabled>Deep Serach</button> -->
+        <!-- <button type="button" class="btn btn-lg btn-secondary " disabled>Data Add Propioty</button> -->
+        <!-- <button type="button" class="btn btn-lg btn-secondary " disabled>Alphabet</button> -->
         <table class="table table-dark" >
 
 
@@ -24,7 +24,7 @@
             <th scope="col">[Catagory]</th>
             <th scope="col">[&#163; Product Cost]</th>
             <th scope="col">[Product Margin &percnt;]</th>
-            <th scope="col">[= Product Sell]</th>
+            <th scope="col">[= *Product Sell]</th>
           </tr>
           </thead>
     <tbody>
@@ -80,6 +80,7 @@ export default{
   methods:{
     
     async createProduct(){
+
       validate_p_input();
       console.log("[ProductAdd-createProduct] create new Category.");
       
@@ -97,7 +98,7 @@ export default{
 
         //const increment = firebase.firestore.FieldValue.increment(1);
         //UPDATE: https://saveyourtime.medium.com/firebase-cloud-firestore-add-set-update-delete-get-data-6da566513b1b
-        const ref = collection(db, 'all_products', p_id); //how to add sepcific id
+        const ref = collection(db, 'all_products'); //how to add sepcific id
         let aaaaaaaaa;
 
         const obj_ref = {

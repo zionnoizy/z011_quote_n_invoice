@@ -10,7 +10,7 @@
 
         <button href="@/assets/files/quote_instruction.pdf" download>Downlaod Instruction</button>
         
-        <div class="grid grid-cols-1 gap-1">
+        <div class="grid grid-cols-1 gap-1 ">
             <!--1/3-------------------BILL-SHIP-TO-------------------------------------->
             <div> <p class="text-2xl underline">Bill To + Ship To</p> 
             
@@ -139,7 +139,7 @@
             
                 <p>the product code/ category/ cost/ margin/ sell will not shown unless an input element lost its focus </p>
 
-                <input list="s_product" ref="p_enter"  v-model="s_product_name" placeholder="Item Name" id="p_enter" @input="suggesting()" @blur="EnterProduct();" required/>
+                <input list="s_product" ref="p_enter"  v-model="s_product_name" placeholder="Item Name" id="p_enter" @input="suggesting()" @blur="EnterProduct();" @change="CumulativeTotal();" required/>
 
 
                 <datalist id="s_product">
@@ -157,7 +157,7 @@
                 <input ref="p_category" placeholder="Product Category" id="p_category" @input="EnterProduct" disabled/>
                 <input ref="p_cost" placeholder="Product Cost (digit only)" id="p_cost" @input="EnterProduct"  disabled />
                 <input ref="p_margin" placeholder="Product Margin (digit only)" id="p_margin" @input="EnterProduct" disabled />
-                <input ref="p_sell" placeholder="Product Sell" id="p_sell1" @input="EnterProduct(); CalculateTotal()" disabled/>
+                <input ref="p_sell" placeholder="Product Sell" id="p_sell1" @input="EnterProduct();" @change="CumulativeTotal();" disabled/>
             
             </div>
             <!--3/3-->
@@ -169,7 +169,7 @@
 
                 <input ref="q_shipping" placeholder="Shipping" id="q_shipping"  />
 
-                <input ref="q_total" placeholder="Total" id="q_total" @input="CalculateTotal" disabled/>
+                <input ref="q_total" placeholder="Total" id="q_total" @input="CumulativeTotal" disabled/>
             
             </div>
 
@@ -227,11 +227,12 @@
 import jsPDF from 'jspdf';
 import "jspdf/dist/polyfills.es.js";
 import {PDFDocument, StandardFonts, rgb} from 'pdf-lib';
-import { reactive, computed } from 'vue'
+import { reactive, computed, ref } from 'vue'
 
-import { onMounted } from 'vue';
+import { onMounted, nextTick  } from 'vue';
 
-import { getStorage, ref, uploadBytes, uploadBytesResumable, ref2 as firebaseStorageRef, getDownloadURL } from "firebase/storage";
+//ref
+import { getStorage,  uploadBytes, uploadBytesResumable, ref2 as firebaseStorageRef, getDownloadURL } from "firebase/storage";
 import { serverTimestamp } from 'firebase/firestore'
 import { save_2_storage, test2_storage } from '../firebase';
 
@@ -258,6 +259,8 @@ export default{
             console.log("Error Typing s_product2");
         }
         });
+        
+
         
         
         return {s_product2};
@@ -390,16 +393,17 @@ export default{
             
             
         },
-        CalculateTotal(){
+        async CumulativeTotal(){
 
         const pi_sell1 = document.getElementById('p_sell1').value;
-        const pi_sell2 = document.getElementById('p_sell2').value;    
-        const tmp_ans = +pi_sell1 +pi_sell2;
 
-        console.log("[CalculateTotal]" + pi_sell1 + " " + pi_sell2 + " " + tmp_ans);
+        //const pi_sell2 = document.getElementById('p_sell2').value;    
+        //const tmp_ans = +pi_sell1 +pi_sell2;
+
+        console.log("[CumulativeTotal] " + pi_sell1 );
 
 
-        document.getElementById('q_total').value = tmp_ans;
+        document.getElementById('q_total').value = pi_sell1;
 
         },
         
@@ -447,9 +451,20 @@ export default{
             this.s_flag = true;
         },
         previewBtn(){
+            console.log("[previewBtn] --" );
             const doc = new jsPDF();  //'l', 'mm', 'a4'
             doc.addImage(cms_empty_quote, "JPEG",0,0,210,297);
+            //add all48 text
+            const oo_b_fullname = document.getElementById('tmp_b_fullname').innerHTML;
+            const oo_b_a1 = document.getElementById('tmp_b_address1').innerHTML;
+            const oo_b_a2 = document.getElementById('tmp_b_address2').innerHTML;
+            const oo_b_city = document.getElementById('tmp_b_city').innerHTML;
+            console.log("[previewBtn] -------" + oo_b_fullname);
+            doc.setFontSize(10);
+            doc.text(oo_b_fullname, 6, 93);
+            //doc.text(oo_b_fullname, 120, 20);
 
+            //add all48 text
             var string = doc.output('datauristring');
             var embed = "<embed width='100%' height='100%' src='" + string + "'/>"
 
@@ -468,20 +483,8 @@ export default{
         //https://medium.com/runthatline/uploading-files-to-firebase-cloud-storage-using-vue-3-and-the-composition-api-d8370d1c03f7
         uploadQuotePDF(e){
             //[1]generate PDF
-            console.log("[uploadQuotePDF] + ");
-            test2_storage("", this.return_base64); 
-
-            console.log("[uploadQuotePDF] ++ ");
-            var e = document.createElement('embed');
-            e.width="100%";
-            e.height="100%";
-            e.src=string;
-            document.body.appendChild(e);
-
-            const a = document.getElementById('preview_quotation');
-            var clone = a.cloneNode(true);
-            clone.setAttribute('src',string);
-            a.parentNode.replaceChild(clone,a)
+            
+            
 
             //document.getElementById('preview_quotation').appendChild(embed);
             /*
@@ -508,7 +511,11 @@ export default{
 
             //const today_month = convert_month(tmp_today_month);
             const path_string = "/all_quote/" + today_year + "/" + month_folder + "/"
-            console.log(path_string);
+            console.log();
+            console.log("[uploadQuotePDF] + ");
+            test2_storage(path_string, this.return_base64); 
+
+            console.log("[uploadQuotePDF] ++ ");
             
             // storage ref + upload task
             const storageref = ref(storage, path_string);
@@ -593,4 +600,6 @@ datalist option:focus {
   background-color: #ccc;
   cursor: pointer;
 }
+
+input[disabled] {pointer-events:none}
 </style>

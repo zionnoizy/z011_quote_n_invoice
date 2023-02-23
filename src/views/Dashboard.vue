@@ -31,7 +31,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-8">
-                    <p class="text-3xl font-bold underline"> Weclome Back To CMS-QuoteIn {{ this_usr_name }} </p>
+
                     <button class="btn btn-primary btn-lg mb-3"> <router-link :to="{name: 'QuoteAdd' }"> Add New Quote </router-link> </button>
                 </div>
 
@@ -39,11 +39,11 @@
             </div>
         </div>
 
-        <p class="text-3xl font-bold underline"> Weclome Back! </p>
+        <p class="text-3xl font-bold underline pb-3"> Please Select The Following </p>
 
         
         
-        <div class="grid grid-cols-3 ">
+        <div class="grid grid-cols-3 text-xl pb-6">
         
             <div><router-link :to="{name: 'QIAll' }">All </router-link></div>
 

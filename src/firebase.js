@@ -45,7 +45,7 @@ export const test2_storage = (fullPath, pdf_base64) => {
   console.log("[firebase test2_storage]");
 
   const image_ref = ref(storage, fullPath);
-  const storage_ref = ref(storage, "text3.pdf");
+  const storage_ref = ref(storage, fullPath + "text4.pdf");
 
   const message2 = '5b6p5Y+344GX44G+44GX44Gf77yB44GK44KB44Gn44Go44GG77yB';
   uploadString(storage_ref, pdf_base64, 'data_url')

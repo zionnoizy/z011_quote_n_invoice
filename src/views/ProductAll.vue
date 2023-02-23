@@ -1,7 +1,7 @@
 <template>
     <div class="ProductAll">
 
-        <p class="dashboard_txt" ><router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  > 
+        <p class="dashboard_txt pt-5" ><router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  > 
             
           <router-link to="/dashboard/all_product" exact><a><strong class="link">Product Add</strong></a></router-link>
         
@@ -10,8 +10,8 @@
         <product-add></product-add>
 
         <th>PRODUCT IN DATABASE:</th>
-        <button>Sort From Oldest</button>
-        <button>Sort From Newest</button>
+        <button>Sort From Oldest (comming soon)</button>
+        <button>Sort From Newest (comming soon)</button>
 
         <table class="table table-dark" >
 
