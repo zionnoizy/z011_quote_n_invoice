@@ -220,19 +220,20 @@ export default{
 
             // It can parse html:
             // <table id="my-table"><!-- ... --></table>
-            
+            var finalY = doc.lastAutoTable.finalY || 10;
             doc.addImage(cms_empty_quote, "JPEG",0,0,210,297);
             autoTable(doc, { html: '#my-table' });
             autoTable(doc, {
+                theme: 'striped',
                 startY: doc.autoTableEndPosY() + 105, //important
                 columnStyles: {
-    0: {cellWidth: 20},
-    1: {cellWidth: 80},
-    2: {cellWidth: 80},
-    // etc
-  },
-  tableWidth: 'auto',
-  margin: {top: 0, right: 2, bottom: 0, left: 2}, //important2
+                0: {cellWidth: 20},
+                1: {cellWidth: 80},
+                2: {cellWidth: 80},
+                // etc
+            },
+            tableWidth: 'auto',
+            margin: {top: 0, right: 2, bottom: 0, left: 2}, //important2
             head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
             body: [
                 ['David', 'david@example.com', 'Sweden'],

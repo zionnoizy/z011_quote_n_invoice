@@ -6,7 +6,7 @@
           <router-link to="/dashboard/all_product" exact><a><strong class="link">Product Add</strong></a></router-link>
         
         </p>
-
+        <button>UPDATE PRODUCTS</button>
         <product-add></product-add>
 
         <th>PRODUCT IN DATABASE:</th>

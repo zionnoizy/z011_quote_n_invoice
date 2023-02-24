@@ -3,7 +3,8 @@
         <!--https://pbs.twimg.com/media/DrM0nIdU0AEhG5b.jpg-->
         <p>test21</p>
 
-        <p class="dashboard_txt" ><router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  > All Clients</p>
+        <p class="dashboard_txt" >
+          <router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  > All Clients</p>
 
         <client-add></client-add>
 
@@ -35,14 +36,17 @@
           <div>
             <strong>{{ c.c_fullname }}</strong>
           </div>
+          
           <div>
-          <strong>{{ c.c_address_1 }}</strong>
+            <strong>{{ c.c_address_1 }}</strong>
           </div>
+          
           <div>
-          <strong>{{ c.c_address_2 }}</strong>
+            <strong>{{ c.c_address_2 }}</strong>
           </div>
+
           <div>
-          <p>{{ c.c_city }}, {{ c.c_post_code }} </p>
+            <p>{{ c.c_city }}, {{ c.c_post_code }} </p>
           </div>
 
         </div>

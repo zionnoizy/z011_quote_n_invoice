@@ -6,140 +6,177 @@
         <p>test997</p>
         <p>Empty Redirection Page.</p>
 
-
+        
 
         <button href="@/assets/files/quote_instruction.pdf" download>Downlaod Instruction</button>
         
         <div class="grid grid-cols-1 gap-1 ">
             <!--1/3-------------------BILL-SHIP-TO-------------------------------------->
-            <div> <p class="text-2xl underline">Bill To + Ship To</p> 
-            
-            <label>BILL TO</label>
+            <div class="" style="display: flex;;">
+                
 
-                <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button" data-bs-toggle="modal" data-bs-target="#choose_bill_to" v-on:click="this.getAllClient1();" >
+                    <!--1/3-->
+                    <label>1.BILL TO</label>
+                    <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button" data-bs-toggle="modal" data-bs-target="#choose_bill_to" v-on:click="this.getAllClient1();" >
+                            
+                        <p ref="tmp_b_fullname" id="tmp_b_fullname"></p>
+                        <p ref="tmp_b_address1" id="tmp_b_address1"></p>
+                        <p ref="tmp_b_address2" id="tmp_b_address2"></p>
+                        <p ref="tmp_b_city" id="tmp_b_city"></p>
+                        <p ref="tmp_b_postcode" id="tmp_b_postcode"></p>
 
-                    <p ref="tmp_b_fullname" id="tmp_b_fullname"></p>
-                    <p ref="tmp_b_address1" id="tmp_b_address1"></p>
-                    <p ref="tmp_b_address2" id="tmp_b_address2"></p>
-                    <p ref="tmp_b_city" id="tmp_b_city"></p>
-                    <p ref="tmp_b_postcode" id="tmp_b_postcode"></p>
+                    </button>
+                    <!-------------------modal//BillTo------------------------->
+                    <div class="modal fade" id="choose_bill_to" tabindex="-1" aria-labelledby="" aria-hidden="true">
+                        <div class="modal-dialog modal-xl">
+                            
+                            <div class="modal-content text-black">
 
-                </button>
-
-                <!-------------------modal//BillTo------------------------->
-                <div class="modal fade" id="choose_bill_to" tabindex="-1" aria-labelledby="" aria-hidden="true">
-                    <div class="modal-dialog modal-xl">
-                        
-                        <div class="modal-content text-black">
-
-                            <div class="modal-header">
-                                <h4 class="modal-title"> Add Bill-To </h4>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close" v-on:click="showBillToModal=false">X</button>
-                            </div>
-                            <div class="modal-body" style="background-color: #1267aa;">
-
-                                <div class="px-5 mx-5 grid grid-cols-3 gap-2  ">
-                                    <div class="" v-for="b, i in all_clients1" >       
-                                    <div class="client_card row" @click="ChooseBillTo($event,b, i); " data-bs-dismiss="modal" aria-label="close">
-                                        <div>
-                                        <strong>{{ b.c_fullname }}</strong>
-                                        </div>
-                                        <div>
-                                        <strong>{{ b.c_address_1 }}</strong>
-                                        </div>
-                                        <div>
-                                        <strong>{{ b.c_address_2 }}</strong>
-                                        </div>
-                                        <div>
-                                        <p>{{ b.c_city }}, {{ b.c_post_code }} </p>
-                                        </div>
-
-                                    </div>
-
-                                    
-
-
-                                    </div>
+                                <div class="modal-header">
+                                    <h4 class="modal-title"> Add Bill-To </h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close" v-on:click="showBillToModal=false">X</button>
                                 </div>
+                                <div class="modal-body" style="background-color: #1267aa;">
+
+                                    <div class="px-5 mx-5 grid grid-cols-3 gap-2  ">
+                                        <div class="" v-for="b, i in all_clients1" >       
+                                        <div class="client_card row" @click="ChooseBillTo($event,b, i); " data-bs-dismiss="modal" aria-label="close">
+                                            <div>
+                                            <strong>{{ b.c_fullname }}</strong>
+                                            </div>
+                                            <div>
+                                            <strong>{{ b.c_address_1 }}</strong>
+                                            </div>
+                                            <div>
+                                            <strong>{{ b.c_address_2 }}</strong>
+                                            </div>
+                                            <div>
+                                            <p>{{ b.c_city }}, {{ b.c_post_code }} </p>
+                                            </div>
+
+                                        </div>
+
+                                        
 
 
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit"  class="btn btn-success" v-on:click="submitManufacturer()" >Submit Bill In </button>
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit"  class="btn btn-success" v-on:click="submitManufacturer()" >Submit Bill In </button>
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-------------------modal//BillTo------------------------->
+                    <!-----------------------------------modal//BillTo------------------------------------->
+              
+                    <!--1/3-->
+                    <div class="float-to-bottom">
+                        <label>2.SHIP TO</label>
+                        <button class="choose_address_btn border btn btn-secondary btn-square-lg"  type="button " data-bs-toggle="modal" data-bs-target="#choose_ship_to" v-on:click="this.getAllClient1();" >
 
-                <label>SHIP TO</label>
-                <button class="choose_address_btn border btn btn-secondary btn-square-lg"  type="button " data-bs-toggle="modal" data-bs-target="#choose_ship_to" >Choose Client 
+                            <p ref="tmp_s_fullname" id="tmp_s_fullname"></p>
+                            <p ref="tmp_s_address1" id="tmp_s_address1"></p>
+                            <p ref="tmp_s_address2" id="tmp_s_address2"></p>
+                            <p ref="tmp_s_city" id="tmp_s_city"></p>
+                            <p ref="tmp_s_postcode" id="tmp_s_postcode"></p>
+                        </button>
+                        <!-------------------modal//ShipTo------------------------->
+                        <div class="modal fade" id="choose_ship_to" tabindex="-1" aria-labelledby="" aria-hidden="true">
+                            
+                            <div class="modal-dialog modal-xl">
+                                
+                                <div class="modal-content text-black">
 
-                    <p ref="tmp_s_fullname" id="tmp_s_fullname"></p>
-                    <p ref="tmp_s_address1" id="tmp_s_address1"></p>
-                    <p ref="tmp_s_address2" id="tmp_s_address2"></p>
-                    <p ref="tmp_s_city" id="tmp_s_city"></p>
-                    <p ref="tmp_s_postcode" id="tmp_s_postcode"></p>
-                </button>
-                <!-------------------modal//ShipTo------------------------->
-                <div class="modal fade" id="choose_ship_to" tabindex="-1" aria-labelledby="" aria-hidden="true">
-                    
-                    <div class="modal-dialog modal-xl">
-                        
-                        <div class="modal-content text-black">
-
-                            <div class="modal-header">
-                                <h4 class="modal-title"> Add Ship-To </h4>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close" v-on:click="showShipToModal=false"> X </button>
-                            </div>
-
-                            <div class="modal-body">
-
-                                <div class="px-5 mx-5 grid grid-cols-3 gap-2  ">
-                                    <div class="" v-for="s, i in all_clients2" >       
-                                    <div class="client_card row" @click="ChooseShipTo($event,s, i);" data-bs-dismiss="modal" aria-label="close">
-                                        <div>
-                                        <strong>{{ s.c_fullname }}</strong>
-                                        </div>
-                                        <div>
-                                        <strong>{{ s.c_address_1 }}</strong>
-                                        </div>
-                                        <div>
-                                        <strong>{{ s.c_address_2 }}</strong>
-                                        </div>
-                                        <div>
-                                        <p>{{ s.c_city }}, {{ s.c_post_code }} </p>
-                                        </div>
-
+                                    <div class="modal-header">
+                                        <h4 class="modal-title"> List of Address </h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close" v-on:click="showShipToModal=false"> X </button>
                                     </div>
 
-                                    
+                                    <div class="modal-body">
+
+                                        <div class="px-5 mx-5 grid grid-cols-3 gap-2  ">
+                                            <div class="" v-for="s, i in all_clients2" >       
+                                            <div class="client_card row" @click="ChooseShipTo($event,s, i);" data-bs-dismiss="modal" aria-label="close">
+                                                <div>
+                                                <strong>{{ s.c_fullname }}</strong>
+                                                </div>
+                                                <div>
+                                                <strong>{{ s.c_address_1 }}</strong>
+                                                </div>
+                                                <div>
+                                                <strong>{{ s.c_address_2 }}</strong>
+                                                </div>
+                                                <div>
+                                                <p>{{ s.c_city }}, {{ s.c_post_code }} </p>
+                                                </div>
+
+                                            </div>
+
+                                            
 
 
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="modal-footer" style="background-color: #1267aa;">
+                                        
                                     </div>
                                 </div>
+                                
 
-
-                            </div>
-                            <div class="modal-footer" style="background-color: #1267aa;">
-                                <button type="submit"  class="btn btn-success" v-on:click="submitManufacturer()" >Submit Manufacturer </button>
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                             </div>
                         </div>
-                        
+                        <!---------------------[END] BILL-SHIP-TO-------------------------------------->
+                    </div>
 
+
+                <!--3/3-->
+                <p class="text-2xl underline">Final Calculation</p> 
+                <div class="grid grid-cols-1 gap-1 "> 
+
+                    <div>
+                        <label for="q_subtotal">Subtotal</label>
+                        <input ref="q_subtotal" placeholder="Subtotal" id="q_subtotal" disabled />
+                    </div>
+                    <div>
+                        <label for="q_vat">VAT</label>
+                        <input ref="q_vat" placeholder="Vat" id="q_vat" value="20" disabled />
+                    </div>
+                    <div>
+                        <label for="q_shipping">Shipping</label>
+                        <input ref="q_shipping" placeholder="Shipping" id="q_shipping"  />
+                    </div>
+                    <div>
+                        <label for="q_total">Total</label>
+                        <input ref="q_total" placeholder="Total" id="q_total" class="input-lg" @input="CumulativeTotal" disabled/>
                     </div>
                 </div>
-                <!---------------------[END] BILL-SHIP-TO-------------------------------------->
+
+
             </div>
-            
             <!--2/3--------------------------------------------------------------------->
-            <div> <p class="text-2xl underline">Add Products of Goods (1/10)</p> 
-            
-                <p>the product code/ category/ cost/ margin/ sell will not shown unless an input element lost its focus </p>
+            <div class="grid grid-cols-2 gap-2"> 
+                <div>
+                    <p class="text-2xl underline">Add Products of Goods (1/10)</p> 
+                </div>
+                <div>
+                    <button class="btn btn-info"   @click.prevent="plusProduct" > [+] </button>
+                    <button class="btn btn-danger"   @click.prevent="minusProduct" > [-] </button>
+                </div>
+            </div>
 
+            <div>
+                <p>the product code/ category/ cost/ margin/ sell will not shown unless an input element lost its focus </p>
+                <input data-ebay_field="last_name" data-ebay_add_as="" id="last_name" title="" name="last_name" type="text" placeholder="  your name" required="required" class="form-control" style="background-color: rgb(255, 255, 255); outline: none; border: 2px solid rgb(18, 103, 170); border-radius: 25px; height: 60px; text-align: center;">
                 <input list="s_product" ref="p_enter"  v-model="s_product_name" placeholder="Item Name" id="p_enter" @input="suggesting()" @blur="EnterProduct();" @change="CumulativeTotal();" required/>
+
+                <button> Add Product To Quote </button>
 
 
                 <datalist id="s_product">
@@ -160,18 +197,7 @@
                 <input ref="p_sell" placeholder="Product Sell" id="p_sell1" @input="EnterProduct();" @change="CumulativeTotal();" disabled/>
             
             </div>
-            <!--3/3-->
-            <div> <p class="text-2xl underline">Final Calculation</p> 
-
-                <input ref="q_subtotal" placeholder="Subtotal" id="q_subtotal"  disabled/>
-
-                <input ref="q_vat" placeholder="Vat" id="q_vat"  />
-
-                <input ref="q_shipping" placeholder="Shipping" id="q_shipping"  />
-
-                <input ref="q_total" placeholder="Total" id="q_total" @input="CumulativeTotal" disabled/>
             
-            </div>
 
 
             <div> 
@@ -236,6 +262,7 @@ import { getStorage,  uploadBytes, uploadBytesResumable, ref2 as firebaseStorage
 import { serverTimestamp } from 'firebase/firestore'
 import { save_2_storage, test2_storage } from '../firebase';
 
+import autoTable from 'jspdf-autotable';
 
 export default{
     name: 'QuoteAdd',
@@ -322,18 +349,21 @@ export default{
         
 
         async getAllClient1() { 
+
             console.log("[QuoteAdd-getAllClient] print-1" );
             var all_client_ref = await firebase.firestore().collection("all_clients");
             all_client_ref.onSnapshot(snap => {
                 this.all_clients1 = [];
-                
+                this.all_clients2 = [];
                 snap.forEach(d => {
                     console.log("[QuoteAdd-getAllClient] print" );
 
                     var client = d.data();
                     this.all_clients1.push(client);
+                    this.all_clients2.push(client);
                 });
             });
+
         },
         ChooseBillTo(ev, b, i){
             console.log("[QuoteAdd-ChooseBillTo] comming soon, click client and retrieve text." + ev + "  "  + i);
@@ -453,18 +483,76 @@ export default{
         previewBtn(){
             console.log("[previewBtn] --" );
             const doc = new jsPDF();  //'l', 'mm', 'a4'
-            doc.addImage(cms_empty_quote, "JPEG",0,0,210,297);
-            //add all48 text
+            doc.addImage(cms_empty_invoice_no_table, "JPEG",0,0,210,297);
+            
+            //A-add all48 text
             const oo_b_fullname = document.getElementById('tmp_b_fullname').innerHTML;
             const oo_b_a1 = document.getElementById('tmp_b_address1').innerHTML;
             const oo_b_a2 = document.getElementById('tmp_b_address2').innerHTML;
             const oo_b_city = document.getElementById('tmp_b_city').innerHTML;
-            console.log("[previewBtn] -------" + oo_b_fullname);
+            const oo_b_postcode = document.getElementById('tmp_b_postcode').innerHTML;
+            console.log("[previewBtn] -------bill-in");
             doc.setFontSize(10);
             doc.text(oo_b_fullname, 6, 93);
-            //doc.text(oo_b_fullname, 120, 20);
+            doc.text(oo_b_a1, 6, 98);
+            doc.text(oo_b_a2, 6, 103);
+            doc.text(oo_b_city, 6, 108);
+            doc.text(oo_b_postcode, 6, 113);
 
-            //add all48 text
+
+            //B-add all48 text
+            const oo_s_fullname = document.getElementById('tmp_s_fullname').innerHTML;
+            const oo_s_a1 = document.getElementById('tmp_s_address1').innerHTML;
+            const oo_s_a2 = document.getElementById('tmp_s_address2').innerHTML;
+            const oo_s_city = document.getElementById('tmp_s_city').innerHTML;
+            const oo_s_postcode = document.getElementById('tmp_s_postcode').innerHTML;
+            console.log("[previewBtn] -------ship-to");
+            doc.setFontSize(10);
+            doc.text(oo_s_fullname, 72, 93);
+            doc.text(oo_s_a1, 72, 98);
+            doc.text(oo_s_a2, 72, 103);
+            doc.text(oo_s_city, 72, 108);
+            doc.text(oo_s_postcode, 72, 113);
+
+
+
+            //https://github.com/simonbengtsson/jsPDF-AutoTable/blob/master/examples/examples.js
+            var finalY = doc.lastAutoTable.finalY || 10
+            autoTable(doc, {
+                //html: '#cms-quote-table',
+                theme: 'striped',
+                startY: finalY + 109, //important
+                columnStyles: {
+                0: {cellWidth: 65},
+                1: {cellWidth: 18},
+                2: {cellWidth: 15},
+                3: {cellWidth: 15},
+                4: {cellWidth: 23},
+                5: {cellWidth: 30},
+                // etc
+            },
+            tableWidth: 'auto',
+            
+            margin: {top: 0, right: 5, bottom: 0, left: 5}, //important2
+            head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
+            body: [
+                ['SAP 1m Pipe 110mm - Grey', 'TY586', '207', "273", "0", "772.11"],
+                ['SAP 2m Pipe 110mm - Grey', 'TY587', '207', "273", "0", "772.11"],
+                ['SAP 15m Pipe 110mm - Grey', 'TY588', '207', "273", "0", "772.11"],
+                ['SAP 30m Pipe 110mm - Grey', 'TY590', '207', "273", "0", "772.11"],
+                ['SAP 45m Pipe 110mm - Grey', 'TY591', '207', "273", "0", "772.11"],
+                ['SAP 90m Pipe 110mm - Grey', 'TY592', '207', "273", "0", "772.11"],
+                ['SAP 1m Pipe 110mm - Grey', 'TY593', '207', "273", "0", "772.11"],
+                ['SAP 1m Pipe 110mm - Grey', 'TY594', '207', "273", "0", "772.11"],
+                ['Castille', 'castille@example.com', 'Spain'],
+                ['Castille', 'castille@example.com', 'Spain'],
+                // ...
+            ],
+            })
+
+
+
+            //////////////////////////////////////////////////////////////////////
             var string = doc.output('datauristring');
             var embed = "<embed width='100%' height='100%' src='" + string + "'/>"
 

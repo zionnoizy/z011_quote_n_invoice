@@ -45,11 +45,11 @@
         
         <div class="grid grid-cols-3 text-xl pb-6">
         
-            <div><router-link :to="{name: 'QIAll' }">All </router-link></div>
+            <div><router-link :to="{name: 'Client' }"> Client </router-link></div>
 
-            <div><router-link :to="{name: 'QuoteAll' }">Quote</router-link></div>
+            <div><router-link :to="{name: 'QuoteAll' }"> Quote </router-link></div>
 
-            <div><router-link :to="{name: 'InvoiceAll' }">Invoice</router-link></div>
+            <div><router-link :to="{name: 'InvoiceAll' }"> Invoice </router-link></div>
         
     
         </div>
