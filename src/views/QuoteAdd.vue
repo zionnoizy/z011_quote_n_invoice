@@ -13,8 +13,6 @@
         <div class="grid grid-cols-1 gap-1 ">
             <!--1/3-------------------BILL-SHIP-TO-------------------------------------->
             <div class="" style="display: flex;;">
-                
-
                     <!--1/3-->
                     <label>1.BILL TO</label>
                     <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button" data-bs-toggle="modal" data-bs-target="#choose_bill_to" v-on:click="this.getAllClient1();" >
@@ -163,41 +161,70 @@
             <!--2/3--------------------------------------------------------------------->
             <div class="grid grid-cols-2 gap-2"> 
                 <div>
-                    <p class="text-2xl underline">Add Products of Goods (1/10)</p> 
+                    <button class="choose_address_btn border btn btn-secondary btn-square-lg"  type="button " data-bs-toggle="modal" data-bs-target="#choose_products" v-on:click="this.getAllProducts();" >
+                        Add Products of Goods
+                    </button>
+                    <!--NEW-----product-modal---------------------------------------------------------------------->
+                    <div class="modal fade" id="choose_products" tabindex="-1" aria-labelledby="" aria-hidden="true" >
+                        <div class="modal-dialog modal-xl">
+                            
+                            <div class="modal-content text-black">
+
+                                <div class="modal-header">
+                                    <h4 class="modal-title"> Choose From Product Below</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close" >X</button>
+                                </div>
+                                <div class="modal-body" style="background-color: #1267aa;">
+
+                                    <all-products-choose></all-products-choose>
+
+                                    
+
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <button class="btn btn-dark" > Add Product To Quote </button>
                 </div>
                 <div>
                     <button class="btn btn-info"   @click.prevent="plusProduct" > [+] </button>
                     <button class="btn btn-danger"   @click.prevent="minusProduct" > [-] </button>
                 </div>
             </div>
-
-            <div>
-                <p>the product code/ category/ cost/ margin/ sell will not shown unless an input element lost its focus </p>
-                <input data-ebay_field="last_name" data-ebay_add_as="" id="last_name" title="" name="last_name" type="text" placeholder="  your name" required="required" class="form-control" style="background-color: rgb(255, 255, 255); outline: none; border: 2px solid rgb(18, 103, 170); border-radius: 25px; height: 60px; text-align: center;">
-                <input list="s_product" ref="p_enter"  v-model="s_product_name" placeholder="Item Name" id="p_enter" @input="suggesting()" @blur="EnterProduct();" @change="CumulativeTotal();" required/>
-
-                <button> Add Product To Quote </button>
-
-
-                <datalist id="s_product">
-                    <!-- <option v-for="(s, i) in s_product">{{s.p_fullname}}</option> -->
-                    <option v-for="(s, i) in s_product2" >{{s.p_fullname}}</option>
-                </datalist>
-                <!----------------------end-suggestion-------------------------------------->
-                <div id="s_product" style="margin: 10px">
-
+            <!--typeing product and will show rest-->
+            <div class="grid grid-cols-1">
+                <div>
+                    <input list="s_product" ref="p_enter"  v-model="s_product_name" placeholder="Item Name" id="p_enter" @input="suggesting()" @blur="EnterProduct();" @change="CumulativeTotal();" required/>
+                    <datalist id="s_product">
+                        <!-- <option v-for="(s, i) in s_product">{{s.p_fullname}}</option> -->
+                        <option v-for="(s, i) in s_product2" >{{s.p_fullname}}</option>
+                    </datalist>
+                    <input ref="p_code" placeholder="Product Code" @input="EnterProduct" id="p_code"  disabled/>
+                    <input ref="p_category" placeholder="Product Category" id="p_category" @input="EnterProduct" disabled/>
+                    <input ref="p_cost" placeholder="Product Cost (digit only)" id="p_cost" @input="EnterProduct"  disabled />
+                    <input ref="p_margin" placeholder="Product Margin (digit only)" id="p_margin" @input="EnterProduct" disabled />
+                    <input ref="p_sell" placeholder="Product Sell" id="p_sell1" @input="EnterProduct();" @change="CumulativeTotal();" disabled/>   
                 </div>
 
+                <div>
+                    <input list="s_product" ref="p_enter"  v-model="s_product_name" placeholder="Item Name" id="p_enter" @input="suggesting()" @blur="EnterProduct();" @change="CumulativeTotal();" required/>
+                    <datalist id="s_product">
+                        <!-- <option v-for="(s, i) in s_product">{{s.p_fullname}}</option> -->
+                        <option v-for="(s, i) in s_product2" >{{s.p_fullname}}</option>
+                    </datalist>
+                    <input ref="p_code" placeholder="Product Code" @input="EnterProduct" id="p_code"  disabled/>
+                    <input ref="p_category" placeholder="Product Category" id="p_category" @input="EnterProduct" disabled/>
+                    <input ref="p_cost" placeholder="Product Cost (digit only)" id="p_cost" @input="EnterProduct"  disabled />
+                    <input ref="p_margin" placeholder="Product Margin (digit only)" id="p_margin" @input="EnterProduct" disabled />
+                    <input ref="p_sell" placeholder="Product Sell" id="p_sell1" @input="EnterProduct();" @change="CumulativeTotal();" disabled/>   
+                </div>
 
-                 <!--only shown if typing-->
-                <input ref="p_code" placeholder="Product Code" @input="EnterProduct" id="p_code"  disabled/>
-                <input ref="p_category" placeholder="Product Category" id="p_category" @input="EnterProduct" disabled/>
-                <input ref="p_cost" placeholder="Product Cost (digit only)" id="p_cost" @input="EnterProduct"  disabled />
-                <input ref="p_margin" placeholder="Product Margin (digit only)" id="p_margin" @input="EnterProduct" disabled />
-                <input ref="p_sell" placeholder="Product Sell" id="p_sell1" @input="EnterProduct();" @change="CumulativeTotal();" disabled/>
-            
             </div>
-            
 
 
             <div> 
@@ -263,16 +290,14 @@ import { serverTimestamp } from 'firebase/firestore'
 import { save_2_storage, test2_storage } from '../firebase';
 
 import autoTable from 'jspdf-autotable';
+import AllProductsChoose from "@/components/AllProductsChoose.vue";
+
 
 export default{
     name: 'QuoteAdd',
     setup() {
-
-        
-
         const s_product2 = reactive([]);
-        onMounted(async () => {
-            
+        onMounted(async () => { 
             try{
             const typing_product = await firebase
             .firestore()
@@ -286,12 +311,7 @@ export default{
             console.log("Error Typing s_product2");
         }
         });
-        
-
-        
-        
         return {s_product2};
-    
     },
     data(){
         
@@ -345,6 +365,10 @@ export default{
           return_base64: null,
         }
     },
+    components: {
+        AllProductsChoose,
+
+    },
     methods:{
         
 
@@ -365,6 +389,8 @@ export default{
             });
 
         },
+
+        
         ChooseBillTo(ev, b, i){
             console.log("[QuoteAdd-ChooseBillTo] comming soon, click client and retrieve text." + ev + "  "  + i);
             console.log("[QuoteAdd-ChooseBillTo] you have chosen  " + b.c_fullname);
@@ -641,7 +667,7 @@ export default{
     created() {
 
         this.getAllProducts();
-            
+         
     },
 }
 

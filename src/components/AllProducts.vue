@@ -1,24 +1,50 @@
 <template>
-  <div class="ProductAll">
 
-        <p class="dashboard_txt pt-5" ><router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  > 
-            
-          <router-link to="/dashboard/all_product" exact><a><strong class="link">Product Add</strong></a></router-link>
-        
-        </p>
-        <button>UPDATE PRODUCTS</button>
-        <product-add></product-add>
+    <th>PRODUCT IN DATABASE:</th>
+        <button class="btn btn-primary " @click.prevent="getAllProductsNewest()">Sort From Oldest </button>
+        <button class="btn btn-primary " @click.prevent="getAllProductsOldest()">Sort From Newest </button>
 
-        <all-products></all-products>  
-  </div>
+        <table class="table table-dark" >
+            <thead>
+            <tr>
+            <th scope="col"> - </th>
+            <th scope="col">Code</th>
+            <th scope="col">Name</th>
+
+            <th scope="col">&#163; Cost</th>
+            <th scope="col">Margin &percnt;</th>
+            <th scope="col">Sell</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+
+
+
+            </tr>
+
+
+            <tr  v-for="p in all_products">
+                <td> {{ p.p_code }} </td>
+                <td> {{ p.p_fullname }} </td>
+                <td> {{ p.p_category }} </td>
+                <td> {{ p.p_cost }} </td>
+                <td> {{ p.p_margin }} </td>
+                <td> {{ p.p_sell }} </td>
+            </tr>
+            </tbody>
+
+        </table>  
+
+
+
 </template>
-
 
 <script>
 import ProductAdd from "@/components/ProductAdd.vue";
 import { orderBy, query } from "@firebase/firestore";
 import { serverTimestamp } from 'firebase/firestore';
-import AllProducts from "@/components/AllProducts.vue";
+
 export default{
     name: 'ProductAll',
     setup() {},
@@ -39,15 +65,12 @@ export default{
         }
     },
     components: {
-      ProductAdd,
-      AllProducts,
+
     },
     methods: {
 
-      async getAllProducts() { 
-
+      async getAllProductsNewest() { 
         var all_product_ref = await firebase.firestore().collection("all_products");
-
         all_product_ref.orderBy("p_insert_date", "desc")
 
           .onSnapshot((snapshot) => {
@@ -60,22 +83,25 @@ export default{
                 this.all_products.push(product);
             })
           })
-        //const q = query(all_product_ref, orderBy("p_insert_date", "desc").startAt(1));
+
         var lastThreeRes = await all_product_ref.orderBy('p_insert_date', 'desc').limit(3).get();
-        /*
-        all_product_ref.onSnapshot(snap => {
-          
-            this.all_products = [];
-            
-            snap.forEach(d => {
-                var product = d.data();
-                console.log("[ProductAll] " + product);
-                this.all_products.push(product);
-            });
-        });
-        */
+
         
       },
+
+      async getAllProductsOldest() { 
+        var all_product_ref = await firebase.firestore().collection("all_products");
+        all_product_ref.orderBy("p_insert_date", "asc")
+          .onSnapshot((snapshot) => {
+            this.all_products = [];
+            snapshot.forEach(d => {
+                var product = d.data();
+                console.log("[ProductAll]-1 " + product);
+                this.all_products.push(product);
+            })
+          })
+      },
+
       UpdateClient:function(msg){
         setDoc(doc(db, 'all_products', msg.id),{
           text: msg.text,
@@ -94,7 +120,7 @@ export default{
 
     },
     created() {
-      this.getAllProducts();
+      this.getAllProductsNewest();
     },
 }
 </script>

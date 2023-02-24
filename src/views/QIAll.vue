@@ -1,6 +1,6 @@
 <template>
-    <div class="AllQI" >
-        =comming soon - will show all quote & invoice.=
+    <div class="QIAll" >
+        =comming soon - will show all client.=
     </div>
 </template>
     
@@ -8,12 +8,11 @@
     
 <script>
 export default {
-    name: "AllQI"
+    name: "QIAll"
 }
 </script>
-
 <style>
-.ALLQI{
+.QIAll{
     min-height: 500vh;
 }
 
