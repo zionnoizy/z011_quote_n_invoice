@@ -106,7 +106,11 @@ import "jspdf/dist/polyfills.es.js"; //for old prowser
 import { PDFDocument } from 'pdf-lib';
 import autoTable from 'jspdf-autotable'
 
+import { app, db, auth, fv } from "@/firebase.js";
+import { addDoc, collection } from "@firebase/firestore";
 
+
+//import {firebase} from "firebase/app";
 export default{
     name: 'empty',
     methods:{
@@ -259,6 +263,42 @@ export default{
             doc.text('150', 152, doc.lastAutoTable.finalY + 30)
             doc.save('table.pdf')
 
+        },
+        test_write2(){
+            const ref = collection(db, 'test_purpose');
+            const documentID = ref.documentID;
+            //const Id = data.thisId;
+            const increment = fv.increment(1);
+            
+            const obj_ref ={
+                test_1: "Q-CMS000",
+                test_2: "print_this_only",
+            }
+
+            //const doc = collection.doc(docRef.id);
+
+            
+
+            addDoc(ref, obj_ref)
+            .then(function(docRef) {
+                const get_id = firebase.firestore().collection('test_purpose').doc(docRef.id);
+                console.log("Document written with ID: ", docRef.id);
+
+                get_id
+                .update({
+                    count: firebase.firestore.FieldValue.increment(0),
+
+                    doc_id: docRef.id,
+                })
+                .then(() => {
+                    console.log("set doc");
+
+                    get_id.get().then((d) => {
+                        console.log("updated data:", d.data());
+                    });
+                });
+            })
+            
         }
     }
 }

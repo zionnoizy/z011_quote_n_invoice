@@ -197,63 +197,43 @@
                     <button class="btn btn-dark" > Add Product To Quote </button>
                 </div>
                 <div>
-                    <button class="btn btn-info"   @click.prevent="plusProduct" > [+] </button>
-                    <button class="btn btn-danger"   @click.prevent="minusProduct" > [-] </button>
+                    
                 </div>
                 <!--show choose products-->
                 <table class="table table-dark" >
-                    <tbody>
-                        <tr>
-                            <td> test1 </td>
-                            <td> test2 </td>
-                            <td> test3 </td>
-                            <td> test4 </td>
-                            <td> test5 </td>
-                            <td> test6 </td>
+                    <thead>
+                    <tr>
+                        <th scope="col">Choosen Product Name</th>
+                        <th scope="col">Product Code</th>
+                        <th scope="col">Product Category</th>
+                        <th scope="col">Product Cost</th>
+                        <th scope="col">Product Margin</th>
+                        <th scope="col">Product Sell</th>
+                        <th scope="col">Add/ Delete</th>
+                    </tr>
+                    </thead>
 
-                        </tr>
+
+                    <tbody>
+
 
                         <tr  v-for="p in choosen_products" >
-                            <td> {{ p.p_code }} </td>
+                            
                             <td> {{ p.p_fullname }} </td>
+                            <td> {{ p.p_code }} </td>
                             <td> {{ p.p_category }} </td>
                             <td> {{ p.p_cost }} </td>
                             <td> {{ p.p_margin }} </td>
-                            <td> {{ p.p_sell }} </td>
-
+                            <td id="add_all_sell"> {{ p.p_sell }} </td>
+                            <td> <button class="btn btn-info"   @click.prevent="plusProduct" > [+] </button>
+                                 <button class="btn btn-danger"   @click.prevent="minusProduct" > [-] </button>
+                            </td>
                         </tr>
                     </tbody>
                 </table> 
             </div>
-            <!--typeing product and will show rest-->
-            <div class="grid grid-cols-1">
-                <div>
-                    <input list="s_product" ref="p_enter"  v-model="s_product_name" placeholder="Item Name" id="p_enter" @input="suggesting()" @blur="EnterProduct();" @change="CumulativeTotal();" required/>
-                    <datalist id="s_product">
-                        <!-- <option v-for="(s, i) in s_product">{{s.p_fullname}}</option> -->
-                        <option v-for="(s, i) in s_product2" >{{s.p_fullname}}</option>
-                    </datalist>
-                    <input ref="p_code" placeholder="Product Code" @input="EnterProduct" id="p_code"  disabled/>
-                    <input ref="p_category" placeholder="Product Category" id="p_category" @input="EnterProduct" disabled/>
-                    <input ref="p_cost" placeholder="Product Cost (digit only)" id="p_cost" @input="EnterProduct"  disabled />
-                    <input ref="p_margin" placeholder="Product Margin (digit only)" id="p_margin" @input="EnterProduct" disabled />
-                    <input ref="p_sell" placeholder="Product Sell" id="p_sell1" @input="EnterProduct();" @change="CumulativeTotal();" disabled/>   
-                </div>
-
-                <div>
-                    <input list="s_product" ref="p_enter"  v-model="s_product_name" placeholder="Item Name" id="p_enter" @input="suggesting()" @blur="EnterProduct();" @change="CumulativeTotal();" required/>
-                    <datalist id="s_product">
-                        <!-- <option v-for="(s, i) in s_product">{{s.p_fullname}}</option> -->
-                        <option v-for="(s, i) in s_product2" >{{s.p_fullname}}</option>
-                    </datalist>
-                    <input ref="p_code" placeholder="Product Code" @input="EnterProduct" id="p_code"  disabled/>
-                    <input ref="p_category" placeholder="Product Category" id="p_category" @input="EnterProduct" disabled/>
-                    <input ref="p_cost" placeholder="Product Cost (digit only)" id="p_cost" @input="EnterProduct"  disabled />
-                    <input ref="p_margin" placeholder="Product Margin (digit only)" id="p_margin" @input="EnterProduct" disabled />
-                    <input ref="p_sell" placeholder="Product Sell" id="p_sell1" @input="EnterProduct();" @change="CumulativeTotal();" disabled/>   
-                </div>
-
-            </div>
+            
+            
 
 
             <div> 
@@ -316,11 +296,11 @@ import { onMounted, nextTick  } from 'vue';
 //ref
 import { getStorage,  uploadBytes, uploadBytesResumable, ref2 as firebaseStorageRef, getDownloadURL } from "firebase/storage";
 import { serverTimestamp } from 'firebase/firestore'
-import { save_2_storage, test2_storage } from '../firebase';
+import { save_2_storage, test2_storage, fv } from '../firebase';
 
 import autoTable from 'jspdf-autotable';
 import AllProductsChoose from "@/components/AllProductsChoose.vue";
-import { choosen_products } from '@/components/AllProductsChoose.vue';
+
 
 export default{
     name: 'QuoteAdd',
@@ -545,7 +525,8 @@ export default{
             this.s_flag = true;
         },
         previewBtn(){
-            console.log("[previewBtn] --" );
+            
+            console.log("[previewBtn] +++++++++++++++++++++++++++++++++++++++++++=--" );
             const doc = new jsPDF();  //'l', 'mm', 'a4'
             doc.addImage(cms_empty_invoice_no_table, "JPEG",0,0,210,297);
             
@@ -570,6 +551,7 @@ export default{
             const oo_s_a2 = document.getElementById('tmp_s_address2').innerHTML;
             const oo_s_city = document.getElementById('tmp_s_city').innerHTML;
             const oo_s_postcode = document.getElementById('tmp_s_postcode').innerHTML;
+            
             console.log("[previewBtn] -------ship-to");
             doc.setFontSize(10);
             doc.text(oo_s_fullname, 72, 93);
@@ -578,7 +560,11 @@ export default{
             doc.text(oo_s_city, 72, 108);
             doc.text(oo_s_postcode, 72, 113);
 
-
+            this.choosen_products.forEach((element, index, array) => {
+                console.log(element.p_fullname); // 100, 200, 300
+                console.log(index); // 0, 1, 2
+                console.log(array); // same myArray object 3 times
+            });
 
             //https://github.com/simonbengtsson/jsPDF-AutoTable/blob/master/examples/examples.js
             var finalY = doc.lastAutoTable.finalY || 10
@@ -628,7 +614,9 @@ export default{
             var base64 = doc.output('datauri');
             this.return_base64 = base64;
 
+            
 
+            console.log("[previewBtn] +++++++++++++++++++++++++++++++++++++++++++=--" );
 
 
         },
@@ -649,8 +637,6 @@ export default{
 
             //const file = e.target.files[0];
             const storage = getStorage();
-
-
             const myTimestamp = firebase.firestore.Timestamp.now();
             const today_year = myTimestamp.toDate().getFullYear();
             const tmp_today_month = myTimestamp.toDate().getMonth();
@@ -697,6 +683,29 @@ export default{
             },   
             );
 
+            //[new_task] create all pic of information push to firestore.
+            //https://www.koderhq.com/tutorial/vue/firestore-database/
+
+            firebase.firestore().collection(path_string);
+            const obj_ref ={
+                q_bill_fullname: this.$refs.tmp_b_fullname.value,
+                q_bill_address1: this.$refs.tmp_b_address1.value,
+                q_bill_address2: this.$refs.tmp_s_address2.value,
+                q_bill_city: this.$refs.tmp_b_city.value,
+                q_bill_postcode: this.$refs.tmp_b_postcode.value,
+
+                q_ship_fillname: this.$refs.tmp_s_fullname.value,
+                q_ship_address1: this.$refs.tmp_s_address1.value,
+                q_ship_address2: this.$refs.tmp_s_address2.value,
+                q_ship_city: this.$refs.tmp_s_city.value,
+                q_ship_postcode: this.$refs.tmp_s_postcode.value,
+
+            }
+
+            addDoc(ref, obj_ref)
+            .then(docRef => {
+                
+            })
             
 
         },
@@ -706,6 +715,52 @@ export default{
             console.log(choosen_products)
             })
         },
+
+
+        firebaseStorageUpload(){
+            console.log("[firebaseStorageUpload]==================");
+            const storage = getStorage();
+            const myTimestamp = firebase.firestore.Timestamp.now();
+            const today_year = myTimestamp.toDate().getFullYear();
+            const tmp_today_month = myTimestamp.toDate().getMonth();
+            console.log("[firebaseStorageUpload] " + myTimestamp + " " + today_year + " " + tmp_today_month);
+            const month_folder = this.convert_to_month[tmp_today_month];
+
+            //const today_month = convert_month(tmp_today_month);
+            const path_string = "/all_quote/" + today_year + "/" + month_folder + "/"
+            console.log();
+            console.log("[firebaseStorageUpload] + ");
+            test2_storage(path_string, this.return_base64); 
+
+            console.log("[firebaseStorageUpload] ++ ");
+            
+            // storage ref + upload task
+            const storageref = ref(storage, path_string);
+            const uploadtask = uploadBytesResumable(storageref, DATA_HERE);
+
+            uploadtask.on(
+                'state_changed',
+                (snapshot)=>{
+                    console.log("[firebaseStorageUpload]  uploaded");
+                //this.uploadValue = ( snapshot.bytesTransferred / snapshot.totalBytes )*100;
+            }, 
+            error=>{
+                console.log(error.message)
+            },
+            ()=>{
+                this.uploadValue= 'upload success';
+                storageRef.snapshot.ref.getDownloadURL().then((url)=>{
+                    this.picture =url;
+                    });
+            },
+            async () =>{
+                console.log("[firebaseStorageUpload] 2 uploaded");
+                downloadUrl.value = await getDownloadURL(uploadtask.snapshot.ref)
+
+            },   
+            );
+            console.log("[firebaseStorageUpload]==================");
+        }
     },
     created() {
 

@@ -68,7 +68,7 @@
 
 
 <script>
-import { db, auth, increment } from "@/firebase.js";
+import { db, auth, increment, admin } from "@/firebase.js";
 import { collection, addDoc, DocumentSnapshot } from "firebase/firestore";
 import { ref } from 'vue';
 import { serverTimestamp } from 'firebase/firestore';

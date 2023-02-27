@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getStorage, ref, uploadString } from "firebase/storage";
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -21,14 +22,17 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const db2 = getFirestore();
-const increment = firebase.firestore.FieldValue.increment;
+const fv = firebase.firestore.FieldValue;
 
 const storage = getStorage(app);
+
+// const admin = require('firebase-admin');
+// admin.initializeApp();
 //const analytics = getAnalytics();
 
 
 
-export {  app, auth, db, db2, increment, storage }
+export {  app, auth, db, db2, fv, storage }
 
 export const save_2_storage = (fullPath, my_url) => {
   const image_ref = ref(storage, fullPath);
