@@ -177,7 +177,8 @@
                                 <!---->
                                 <div class="modal-body" >
 
-                                    <all-products-choose></all-products-choose>
+                                    <all-products-choose v-on:choosen_products="getChoosenProducts($event)">
+                                    </all-products-choose>
 
                                     
 
@@ -202,7 +203,7 @@
                 <!--show choose products-->
                 <table class="table table-dark" >
                     <tbody>
-                        <tr @ChooseOneProduct="doSomenthing">
+                        <tr>
                             <td> test1 </td>
                             <td> test2 </td>
                             <td> test3 </td>
@@ -212,7 +213,7 @@
 
                         </tr>
 
-                        <tr  v-for="p in choosen_products" @ChooseOneProduct="doSomenthing" >
+                        <tr  v-for="p in choosen_products" >
                             <td> {{ p.p_code }} </td>
                             <td> {{ p.p_fullname }} </td>
                             <td> {{ p.p_category }} </td>
@@ -319,10 +320,11 @@ import { save_2_storage, test2_storage } from '../firebase';
 
 import autoTable from 'jspdf-autotable';
 import AllProductsChoose from "@/components/AllProductsChoose.vue";
-
+import { choosen_products } from '@/components/AllProductsChoose.vue';
 
 export default{
     name: 'QuoteAdd',
+    props:['choosen_products'],
     setup() {
         const s_product2 = reactive([]);
         onMounted(async () => { 
@@ -393,6 +395,7 @@ export default{
           return_base64: null,
 
           choosen_products: [],
+          
         }
     },
     components: {
@@ -400,7 +403,12 @@ export default{
 
     },
     methods:{
-        
+        getChoosenProducts(e){
+            this.choosen_products = e;
+            console.log("#[QuoteAdd-------]");
+            console.log("choosen_products changes.");
+            console.log("#[QuoteAdd-------]");
+        },
 
         async getAllClient1() { 
 

@@ -50,6 +50,7 @@ import { serverTimestamp } from 'firebase/firestore';
 
 export default{
     name: 'all-products-choose',
+    props:['choosen_products'],
     setup() {},
     data(){
         return{
@@ -65,7 +66,7 @@ export default{
 
         },
         ///////////////////////
-        choose_products: [],
+        choosen_products: [],
         choose_product:{
           p_code: null,
           p_fullname: null,
@@ -132,11 +133,9 @@ export default{
 
                 var product = d.data();
                 console.log("[chooseOneProduct] called one element from d.data() " + d.data().p_fullname);
-                this.choose_products.push(product);
+                this.choosen_products.push(product);
 
-
-                console.log("[chooseOneProduct] check choose_products: " + choose_products.length);
-                this.$root.$emit('CustomEventInputChanged', this.choosen_products);
+                this.$root.$emit('ChooseOneProduct', this.choosen_products);
               
             })
           })
@@ -144,7 +143,7 @@ export default{
       },
 
       emitEventChanged () {
-            this.$root.$emit('CustomEventInputChanged', this.choosen_products);
+            this.$root.$emit('ChooseOneProduct', this.choosen_products);
       },
 
     },
@@ -152,6 +151,10 @@ export default{
 
       this.getAllProductsNewest();
 
+    },
+    mounted () {
+      this.$emit('choosen_products', this.choosen_products);
+      console.log("[AllProductsChoose] + choosen_products changes?");
     },
 }
 </script>
