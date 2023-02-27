@@ -79,7 +79,7 @@ export default{
 
 
                 var product = d.data();
-                console.log("[ProductAll]-1 " + product);
+
                 this.all_products.push(product);
             })
           })
@@ -96,7 +96,7 @@ export default{
             this.all_products = [];
             snapshot.forEach(d => {
                 var product = d.data();
-                console.log("[ProductAll]-1 " + product);
+
                 this.all_products.push(product);
             })
           })

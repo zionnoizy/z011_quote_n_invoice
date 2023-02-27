@@ -174,14 +174,18 @@
                                     <h4 class="modal-title"> Choose From Product Below</h4>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close" >X</button>
                                 </div>
-                                <div class="modal-body" style="background-color: #1267aa;">
+                                <!---->
+                                <div class="modal-body" >
 
                                     <all-products-choose></all-products-choose>
 
                                     
 
                                 </div>
+
+
                                 <div class="modal-footer">
+                                    <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="close">Add Product To Quote</button>
                                 </div>
                             </div>
                         </div>
@@ -195,6 +199,30 @@
                     <button class="btn btn-info"   @click.prevent="plusProduct" > [+] </button>
                     <button class="btn btn-danger"   @click.prevent="minusProduct" > [-] </button>
                 </div>
+                <!--show choose products-->
+                <table class="table table-dark" >
+                    <tbody>
+                        <tr @ChooseOneProduct="doSomenthing">
+                            <td> test1 </td>
+                            <td> test2 </td>
+                            <td> test3 </td>
+                            <td> test4 </td>
+                            <td> test5 </td>
+                            <td> test6 </td>
+
+                        </tr>
+
+                        <tr  v-for="p in choosen_products" @ChooseOneProduct="doSomenthing" >
+                            <td> {{ p.p_code }} </td>
+                            <td> {{ p.p_fullname }} </td>
+                            <td> {{ p.p_category }} </td>
+                            <td> {{ p.p_cost }} </td>
+                            <td> {{ p.p_margin }} </td>
+                            <td> {{ p.p_sell }} </td>
+
+                        </tr>
+                    </tbody>
+                </table> 
             </div>
             <!--typeing product and will show rest-->
             <div class="grid grid-cols-1">
@@ -363,6 +391,8 @@ export default{
           p_category: null,
 
           return_base64: null,
+
+          choosen_products: [],
         }
     },
     components: {
@@ -663,6 +693,11 @@ export default{
 
         },
         
+        doSomenthing ( data ) {
+            this.$root.$on('ChooseOneProduct', function(choosen_products) {
+            console.log(choosen_products)
+            })
+        },
     },
     created() {
 

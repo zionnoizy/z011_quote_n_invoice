@@ -56,7 +56,7 @@ export default{
 
 
                 var product = d.data();
-                console.log("[ProductAll]-1 " + product);
+
                 this.all_products.push(product);
             })
           })

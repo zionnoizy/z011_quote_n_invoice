@@ -85,6 +85,18 @@ tr:hover {
     background-color: #1d9a6a;
 }
 
+tr:active {
+    background-color: #2479a4;
+}
+
+tr:focus {
+    background-color: #2479a4;
+}
+
+tr:visited { 
+  background-color:#ccc; 
+}
+
 tr:hover td {
     background-color: transparent; /* or #000 */
 }
