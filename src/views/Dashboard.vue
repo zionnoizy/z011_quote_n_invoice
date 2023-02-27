@@ -45,7 +45,7 @@
         
         <div class="grid grid-cols-3 text-xl pb-6">
         
-            <div><router-link :to="{name: 'Client' }"> Client </router-link></div>
+            <div><router-link :to="{name: 'ClientAll' }"> Client </router-link></div>
 
             <div><router-link :to="{name: 'QuoteAll' }"> Quote </router-link></div>
 

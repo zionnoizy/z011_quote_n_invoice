@@ -3,7 +3,11 @@
     <div class="QuoteAdd">
 
         <p>test997</p>
-        <p>Empty Redirection Page.</p>
+        <p class="dashboard_txt pt-5" ><router-link to="/dashboard" exact>
+            
+            <a><strong class="link">Dashboard</strong></a></router-link>  > Quote Add
+          
+          </p>
 
 
 
@@ -11,19 +15,21 @@
 
         <div class="grid grid-cols-1 gap-1 ">
             <!--1/3-------------------BILL-SHIP-TO-------------------------------------->
-            <div class="" style="display: flex;;">
+            <div class="mx-auto" style="display: flex;;">
                 <!--1/3-->
-                <label>1.BILL TO</label>
-                <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button"
-                    data-bs-toggle="modal" data-bs-target="#choose_bill_to" v-on:click="this.getAllClient1();">
+                <div class="flex-grow-0 mx-2 px-3">
+                    <label>1.BILL TO</label>
+                    <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button"
+                        data-bs-toggle="modal" data-bs-target="#choose_bill_to" v-on:click="this.getAllClient1();">
 
-                    <p ref="tmp_b_fullname" id="tmp_b_fullname"></p>
-                    <p ref="tmp_b_address1" id="tmp_b_address1"></p>
-                    <p ref="tmp_b_address2" id="tmp_b_address2"></p>
-                    <p ref="tmp_b_city" id="tmp_b_city"></p>
-                    <p ref="tmp_b_postcode" id="tmp_b_postcode"></p>
+                        <p ref="tmp_b_fullname" id="tmp_b_fullname"></p>
+                        <p ref="tmp_b_address1" id="tmp_b_address1"></p>
+                        <p ref="tmp_b_address2" id="tmp_b_address2"></p>
+                        <p ref="tmp_b_city" id="tmp_b_city"></p>
+                        <p ref="tmp_b_postcode" id="tmp_b_postcode"></p>
 
-                </button>
+                    </button>
+                </div>    
                 <!-------------------modal//BillTo------------------------->
                 <div class="modal fade" id="choose_bill_to" tabindex="-1" aria-labelledby="" aria-hidden="true">
                     <div class="modal-dialog modal-xl">
@@ -166,7 +172,7 @@
 
             </div>
             <!--2/3--------------------------------------------------------------------->
-            <div class="grid grid-cols-2 gap-2">
+            <div class="mx-auto grid grid-cols-2 gap-2" style="display: flex;;">
                 <div>
                     <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button "
                         data-bs-toggle="modal" data-bs-target="#choose_products" v-on:click="this.getAllProducts();">
@@ -195,52 +201,47 @@
 
 
                                 <div class="modal-footer">
-                                    <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="close">Add Product
-                                        To Quote</button>
+                                    <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="close">Add Product To Quote</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
-
-                    <button class="btn btn-dark"> Add Product To Quote </button>
                 </div>
-                <div>
 
-                </div>
                 <!--show choose products-->
-                <table class="table table-dark">
-                    <thead>
-                        <tr>
-                            <th scope="col">Choosen Product Name</th>
-                            <th scope="col">Product Code</th>
-                            <th scope="col">Product Category</th>
-                            <th scope="col">Product Cost</th>
-                            <th scope="col">Product Margin</th>
-                            <th scope="col">Product Sell</th>
-                            <th scope="col">Add/ Delete</th>
-                        </tr>
-                    </thead>
+                <div>
+                    <table class="table table-dark">
+                        <thead>
+                            <tr class="d-flex">
+                                <th class="col-5" scope="col">Choosen Product Name</th>
+                                <th class="col-5" scope="col">Product Code</th>
+                                <th scope="col">Product Category</th>
+                                <th scope="col">Product Cost</th>
+                                <th scope="col">Product Margin</th>
+                                <th scope="col">Product Sell</th>
+                                <th scope="col">Add/ Delete</th>
+                            </tr>
+                        </thead>
 
 
-                    <tbody>
+                        <tbody>
 
 
-                        <tr v-for="p in choosen_products">
+                            <tr v-for="p in choosen_products">
 
-                            <td> {{ p.p_fullname }} </td>
-                            <td> {{ p.p_code }} </td>
-                            <td> {{ p.p_category }} </td>
-                            <td> {{ p.p_cost }} </td>
-                            <td> {{ p.p_margin }} </td>
-                            <td id="add_all_sell"> {{ p.p_sell }} </td>
-                            <td> <button class="btn btn-info" @click.prevent="plusProduct"> [+] </button>
-                                <button class="btn btn-danger" @click.prevent="minusProduct"> [-] </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                                <td> {{ p.p_fullname }} </td>
+                                <td> {{ p.p_code }} </td>
+                                <td> {{ p.p_category }} </td>
+                                <td> {{ p.p_cost }} </td>
+                                <td> {{ p.p_margin }} </td>
+                                <td id="add_all_sell"> {{ p.p_sell }} </td>
+                                <td> <button class="btn btn-info" @click.prevent="plusProduct"> [+] </button>
+                                    <button class="btn btn-danger" @click.prevent="minusProduct"> [-] </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
 

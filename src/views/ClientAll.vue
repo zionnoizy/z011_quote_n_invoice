@@ -29,7 +29,7 @@
       </div>
 
     <div class="px-5 mx-5 grid grid-cols-5 gap-3 ">
-
+      <!--[new_task] on click client-->
       <div class="client_card" v-for="c in all_clients" > 
         
         <div class="row">
@@ -130,5 +130,9 @@ export default{
 </script>
 
 <style>
-
+.client_card:hover {
+  z-index: 2;
+  position: absolute;
+  background: rgba(120, 51, 51, 0.5);
+}
 </style>

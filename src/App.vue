@@ -80,6 +80,8 @@ padding: 20px;
 width: 275px;
 height: 175px;
 }
+
+
 /* */
 tr:hover {
     background-color: #1d9a6a;
