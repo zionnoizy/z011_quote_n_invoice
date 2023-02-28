@@ -1,6 +1,8 @@
 <template>
     <div class="all-products-choose">
+
     <th>PRODUCT IN DATABASE:</th>
+
         <button class="btn btn-primary " @click.prevent="getAllProductsNewest()">Sort From Oldest </button>
         <button class="btn btn-primary " @click.prevent="getAllProductsOldest()">Sort From Newest </button>
 
@@ -79,9 +81,7 @@ export default{
 
         }
     },
-    components: {
-
-    },
+    components: {},
     methods: {
 
       async getAllProductsNewest() { 

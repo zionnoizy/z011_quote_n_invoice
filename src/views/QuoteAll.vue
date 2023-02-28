@@ -18,13 +18,20 @@
         </tr>
         </thead>
         <tbody>
-            <tr v-for="p in all_quotes">
-                <td> {{ p.q_quote_number }} </td>
-                <td> {{ p.q_invoice_number }} </td>
-                <td> {{ p.q_category }} </td>
-                <td> {{ p.q_ref }} </td>
-                <td> {{ p.q_po }} </td>
-                <td> {{ p.q_p1_fullname}} </td>
+
+            <tr v-for="p in all_quotes"  >
+              <router-link
+                  tag="a"
+                  :to="{ name: 'OneQuote', params: { id:p.q_quote_number }}"
+              >
+                <td style="width:100px" > {{ p.q_quote_number }} </td>
+                <td style="width:100px" > {{ p.q_invoice_number }} </td>
+                <td style="width:100px"> {{ p.q_category }} </td>
+                <td style="width:100px"> {{ p.q_ref }} </td>
+                <td style="width:100px"> {{ p.q_po }} </td>
+                <td style="width:100px"> {{ p.q_p1_fullname}} </td>
+              </router-link>
+
             </tr>
         
         </tbody>

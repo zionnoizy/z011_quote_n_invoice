@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { getStorage, ref, uploadString } from "firebase/storage";
+import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -30,7 +30,7 @@ const storage = getStorage(app);
 // admin.initializeApp();
 //const analytics = getAnalytics();
 
-
+let tmp_url = '';
 
 export {  app, auth, db, db2, fv, storage }
 
@@ -45,18 +45,41 @@ export const save_2_storage = (fullPath, my_url) => {
   });
 }
 
-export const test2_storage = (fullPath, pdf_base64) => {
+export const test2_storage = (tmp, fullPath, pdf_base64) => {
   console.log("[firebase test2_storage]");
 
   const image_ref = ref(storage, fullPath);
   const storage_ref = ref(storage, fullPath + "text4.pdf");
 
-  const message2 = '5b6p5Y+344GX44G+44GX44Gf77yB44GK44KB44Gn44Go44GG77yB';
+
   uploadString(storage_ref, pdf_base64, 'data_url')
   .then((snapshot) => {
+
+    getDownloadURL(snapshot.ref).then(async (url) => {
+      const get_id = firebase.firestore().collection("ALL_quote").doc(tmp);
+      get_id
+      .update({
+          quote_hashid: tmp,
+          q_pdf_link: url.toString(),
+      })
+      .then(() => {
+          console.log("set doc");
+
+          get_id.get().then((d) => {
+              console.log("updated data:", d.data());
+          });
+      });
+      tmp = url.toString();
+
+
+      return { tmp };
+
+
+    })
+
     console.log('Uploaded a base64 string pdf version!');
   });
-
+  
 }
 
 

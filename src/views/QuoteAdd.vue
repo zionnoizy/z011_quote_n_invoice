@@ -249,8 +249,9 @@
 
             <div>
                 <button class="preview_btn btn btn-info btn-lg btn-block" data-bs-toggle="modal"
-                    data-bs-target="#preview_quotation" @click.prevent=previewBtn()> Preview </button>
+                    data-bs-target="#preview_quotation" @click.prevent=previewBtn()> Preview Quotation</button>
                 <!--@click.prevent="uploadQuotePDF($event)" download -->
+
                 <!------------------modal start-------------------->
                 <div class="modal fade" id="preview_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true">
 
@@ -284,6 +285,8 @@
                     </div>
                 </div>
                 <!------------------modal end---------------------->
+
+                <button class="preview_btn btn btn-info btn-lg btn-block"> Comming Soon. </button>
             </div>
         </div>
 
@@ -317,6 +320,9 @@ import AllProductsChoose from "@/components/AllProductsChoose.vue";
 import { addDoc, collection } from "@firebase/firestore";
 
 import { app, db, auth } from "@/firebase.js";
+
+
+
 export default {
     name: 'QuoteAdd',
     props: ['choosen_products'],
@@ -391,6 +397,13 @@ export default {
 
             choosen_products: [],
 
+            bodyData: [],
+
+            tmp_url: '',
+
+            merged : {},
+
+            final_merch: {},
         }
     },
     components: {
@@ -542,7 +555,7 @@ export default {
         previewBtn() {
 
             console.log("[previewBtn] +++++++++++++++++++++++++++++++++++++++++++=--");
-            const doc = new jsPDF();  //'l', 'mm', 'a4'
+            const doc = new jsPDF(); 
             doc.addImage(cms_empty_invoice_no_table, "JPEG", 0, 0, 210, 297);
 
             //A-add all48 text
@@ -575,14 +588,65 @@ export default {
             doc.text(oo_s_city, 72, 108);
             doc.text(oo_s_postcode, 72, 113);
 
+            //let bodyData = [];
+
+            
+
+            //$this is for autoTable
             let bodyData = [];
             this.choosen_products.forEach((element, index, array) => {
-                console.log("[previewBtn-choosen_products]" + element.p_fullname + " " + index + " " + array); // 100, 200, 300
+                console.log("[previewBtn-choosen_products1]" + element.p_fullname + " " + index + " " + array); // 100, 200, 300
                 console.log(index); // 0, 1, 2
                 console.log(array); // same myArray object 3 times
                 bodyData.push(element);
-                console.log("[previewBtn-choosen_products2]" + bodyData[0].p_fullname);
+                console.log("[previewBtn-choosen_products1]" + bodyData[0].p_fullname);
             });
+
+            //$this is for firebase firestore
+            let ff = {};
+            let tmp_ff = {};
+
+            this.choosen_products.forEach((element, index, array) => {
+                //q_p1_fullname
+                let tmp1 = "q_p"+(index+1)+"_fullname";
+                let tmp2 = "q_p"+(index+1)+"_code";
+                let tmp3 = "q_p"+(index+1)+"_category";
+                let tmp4 = "q_p"+(index+1)+"_cost";
+                let tmp5 = "q_p"+(index+1)+"_margin";
+                let tmp6 = "q_p"+(index+1)+"_sell";
+                console.log(element.p_fullname + " " + element.p_category + "       "  +  tmp1);
+                /*
+                ff.this.tmp1 = element.p_fullname,
+                ff.this.tmp2 = element.p_code,
+                ff.this.tmp3 = element.p_category,
+                ff.this.tmp4 = element.p_cost,
+                ff.this.tmp5 = element.p_margin,
+                ff.this.tmp6 = element.p_sell,
+                */
+                tmp_ff = {
+                    [tmp1]: element.p_fullname,
+                    [tmp2]: element.p_code,
+                    [tmp3]: element.p_category,
+                    [tmp4]: element.p_cost,
+                    [tmp5]: element.p_margin,
+                    [tmp6]: element.p_sell,
+                };
+                let merged = { tmp_ff, ff }; 
+
+                Object.keys(tmp_ff).forEach(key => {
+                    console.log("[previewBtn-choosen_products2]" + key, tmp_ff[key]); //not cimulative
+                });
+
+
+                console.log("[previewBtn-choosen_products2]        " ); // 100, 200, 300
+                console.log(index); // 0, 1, 2
+                console.log(array); // same myArray object 3 times
+                bodyData.push(element);
+
+                console.log("[previewBtn-choosen_products2]" + Object.keys(merged).tmp1);
+            });
+
+
 
             //https://github.com/simonbengtsson/jsPDF-AutoTable/blob/master/examples/examples.js
             var finalY = doc.lastAutoTable.finalY || 10
@@ -604,7 +668,7 @@ export default {
                 margin: { top: 0, right: 10, bottom: 0, left: 10 }, //important2
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
                 body: [
-                    [bodyData[0].p_fullname, bodyData[0].p_code, bodyData[0].p_quantity,"£"+bodyData[0].p_sell, "discount", bodyData[0].p_sell]
+                    //[bodyData[0].p_fullname, bodyData[0].p_code, bodyData[0].p_quantity,"£"+bodyData[0].p_sell, "discount", bodyData[0].p_sell]
 
                 ]
             })
@@ -631,38 +695,24 @@ export default {
         },
         //https://medium.com/runthatline/uploading-files-to-firebase-cloud-storage-using-vue-3-and-the-composition-api-d8370d1c03f7
         uploadQuotePDF(e) {
-            //[1]generate PDF
 
-
-
-            //document.getElementById('preview_quotation').appendChild(embed);
-            /*
-            var x = window.open();
-            x.document.open();
-            x.document.write(embed);
-            x.document.close();
-            */
-            //doc.save("./tmp/a4.pdf");
-
-            //const file = e.target.files[0];
-            const storage = getStorage();
+            
+            const a = getStorage();
             const myTimestamp = firebase.firestore.Timestamp.now();
             const today_year = myTimestamp.toDate().getFullYear();
             const tmp_today_month = myTimestamp.toDate().getMonth();
 
-            //const t = firebase.firestore.serverTimestamp.fromDate(new Date());
-            //const today_year = ts.toDate().getYear();
-            //const today_month = ts.toDate().getMonth();
             console.log("[uploadQuotePDF] " + myTimestamp + " " + today_year + " " + tmp_today_month);
             const month_folder = this.convert_to_month[tmp_today_month];
 
             //const today_month = convert_month(tmp_today_month);
             const path_string = "/all_quote/" + today_year + "/" + month_folder + "/"
             console.log();
-            console.log("[uploadQuotePDF] + ");
-            test2_storage(path_string, this.return_base64);
-
-            console.log("[uploadQuotePDF] @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ");
+            
+            
+            let tmp3 = '';
+            let tmp2 = test2_storage( tmp3, path_string, this.return_base64);
+            console.log("[uploadQuotePDF] final_pdf url + " + tmp2 + " " + tmp3);    
 
             // storage ref + upload task
 
@@ -685,27 +735,24 @@ export default {
                 q_ship_city: document.getElementById('tmp_s_city').innerHTML,
                 q_ship_postcode: document.getElementById('tmp_s_postcode').innerHTML, 
 
-                q_p1_fullname: "test999",
-                q_p1_code: "bodyData[0].p_code",
-                
-                q_quote_number: "tesy",
-                q_invoice_number: null,
+                q_quote_number: "THIS_IS_QUOTE_NUMBER",
+                q_invoice_number: "THIS_IS_INVOICE_NUMBER",
                 q_category: null,
                 q_ref: null,
                 q_po: null,
 
-
-
-
-
+                //q_pdf_link: 'THIS_IS_FIRESTORE_URL',
             }
 
+            let hash_id = '';
             addDoc(ref, obj_ref)
                 .then(docRef => {
 
                     const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
                     console.log("[QuoteAdd] Document written with ID: ", docRef.id);
 
+                    const string = "/all_quote/" + docRef.id + "/";
+                    test2_storage( docRef.id, string, this.return_base64);//use this    
                     get_id
                         .update({
                             quote_hashid: docRef.id,
@@ -717,9 +764,41 @@ export default {
                                 console.log("updated data:", d.data());
                             });
                         });
+                    ////////////////////////////////////////////////////////////
+                    /*
+                    const storage = getStorage(app);
+                    const storage_ref = ref(storage, "tex5.txt");
+                    uploadString(storage_ref, pdf_base64, 'data_url')
+                    .then((snapshot) => {
+
+                        getDownloadURL(snapshot.ref).then(async (url) => {
+                        
+                        get_id
+                        .update({
+                            q_pdf_link: url,
+                        })
+                        .then(() => {
+                            console.log("set doc");
+
+                            get_id.get().then((d) => {
+                                console.log("updated data:", d.data());
+                            });
+                        });
+                        tmp = url.toString();
+
+
+                        return { tmp };
+
+
+                        })
+
+                        console.log('Uploaded a base64 string pdf version!');
+                    });
+                    */
+                    ////////////////////////////////////////////////////////////
                 })
-
-
+                
+                 
         },
 
         doSomenthing(data) {
