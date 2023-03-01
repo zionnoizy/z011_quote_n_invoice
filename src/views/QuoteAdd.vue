@@ -2,12 +2,12 @@
 <template>
     <div class="QuoteAdd">
 
-        <p>test997</p>
+        <p>{{tmp_sell}}</p>
         <p class="dashboard_txt pt-5" ><router-link to="/dashboard" exact>
             
             <a><strong class="link">Dashboard</strong></a></router-link>  > Quote Add
           
-          </p>
+        </p>
 
 
 
@@ -152,8 +152,11 @@
 
                     <div>
                         <label for="q_subtotal">Subtotal</label>
-                        <input ref="q_subtotal" placeholder="Subtotal" id="q_subtotal" disabled />
+                        <!--disabled @change="CalculateSubtotal"-->
+                        <input ref="q_subtotal" placeholder="Subtotal" id="q_subtotal" disabled/>
                     </div>
+
+
                     <div>
                         <label for="q_vat">VAT</label>
                         <input ref="q_vat" placeholder="Vat" id="q_vat" value="20" disabled />
@@ -164,14 +167,20 @@
                     </div>
                     <div>
                         <label for="q_total">Total</label>
-                        <input ref="q_total" placeholder="Total" id="q_total" class="input-lg" @input="CumulativeTotal"
+                        <input ref="q_total" placeholder="Total" id="q_total" class="input-lg" @input="CalculateTotal"
                             disabled />
+                    </div>
+                    <div>-----------------------------</div>
+                    <div>
+                        <label for="q_total">Reference Number</label>
+                        <input ref="q_reference_number" placeholder="Reference" id="q_reference_number" class="input-lg" />
                     </div>
                 </div>
 
 
             </div>
             <!--2/3--------------------------------------------------------------------->
+            
             <div class="mx-auto grid grid-cols-2 gap-2" style="display: flex;;">
                 <div>
                     <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button "
@@ -191,8 +200,11 @@
                                 </div>
                                 <!---->
                                 <div class="modal-body">
-
-                                    <all-products-choose v-on:choosen_products="getChoosenProducts($event)">
+                                    <!--v-on:choosen_products="getChoosenProducts($event)"-->
+                                    <all-products-choose 
+                                        v-on:choosen_products="getChoosenProducts($event); "
+                                        v-on:tmp_sell="getTmpSell($event);"
+                                    >
                                     </all-products-choose>
 
 
@@ -208,7 +220,7 @@
                     </div>
                 </div>
 
-                <!--show choose products-->
+                <!--show choosen products-->
                 <div>
                     <table class="table table-dark">
                         <thead>
@@ -227,18 +239,24 @@
                         <tbody>
 
 
-                            <tr v-for="p in choosen_products">
+                            <tr v-for="p, i in choosen_products">
 
                                 <td> {{ p.p_fullname }} </td>
                                 <td> {{ p.p_code }} </td>
                                 <td> {{ p.p_category }} </td>
                                 <td> {{ p.p_cost }} </td>
                                 <td> {{ p.p_margin }} </td>
-                                <td id="add_all_sell"> {{ p.p_sell }} </td>
+
+                                <td :ref="'add_all_sell'+i" :id="'add_all_sell'+i" th:onload="CalculateSubtotal(i)"> 
+                                    {{ p.p_sell }} 
+                                </td>
+
                                 <td> <button class="btn btn-info" @click.prevent="plusProduct"> [+] </button>
                                     <button class="btn btn-danger" @click.prevent="minusProduct"> [-] </button>
                                 </td>
                             </tr>
+
+
                         </tbody>
                     </table>
                 </div>
@@ -253,15 +271,14 @@
                 <!--@click.prevent="uploadQuotePDF($event)" download -->
 
                 <!------------------modal start-------------------->
-                <div class="modal fade" id="preview_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true">
+                <div class="modal fade" id="preview_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true" >
 
                     <div class="modal-dialog modal-xl">
 
-                        <div class="modal-content text-black">
+                        <div class="modal-content text-black" style="height:1000px;">
 
                             <div class="modal-header">
-                                <h4 class="modal-title"> Preview Qutotation, Please make sure all information is correct, we
-                                    cannot able to change back later on. </h4>
+                                <h4 class="modal-title"> Preview Qutotation, Please make sure all information is correct </h4>
 
                             </div>
 
@@ -275,8 +292,11 @@
 
                             </div>
                             <div class="modal-footer" style="background-color: #1267aa;">
-                                <button type="button" class="btn btn-success" @click="uploadQuotePDF($event)">Submit
-                                    Qutotation </button>
+
+                                <button type="button" class="btn btn-success" @click="uploadQuotePDF($event)">
+                                    Submit Qutotation 
+                                </button>
+
                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                             </div>
                         </div>
@@ -312,7 +332,7 @@ import { onMounted, nextTick } from 'vue';
 //ref
 import { getStorage, uploadBytes, uploadBytesResumable, ref2 as firebaseStorageRef, getDownloadURL } from "firebase/storage";
 import { serverTimestamp } from 'firebase/firestore'
-import { save_2_storage, test2_storage, fv } from '../firebase';
+import { save_2_storage, test2_storage, fv, auto_quote_no_generator } from '../firebase';
 
 import autoTable from 'jspdf-autotable';
 import AllProductsChoose from "@/components/AllProductsChoose.vue";
@@ -325,13 +345,13 @@ import { app, db, auth } from "@/firebase.js";
 
 export default {
     name: 'QuoteAdd',
-    props: ['choosen_products'],
+    props: ['choosen_products','tmp_sell'],
     setup() {
         const s_product2 = reactive([]);
         onMounted(async () => {
             try {
                 const typing_product = await firebase
-                    .firestore()
+                    .firestore() 
                     .collection("all_products")
                     .get();
                 typing_product.forEach((doc) => {
@@ -396,6 +416,7 @@ export default {
             return_base64: null,
 
             choosen_products: [],
+            tmp_sell: 0,
 
             bodyData: [],
 
@@ -404,6 +425,8 @@ export default {
             merged : {},
 
             final_merch: {},
+
+            tmp_subtotal: 0,
         }
     },
     components: {
@@ -411,11 +434,20 @@ export default {
 
     },
     methods: {
-        getChoosenProducts(e) {
+        getChoosenProducts(e) { //call when new page
             this.choosen_products = e;
+
+
+            
+
             console.log("#[QuoteAdd-------]");
-            console.log("choosen_products changes.");
+            console.log("get tmp_sell.");
             console.log("#[QuoteAdd-------]");
+        },
+        getTmpSell(e){
+            this.tmp_sell = e;
+            console.log(this.tmp_sell);
+            document.getElementById('q_subtotal').value = this.tmp_sell;
         },
 
         async getAllClient1() {
@@ -475,7 +507,6 @@ export default {
                 .then((snapshot) => {
                     this.one_product = [];
                     snapshot.forEach(d => {
-
                         var one_product = d.data();
 
                         document.getElementById('p_code').value = d.data().p_code;
@@ -557,7 +588,6 @@ export default {
             console.log("[previewBtn] +++++++++++++++++++++++++++++++++++++++++++=--");
             const doc = new jsPDF(); 
             doc.addImage(cms_empty_invoice_no_table, "JPEG", 0, 0, 210, 297);
-
             //A-add all48 text
             const oo_b_fullname = document.getElementById('tmp_b_fullname').innerHTML;
             const oo_b_a1 = document.getElementById('tmp_b_address1').innerHTML;
@@ -571,26 +601,28 @@ export default {
             doc.text(oo_b_a2, 6, 103);
             doc.text(oo_b_city, 6, 108);
             doc.text(oo_b_postcode, 6, 113);
-
-
             //B-add all48 text
             const oo_s_fullname = document.getElementById('tmp_s_fullname').innerHTML;
             const oo_s_a1 = document.getElementById('tmp_s_address1').innerHTML;
             const oo_s_a2 = document.getElementById('tmp_s_address2').innerHTML;
             const oo_s_city = document.getElementById('tmp_s_city').innerHTML;
             const oo_s_postcode = document.getElementById('tmp_s_postcode').innerHTML;
-
             console.log("[previewBtn] -------ship-to");
             doc.setFontSize(10);
             doc.text(oo_s_fullname, 72, 93);
             doc.text(oo_s_a1, 72, 98);
             doc.text(oo_s_a2, 72, 103);
             doc.text(oo_s_city, 72, 108);
-            doc.text(oo_s_postcode, 72, 113);
+            doc.text(oo_s_postcode, 72, 113);      
+            //C-quote no + invoice date + ref
+            //const quote_number = auto_quote_no_generator(); //cannot generate quote number
+            const reference_number = document.getElementById('q_reference_number').value;
+            const myTimestamp = firebase.firestore.Timestamp.now();
+            var formatedDate = format(myTimestamp, 'dd/MM/yyyy'); //format is not defined!
+            doc.text(quote_number, 92, 83);
+            doc.text(reference_number, 102, 87);
+            doc.text(formatedDate, 102, 98);
 
-            //let bodyData = [];
-
-            
 
             //$this is for autoTable
             let bodyData = [];
@@ -605,7 +637,6 @@ export default {
             //$this is for firebase firestore
             let ff = {};
             let tmp_ff = {};
-
             this.choosen_products.forEach((element, index, array) => {
                 //q_p1_fullname
                 let tmp1 = "q_p"+(index+1)+"_fullname";
@@ -696,9 +727,10 @@ export default {
         //https://medium.com/runthatline/uploading-files-to-firebase-cloud-storage-using-vue-3-and-the-composition-api-d8370d1c03f7
         uploadQuotePDF(e) {
 
-            
-            const a = getStorage();
             const myTimestamp = firebase.firestore.Timestamp.now();
+            var formatedDate = format(myTimestamp, 'dd/MM/yyyy');
+
+
             const today_year = myTimestamp.toDate().getFullYear();
             const tmp_today_month = myTimestamp.toDate().getMonth();
 
@@ -718,6 +750,8 @@ export default {
 
             //[new_task] create all pic of information push to firestore.
             //https://www.koderhq.com/tutorial/vue/firestore-database/
+            let quote_number = auto_quote_no_generator();
+            let reference_number = document.getElementById('q_reference_number').value;
 
             const ref = collection(db, "ALL_quote");
 
@@ -735,11 +769,12 @@ export default {
                 q_ship_city: document.getElementById('tmp_s_city').innerHTML,
                 q_ship_postcode: document.getElementById('tmp_s_postcode').innerHTML, 
 
-                q_quote_number: "THIS_IS_QUOTE_NUMBER",
-                q_invoice_number: "THIS_IS_INVOICE_NUMBER",
-                q_category: null,
-                q_ref: null,
+                q_quote_number: quote_number,
+                q_uploaded_date: formatedDate,
+                q_ref: reference_number,
                 q_po: null,
+                
+                q_category: null,
 
                 //q_pdf_link: 'THIS_IS_FIRESTORE_URL',
             }
@@ -809,7 +844,7 @@ export default {
 
 
         firebaseStorageUpload() {
-            console.log("[firebaseStorageUpload]==================");
+            console.log("[firebaseStorageUpload]==================================");
             const storage = getStorage();
             const myTimestamp = firebase.firestore.Timestamp.now();
             const today_year = myTimestamp.toDate().getFullYear();
@@ -850,8 +885,22 @@ export default {
 
                 },
             );
-            console.log("[firebaseStorageUpload]==================");
-        }
+            console.log("[firebaseStorageUpload]==================================");
+        },
+
+        CalculateSubtotal(i){
+            let dynamic = "add_all_sell"+i;
+            let b = td.getElementById(dynamic).innerText;
+
+            const one_p_money = document.getElementById(dynamic).value;
+            console.log("[CalculateSubtotal]       " + one_p_money);
+
+            document.getElementById('q_subtotal').value = tmp_ans;
+
+        },
+        CalculateTotal(){
+            document.getElementById('q_total').value = tmp_ans;
+        },
     },
     created() {
 
@@ -864,46 +913,4 @@ export default {
 </script>
 
 <style>
-.client_card:hover {
-    background-color: #323829;
-}
-
-.choose_address_btn {
-    width: 250px;
-    height: 250px;
-}
-
-/* ** */
-datalist {
-    position: absolute;
-    max-height: 20em;
-    border: 0 none;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-datalist option {
-    font-size: 0.8em;
-    padding: 0.3em 1em;
-    background-color: #ccc;
-    cursor: pointer;
-}
-
-/* option active styles */
-datalist option:hover,
-datalist option:focus {
-    color: #fff;
-    background-color: #036;
-    outline: 0 none;
-}
-
-#browserdata option {
-    font-size: 1.8em;
-    padding: 0.3em 1em;
-    background-color: #ccc;
-    cursor: pointer;
-}
-
-input[disabled] {
-    pointer-events: none
-}</style>
+</style>

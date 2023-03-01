@@ -10,6 +10,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
 
 import './style.css'
+
 /*
 import { initializeApp } from "firebase/app";
 
@@ -34,4 +35,5 @@ initializeApp(firebaseConfig);
 createApp(App)
 .use(router)
 .mount('#app')
+
 

@@ -5,12 +5,10 @@
         <p>test20</p>
         <p>Add Client Page.</p>
 
-
-
         <p> client address is in UK / outside of UK</p>
+        <!--@sumbit.prevent="addClient"-->
 
-        <form @sumbit.prevent="addClient">
-
+        <form>
           <div class="grid grid-cols-2 gap-2" >
             <div><label>Client Company Name*</label></div>
             <div><input ref="client_cpyname" type="text" placeholder="Client Company Name" required/></div>
@@ -47,6 +45,8 @@ export default{
     components: {},
     methods:{
       async createClient() {
+        //if ($refs.client_cpyname.value == '' || this.$refs.address_1.value == '' || this.$refs.address_2.value == '' || this.$refs.city.value == '' || this.$refs.post_code.value == ''){
+
         console.log("[ClientAdd] create new client.");
 
         const db_id = firebase.firestore();

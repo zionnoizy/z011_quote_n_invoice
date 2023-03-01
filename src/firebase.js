@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
-
+import { collection, addDoc, DocumentReference } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -82,4 +82,39 @@ export const test2_storage = (tmp, fullPath, pdf_base64) => {
   
 }
 
+
+
+
+export const auto_quote_no_generator = () => {
+
+  let ans = '';
+  let first_half = "Q-CMS";
+
+  const ref = collection(db, 'ALL_quotes');
+  const snapshot = ref.count().get(); //count is not a function
+  console.log(snapshot.data().count);
+  const how_many = snapshot.data().count;
+  ans = first_half + how_many;
+  return { ans };
+
+  
+}
+
+
+export const auto_invoice_no_generator = () => {
+
+  let ans = '';
+  let first_half = "I-CMS"
+  const collectionRef = db.collection('ALL_quotes');
+  const snapshot = collectionRef.count().get().limit(1).then(
+    doc => {
+      if (doc.exists) {
+        console.log(snapshot.data().count);
+        const how_many = snapshot.data().count;
+        ans = first_half + how_many;
+        return { ans };
+      }
+    });;
+  
+}
 

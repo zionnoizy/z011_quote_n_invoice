@@ -5,57 +5,46 @@
       <p class="pb-20">= *The Sell Will Auto-Generate After Typing Cost & Margin Sessions. </p>
 
       <form @sumbit.prevent="addProduct">
-  
-        <!-- <button class="" @click="createProduct" > New Product[+] </button> -->
 
-        <!-- <input ref="p_code" placeholder="Search By Name" id="pi_code" disabled/> -->
-
-        <!-- <button type="button" class="btn btn-lg btn-primary" disabled>Deep Serach</button> -->
-        <!-- <button type="button" class="btn btn-lg btn-secondary " disabled>Data Add Propioty</button> -->
-        <!-- <button type="button" class="btn btn-lg btn-secondary " disabled>Alphabet</button> -->
         <table class="table table-dark" >
-
-
           <thead>
-          <tr>
-            <th scope="col">[Add/ Delete]</th>
-            <th scope="col">[Code#]</th>
-            <th scope="col">[Name]</th>
-            <th scope="col">[Catagory]</th>
-            <th scope="col">[&#163; Product Cost]</th>
-            <th scope="col">[Product Margin &percnt;]</th>
-            <th scope="col">[= *Product Sell]</th>
-          </tr>
+            <tr>
+              <th scope="col">[Add/ Delete]</th>
+              <th scope="col">[Code#]</th>
+              <th scope="col">[Name]</th>
+              <th scope="col">[Catagory]</th>
+              <th scope="col">[&#163; Product Cost]</th>
+              <th scope="col">[Product Margin &percnt;]</th>
+              <th scope="col">[= *Product Sell]</th>
+            </tr>
           </thead>
-    <tbody>
-      <tr>
 
-    <th scope="row">
-
-      <div><button class="btn btn-info"   @click.prevent="createProduct" > [+] </button> </div>
-      
-    </th>
+          <tbody>
+              <tr>
+              <th scope="row">
+                <div><button class="btn btn-info"   @click.prevent="createProduct" > [+] </button> </div>
+              </th>
 
 
-    <td> <input ref="p_code" placeholder="Product Code" id="pi_code" required/> </td>
-    <td> <input ref="p_enter" placeholder="Item Name" id="pi_name" required/> </td>
-    <td> <input ref="p_category" placeholder="Product Category" id="pi_catrgory" required/> </td>
-    <td> <input ref="p_cost" placeholder="Product Cost (digit only)" id="pi_cost" v-on:keypress="NumbersOnly" @input="CalculateSell" required /> </td>
-    <td> <input ref="p_margin" placeholder="Product Margin (digit only)" id="pi_margin" onkeypress='return event.charCode >= 48 && event.charCode <= 57' @input="CalculateSell" required /> </td>
-    <td> <input ref="p_sell" placeholder="Product Sell" id="pi_sell" @input="CalculateSell" disabled/> </td>
+              <td> <input ref="p_code" placeholder="Product Code" id="pi_code" required/> </td>
+              <td> <input ref="p_enter" placeholder="Item Name" id="pi_name" required/> </td>
+              <td> <input ref="p_category" placeholder="Product Category" id="pi_catrgory" required/> </td>
+              <td> <input ref="p_cost" placeholder="Product Cost (digit only)" id="pi_cost" v-on:keypress="NumbersOnly" @input="CalculateSell" required /> </td>
+              <td> <input ref="p_margin" placeholder="Product Margin (digit only)" id="pi_margin" onkeypress='return event.charCode >= 48 && event.charCode <= 57' @input="CalculateSell" required /> </td>
+              <td> <input ref="p_sell" placeholder="Product Sell" id="pi_sell" @input="CalculateSell" disabled/> </td>
 
-  </tr>
+            </tr>
 
-  
-  <tr>
-    <th scope="row">-</th>
-    <td>Example1</td>
-    <td>Example2</td>
-    <td >Example3</td>
-  </tr>
-  
-</tbody>
-</table>
+            
+            <tr>
+              <th scope="row">-</th>
+              <td>Example1</td>
+              <td>Example2</td>
+              <td >Example3</td>
+            </tr>
+          
+        </tbody>
+        </table>
 
 
         

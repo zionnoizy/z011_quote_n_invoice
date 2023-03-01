@@ -1,4 +1,8 @@
 <template>
+
+
+
+
     <div class="ClientAll">
         <!--https://pbs.twimg.com/media/DrM0nIdU0AEhG5b.jpg-->
         <p>test21</p>
@@ -8,53 +12,79 @@
 
         <client-add></client-add>
 
-      <p>...................................................</p>
+        <p>...................................................</p>
 
-      <div class="px-5 mx-5 grid grid-cols-2 gap-1 ">
-      <div>
-      <label>Search Engine</label>
-      <input placeholder="search here.." />
-      </div>
-      <div>
-      <!---->
-      <div class="grid grid-cols-3">
-        
-        <div>Sort By: A-Z</div>
-        <div>Date Added</div>
-        <div>Country</div>
-
-      </div>
-      <!---->
-      </div>
-      </div>
-
-    <div class="px-5 mx-5 grid grid-cols-5 gap-3 ">
-      <!--[new_task] on click client-->
-      <div class="client_card" v-for="c in all_clients" > 
-        
-        <div class="row">
-          <div>
-            <strong>{{ c.c_fullname }}</strong>
-          </div>
+        <div class="px-5 mx-5 grid grid-cols-2 gap-1 ">
+        <div>
+        <label>Search Engine</label>
+        <input placeholder="search here.." />
+        </div>
+        <div>
+        <!---->
+        <div class="grid grid-cols-3">
           
-          <div>
-            <strong>{{ c.c_address_1 }}</strong>
-          </div>
-          
-          <div>
-            <strong>{{ c.c_address_2 }}</strong>
-          </div>
+          <div>Sort By: A-Z</div>
+          <div>Date Added</div>
+          <div>Country</div>
 
-          <div>
-            <p>{{ c.c_city }}, {{ c.c_post_code }} </p>
+        </div>
+        <!---->
+        </div>
+        </div>
+
+        <div class="px-5 mx-5 grid grid-cols-5 gap-3 ">
+          <!--[new_task] on click client-->
+
+      
+        <div class="client_card" v-for="c in all_clients" type="button"  data-bs-toggle="modal" data-bs-target="#add_delievery_address"  > 
+          
+          <div class="row">
+            <div>
+              <strong>{{ c.c_fullname }}</strong>
+            </div>
+            
+            <div>
+              <strong>{{ c.c_address_1 }}</strong>
+            </div>
+            
+            <div>
+              <strong>{{ c.c_address_2 }}</strong>
+            </div>
+
+            <div>
+              <p>{{ c.c_city }}, {{ c.c_post_code }} </p>
+            </div>
+
+            <div>
+              <p>{{ c.c_id }} </p>
+            </div>
           </div>
 
         </div>
 
-        
+        <div class="modal fade" id="add_delievery_address" tabindex="-1" aria-labelledby="" aria-hidden="true">
+          
+          <div class="modal-dialog modal-xl">
+              <div class="modal-content text-black">
+
+                  <div class="modal-header">
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"> X </button>
+                  </div>
+
+                  <div class="modal-body">
+                  </div>
+
+                  <div class="modal-footer" style="background-color: #1267aa;">
+                    <button @click="() =>createDelieveryAddress(c.c_cid)">Submit Delivery Address</button>
+                  </div>
+              </div>
+          </div>
+
+        </div>
 
 
-      </div>
+
+
     </div>
 
         
@@ -112,6 +142,7 @@ export default{
           data: msg.data
         })
       },
+      
       deleteClient(id){
         if (window.confirm("do you really want to delete? The system cannot undo.")){
           db.child(id).remove().then(() =>{
@@ -120,19 +151,35 @@ export default{
             console.log(error);
           })
         }
-      }
+      },
 
+      async createDelieveryAddress(c_cid){
+        //if ($refs.client_cpyname.value == '' || this.$refs.address_1.value == '' || this.$refs.address_2.value == '' || this.$refs.city.value == '' || this.$refs.post_code.value == ''){
+        
+        console.log("[ClientAdd] create new client." + c_cid);
+        const db_id = firebase.firestore();
+        const get_id = db_id.collection('all_delivery').doc(c_cid);
+        const id = get_id.id;
+        
+        const obj_ref ={
+          d_fullname:this.$refs.client_cpyname.value,
+          d_address_1:this.$refs.address_1.value,
+          d_address_2:this.$refs.address_2.value,
+          d_city:this.$refs.city.value,
+          d_post_code:this.$refs.post_code.value,
+          d_insert_date: serverTimestamp(),
+          d_cid: c_id,
+        }
+
+        const doc_ref = await addDoc(get_id, obj_ref);
+      }
     },
     created() {
-    this.getAllClient();
+      this.getAllClient();
     },
 }
 </script>
 
 <style>
-.client_card:hover {
-  z-index: 2;
-  position: absolute;
-  background: rgba(120, 51, 51, 0.5);
-}
+
 </style>
