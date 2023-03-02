@@ -84,7 +84,7 @@ export const test2_storage = (tmp, fullPath, pdf_base64) => {
 
 
 
-
+const ans = ref('test');
 export const  auto_quote_no_generator = () => {
 
   let ans = "";
@@ -102,7 +102,7 @@ export const  auto_quote_no_generator = () => {
 
 
     ans = first_half + addedz;
-    return ans;
+    return {ans};
 
   });
 

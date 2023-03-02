@@ -153,7 +153,7 @@
                     <div>
                         <label for="q_subtotal">Subtotal</label>
                         <!--disabled @change="CalculateSubtotal"-->
-                        <input ref="q_subtotal" placeholder="Subtotal" id="q_subtotal" disabled/>
+                        <input ref="q_subtotal" placeholder="Subtotal" id="q_subtotal" value="tmp_sell" disabled/>
                     </div>
 
 
@@ -363,6 +363,9 @@ export default {
             }
         });
         return { s_product2 };
+
+        let quote_number = auto_quote_no_generator2();
+        return {quote_number}
     },
     data() {
 
@@ -616,7 +619,7 @@ export default {
             doc.text(oo_s_postcode, 72, 113);      
             
             //C-quote no + invoice date + ref
-            let quote_number = auto_quote_no_generator2();
+            let quote_number = auto_quote_no_generator2(); //cannot genrate quotenumber
             console.log("check quote_num-----> " + quote_number );
 
             const input_reference_number = document.getElementById('q_reference_number').value;
@@ -908,6 +911,7 @@ export default {
 
     },
 }
+////////////////////////////////////////////////////////////////////////////////////
 function add_zero(num){
 
 const  onez= "0";
@@ -960,7 +964,7 @@ function auto_quote_no_generator2(){
 
 
     ans = first_half + addedz;
-    return ans;
+    return {ans};
 
     });
 

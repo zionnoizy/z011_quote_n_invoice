@@ -179,8 +179,6 @@ export default{
                 qi_uploaded_date: "",
                 qi_ref: "",
                 qi_po: po_number,
-                
-                
 
                 //q_pdf_link: 'THIS_IS_FIRESTORE_URL',
             }

@@ -6,15 +6,17 @@
     <div class="dashboard">
 
         <section class="warehouse_background" :style="{ backgroundImage: `url(${ warehouse })` }">
-            <h2 class="info_head text-4xl font-sans-b mb-16 text-left max-w-lg uppercase lg:ml-16 mt-12 text-white" >
+            <h2 class="dont_blur info_head text-4xl font-sans-b mb-16 text-left max-w-lg uppercase lg:ml-16 mt-12 text-white" >
                 Welcome Back To CMS-QuoteIn
             </h2>
 
-            <div class="col-4 grid grid-cols-1 lg:grid-col-2 gap-2" style="z-index: 2;">
+            <div class="dont_blur col-4 grid grid-cols-1 lg:grid-col-2 gap-2" style="z-index: 2;">
+
                     <div> <button class="btn  btn-lg mt-5 mb-4 font-weight-bold" 
                         style="background-color: #a1ccfe !important; border: none; height: 55px;"> 
                         <router-link :to="{name: 'ClientAll' }"> View / Add Client </router-link> </button> 
                     </div>
+
                     <div> <button class="btn btn-success btn-lg mb-4 font-weight-bold"
                         > 
                         <router-link :to="{name: 'ProductAll' }"> View / Add Product </router-link></button> 
@@ -153,7 +155,7 @@ const sign_out = () =>{
 
 <style>
 .warehouse_background{
-    filter: brightness(70%) saturate(140%);
+    /* filter: brightness(70%) saturate(140%); */
 
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -161,6 +163,7 @@ const sign_out = () =>{
     background-size: cover;
     display: flex;
     z-index: -2;
+    height: 300px;
 }
 
 
@@ -168,4 +171,10 @@ const sign_out = () =>{
   transition: height 0.2s;
 }
 
+.dont_blur{
+
+    z-index: 2;
+
+
+}
 </style>
