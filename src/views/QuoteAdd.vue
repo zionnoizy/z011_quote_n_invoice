@@ -614,14 +614,19 @@ export default {
             doc.text(oo_s_a2, 72, 103);
             doc.text(oo_s_city, 72, 108);
             doc.text(oo_s_postcode, 72, 113);      
+            
             //C-quote no + invoice date + ref
-            //const quote_number = auto_quote_no_generator(); //cannot generate quote number
-            const reference_number = document.getElementById('q_reference_number').value;
+            let quote_number = auto_quote_no_generator2();
+            console.log("check quote_num-----> " + quote_number );
+
+            const input_reference_number = document.getElementById('q_reference_number').value;
+            
             const myTimestamp = firebase.firestore.Timestamp.now();
-            //var formatedDate = format(myTimestamp, 'dd/MM/yyyy'); //format is not defined!
-            doc.text("quote_number", 159, 91);
-            doc.text("reference_number", 159, 97);
-            //doc.text(formatedDate, 102, 98);
+            let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK"); //
+
+            //doc.text(quote_number, 159, 91);
+            doc.text(todayDateTime, 159, 97);
+            doc.text(input_reference_number, 102, 98);
 
 
             //$this is for autoTable
@@ -688,8 +693,8 @@ export default {
         //https://medium.com/runthatline/uploading-files-to-firebase-cloud-storage-using-vue-3-and-the-composition-api-d8370d1c03f7
         async uploadQuotePDF(e) {
 
-            const myTimestamp = firebase.firestore.Timestamp.now();
-            let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK");
+            const myTimestamp = firebase.firestore.Timestamp.now(); //
+            let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK"); //
 
 
             const today_year = myTimestamp.toDate().getFullYear();
@@ -711,11 +716,13 @@ export default {
 
             //[new_task] create all pic of information push to firestore.
             //https://www.koderhq.com/tutorial/vue/firestore-database/
-            let quote_number = await auto_quote_no_generator();
+            let quote_number = auto_quote_no_generator2();
 
-            console.log("check quote_num " + quote_number );
+            
 
-            let q_number = parseFloat(quote_number);
+            console.log("check quote_num-----> " + quote_number );
+
+
             let reference_number = document.getElementById('q_reference_number').value;
 
             const ref = collection(db, "ALL_quote");
@@ -749,12 +756,12 @@ export default {
                 q_ship_city: document.getElementById('tmp_s_city').innerHTML,
                 q_ship_postcode: document.getElementById('tmp_s_postcode').innerHTML, 
 
-                q_quote_number: q_number,
+                q_quote_number: "q_number", //cannot retrieve quote_number!
                 q_uploaded_date: todayDateTime,
                 q_ref: reference_number,
                 q_po: null,
                 
-                q_category: null,
+                
 
                 //q_pdf_link: 'THIS_IS_FIRESTORE_URL',
             }
@@ -812,14 +819,14 @@ export default {
                 */
                 ////////////////////////////////////////////////////////////
             })
-              
+            /*  
             addDoc(ref, obj_ref)
                 .then(docRef => {
 
                      console.log("updated data3:");
 
                 })   
-
+            */
         },
 
         doSomenthing(data) {
@@ -828,7 +835,7 @@ export default {
             })
         },
 
-
+        //seperate function
         firebaseStorageUpload() {
             console.log("[firebaseStorageUpload]==================================");
             const storage = getStorage();
@@ -843,10 +850,6 @@ export default {
             console.log();
             console.log("[firebaseStorageUpload] + ");
             test2_storage(path_string, this.return_base64);
-
-            console.log("[firebaseStorageUpload] ++ ");
-
-            // storage ref + upload task
             const storageref = ref(storage, path_string);
             const uploadtask = uploadBytesResumable(storageref, DATA_HERE);
 
@@ -873,7 +876,18 @@ export default {
             );
             console.log("[firebaseStorageUpload]==================================");
         },
+        dannySumbition(){
 
+
+            //generatePDFSecurantly()
+
+
+
+            //fbAddAllInfo2Quote()
+
+            
+            //firebaseStorageUpload()
+        },
         CalculateSubtotal(i){
             let dynamic = "add_all_sell"+i;
             let b = td.getElementById(dynamic).innerText;
@@ -894,7 +908,65 @@ export default {
 
     },
 }
+function add_zero(num){
 
+const  onez= "0";
+const twoz= "00";
+const threez = "000";
+const fourz = "0000";
+
+
+
+if (num > 0 && num < 10){
+  console.log("1");
+  let returnans = fourz + num;
+  
+  return returnans;
+}
+else if (num > 10 && num < 100){
+  
+  let returnans = threez + num;
+  console.log("2." + returnans);
+  return returnans;
+}
+else if (num > 100 && num < 1000){
+  console.log("3.");
+  let returnans = twoz + num;
+  console.log(returnans);
+  return returnans;
+}
+else if (num > 1000 && num < 10000){
+  console.log("4.");
+  let returnans = onez + num;
+  console.log(onez + num);
+  return returnans;
+}
+
+}
+function auto_quote_no_generator2(){
+
+    let ans = "";
+    let first_half = "Q-CMS";
+
+    const q = firebase.firestore().collection('ALL_quote');
+    const snapshot = q.get(); //count is not a function
+    firebase.firestore().collection("ALL_quote").get().then(function(querySnapshot) {
+
+    console.log("auto_quote_no_generator3" +querySnapshot.size);
+    const docSize = parseFloat(querySnapshot.size);
+    console.log("auto_quote_no_generator4" +docSize);
+
+    let addedz = add_zero(docSize);
+
+
+    ans = first_half + addedz;
+    return ans;
+
+    });
+
+
+
+}
 
 </script>
 

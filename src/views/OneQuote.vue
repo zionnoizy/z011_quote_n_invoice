@@ -1,8 +1,9 @@
 <template>
     <div class="OneQuote">
 
-        <p> coming soon - view specific quote.</p>
-        <p> The quote id is {{ $route.params.id }}</p>
+        <p> debug here only - view specific quote.</p>
+        <p> The quote id is= {{ $route.params.id }}</p>
+        <p> One Q Hash is= {{ $route.query.this_one_q_hash_number }} <!--cannot pass each quote to here--> </p>
 
         <div class="grid grid-cols-3">
 
@@ -34,7 +35,7 @@
                                 <div class="modal-body">
                                     <edit-quote></edit-quote>
 
-                                    {{ each_quote.quote_hashid }} <!--cannot pass each quote to here-->
+   
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="close">Add Product To Quote</button>
@@ -68,7 +69,7 @@
                                     
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="close" v-on:click="this.submitQuotation();">Submit Quotation to Invoice</button>
+                                    <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="close" v-on:click="this.submitQuotation(use_this_hash);">Submit Quotation to Invoice</button>
                                 </div>
                             </div>
                         </div>
@@ -110,8 +111,12 @@ export default{
     data(){
         return{
             id: this.$route.params.id, //[change from hash to quote number]
+            this_one_q_hash_number: this.$route.query.this_one_q_hash_number,
+            
+            
             one_quote_url: '',
 
+            oneqdata: '',
             find_one_quote_info:{
                 q_fullname: null,
                 q_address_1: null,
@@ -120,7 +125,8 @@ export default{
                 q_insert_date: null,
                 q_post_code: null,
                 quote_hashid: null,
-            }
+            },
+            use_this_hash: '',
         }
     },
     components:{
@@ -129,39 +135,69 @@ export default{
     methods:{
 
         retrieveOneQuoteInfo(){
-            console.log("find quotation pdf url + retrieve all quotation inforamtion in here.")
+            console.log("find quotation pdf url + retrieve all quotation inforamtion in here." + q_hash_num)
             // https://www.youtube.com/watch?v=CGrNNGrKCJU&ab_channel=AdnanAfzal    [(9:55)]
-            const findQuoteInfo = firebase.firestore().collection('ALL_quote').id(""); //how can I find hashid
+            const findQuoteInfo = firebase.firestore().collection('ALL_quote').id(q_hash_num); //how can I find hashid
             findQuoteInfo.onSnapshot(snap => {
-                this.all_clients = [];
+                this.find_one_quote_info = [];
                 
                 snap.forEach(d => {
-                    var client = d.data();
-                    this.all_clients.push(client);
+                    var oneqdata = d.data();
+                    this.find_one_quote_info.push(oneqdata);
                 });
                 });  
                 const obj_ref ={
-                    i_po:this.$refs.po_number.value,
                     i_quotation_no:this.$refs.address_1.value,
                 }
         }, 
-        submitQuotation(){
+
+        submitQuotation(use_this_hash){
             //everything is the same besides the po number
-            getElementById.value(po_number)
+            let po_number = document.getElementById('po_number').value;
+
             const ref = collection(db, 'all_clients');
             
             //.where("obj_ref.account_id", "==", "qgZ564nfEaNP3Nt4cW1K3jCeVlY2");
-            const find_q_hashid = firebase.firestore().collection('ALL_quote').where("quote_hashid", "==", "q_hash_id"); //q_hash_id how to find it
+            const find_q_hashid = firebase.firestore().collection('ALL_quote').where("quote_hashid", "==", use_this_hash); //q_hash_id how to find it
+            let find_q_b_fullname = "";
 
-            
+            const invoice_obj_ref = {
+                
+                qi_bill_fullname: "",
+                qi_bill_address1: "",
+                qi_bill_address2: "", 
+                qi_bill_city: "",
+                qi_bill_postcode: "",
+
+                qi_ship_fillname: "",
+                qi_ship_address1: "",
+                qi_ship_address2: "", 
+                qi_ship_city: "",
+                qi_ship_postcode: "", 
+
+                qi_quote_number: "q_number", //cannot retrieve quote_number!
+                qi_uploaded_date: "",
+                qi_ref: "",
+                qi_po: po_number,
+                
+                
+
+                //q_pdf_link: 'THIS_IS_FIRESTORE_URL',
+            }
+
+
+
+            ///jspdf time!
 
         },
 
     },
     created() {
 
-    this.retrieveOneQuoteInfo();
-
+        this.retrieveOneQuoteInfo();
+        if(this.$route.query.this_one_q_hash_number)
+            this.this_one_q_hash_number = this.$route.query.this_one_q_hash_number;
+        this.use_this_hash = this.$route.query.this_one_q_hash_number;
     },
 }
 </script>

@@ -16,6 +16,7 @@
             <th scope="col"> REF </th>
             <th scope="col"> PO </th>
             <th scope="col"> - </th>
+            <th scope="col"> - </th>
 
           </tr>
         </thead>
@@ -26,13 +27,19 @@
               
               <router-link 
                 tag="tr"
-                :to="{ name: 'OneQuote', params: { id: p.q_quote_number, each_quote: each_quote }}">
+                :to="{ name: 'OneQuote', params: 
+                
+                { id: p.obj_ref.q_quote_number, 
+                  //[that's a lot to pass]
+                }, query: {this_one_q_hash_number: p.quote_hashid}}">
 
-                  <td scope="col"  > {{ p.q_quote_number }} </td>
-                  <td scope="col" > {{ p.q_invoice_number }} </td>
-                  <td > {{ p.q_category }} </td>
-                  <td > {{ p.q_ref }} </td>
-                  <td > {{ p.q_po }} </td>
+                  <td scope="col" style="width: 150px;"  > {{ p.obj_ref.q_quote_number }} </td>
+                  <td scope="col" style="width: 150px;"> INVOICE_NUMBER_HERE </td>  <!--{{ p.q_invoice_number }}-->
+                  <td scope="col" style="width: 150px;"> {{ p.obj_ref.q_bill_fullname}} </td>
+                  <td scope="col" style="width: 150px;"> REF_NUM_HERE </td> <!--{{ p.q_ref }}-->
+                  <td scope="col" style="width: 150px;"> PO_NUMBER_HERE </td> <!--{{ p.q_po }}-->
+                  <!-- <td scope="col" style="width: 200px;"> {{ p.quote_hashid }} </td>
+                  {{ p.q_pdf_link }} -->
                   <!-- <td > {{ p.q_p1_fullname}} </td> -->
 
               </router-link>
@@ -58,14 +65,16 @@ export default{
         return{
           all_quotes: [],
           each_quote:{
-            q_quote_number: null,
+
+              q_quote_number: null,
+
             q_invoice_number: null,
-            q_category: null,
+
             q_ref: null,
             q_po: null,
 
-            q_p1_fullname: "test999",
-            q_quote_number: null,
+            q_p1_fullname: null,
+
             //useful in OneQuote
             q_entry_date: null,
             q_subtotal: null,
@@ -102,7 +111,7 @@ export default{
             snap.forEach(d => {
 
                 var each_quote = d.data();
-                console.log("[getAllQuote] print1");
+                console.log("[getAllQuote] print11" + d.data().obj_ref.q_quote_number + "        " + d.data().quote_hashid);
                 this.all_quotes.push(each_quote);
             });
         });
@@ -110,22 +119,6 @@ export default{
         console.log("[getAllQuote]=====================");
         
       },
-
-      UpdateClient:function(msg){
-        setDoc(doc(db, 'all_clients', msg.id),{
-          text: msg.text,
-          data: msg.data
-        })
-      },
-      deleteClient(id){
-        if (window.confirm("do you really want to delete? The system cannot undo.")){
-          db.child(id).remove().then(() =>{
-            alert("successully deleted.");
-          }).catch((error) => {
-            console.log(error);
-          })
-        }
-      }
 
     },
     created() {
