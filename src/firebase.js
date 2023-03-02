@@ -85,22 +85,66 @@ export const test2_storage = (tmp, fullPath, pdf_base64) => {
 
 
 
-export const auto_quote_no_generator = () => {
+export const  auto_quote_no_generator = () => {
 
-  let ans = '';
+  let ans = "";
   let first_half = "Q-CMS";
 
-  const ref = collection(db, 'ALL_quotes');
-  const snapshot = ref.count().get(); //count is not a function
-  console.log(snapshot.data().count);
-  const how_many = snapshot.data().count;
-  ans = first_half + how_many;
-  return { ans };
+  const q = firebase.firestore().collection('ALL_quote');
+  const snapshot = q.get(); //count is not a function
+  firebase.firestore().collection("ALL_quote").get().then(function(querySnapshot) {
+
+    console.log("auto_quote_no_generator1" +querySnapshot.size);
+    const docSize = parseFloat(querySnapshot.size);
+    console.log("auto_quote_no_generator2" +docSize);
+
+    let addedz = add_zero(docSize);
+
+
+    ans = first_half + addedz;
+    return ans;
+
+  });
+
 
   
 }
 
+function add_zero(num){
 
+  const  onez= "0";
+  const twoz= "00";
+  const threez = "000";
+  const fourz = "0000";
+
+
+
+  if (num > 0 && num < 10){
+    console.log("1");
+    let returnans = fourz + num;
+    
+    return returnans;
+  }
+  else if (num > 10 && num < 100){
+    
+    let returnans = threez + num;
+    console.log("2." + returnans);
+    return returnans;
+  }
+  else if (num > 100 && num < 1000){
+    console.log("3.");
+    let returnans = twoz + num;
+    console.log(returnans);
+    return returnans;
+  }
+  else if (num > 1000 && num < 10000){
+    console.log("4.");
+    let returnans = onez + num;
+    console.log(onez + num);
+    return returnans;
+  }
+
+}
 export const auto_invoice_no_generator = () => {
 
   let ans = '';

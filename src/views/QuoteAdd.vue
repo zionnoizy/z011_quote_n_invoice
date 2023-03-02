@@ -618,10 +618,10 @@ export default {
             //const quote_number = auto_quote_no_generator(); //cannot generate quote number
             const reference_number = document.getElementById('q_reference_number').value;
             const myTimestamp = firebase.firestore.Timestamp.now();
-            var formatedDate = format(myTimestamp, 'dd/MM/yyyy'); //format is not defined!
-            doc.text(quote_number, 92, 83);
-            doc.text(reference_number, 102, 87);
-            doc.text(formatedDate, 102, 98);
+            //var formatedDate = format(myTimestamp, 'dd/MM/yyyy'); //format is not defined!
+            doc.text("quote_number", 159, 91);
+            doc.text("reference_number", 159, 97);
+            //doc.text(formatedDate, 102, 98);
 
 
             //$this is for autoTable
@@ -636,47 +636,8 @@ export default {
 
             //$this is for firebase firestore
             let ff = {};
-            let tmp_ff = {};
-            this.choosen_products.forEach((element, index, array) => {
-                //q_p1_fullname
-                let tmp1 = "q_p"+(index+1)+"_fullname";
-                let tmp2 = "q_p"+(index+1)+"_code";
-                let tmp3 = "q_p"+(index+1)+"_category";
-                let tmp4 = "q_p"+(index+1)+"_cost";
-                let tmp5 = "q_p"+(index+1)+"_margin";
-                let tmp6 = "q_p"+(index+1)+"_sell";
-                console.log(element.p_fullname + " " + element.p_category + "       "  +  tmp1);
-                /*
-                ff.this.tmp1 = element.p_fullname,
-                ff.this.tmp2 = element.p_code,
-                ff.this.tmp3 = element.p_category,
-                ff.this.tmp4 = element.p_cost,
-                ff.this.tmp5 = element.p_margin,
-                ff.this.tmp6 = element.p_sell,
-                */
-                tmp_ff = {
-                    [tmp1]: element.p_fullname,
-                    [tmp2]: element.p_code,
-                    [tmp3]: element.p_category,
-                    [tmp4]: element.p_cost,
-                    [tmp5]: element.p_margin,
-                    [tmp6]: element.p_sell,
-                };
-                let merged = { tmp_ff, ff }; 
 
-                Object.keys(tmp_ff).forEach(key => {
-                    console.log("[previewBtn-choosen_products2]" + key, tmp_ff[key]); //not cimulative
-                });
-
-
-                console.log("[previewBtn-choosen_products2]        " ); // 100, 200, 300
-                console.log(index); // 0, 1, 2
-                console.log(array); // same myArray object 3 times
-                bodyData.push(element);
-
-                console.log("[previewBtn-choosen_products2]" + Object.keys(merged).tmp1);
-            });
-
+            
 
 
             //https://github.com/simonbengtsson/jsPDF-AutoTable/blob/master/examples/examples.js
@@ -725,10 +686,10 @@ export default {
 
         },
         //https://medium.com/runthatline/uploading-files-to-firebase-cloud-storage-using-vue-3-and-the-composition-api-d8370d1c03f7
-        uploadQuotePDF(e) {
+        async uploadQuotePDF(e) {
 
             const myTimestamp = firebase.firestore.Timestamp.now();
-            var formatedDate = format(myTimestamp, 'dd/MM/yyyy');
+            let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK");
 
 
             const today_year = myTimestamp.toDate().getFullYear();
@@ -750,13 +711,32 @@ export default {
 
             //[new_task] create all pic of information push to firestore.
             //https://www.koderhq.com/tutorial/vue/firestore-database/
-            let quote_number = auto_quote_no_generator();
+            let quote_number = await auto_quote_no_generator();
+
+            console.log("check quote_num " + quote_number );
+
+            let q_number = parseFloat(quote_number);
             let reference_number = document.getElementById('q_reference_number').value;
 
             const ref = collection(db, "ALL_quote");
+            const ref2 = collection(db, "ALL_quote");    
 
+            const tmp_ff = Object.fromEntries(
+            this.choosen_products.flatMap((element, index) => [
+                [`q_p${index + 1}_fullname`, element.p_fullname],
+                [`q_p${index + 1}_code`, element.p_code],
+                [`q_p${index + 1}_category`, element.p_category],
+                [`q_p${index + 1}_cost`, element.p_cost],
+                [`q_p${index + 1}_margin`, element.p_margin],
+                [`q_p${index + 1}_sell`, element.p_sell],
+            ])
+            );
+            
+            
+            //upload multi doc
+            ///////////////////////////////////////////////////////////////////////////
             const obj_ref = {
-
+                
                 q_bill_fullname: document.getElementById('tmp_b_fullname').innerHTML,
                 q_bill_address1: document.getElementById('tmp_b_address1').innerHTML,
                 q_bill_address2: document.getElementById('tmp_s_address2').innerHTML, 
@@ -769,8 +749,8 @@ export default {
                 q_ship_city: document.getElementById('tmp_s_city').innerHTML,
                 q_ship_postcode: document.getElementById('tmp_s_postcode').innerHTML, 
 
-                q_quote_number: quote_number,
-                q_uploaded_date: formatedDate,
+                q_quote_number: q_number,
+                q_uploaded_date: todayDateTime,
                 q_ref: reference_number,
                 q_po: null,
                 
@@ -780,60 +760,66 @@ export default {
             }
 
             let hash_id = '';
+            addDoc(ref, {obj_ref, tmp_ff})
+            .then(docRef => {
+
+                const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
+                console.log("[QuoteAdd] Document written with ID: ", docRef.id);
+
+                const string = "/all_quote/" + docRef.id + "/";
+                test2_storage( docRef.id, string, this.return_base64);//use this    
+                get_id
+                    .update({
+                        quote_hashid: docRef.id,
+                    })
+                    .then(() => {
+                        console.log("set doc");
+
+                        get_id.get().then((d) => {
+                            console.log("updated data:", d.data());
+                        });
+                    });
+                ////////////////////////////////////////////////////////////
+                /*
+                const storage = getStorage(app);
+                const storage_ref = ref(storage, "tex5.txt");
+                uploadString(storage_ref, pdf_base64, 'data_url')
+                .then((snapshot) => {
+
+                    getDownloadURL(snapshot.ref).then(async (url) => {
+                    
+                    get_id
+                    .update({
+                        q_pdf_link: url,
+                    })
+                    .then(() => {
+                        console.log("set doc");
+
+                        get_id.get().then((d) => {
+                            console.log("updated data:", d.data());
+                        });
+                    });
+                    tmp = url.toString();
+
+
+                    return { tmp };
+
+
+                    })
+
+                    console.log('Uploaded a base64 string pdf version!');
+                });
+                */
+                ////////////////////////////////////////////////////////////
+            })
+              
             addDoc(ref, obj_ref)
                 .then(docRef => {
 
-                    const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
-                    console.log("[QuoteAdd] Document written with ID: ", docRef.id);
+                     console.log("updated data3:");
 
-                    const string = "/all_quote/" + docRef.id + "/";
-                    test2_storage( docRef.id, string, this.return_base64);//use this    
-                    get_id
-                        .update({
-                            quote_hashid: docRef.id,
-                        })
-                        .then(() => {
-                            console.log("set doc");
+                })   
 
-                            get_id.get().then((d) => {
-                                console.log("updated data:", d.data());
-                            });
-                        });
-                    ////////////////////////////////////////////////////////////
-                    /*
-                    const storage = getStorage(app);
-                    const storage_ref = ref(storage, "tex5.txt");
-                    uploadString(storage_ref, pdf_base64, 'data_url')
-                    .then((snapshot) => {
-
-                        getDownloadURL(snapshot.ref).then(async (url) => {
-                        
-                        get_id
-                        .update({
-                            q_pdf_link: url,
-                        })
-                        .then(() => {
-                            console.log("set doc");
-
-                            get_id.get().then((d) => {
-                                console.log("updated data:", d.data());
-                            });
-                        });
-                        tmp = url.toString();
-
-
-                        return { tmp };
-
-
-                        })
-
-                        console.log('Uploaded a base64 string pdf version!');
-                    });
-                    */
-                    ////////////////////////////////////////////////////////////
-                })
-                
-                 
         },
 
         doSomenthing(data) {

@@ -26,14 +26,14 @@
               
               <router-link 
                 tag="tr"
-                :to="{ name: 'OneQuote', params: { id: p.q_quote_number }}">
+                :to="{ name: 'OneQuote', params: { id: p.q_quote_number, each_quote: each_quote }}">
 
                   <td scope="col"  > {{ p.q_quote_number }} </td>
                   <td scope="col" > {{ p.q_invoice_number }} </td>
                   <td > {{ p.q_category }} </td>
                   <td > {{ p.q_ref }} </td>
                   <td > {{ p.q_po }} </td>
-                  <td > {{ p.q_p1_fullname}} </td>
+                  <!-- <td > {{ p.q_p1_fullname}} </td> -->
 
               </router-link>
 
@@ -84,7 +84,7 @@ export default{
             q_ship_city: null,
             q_ship_postcode: null,
 
-
+            quote_hashid: null,
           }
         }
     },

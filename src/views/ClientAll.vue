@@ -39,6 +39,7 @@
         <div class="client_card" v-for="c in all_clients" type="button"  data-bs-toggle="modal" data-bs-target="#add_delievery_address"  > 
           
           <div class="row">
+
             <div>
               <strong>{{ c.c_fullname }}</strong>
             </div>
@@ -55,9 +56,6 @@
               <p>{{ c.c_city }}, {{ c.c_post_code }} </p>
             </div>
 
-            <div>
-              <p>{{ c.c_id }} </p>
-            </div>
           </div>
 
         </div>
@@ -69,6 +67,7 @@
 
                   <div class="modal-header">
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"> X </button>
+                      <p id="this_is_edit_fullname" class="this_is_edit_fullname"> You Are Adding Client Delivery Address. </p>
                   </div>
 
                   <div class="modal-body">

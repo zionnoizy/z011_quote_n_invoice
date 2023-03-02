@@ -17,7 +17,9 @@
                     data-bs-toggle="modal" data-bs-target="#edit_quotation">
                     Edit Quotation
                 </button>
-                <!--NEW-----product-modal---------------------------------------------------------------------->
+
+
+                <!--NEW-----EDIT QUOTATION MODAL---------------------------------------------------------------------->
                 <div class="modal fade" id="edit_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true">
                         <div class="modal-dialog modal-xl">
 
@@ -31,6 +33,8 @@
                                 <!---->
                                 <div class="modal-body">
                                     <edit-quote></edit-quote>
+
+                                    {{ each_quote.quote_hashid }} <!--cannot pass each quote to here-->
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="close">Add Product To Quote</button>
@@ -42,7 +46,7 @@
                 </div>
                 <div>
 
-
+                    
                 <button class="border btn btn-secondary" type="button"
                     data-bs-toggle="modal" data-bs-target="#add_po_number">
                     Create New Invoice From This Quotation
@@ -60,8 +64,8 @@
                                 </div>
                                 <!---->
                                 <div class="modal-body">
-                                    <input placeholder="PO Number" />
-                                    <input placeholder="Type Your PO Number Again" />
+                                    <input ref="po_number" placeholder="PO Number" />
+                                    
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="close" v-on:click="this.submitQuotation();">Submit Quotation to Invoice</button>
@@ -99,10 +103,24 @@ import { ref } from 'vue'
 const hashid = ref('')
 export default{
     name: "OneQuote",
+    each_quote:{
+            type: Object,
+            required: true,
+    },
     data(){
         return{
             id: this.$route.params.id, //[change from hash to quote number]
             one_quote_url: '',
+
+            find_one_quote_info:{
+                q_fullname: null,
+                q_address_1: null,
+                q_address_2: null,
+                q_city: null,
+                q_insert_date: null,
+                q_post_code: null,
+                quote_hashid: null,
+            }
         }
     },
     components:{
@@ -113,14 +131,38 @@ export default{
         retrieveOneQuoteInfo(){
             console.log("find quotation pdf url + retrieve all quotation inforamtion in here.")
             // https://www.youtube.com/watch?v=CGrNNGrKCJU&ab_channel=AdnanAfzal    [(9:55)]
+            const findQuoteInfo = firebase.firestore().collection('ALL_quote').id(""); //how can I find hashid
+            findQuoteInfo.onSnapshot(snap => {
+                this.all_clients = [];
+                
+                snap.forEach(d => {
+                    var client = d.data();
+                    this.all_clients.push(client);
+                });
+                });  
+                const obj_ref ={
+                    i_po:this.$refs.po_number.value,
+                    i_quotation_no:this.$refs.address_1.value,
+                }
         }, 
         submitQuotation(){
             //everything is the same besides the po number
+            getElementById.value(po_number)
+            const ref = collection(db, 'all_clients');
+            
+            //.where("obj_ref.account_id", "==", "qgZ564nfEaNP3Nt4cW1K3jCeVlY2");
+            const find_q_hashid = firebase.firestore().collection('ALL_quote').where("quote_hashid", "==", "q_hash_id"); //q_hash_id how to find it
+
+            
 
         },
 
     },
+    created() {
 
+    this.retrieveOneQuoteInfo();
+
+    },
 }
 </script>
 
