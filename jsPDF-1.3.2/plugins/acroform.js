@@ -102,7 +102,7 @@
             this.internal.write('/AcroForm ' + this.acroformPlugin.acroFormDictionaryRoot.objId + ' '
                 + 0 + ' R');
         } else {
-            console.log('Root missing...');
+            //console.log('Root missing...');
         }
     };
 
@@ -833,7 +833,7 @@ AcroForm.PDFObject = function () {
                 }
             }
             if (!_objId) {
-                console.log("Couldn't create Object ID");
+                //console.log("Couldn't create Object ID");
             }
             return _objId
         },
@@ -1251,7 +1251,7 @@ AcroForm.internal.inherit(AcroForm.ChildClass, AcroForm.Field);
 
 AcroForm.RadioButton.prototype.setAppearance = function (appearance) {
     if (!('createAppearanceStream' in appearance && 'createMK' in appearance)) {
-        console.log("Couldn't assign Appearance to RadioButton. Appearance was Invalid!");
+        //console.log("Couldn't assign Appearance to RadioButton. Appearance was Invalid!");
         return;
     }
     for (var i in this.__Kids) {

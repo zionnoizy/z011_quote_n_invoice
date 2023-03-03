@@ -1793,7 +1793,7 @@ var Deflater = (function(obj) {
 			if (that.pending !== 0) {
 				strm.flush_pending();
 				if (strm.avail_out === 0) {
-					// console.log(" avail_out==0");
+					// //console.log(" avail_out==0");
 					// Since avail_out is 0, deflate will be called again with
 					// more output space, but possibly with both pending and
 					// avail_in equal to zero. There won't be anything to do,
@@ -1969,9 +1969,9 @@ var Deflater = (function(obj) {
 			// if (that.dstate.pending_buf.length <= that.dstate.pending_out || that.next_out.length <= that.next_out_index
 			// || that.dstate.pending_buf.length < (that.dstate.pending_out + len) || that.next_out.length < (that.next_out_index +
 			// len)) {
-			// console.log(that.dstate.pending_buf.length + ", " + that.dstate.pending_out + ", " + that.next_out.length + ", " +
+			// //console.log(that.dstate.pending_buf.length + ", " + that.dstate.pending_out + ", " + that.next_out.length + ", " +
 			// that.next_out_index + ", " + len);
-			// console.log("avail_out=" + that.avail_out);
+			// //console.log("avail_out=" + that.avail_out);
 			// }
 
 			that.next_out.set(that.dstate.pending_buf.subarray(that.dstate.pending_out, that.dstate.pending_out + len), that.next_out_index);

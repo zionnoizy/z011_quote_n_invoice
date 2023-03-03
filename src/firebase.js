@@ -41,12 +41,12 @@ export const save_2_storage = (fullPath, my_url) => {
   const message4 = 'data:text/plain;base64,5b6p5Y+344GX44G+44GX44Gf77yB44GK44KB44Gn44Go44GG77yB';
   uploadString(storage_ref, message4, 'data_url')
   .then((snapshot) => {
-    console.log('Uploaded a data_url string!');
+    //console.log('Uploaded a data_url string!');
   });
 }
 
 export const test2_storage = (quote_or_invoice_hash, fullPath, pdf_base64) => {
-  console.log("[firebase test2_storage]");
+  //console.log("[firebase test2_storage]");
 
   const image_ref = ref(storage, fullPath);
   const storage_ref = ref(storage, fullPath + quote_or_invoice_hash+".pdf");
@@ -63,10 +63,10 @@ export const test2_storage = (quote_or_invoice_hash, fullPath, pdf_base64) => {
           q_pdf_link: url.toString(),
       })
       .then(() => {
-          console.log("set doc");
+          //console.log("set doc");
 
           get_id.get().then((d) => {
-              console.log("updated data:", d.data());
+              //console.log("updated data:", d.data());
           });
       });
       tmp = url.toString();
@@ -77,7 +77,7 @@ export const test2_storage = (quote_or_invoice_hash, fullPath, pdf_base64) => {
 
     })
 
-    console.log('Uploaded a base64 string pdf version!');
+    //console.log('Uploaded a base64 string pdf version!');
   });
   
 }
@@ -94,9 +94,9 @@ export const  auto_quote_no_generator = () => {
   const snapshot = q.get(); //count is not a function
   firebase.firestore().collection("ALL_quote").get().then(function(querySnapshot) {
 
-    console.log("auto_quote_no_generator1" +querySnapshot.size);
+    //console.log("auto_quote_no_generator1" +querySnapshot.size);
     const docSize = parseFloat(querySnapshot.size);
-    console.log("auto_quote_no_generator2" +docSize);
+    //console.log("auto_quote_no_generator2" +docSize);
 
     let addedz = add_zero(docSize);
 
@@ -120,7 +120,7 @@ function add_zero(num){
 
 
   if (num > 0 && num < 10){
-    console.log("1");
+    //console.log("1");
     let returnans = fourz + num;
     
     return returnans;
@@ -128,19 +128,19 @@ function add_zero(num){
   else if (num > 10 && num < 100){
     
     let returnans = threez + num;
-    console.log("2." + returnans);
+    //console.log("2." + returnans);
     return returnans;
   }
   else if (num > 100 && num < 1000){
-    console.log("3.");
+    //console.log("3.");
     let returnans = twoz + num;
-    console.log(returnans);
+    //console.log(returnans);
     return returnans;
   }
   else if (num > 1000 && num < 10000){
-    console.log("4.");
+    //console.log("4.");
     let returnans = onez + num;
-    console.log(onez + num);
+    //console.log(onez + num);
     return returnans;
   }
 
@@ -153,7 +153,7 @@ export const auto_invoice_no_generator = () => {
   const snapshot = collectionRef.count().get().limit(1).then(
     doc => {
       if (doc.exists) {
-        console.log(snapshot.data().count);
+        //console.log(snapshot.data().count);
         const how_many = snapshot.data().count;
         ans = first_half + how_many;
         return { ans };

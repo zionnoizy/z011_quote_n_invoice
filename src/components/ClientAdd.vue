@@ -47,7 +47,7 @@ export default{
       async createClient() {
         //if ($refs.client_cpyname.value == '' || this.$refs.address_1.value == '' || this.$refs.address_2.value == '' || this.$refs.city.value == '' || this.$refs.post_code.value == ''){
 
-        console.log("[ClientAdd] create new client.");
+        //console.log("[ClientAdd] create new client.");
 
         const db_id = firebase.firestore();
         const get_id = db_id.collection('all_clients').doc();

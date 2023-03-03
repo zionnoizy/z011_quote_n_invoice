@@ -1174,7 +1174,7 @@
             var v2Support = typeof this.pdf.internal.newObject2 === 'function';
 
             if (!v2Support) {
-                console.log('jsPDF v2 not enabled')
+                //console.log('jsPDF v2 not enabled')
                 return;
             }
 

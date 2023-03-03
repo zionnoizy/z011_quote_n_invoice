@@ -194,7 +194,7 @@ export default{
 
         },
         ResubmitQuote(){
-            console.log("edited quotation, now 1.re-upload invoice and change the firestore data.")
+            //console.log("edited quotation, now 1.re-upload invoice and change the firestore data.")
             // https://www.youtube.com/watch?v=CGrNNGrKCJU&ab_channel=AdnanAfzal    [(9:55)]
         }, 
 
@@ -206,7 +206,7 @@ export default{
 
                 snap.forEach(d => {
                     this.selectedAnotherClient = d.data().c_fullname;
-                    console.log("[ ]" + d.data().c_fullname);
+                    //console.log("[ ]" + d.data().c_fullname);
                 });
             });
             //this.selectedAnotherClient = "";
@@ -220,7 +220,7 @@ export default{
 
     watch:{
         selectedAnotherClient:function(){
-            console.log('selected is ' +this.selected+" do you logic here");
+            //console.log('selected is ' +this.selected+" do you logic here");
         },
 
     },

@@ -56,18 +56,18 @@ router.beforeEach(( to, from, next) => {
     const requires_auth = to.matched.some(record => record.meta.requires_auth);
 
 
-    console.log("[router.js]   " + requires_auth + "    " + curr_usr);
+    //console.log("[router.js]   " + requires_auth + "    " + curr_usr);
 
    
 
     
     if (requires_auth && !curr_usr){
         const loginpath = window.location.pathname;
-        console.log("[router.js]   false cur_usr" );
+        //console.log("[router.js]   false cur_usr" );
         next("/")
     }
     else if(requires_auth && curr_usr){
-        console.log("[router.js] true cur_usr" );
+        //console.log("[router.js] true cur_usr" );
         next()
     }
     else{

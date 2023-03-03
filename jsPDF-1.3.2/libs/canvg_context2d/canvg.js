@@ -164,7 +164,7 @@
 		svg.log = function(msg) {};
 		if (svg.opts['log'] == true && typeof console != 'undefined') {
 			svg.log = function (msg) {
-				console.log(msg);
+				//console.log(msg);
 			};
 		};
 
@@ -2707,7 +2707,7 @@
 					oldClosePath.call(ctx);
 					ctx.clip();
 				} catch (e) {
-					console.log(e)
+					//console.log(e)
 				}
 				CanvasRenderingContext2D.prototype.beginPath = oldBeginPath;
 				CanvasRenderingContext2D.prototype.closePath = oldClosePath;

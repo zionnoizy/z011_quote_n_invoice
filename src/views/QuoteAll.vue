@@ -102,7 +102,7 @@ export default{
 
       async getAllQuote() { 
 
-        console.log("[getAllQuote]=====================");
+        //console.log("[getAllQuote]=====================");
         var all_quote_ref = await firebase.firestore().collection("ALL_quote");
 
         all_quote_ref.onSnapshot(snap => {
@@ -111,12 +111,12 @@ export default{
             snap.forEach(d => {
 
                 var each_quote = d.data();
-                console.log("[getAllQuote] print11" + d.data().obj_ref.q_quote_number + "        " + d.data().quote_hashid);
+                //console.log("[getAllQuote] print11" + d.data().obj_ref.q_quote_number + "        " + d.data().quote_hashid);
                 this.all_quotes.push(each_quote);
             });
         });
 
-        console.log("[getAllQuote]=====================");
+        //console.log("[getAllQuote]=====================");
         
       },
 

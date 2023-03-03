@@ -96,7 +96,7 @@ export default{
       all_product_ref.orderBy("p_insert_date", "desc")
         .onSnapshot((snapshot) => {
           if (snapshot.empty) {
-            console.log("[getAllProductsNewest] all_products not exist.")
+            //console.log("[getAllProductsNewest] all_products not exist.")
             
           }
           else{
@@ -105,7 +105,7 @@ export default{
 
 
                 var product = d.data();
-                console.log("[ProductAll]-2 " + product);
+                //console.log("[ProductAll]-2 " + product);
                 this.all_products.push(product);
             })
           }  
@@ -118,14 +118,14 @@ export default{
       all_product_ref.orderBy("p_insert_date", "asc")
         .onSnapshot((snapshot) => {
           if (snapshot.empty) {
-            console.log("[getAllProductsNewest] all_products not exist.")
+            //console.log("[getAllProductsNewest] all_products not exist.")
             
           }
           else{
             this.all_products = [];
             snapshot.forEach(d => {
                 var product = d.data();
-                console.log("[ProductAll]-3 " + product);
+                //console.log("[ProductAll]-3 " + product);
                 this.all_products.push(product);
             })
           }  
@@ -141,7 +141,7 @@ export default{
               var tmp_one_sell = parseFloat(d.data().p_sell);   
               this.tmp_sell = this.tmp_sell + tmp_one_sell;
               this.choosen_products.push(product);
-              console.log("[choosenOneProduct] tmp sell is " + this.tmp_sell + " " + this.choosen_products);
+              //console.log("[choosenOneProduct] tmp sell is " + this.tmp_sell + " " + this.choosen_products);
 
               this.$root.$emit('choosenOneProduct', this.choosen_products);
               this.$root.$emit("choosenOneProduct", this.tmp_sell);
@@ -156,7 +156,7 @@ export default{
     },
     emptyChoosenProduct(){
       
-      console.log("[emptyChoosenProduct] empty--------------------");
+      //console.log("[emptyChoosenProduct] empty--------------------");
     }
 
   },
@@ -170,7 +170,7 @@ export default{
 
     this.$emit('tmp_sell', this.tmp_sell);
 
-    console.log("[AllProductsChoose] + mounted");
+    //console.log("[AllProductsChoose] + mounted");
   },
 }
 </script>

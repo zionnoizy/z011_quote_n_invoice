@@ -49,7 +49,7 @@ var getCharWidthsArray = API.getCharWidthsArray = function(text, options){
 	, kerning = options.kerning ? options.kerning : this.internal.getFont().metadata.Unicode.kerning
 	, kerningFractionOf = kerning.fof ? kerning.fof : 1
 
-	// console.log("widths, kergnings", widths, kerning)
+	// //console.log("widths, kergnings", widths, kerning)
 
 	var i, l
 	, char_code

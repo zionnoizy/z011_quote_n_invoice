@@ -37,11 +37,11 @@ const login = () => {
     signInWithEmailAndPassword(auth, email.value, password.value)
     .then((data) =>{
         //context.commit('SET_USER', response.user);
-        console.log('Successfully Login!');
+        //console.log('Successfully Login!');
         router.push('/dashboard');
     })
     .catch(error => {
-        console.log(error.code)
+        //console.log(error.code)
         switch (error.code){
             case "auth/invalid-email":
                 err_msg.value = "Invalid Email, Please Try Again."

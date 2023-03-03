@@ -69,7 +69,7 @@ export default{
             
             snap.forEach(d => {
                 var product = d.data();
-                console.log("[ProductAll] " + product);
+                //console.log("[ProductAll] " + product);
                 this.all_products.push(product);
             });
         });
@@ -87,7 +87,7 @@ export default{
           db.child(id).remove().then(() =>{
             alert("successully deleted.");
           }).catch((error) => {
-            console.log(error);
+            //console.log(error);
           })
         }
       }

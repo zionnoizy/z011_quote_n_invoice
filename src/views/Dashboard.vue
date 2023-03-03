@@ -96,7 +96,7 @@ export default{
             
             if (user) {
                 // User is signed in.
-                console.log("[Dashboard] signin");
+                //console.log("[Dashboard] signin");
                 var displayName = user.displayName;
                 
                 var email = user.email;
@@ -119,7 +119,7 @@ export default{
     beforeMount() {
     
         const user = firebase.auth().currentUser;
-        console.log("[Dashboard-onBeforeMount] " + user);
+        //console.log("[Dashboard-onBeforeMount] " + user);
         if (user){
             this_usr_name.value = user.email.split(['@'])[0];
         }

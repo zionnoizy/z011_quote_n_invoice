@@ -142,7 +142,7 @@ export default{
             let input19 = document.getElementsByTagName("input")[19].value;
             //https://www.base64-image.de/
             //https://www.youtube.com/watch?v=GHTrsUtmQTo&ab_channel=RedStapler
-            console.log("[QuickerQuoteIn-writePDF2 ]" + "   " + input5);
+            //console.log("[QuickerQuoteIn-writePDF2 ]" + "   " + input5);
             const doc = new jsPDF();  
             doc.addImage(cms_empty_quote, "JPEG",0,0,210,297);
             
@@ -282,7 +282,7 @@ export default{
             addDoc(ref, obj_ref)
             .then(function(docRef) {
                 const get_id = firebase.firestore().collection('test_purpose').doc(docRef.id);
-                console.log("Document written with ID: ", docRef.id);
+                //console.log("Document written with ID: ", docRef.id);
 
                 get_id
                 .update({
@@ -291,10 +291,10 @@ export default{
                     doc_id: docRef.id,
                 })
                 .then(() => {
-                    console.log("set doc");
+                    //console.log("set doc");
 
                     get_id.get().then((d) => {
-                        console.log("updated data:", d.data());
+                        //console.log("updated data:", d.data());
                     });
                 });
             })

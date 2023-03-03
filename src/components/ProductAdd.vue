@@ -71,10 +71,10 @@ export default{
     async createProduct(){
 
       validate_p_input();
-      console.log("[ProductAdd-createProduct] create new Category.");
+      //console.log("[ProductAdd-createProduct] create new Category.");
       
 
-        console.log("[ProductAdd-createProduct] create new product");
+        //console.log("[ProductAdd-createProduct] create new product");
 
         const db_id = firebase.firestore();
         const get_id = db_id.collection('all_products').doc();
@@ -82,7 +82,7 @@ export default{
 
 
         
-        console.log("[ProductAdd-createProduct] id. " + p_id);
+        //console.log("[ProductAdd-createProduct] id. " + p_id);
 
 
         //const increment = firebase.firestore.FieldValue.increment(1);
@@ -105,18 +105,18 @@ export default{
         //const doc_ref = await   .child(docRef.id)
         addDoc(ref, obj_ref)
         .then(docRef => {
-            console.log("[ProductAdd-createProduct] Document has been added successfully" + docRef.id); 
-            console.log("[ProductAdd-createProduct] product id?1   "  + docRef.id.toString() + " " + aaaaaaaaa);
+            //console.log("[ProductAdd-createProduct] Document has been added successfully" + docRef.id); 
+            //console.log("[ProductAdd-createProduct] product id?1   "  + docRef.id.toString() + " " + aaaaaaaaa);
 
 
 
         })
-        console.log("[ProductAdd-createProduct] product id?2   "  + aaaaaaaaa);
+        //console.log("[ProductAdd-createProduct] product id?2   "  + aaaaaaaaa);
 
         
         
         
-        console.log("[ProductAdd-createProduct] not end. ")
+        //console.log("[ProductAdd-createProduct] not end. ")
 
     },
     
@@ -139,7 +139,7 @@ export default{
       const margin = document.getElementById('pi_margin').value;
       const tmp_ans = +cost + (+(cost / 100) * margin);
 
-      console.log("[ProductAdd]" + cost + " " + margin + " " + tmp_ans);
+      //console.log("[ProductAdd]" + cost + " " + margin + " " + tmp_ans);
 
 
       document.getElementById('pi_sell').value = tmp_ans;
@@ -165,7 +165,7 @@ function validate_p_input(){
       pcc_1.classList.add("red");
       pcc_3.classList.add("red");
 
-      console.log("[ProductAdd]  " + pcc_1 + " " + pc_2.length);
+      //console.log("[ProductAdd]  " + pcc_1 + " " + pc_2.length);
 
       if (pc_1.length <= 0){
         pcc_1.classList.add("red");

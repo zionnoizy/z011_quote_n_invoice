@@ -113,7 +113,7 @@ export default{
           db.child(id).remove().then(() =>{
             alert("successully deleted.");
           }).catch((error) => {
-            console.log(error);
+            //console.log(error);
           })
         }
       }

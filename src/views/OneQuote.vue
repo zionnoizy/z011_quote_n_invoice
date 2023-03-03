@@ -165,24 +165,24 @@ export default{
     methods:{
 
         retrieveOneQuoteInfo(){
-            console.log("find quotation pdf url + retrieve all quotation inforamtion in here." + this.this_one_q_hash_number)
+            //console.log("find quotation pdf url + retrieve all quotation inforamtion in here." + this.this_one_q_hash_number)
             // https://www.youtube.com/watch?v=CGrNNGrKCJU&ab_channel=AdnanAfzal    [(9:55)]
             const findQuoteInfo = firebase.firestore().collection('ALL_quote').where("quote_hashid", "==", this.this_one_q_hash_number); 
             findQuoteInfo.onSnapshot(snap => {
                 this.oneqdata = [];
                 
                 snap.forEach(d => {
-                    console.log("print111");
+                    //console.log("print111");
                     this.oneqdata.push(d.data());
                     var find_one_quote_info = d.data(); //undefined?
                     /*
-                    console.log("->" + oneqdata.obj_ref.q_bill_fullname);
-                    console.log("->" + oneqdata.obj_ref.q_bill_address1);
-                    console.log("->" + oneqdata.obj_ref.q_bill_address2);
-                    console.log("->" + oneqdata.obj_ref.q_bill_city);
-                    console.log("->" + oneqdata.obj_ref.q_bill_postcode);
+                    //console.log("->" + oneqdata.obj_ref.q_bill_fullname);
+                    //console.log("->" + oneqdata.obj_ref.q_bill_address1);
+                    //console.log("->" + oneqdata.obj_ref.q_bill_address2);
+                    //console.log("->" + oneqdata.obj_ref.q_bill_city);
+                    //console.log("->" + oneqdata.obj_ref.q_bill_postcode);
                     
-                    console.log("->" + oneqdata.obj_ref.q_bill_fullname);
+                    //console.log("->" + oneqdata.obj_ref.q_bill_fullname);
                     
                     */
                 });
@@ -213,7 +213,7 @@ export default{
                 this.copy_q_ref = copycat.obj_ref.q_ref;
                 this.copy_q_invoice = copycat.obj_ref.q_quote_number;
 
-                console.log(copy_q_ref);
+                //console.log(copy_q_ref);
                 //this.copy_tmp_ff.add({ tmp_ff: doc.data().tmp_ff }); //is not defined?
             });
             
@@ -280,10 +280,10 @@ export default{
                 })
                 .then(() => {
                     const allInvoiceRef = firebase.firestore().collection('ALL_invoice');
-                    console.log("set doc");
+                    //console.log("set doc");
 
                     get_id.get().then((d) => {
-                        console.log("updated data:", d.data());
+                        //console.log("updated data:", d.data());
                     });
                 });
             })

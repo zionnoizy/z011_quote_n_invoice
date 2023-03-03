@@ -147,7 +147,7 @@ export default{
           db.child(id).remove().then(() =>{
             alert("successully deleted.");
           }).catch((error) => {
-            console.log(error);
+            //console.log(error);
           })
         }
       },
@@ -155,7 +155,7 @@ export default{
       async createDelieveryAddress(c_cid){
         //if ($refs.client_cpyname.value == '' || this.$refs.address_1.value == '' || this.$refs.address_2.value == '' || this.$refs.city.value == '' || this.$refs.post_code.value == ''){
         
-        console.log("[ClientAdd] create new client." + c_cid);
+        //console.log("[ClientAdd] create new client." + c_cid);
         const db_id = firebase.firestore();
         const get_id = db_id.collection('all_delivery').doc(c_cid);
         const id = get_id.id;

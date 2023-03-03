@@ -29,12 +29,12 @@ const router = useRouter();
 const register = () => {
     createUserWithEmailAndPassword(auth, email.value, password.value)
     .then((data) =>{
-        console.log('Successfully Registered To Quote N Invoice!');
+        //console.log('Successfully Registered To Quote N Invoice!');
         router.push('/dashboard');
     })
     .catch(error => {
-        console.log(email.value + " " + password.value)
-        console.log(error.code)
+        //console.log(email.value + " " + password.value)
+        //console.log(error.code)
         alert(error.message);
     })
 }

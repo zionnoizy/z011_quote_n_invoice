@@ -8,11 +8,11 @@
 	    if (this.console) {
 	        arguments.callee = arguments.callee.caller;
 	        var newarr = [].slice.call(arguments);
-	        (typeof console.log === 'object' ? log.apply.call(console.log, console, newarr) : console.log.apply(console, newarr));
+	        (typeof //console.log === 'object' ? log.apply.call(//console.log, console, newarr) : //console.log.apply(console, newarr));
 	    }
 	};
-	// make it safe to use console.log always
-	(function(b) { function c() { } for (var d = "assert,count,debug,dir,dirxml,error,exception,group,groupCollapsed,groupEnd,info,log,timeStamp,profile,profileEnd,time,timeEnd,trace,warn".split(","), a; a = d.pop(); ) { b[a] = b[a] || c } })((function() {try { console.log(); return window.console; } catch (err) {return window.console = {};}})());
+	// make it safe to use //console.log always
+	(function(b) { function c() { } for (var d = "assert,count,debug,dir,dirxml,error,exception,group,groupCollapsed,groupEnd,info,log,timeStamp,profile,profileEnd,time,timeEnd,trace,warn".split(","), a; a = d.pop(); ) { b[a] = b[a] || c } })((function() {try { //console.log(); return window.console; } catch (err) {return window.console = {};}})());
 
     
     
@@ -67,7 +67,7 @@
 	
 		function error (ex) {
 			if (console) {
-				console.error ? console.error(ex) : console.log(ex.message);
+				console.error ? console.error(ex) : //console.log(ex.message);
 			}
 		}
 		function jsEncode (text) {

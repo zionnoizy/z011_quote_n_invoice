@@ -362,7 +362,7 @@ export default {
 
                 });
             } catch (e) {
-                console.log("Error Typing s_product2");
+                //console.log("Error Typing s_product2");
             }
             watch(tmp_sell,
             (newValue, oldValue) => {
@@ -456,9 +456,9 @@ export default {
             */
             
 
-            console.log("#[QuoteAdd-------]");
-            console.log("get tmp_sell." );
-            console.log("#[QuoteAdd-------]");
+            //console.log("#[QuoteAdd-------]");
+            //console.log("get tmp_sell." );
+            //console.log("#[QuoteAdd-------]");
         },
         getTmpSell(tmp_sell){ //call when new page ONLY
             this.tmp_sell = tmp_sell;
@@ -470,13 +470,13 @@ export default {
 
         async getAllClient1() {
 
-            console.log("[QuoteAdd-getAllClient] print-1");
+            //console.log("[QuoteAdd-getAllClient] print-1");
             var all_client_ref = await firebase.firestore().collection("all_clients");
             all_client_ref.onSnapshot(snap => {
                 this.all_clients1 = [];
                 this.all_clients2 = [];
                 snap.forEach(d => {
-                    console.log("[QuoteAdd-getAllClient] print");
+                    //console.log("[QuoteAdd-getAllClient] print");
 
                     var client = d.data();
                     this.all_clients1.push(client);
@@ -488,8 +488,8 @@ export default {
 
 
         ChooseBillTo(ev, b, i) {
-            console.log("[QuoteAdd-ChooseBillTo] comming soon, click client and retrieve text." + ev + "  " + i);
-            console.log("[QuoteAdd-ChooseBillTo] you have chosen  " + b.c_fullname);
+            //console.log("[QuoteAdd-ChooseBillTo] comming soon, click client and retrieve text." + ev + "  " + i);
+            //console.log("[QuoteAdd-ChooseBillTo] you have chosen  " + b.c_fullname);
 
             document.getElementById('tmp_b_fullname').innerHTML = b.c_fullname;
             document.getElementById('tmp_b_address1').innerHTML = b.c_address_1;
@@ -498,13 +498,13 @@ export default {
             document.getElementById('tmp_b_postcode').innerHTML = b.c_post_code;
 
 
-            console.log("[QuoteAdd-ChooseBillTo]@ you have chosen");
+            //console.log("[QuoteAdd-ChooseBillTo]@ you have chosen");
 
             this.showBillToModal = false;
         },
         ChooseShipTo(ev, s, i) {
-            console.log("[QuoteAdd-ChooseShipTo] comming soon, click client and retrieve text." + ev + "  " + i);
-            console.log("[QuoteAdd-ChooseShipTo] you have chosen" + s.c_fullname);
+            //console.log("[QuoteAdd-ChooseShipTo] comming soon, click client and retrieve text." + ev + "  " + i);
+            //console.log("[QuoteAdd-ChooseShipTo] you have chosen" + s.c_fullname);
             document.getElementById('tmp_s_fullname').innerHTML = s.c_fullname;
             document.getElementById('tmp_s_address1').innerHTML = s.c_address_1;
             document.getElementById('tmp_s_address2').innerHTML = s.c_address_2;
@@ -516,8 +516,8 @@ export default {
         async EnterProduct() {
 
             const typed_product = document.getElementById('p_enter').value;
-            console.log("[><QuoteAdd-EnterProduct] ");
-            console.log("[><QuoteAdd-EnterProduct] typed_product" + typed_product);
+            //console.log("[><QuoteAdd-EnterProduct] ");
+            //console.log("[><QuoteAdd-EnterProduct] typed_product" + typed_product);
 
             var one_product_ref = await firebase.firestore().collection("all_products").where( 'p_fullname', '==', typed_product );
             one_product_ref
@@ -533,9 +533,9 @@ export default {
                         document.getElementById('p_margin').value = d.data().p_margin;
                         document.getElementById('p_sell1').value = d.data().p_sell;
 
-                        console.log(d.data().p_code);
+                        //console.log(d.data().p_code);
 
-                        console.log("[><QuoteAdd-EnterProduct]loop=1 " + one_product);
+                        //console.log("[><QuoteAdd-EnterProduct]loop=1 " + one_product);
 
                         this.o_products.push(one_product);
                     })
@@ -551,7 +551,7 @@ export default {
             //const pi_sell2 = document.getElementById('p_sell2').value;    
             //const tmp_ans = +pi_sell1 +pi_sell2;
 
-            console.log("[CumulativeTotal] " + pi_sell1);
+            //console.log("[CumulativeTotal] " + pi_sell1);
 
 
             document.getElementById('q_total').value = pi_sell1;
@@ -559,11 +559,11 @@ export default {
         },
 
         async writePDF() {
-            console.log("[QuoteAdd-writePDF] write pdf.");
+            //console.log("[QuoteAdd-writePDF] write pdf.");
 
             const doc = new jsPDF();
             doc.addImage(cms_empty_quote, "JPEG", 0, 0, 210, 297);
-            console.log("[QuoteAdd-writePDF] write pdf.");
+            //console.log("[QuoteAdd-writePDF] write pdf.");
             //
             doc.save("quote.pdf");
         },
@@ -598,12 +598,12 @@ export default {
         },
 
         suggesting() {
-            console.log("[QuoteAdd]-suggesting  turn on s_flag");
+            //console.log("[QuoteAdd]-suggesting  turn on s_flag");
             this.s_flag = true;
         },
         async previewBtn() {
 
-            console.log("[previewBtn] +++++++++++++++++++++++++++++++++++++++++++=--");
+            //console.log("[previewBtn] +++++++++++++++++++++++++++++++++++++++++++=--");
             const doc = new jsPDF(); 
             doc.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297);
             //A-add all48 text
@@ -691,7 +691,7 @@ export default {
 
 
 
-            console.log("[previewBtn] +++++++++++++++++++++++++++++++++++++++++++=--");
+            //console.log("[previewBtn] +++++++++++++++++++++++++++++++++++++++++++=--");
 
 
         },
@@ -705,17 +705,17 @@ export default {
             const today_year = myTimestamp.toDate().getFullYear();
             const tmp_today_month = myTimestamp.toDate().getMonth();
 
-            console.log("[uploadQuotePDF] " + myTimestamp + " " + today_year + " " + tmp_today_month);
+            //console.log("[uploadQuotePDF] " + myTimestamp + " " + today_year + " " + tmp_today_month);
             const month_folder = this.convert_to_month[tmp_today_month];
 
             //const today_month = convert_month(tmp_today_month);
             const path_string = "/all_quote/" + today_year + "/" + month_folder + "/"
-            console.log();
+            //console.log();
             
             
             let tmp3 = '';
             let tmp2 = test2_storage( tmp3, path_string, this.return_base64);
-            console.log("[uploadQuotePDF] final_pdf url + " + tmp2 + " " + tmp3);    
+            //console.log("[uploadQuotePDF] final_pdf url + " + tmp2 + " " + tmp3);    
 
             // storage ref + upload task
 
@@ -724,9 +724,9 @@ export default {
             let quote_number = await this.auto_quote_no_generator2();
             try { 
             const result = await this.auto_quote_no_generator2();
-            console.log("check quote_num-----> " + result );
+            //console.log("check quote_num-----> " + result );
             } catch(errorReason) { 
-             console.log(errorReason);
+             //console.log(errorReason);
             }
 
             
@@ -778,7 +778,7 @@ export default {
             .then(docRef => {
 
                 const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
-                console.log("[QuoteAdd] Document written with ID: ", docRef.id);
+                //console.log("[QuoteAdd] Document written with ID: ", docRef.id);
 
                 const string = "/all_quote/" + docRef.id + "/";
                 test2_storage( docRef.id, string, this.return_base64);//use this    
@@ -787,10 +787,10 @@ export default {
                         quote_hashid: docRef.id,
                     })
                     .then(() => {
-                        console.log("set doc");
+                        //console.log("set doc");
 
                         get_id.get().then((d) => {
-                            console.log("updated data:", d.data());
+                            //console.log("updated data:", d.data());
                         });
                     });
                 ////////////////////////////////////////////////////////////
@@ -807,10 +807,10 @@ export default {
                         q_pdf_link: url,
                     })
                     .then(() => {
-                        console.log("set doc");
+                        //console.log("set doc");
 
                         get_id.get().then((d) => {
-                            console.log("updated data:", d.data());
+                            //console.log("updated data:", d.data());
                         });
                     });
                     tmp = url.toString();
@@ -821,7 +821,7 @@ export default {
 
                     })
 
-                    console.log('Uploaded a base64 string pdf version!');
+                    //console.log('Uploaded a base64 string pdf version!');
                 });
                 */
                 ////////////////////////////////////////////////////////////
@@ -830,7 +830,7 @@ export default {
             addDoc(ref, obj_ref)
                 .then(docRef => {
 
-                     console.log("updated data3:");
+                     //console.log("updated data3:");
 
                 })   
             */
@@ -839,18 +839,18 @@ export default {
 
         //seperate function
         firebaseStorageUpload() {
-            console.log("[firebaseStorageUpload]==================================");
+            //console.log("[firebaseStorageUpload]==================================");
             const storage = getStorage();
             const myTimestamp = firebase.firestore.Timestamp.now();
             const today_year = myTimestamp.toDate().getFullYear();
             const tmp_today_month = myTimestamp.toDate().getMonth();
-            console.log("[firebaseStorageUpload] " + myTimestamp + " " + today_year + " " + tmp_today_month);
+            //console.log("[firebaseStorageUpload] " + myTimestamp + " " + today_year + " " + tmp_today_month);
             const month_folder = this.convert_to_month[tmp_today_month];
 
             //const today_month = convert_month(tmp_today_month);
             const path_string = "/all_quote/" + today_year + "/" + month_folder + "/"
-            console.log();
-            console.log("[firebaseStorageUpload] + ");
+            //console.log();
+            //console.log("[firebaseStorageUpload] + ");
             test2_storage(path_string, this.return_base64);
             const storageref = ref(storage, path_string);
             const uploadtask = uploadBytesResumable(storageref, DATA_HERE);
@@ -858,11 +858,11 @@ export default {
             uploadtask.on(
                 'state_changed',
                 (snapshot) => {
-                    console.log("[firebaseStorageUpload]  uploaded");
+                    //console.log("[firebaseStorageUpload]  uploaded");
                     //this.uploadValue = ( snapshot.bytesTransferred / snapshot.totalBytes )*100;
                 },
                 error => {
-                    console.log(error.message)
+                    //console.log(error.message)
                 },
                 () => {
                     this.uploadValue = 'upload success';
@@ -871,12 +871,12 @@ export default {
                     });
                 },
                 async () => {
-                    console.log("[firebaseStorageUpload] 2 uploaded");
+                    //console.log("[firebaseStorageUpload] 2 uploaded");
                     downloadUrl.value = await getDownloadURL(uploadtask.snapshot.ref)
 
                 },
             );
-            console.log("[firebaseStorageUpload]==================================");
+            //console.log("[firebaseStorageUpload]==================================");
         },
         danny(){
             let q_number = auto_quote_no_generator2();
@@ -904,7 +904,7 @@ export default {
             let b = td.getElementById(dynamic).innerText;
 
             const one_p_money = document.getElementById(dynamic).value;
-            console.log("[CalculateSubtotal]       " + one_p_money);
+            //console.log("[CalculateSubtotal]       " + one_p_money);
 
             document.getElementById('q_subtotal').value = tmp_ans;
 
@@ -975,7 +975,7 @@ async function auto_quote_no_generator2(){
     
 
      ans =  first_half + addedz;
-     console.log("auto_quote_no_generator5 " + ans);
+     //console.log("auto_quote_no_generator5 " + ans);
     
     
      

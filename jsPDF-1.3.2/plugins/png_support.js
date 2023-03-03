@@ -333,25 +333,25 @@
 		return predictor;
 	}
 	, logImg = function(img) {
-		console.log("width: " + img.width);
-		console.log("height: " + img.height);
-		console.log("bits: " + img.bits);
-		console.log("colorType: " + img.colorType);
-		console.log("transparency:");
-		console.log(img.transparency);
-		console.log("text:");
-		console.log(img.text);
-		console.log("compressionMethod: " + img.compressionMethod);
-		console.log("filterMethod: " + img.filterMethod);
-		console.log("interlaceMethod: " + img.interlaceMethod);
-		console.log("imgData:");
-		console.log(img.imgData);
-		console.log("palette:");
-		console.log(img.palette);
-		console.log("colors: " + img.colors);
-		console.log("colorSpace: " + img.colorSpace);
-		console.log("pixelBitlength: " + img.pixelBitlength);
-		console.log("hasAlphaChannel: " + img.hasAlphaChannel);
+		//console.log("width: " + img.width);
+		//console.log("height: " + img.height);
+		//console.log("bits: " + img.bits);
+		//console.log("colorType: " + img.colorType);
+		//console.log("transparency:");
+		//console.log(img.transparency);
+		//console.log("text:");
+		//console.log(img.text);
+		//console.log("compressionMethod: " + img.compressionMethod);
+		//console.log("filterMethod: " + img.filterMethod);
+		//console.log("interlaceMethod: " + img.interlaceMethod);
+		//console.log("imgData:");
+		//console.log(img.imgData);
+		//console.log("palette:");
+		//console.log(img.palette);
+		//console.log("colors: " + img.colors);
+		//console.log("colorSpace: " + img.colorSpace);
+		//console.log("pixelBitlength: " + img.pixelBitlength);
+		//console.log("hasAlphaChannel: " + img.hasAlphaChannel);
 	};
 
 

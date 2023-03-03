@@ -1,6 +1,6 @@
 
 export const reupload_pdf = (oldhashid, fullPath, newer_pdf_base64) => {
-    console.log("[reupload_pdf]");
+    //console.log("[reupload_pdf]");
   
 
     const storage_ref = ref(storage, fullPath + hashid + ".pdf");
@@ -16,17 +16,17 @@ export const reupload_pdf = (oldhashid, fullPath, newer_pdf_base64) => {
             q_pdf_link: newer_url.toString(),
         })
         .then(() => {
-            console.log("set doc");
+            //console.log("set doc");
   
             get_id.get().then((d) => {
-                console.log("[reupload_pdf] reupdated data:", d.data());
+                //console.log("[reupload_pdf] reupdated data:", d.data());
             });
         });
 
   
       })
   
-      console.log('[reupload_pdf] Uploaded a base64 string pdf version!');
+      //console.log('[reupload_pdf] Uploaded a base64 string pdf version!');
     });
     
   }
