@@ -252,7 +252,7 @@
                                     {{ p.p_sell }} 
                                 </td>
 
-                                <td> <button class="btn btn-info" @click.prevent="plusProduct"> [+] </button>
+                                <td> 
                                     <button class="btn btn-danger" @click.prevent="minusProduct(i, p.p_fullname)"> [-] </button>
                                 </td>
                             </tr>
@@ -602,6 +602,7 @@ export default {
             //console.log("[previewBtn] +++++++++++++++++++++++++++++++++++++++++++=--");
             const doc = new jsPDF(); 
             doc.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297);
+
             //A-add all48 text
             const oo_b_fullname = document.getElementById('tmp_b_fullname').innerHTML;
             const oo_b_a1 = document.getElementById('tmp_b_address1').innerHTML;
@@ -609,11 +610,19 @@ export default {
             const oo_b_city = document.getElementById('tmp_b_city').innerHTML;
             const oo_b_postcode = document.getElementById('tmp_b_postcode').innerHTML;
             doc.setFontSize(10);
-            doc.text(oo_b_fullname, 6, 93);
-            doc.text(oo_b_a1, 6, 98);
-            doc.text(oo_b_a2, 6, 103);
-            doc.text(oo_b_city, 6, 108);
-            doc.text(oo_b_postcode, 6, 113);
+            doc.text(oo_b_fullname, 6, 94);
+            doc.text(oo_b_a1, 6, 99);
+            if (oo_b_a2 == "" || oo_b_a2 == null|| oo_b_a2 == ''){
+                doc.text(oo_b_city, 6, 104);
+                doc.text(oo_b_postcode, 6, 109);
+
+            }
+            else{
+                doc.text(oo_b_a2, 6, 104);
+                doc.text(oo_b_city, 6, 109);
+                doc.text(oo_b_postcode, 6, 114);
+            }
+            
             //B-add all48 text
             const oo_s_fullname = document.getElementById('tmp_s_fullname').innerHTML;
             const oo_s_a1 = document.getElementById('tmp_s_address1').innerHTML;
@@ -621,20 +630,36 @@ export default {
             const oo_s_city = document.getElementById('tmp_s_city').innerHTML;
             const oo_s_postcode = document.getElementById('tmp_s_postcode').innerHTML;
             doc.setFontSize(10);
-            doc.text(oo_s_fullname, 72, 93);
-            doc.text(oo_s_a1, 72, 98);
-            doc.text(oo_s_a2, 72, 103);
-            doc.text(oo_s_city, 72, 108);
-            doc.text(oo_s_postcode, 72, 113);      
+            doc.text(oo_s_fullname, 72, 94);
+            doc.text(oo_s_a1, 72, 99);
+            if (oo_s_a2 == "" || oo_s_a2 == null|| oo_s_a2 == ''){
+                doc.text(oo_s_city, 72, 104);
+                doc.text(oo_s_postcode, 72, 109);  
+            }
+            else{
+                doc.text(oo_s_a2, 72, 104);
+                doc.text(oo_s_city, 72, 109);
+                doc.text(oo_s_postcode, 72, 114);   
+
+            }
+
             //C-quote no + invoice date + ref
             const quote_number = await auto_quote_no_generator2();
             const input_reference_number = document.getElementById('q_reference_number').value;
             const myTimestamp = firebase.firestore.Timestamp.now();
             let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK");
-            doc.text(quote_number, 159, 91);
-            doc.text(todayDateTime, 159, 97);
-            doc.text(input_reference_number, 159, 103);
-            
+            doc.text(quote_number, 159, 94);
+            doc.text(todayDateTime, 159, 100);
+            doc.text(input_reference_number, 159, 106);
+            let bodyData = [];
+            this.choosen_products.forEach(element => {      
+                var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_sell,"discoun999t", element.p_sell];
+  
+                bodyData.push(tmp);
+
+
+            });    
+            /*
             let bodyData = [];
             this.choosen_products.forEach((element, index, array) => {
                 let necessary_only = [
@@ -648,7 +673,7 @@ export default {
                 ]  
                 bodyData.push(necessary_only);
             });
-
+            */
             //https://github.com/simonbengtsson/jsPDF-AutoTable/blob/master/examples/examples.js
             var finalY = doc.lastAutoTable.finalY || 10
             autoTable(doc, {
@@ -668,12 +693,8 @@ export default {
 
                 margin: { top: 0, right: 10, bottom: 0, left: 10 }, //important2
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
-                body: [bodyData]
+                body: bodyData
             })
-
-
-
-            //////////////////////////////////////////////////////////////////////
             var string = doc.output('datauristring');
             var embed = "<embed width='100%' height='100%' src='" + string + "'/>"
 
