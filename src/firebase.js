@@ -45,11 +45,11 @@ export const save_2_storage = (fullPath, my_url) => {
   });
 }
 
-export const test2_storage = (tmp, fullPath, pdf_base64) => {
+export const test2_storage = (quote_or_invoice_hash, fullPath, pdf_base64) => {
   console.log("[firebase test2_storage]");
 
   const image_ref = ref(storage, fullPath);
-  const storage_ref = ref(storage, fullPath + "text4.pdf");
+  const storage_ref = ref(storage, fullPath + quote_or_invoice_hash+".pdf");
 
 
   uploadString(storage_ref, pdf_base64, 'data_url')
@@ -57,7 +57,7 @@ export const test2_storage = (tmp, fullPath, pdf_base64) => {
 
     getDownloadURL(snapshot.ref).then(async (url) => {
       const get_id = firebase.firestore().collection("ALL_quote").doc(tmp);
-      get_id
+      await get_id //await
       .update({
           quote_hashid: tmp,
           q_pdf_link: url.toString(),

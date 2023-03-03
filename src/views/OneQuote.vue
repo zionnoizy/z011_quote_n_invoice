@@ -100,10 +100,12 @@
 <script>
 import EditQuote from "@/components/EditQuote.vue";
 import { ref } from 'vue'
-import { addDoc, collection } from "@firebase/firestore";
-import { app, db, auth } from "@/firebase.js";
 
-const hashid = ref('')
+import { app, db, auth } from "@/firebase.js";
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { test2_storage } from '../firebase';
+import { onSnapshot, query, collection, collectionGroup, getDocs, where, doc, updateDoc, getDoc, orderBy, addDoc, limit } from 'firebase/firestore'
 export default{
     name: "OneQuote",
     each_quote:{
@@ -129,6 +131,32 @@ export default{
                 quote_hashid: null,
             },
             use_this_hash: '',
+            
+            copy_q_b_f: '',
+            copy_q_b_a1: '',
+            copy_q_b_a2: '',
+            copy_q_b_c: '',
+            copy_q_b_pc: '',
+
+            copy_q_s_f: '',
+            copy_q_s_a1: '',
+            copy_q_s_a2: '',
+            copy_q_s_c: '',
+            copy_q_s_pc: '',
+
+            copy_q_ref: '',
+            copy_q_invoice: '',
+
+            copy_tmp_ff: {
+                q_fullname: null,
+                q_address_1: null,
+                q_address_2: null,
+                q_city: null,
+                q_insert_date: null,
+                q_post_code: null,
+                quote_hashid: null,
+            },
+
         }
     },
     components:{
@@ -139,12 +167,15 @@ export default{
         retrieveOneQuoteInfo(){
             console.log("find quotation pdf url + retrieve all quotation inforamtion in here." + this.this_one_q_hash_number)
             // https://www.youtube.com/watch?v=CGrNNGrKCJU&ab_channel=AdnanAfzal    [(9:55)]
-            const findQuoteInfo = firebase.firestore().collection('ALL_quote').where("quote_hashid", "==", this.this_one_q_hash_number); //how can I find hashid
+            const findQuoteInfo = firebase.firestore().collection('ALL_quote').where("quote_hashid", "==", this.this_one_q_hash_number); 
             findQuoteInfo.onSnapshot(snap => {
-                this.find_one_quote_info = [];
+                this.oneqdata = [];
                 
                 snap.forEach(d => {
+                    console.log("print111");
+                    this.oneqdata.push(d.data());
                     var find_one_quote_info = d.data(); //undefined?
+                    /*
                     console.log("->" + oneqdata.obj_ref.q_bill_fullname);
                     console.log("->" + oneqdata.obj_ref.q_bill_address1);
                     console.log("->" + oneqdata.obj_ref.q_bill_address2);
@@ -152,7 +183,8 @@ export default{
                     console.log("->" + oneqdata.obj_ref.q_bill_postcode);
                     
                     console.log("->" + oneqdata.obj_ref.q_bill_fullname);
-                    this.oneqdata.push(find_one_quote_info);
+                    
+                    */
                 });
                 });  
                 const obj_ref ={
@@ -161,26 +193,34 @@ export default{
         }, 
 
         async submitQuotation(use_this_hash){
-            //everything is the same besides the po number
             let po_number = document.getElementById('po_number').value;
 
+            await firebase.firestore().collection("ALL_quote").doc(use_this_hash)
+            .onSnapshot(doc => {
+                var copycat = doc.data();
+                this.copy_q_b_f = copycat.obj_ref.q_bill_fullname;
+                this.copy_q_b_a1 = copycat.obj_ref.q_bill_address1;
+                this.copy_q_b_a2 = copycat.obj_ref.q_bill_address2;
+                this.copy_q_b_c = copycat.obj_ref.q_bill_city;
+                this.copy_q_b_pc = copycat.obj_ref.q_bill_postcode;
 
-            const find_q_all_info = firebase.firestore().collection('ALL_quote').where("quote_hashid", "==", use_this_hash); //q_hash_id how to find it
-            find_q_all_info.onSnapshot((snapshot) => {
-            snapshot.docs.forEach(d => {
-                var product = d.data();
-                var tmp_one_sell = parseFloat(d.data().p_sell);   
-                this.tmp_sell = this.tmp_sell + tmp_one_sell;
-                this.choosen_products.push(product);
-                console.log("[choosenOneProduct] tmp sell is " + this.tmp_sell + " " + this.choosen_products);
+                this.copy_q_b_f = copycat.obj_ref.q_ship_fullname;
+                this.copy_q_b_a1 = copycat.obj_ref.q_ship_address1;
+                this.copy_q_b_a2 = copycat.obj_ref.q_ship_address2;
+                this.copy_q_b_c = copycat.obj_ref.q_ship_city;
+                this.copy_q_b_pc = copycat.obj_ref.q_ship_postcode;
+                
+                this.copy_q_ref = copycat.obj_ref.q_ref;
+                this.copy_q_invoice = copycat.obj_ref.q_quote_number;
 
-                this.$root.$emit('submitQuotation', this.choosen_products);
-                this.$root.$emit("submitQuotation", this.tmp_sell);
+
+                //this.copy_tmp_ff.add({ tmp_ff: doc.data().tmp_ff }); //is not defined?
+            });
             
-            })
-            })
-
-
+           
+            const myTimestamp = firebase.firestore.Timestamp.now();
+            let today = myTimestamp.toDate().toLocaleDateString("en-UK");    
+            let i_number = await auto_invoice_no_generator3(this.copy_q_invoice);    
 
             const ref = collection(db, "ALL_invoice");
             const obj_ref = {
@@ -189,19 +229,20 @@ export default{
                 qi_bill_address2: "qi_bill_address2", 
                 qi_bill_city: "qi_bill_city",
                 qi_bill_postcode: "qi_bill_postcode",
-                
                 qi_ship_fillname: "qi_ship_fillname",
                 qi_ship_address1: "qi_ship_address1",
                 qi_ship_address2: "qi_ship_address2", 
                 qi_ship_city: "qi_ship_city",
                 qi_ship_postcode: "qi_ship_postcode", 
                 
-                qi_quote_number: "qi_quote_number", 
-                qi_uploaded_date: "qi_uploaded_date",
+                qi_invoice_number: i_number, 
+                qi_uploaded_date: today,
+                qi_po: po_number,
+                
                 qi_ref: "qi_ref",
 
-                qi_po: po_number,
-                qi_q_hashid: use_this_hash,
+                
+                
             }
             /*
             const tmp_ff = Object.fromEntries(
@@ -226,16 +267,19 @@ export default{
                 qi_total: "total",
             }
 
-            addDoc(ref, {obj_ref, price_ref})
+            addDoc(ref, {obj_ref, price_ref, copy_tmp_ff}) //copy_tmp_ff
             .then(docRef => {
             const get_id = firebase.firestore().collection("ALL_invoice").doc(docRef.id);
             const string = "/all_invoice/" + use_this_hash + "/" + docRef.id + "/";
-            //test2_storage( docRef.id, string, this.return_base64);
+            test2_storage( docRef.id, string, this.return_base64);
             get_id
                 .update({
                     invoice_hashid: docRef.id,
+                    qi_q_hashid: use_this_hash,
+                    tmp_ff: copy_tmp_ff,
                 })
                 .then(() => {
+                    const allInvoiceRef = firebase.firestore().collection('ALL_invoice');
                     console.log("set doc");
 
                     get_id.get().then((d) => {
@@ -244,8 +288,178 @@ export default{
                 });
             })
             ///jspdf time!
+            const doc = new jsPDF(); 
+            doc.addImage(cms_empty_invoice_no_table, "JPEG", 0, 0, 210, 297);
+
+            
+            doc.setFontSize(10);
+            doc.text(this.copy_q_b_f, 6, 93);
+            doc.text(this.copy_q_b_a1, 6, 98);
+            doc.text(this.copy_q_b_a2, 6, 103);
+            doc.text(this.copy_q_b_c, 6, 108);
+            doc.text(this.copy_q_b_pc, 6, 113);
+
+            doc.setFontSize(10);
+            doc.text(this.copy_q_b_f, 72, 93);
+            doc.text(this.copy_q_b_a1, 72, 98);
+            doc.text(this.copy_q_b_a2, 72, 103);
+            doc.text(this.copy_q_b_c, 72, 108);
+            doc.text(this.copy_q_b_pc, 72, 113);      
+
+            doc.text(i_number, 159, 91);
+            doc.text(today, 159, 97);
+            doc.text(copy_q_ref, 159, 103);
+            doc.text(po_number, 159, 109);  
+
+            let bodyData = [];
+            this.choosen_products.forEach((element, index, array) => {
+                necessary_only = [
+                    element.p_fullname,
+                    element.p_code,
+                    element.p_quantity,
+                    element.p_sell,
+                    "discoun999t",
+                    element.p_sell,
+
+                ]  
+                bodyData.push(necessary_only);
+            });
+            var finalY = doc.lastAutoTable.finalY || 10
+            autoTable(doc, {
+                //html: '#cms-quote-table',
+                theme: 'striped',
+                startY: finalY + 109, 
+                columnStyles: {
+                    0: { cellWidth: 65 },
+                    1: { cellWidth: 18 },
+                    2: { cellWidth: 15 },
+                    3: { cellWidth: 15 },
+                    4: { cellWidth: 23 },
+                    5: { cellWidth: 30 },
+                    // etc
+                },
+                tableWidth: 'auto',
+                margin: { top: 0, right: 10, bottom: 0, left: 10 }, //important2
+                head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
+                body: [bodyData]
+            })
+            doc.setFontSize(14);
+            doc.text('SUB TOTAL', 42, doc.lastAutoTable.finalY + 20)
+            doc.text('100', 152, doc.lastAutoTable.finalY + 20)
+            doc.text('VAT', 42, doc.lastAutoTable.finalY + 25)
+            doc.text('50', 152, doc.lastAutoTable.finalY + 25)
+            doc.text('SHIPPING. HANDLING', 42, doc.lastAutoTable.finalY + 30)
+            doc.text('150', 152, doc.lastAutoTable.finalY + 30)
+
+            var finalY2 = doc.lastAutoTable.finalY;
+            doc.text('Quote only valid for 30 days', 6, finalY2 + 15)
+
+
+            //debug for preview
+            var string = doc.output('datauristring');
+            var embed = "<embed width='100%' height='100%' src='" + string + "'/>"
+            const a = document.getElementById('preview_quotationPDF');
+            var clone = a.cloneNode(true);
+            clone.setAttribute('src', string);
+            a.parentNode.replaceChild(clone, a);
+            var base64 = doc.output('datauri');
+            this.return_base64 = base64;
 
         },
+
+        generatePDFSecret(q_number, today){
+            const doc = new jsPDF(); 
+            doc.addImage(cms_empty_invoice_no_table, "JPEG", 0, 0, 210, 297);
+
+            const oo_b_fullname = document.getElementById('tmp_b_fullname').innerHTML;
+            const oo_b_a1 = document.getElementById('tmp_b_address1').innerHTML;
+            const oo_b_a2 = document.getElementById('tmp_b_address2').innerHTML;
+            const oo_b_city = document.getElementById('tmp_b_city').innerHTML;
+            const oo_b_postcode = document.getElementById('tmp_b_postcode').innerHTML;
+            doc.setFontSize(10);
+            doc.text(oo_b_fullname, 6, 93);
+            doc.text(oo_b_a1, 6, 98);
+            doc.text(oo_b_a2, 6, 103);
+            doc.text(oo_b_city, 6, 108);
+            doc.text(oo_b_postcode, 6, 113);
+
+            const oo_s_fullname = document.getElementById('tmp_s_fullname').innerHTML;
+            const oo_s_a1 = document.getElementById('tmp_s_address1').innerHTML;
+            const oo_s_a2 = document.getElementById('tmp_s_address2').innerHTML;
+            const oo_s_city = document.getElementById('tmp_s_city').innerHTML;
+            const oo_s_postcode = document.getElementById('tmp_s_postcode').innerHTML;
+            doc.setFontSize(10);
+            doc.text(oo_s_fullname, 72, 93);
+            doc.text(oo_s_a1, 72, 98);
+            doc.text(oo_s_a2, 72, 103);
+            doc.text(oo_s_city, 72, 108);
+            doc.text(oo_s_postcode, 72, 113);      
+            
+
+        
+            
+            
+            
+            doc.text(q_number, 159, 91);
+            doc.text(today, 159, 97);
+            doc.text(input_reference_number, 159, 103);
+            doc.text(input_reference_number, 159, 119);  //try 119
+
+            let bodyData = [];
+            this.choosen_products.forEach((element, index, array) => {
+                necessary_only = [
+                    element.p_fullname,
+                    element.p_code,
+                    element.p_quantity,
+                    element.p_sell,
+                    "discoun999t",
+                    element.p_sell,
+
+                ]  
+                bodyData.push(necessary_only);
+            });
+            var finalY = doc.lastAutoTable.finalY || 10
+            autoTable(doc, {
+                //html: '#cms-quote-table',
+                theme: 'striped',
+                startY: finalY + 109, 
+                columnStyles: {
+                    0: { cellWidth: 65 },
+                    1: { cellWidth: 18 },
+                    2: { cellWidth: 15 },
+                    3: { cellWidth: 15 },
+                    4: { cellWidth: 23 },
+                    5: { cellWidth: 30 },
+                    // etc
+                },
+                tableWidth: 'auto',
+                margin: { top: 0, right: 10, bottom: 0, left: 10 }, //important2
+                head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
+                body: [bodyData]
+            })
+            doc.setFontSize(14);
+            doc.text('SUB TOTAL', 42, doc.lastAutoTable.finalY + 20)
+            doc.text('100', 152, doc.lastAutoTable.finalY + 20)
+            doc.text('VAT', 42, doc.lastAutoTable.finalY + 25)
+            doc.text('50', 152, doc.lastAutoTable.finalY + 25)
+            doc.text('SHIPPING. HANDLING', 42, doc.lastAutoTable.finalY + 30)
+            doc.text('150', 152, doc.lastAutoTable.finalY + 30)
+
+            var finalY2 = doc.lastAutoTable.finalY;
+            doc.text('Quote only valid for 30 days', 6, finalY2 + 15)
+
+
+            //debug for preview
+            var string = doc.output('datauristring');
+            var embed = "<embed width='100%' height='100%' src='" + string + "'/>"
+            const a = document.getElementById('preview_quotationPDF');
+            var clone = a.cloneNode(true);
+            clone.setAttribute('src', string);
+            a.parentNode.replaceChild(clone, a);
+            var base64 = doc.output('datauri');
+            this.return_base64 = base64;
+            
+        }
 
     },
     created() {
@@ -254,6 +468,44 @@ export default{
 
     },
 }
+function add_zero(num){
+
+    const  onez= "0";
+    const twoz= "00";
+    const threez = "000";
+    const fourz = "0000";
+
+    if (num > 0 && num < 10){
+
+    let returnans = fourz + num;
+    
+    return returnans;
+    }
+    else if (num > 10 && num < 100){
+    
+    let returnans = threez + num;
+
+    return returnans;
+    }
+    else if (num > 100 && num < 1000){
+
+    let returnans = twoz + num;
+
+    return returnans;
+    }
+    else if (num > 1000 && num < 10000){
+
+    let returnans = onez + num;
+
+    return returnans;
+    }
+
+}
+async function auto_invoice_no_generator3(old_quote_num){
+    let i_number = await old_quote_num.replace(old_quote_num.charAt(0), "I");
+    return i_number;
+}
+
 </script>
 
 <style>

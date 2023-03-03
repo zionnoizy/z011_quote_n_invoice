@@ -509,7 +509,7 @@ export default {
             console.log("[><QuoteAdd-EnterProduct] ");
             console.log("[><QuoteAdd-EnterProduct] typed_product" + typed_product);
 
-            var one_product_ref = await firebase.firestore().collection("all_products").where("p_fullname", "==", typed_product);
+            var one_product_ref = await firebase.firestore().collection("all_products").where( 'p_fullname', '==', typed_product );
             one_product_ref
                 .get()
                 .then((snapshot) => {
@@ -595,7 +595,7 @@ export default {
 
             console.log("[previewBtn] +++++++++++++++++++++++++++++++++++++++++++=--");
             const doc = new jsPDF(); 
-            doc.addImage(cms_empty_invoice_no_table, "JPEG", 0, 0, 210, 297);
+            doc.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297);
             //A-add all48 text
             const oo_b_fullname = document.getElementById('tmp_b_fullname').innerHTML;
             const oo_b_a1 = document.getElementById('tmp_b_address1').innerHTML;
