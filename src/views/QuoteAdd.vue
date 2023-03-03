@@ -155,7 +155,7 @@
                     <div>
                         <label for="q_subtotal">Subtotal</label>
                         <!--disabled @change="CalculateSubtotal"-->
-                        <input ref="q_subtotal" placeholder="Subtotal" id="q_subtotal" @tmp_sell="getTmpSell"  />
+                        <input ref="q_subtotal" placeholder="Subtotal" id="q_subtotal" v-on:tmp_sell="getTmpSell"  />
                     </div>
 
 
@@ -204,9 +204,7 @@
                                 <div class="modal-body">
                                     <!--v-on:tmp_sell="getChoosenProducts($event);"     v-on:tmp_sell="getTmpSell" -->
                                     <all-products-choose 
-                                        v-on:choosen_products="getChoosenProducts($event); "
-                                        v-on:tmp_sell="getTmpSell($event);"
-                                    >
+                                        v-on:choosen_products="getChoosenProducts($event); "  v-on:tmp_sell="getTmpSell">
                                     </all-products-choose>
 
 
@@ -452,9 +450,9 @@ export default {
             console.log("get tmp_sell." );
             console.log("#[QuoteAdd-------]");
         },
-        getTmpSell(dest){ //call when new page ONLY
-            this.tmp_sell = dest;
-            console.log('received value      ', dest);
+        getTmpSell(tmp_sell){ //call when new page ONLY
+            this.tmp_sell = tmp_sell;
+
             
             document.getElementById('q_subtotal').value = this.tmp_sell;
 
@@ -593,7 +591,7 @@ export default {
             console.log("[QuoteAdd]-suggesting  turn on s_flag");
             this.s_flag = true;
         },
-        previewBtn() {
+        async previewBtn() {
 
             console.log("[previewBtn] +++++++++++++++++++++++++++++++++++++++++++=--");
             const doc = new jsPDF(); 
@@ -604,7 +602,6 @@ export default {
             const oo_b_a2 = document.getElementById('tmp_b_address2').innerHTML;
             const oo_b_city = document.getElementById('tmp_b_city').innerHTML;
             const oo_b_postcode = document.getElementById('tmp_b_postcode').innerHTML;
-            console.log("[previewBtn] -------bill-in");
             doc.setFontSize(10);
             doc.text(oo_b_fullname, 6, 93);
             doc.text(oo_b_a1, 6, 98);
@@ -617,43 +614,34 @@ export default {
             const oo_s_a2 = document.getElementById('tmp_s_address2').innerHTML;
             const oo_s_city = document.getElementById('tmp_s_city').innerHTML;
             const oo_s_postcode = document.getElementById('tmp_s_postcode').innerHTML;
-            console.log("[previewBtn] -------ship-to");
             doc.setFontSize(10);
             doc.text(oo_s_fullname, 72, 93);
             doc.text(oo_s_a1, 72, 98);
             doc.text(oo_s_a2, 72, 103);
             doc.text(oo_s_city, 72, 108);
             doc.text(oo_s_postcode, 72, 113);      
-            
             //C-quote no + invoice date + ref
-            let quote_number = auto_quote_no_generator2(); //cannot genrate quotenumber
-            console.log("check quote_num-----> " + quote_number );
-
+            const quote_number = await auto_quote_no_generator2();
             const input_reference_number = document.getElementById('q_reference_number').value;
-            
             const myTimestamp = firebase.firestore.Timestamp.now();
-            let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK"); //
-
-            //doc.text(quote_number, 159, 91);
+            let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK");
+            doc.text(quote_number, 159, 91);
             doc.text(todayDateTime, 159, 97);
-            doc.text(input_reference_number, 102, 98);
-
-
-            //$this is for autoTable
+            doc.text(input_reference_number, 159, 103);
+            
             let bodyData = [];
             this.choosen_products.forEach((element, index, array) => {
-                console.log("[previewBtn-choosen_products1]" + element.p_fullname + " " + index + " " + array); // 100, 200, 300
-                console.log(index); // 0, 1, 2
-                console.log(array); // same myArray object 3 times
-                bodyData.push(element);
-                console.log("[previewBtn-choosen_products1]" + bodyData[0].p_fullname);
+                necessary_only = [
+                    element.p_fullname,
+                    element.p_code,
+                    element.p_quantity,
+                    element.p_sell,
+                    "discoun999t",
+                    element.p_sell,
+
+                ]  
+                bodyData.push(necessary_only);
             });
-
-            //$this is for firebase firestore
-            let ff = {};
-
-            
-
 
             //https://github.com/simonbengtsson/jsPDF-AutoTable/blob/master/examples/examples.js
             var finalY = doc.lastAutoTable.finalY || 10
@@ -674,10 +662,7 @@ export default {
 
                 margin: { top: 0, right: 10, bottom: 0, left: 10 }, //important2
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
-                body: [
-                    //[bodyData[0].p_fullname, bodyData[0].p_code, bodyData[0].p_quantity,"£"+bodyData[0].p_sell, "discount", bodyData[0].p_sell]
-
-                ]
+                body: [bodyData]
             })
 
 
@@ -758,8 +743,7 @@ export default {
             
             //upload multi doc
             ///////////////////////////////////////////////////////////////////////////
-            const obj_ref = {
-                
+            const obj_ref = {          
                 q_bill_fullname: document.getElementById('tmp_b_fullname').innerHTML,
                 q_bill_address1: document.getElementById('tmp_b_address1').innerHTML,
                 q_bill_address2: document.getElementById('tmp_s_address2').innerHTML, 
@@ -776,9 +760,6 @@ export default {
                 q_uploaded_date: todayDateTime,
                 q_ref: reference_number,
                 q_po: null,
-                
-                
-
                 //q_pdf_link: 'THIS_IS_FIRESTORE_URL',
             }
 
@@ -967,13 +948,13 @@ function add_zero(num){
     }
 
 }
-function auto_quote_no_generator2(){
+async function auto_quote_no_generator2(){
 
     let ans = "";
     let first_half =  "Q-CMS";
 
     const q = firebase.firestore().collection('ALL_quote');
-    firebase.firestore().collection("ALL_quote").get().then( function(querySnapshot) {
+    await firebase.firestore().collection("ALL_quote").get().then( function(querySnapshot) {
 
     
     const dSize = querySnapshot.size;
@@ -985,13 +966,13 @@ function auto_quote_no_generator2(){
 
      ans =  first_half + addedz;
      console.log("auto_quote_no_generator5 " + ans);
-    return ans.toString();
+    
     
      
 
     });
     
-
+    return ans.toString();
 }
 
 function addVatSHip(subtotal, shipping, extra){

@@ -144,7 +144,7 @@ export default{
               console.log("[choosenOneProduct] tmp sell is " + this.tmp_sell + " " + this.choosen_products);
 
               this.$root.$emit('choosenOneProduct', this.choosen_products);
-              this.$root.$emit('choosenOneProduct', this.tmp_sell);
+              this.$root.$emit("choosenOneProduct", this.tmp_sell);
             
           })
         })

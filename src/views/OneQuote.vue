@@ -65,11 +65,11 @@
                                 </div>
                                 <!---->
                                 <div class="modal-body">
-                                    <input ref="po_number" placeholder="PO Number" />
+                                    <input ref="po_number" id="po_number" placeholder="PO Number" />
                                     
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="close" v-on:click="this.submitQuotation(use_this_hash);">Submit Quotation to Invoice</button>
+                                    <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="close" v-on:click="this.submitQuotation(this.this_one_q_hash_number);">Submit Quotation to Invoice</button>
                                 </div>
                             </div>
                         </div>
@@ -100,6 +100,8 @@
 <script>
 import EditQuote from "@/components/EditQuote.vue";
 import { ref } from 'vue'
+import { addDoc, collection } from "@firebase/firestore";
+import { app, db, auth } from "@/firebase.js";
 
 const hashid = ref('')
 export default{
@@ -116,7 +118,7 @@ export default{
             
             one_quote_url: '',
 
-            oneqdata: '',
+            oneqdata: [],
             find_one_quote_info:{
                 q_fullname: null,
                 q_address_1: null,
@@ -135,15 +137,22 @@ export default{
     methods:{
 
         retrieveOneQuoteInfo(){
-            console.log("find quotation pdf url + retrieve all quotation inforamtion in here." + q_hash_num)
+            console.log("find quotation pdf url + retrieve all quotation inforamtion in here." + this.this_one_q_hash_number)
             // https://www.youtube.com/watch?v=CGrNNGrKCJU&ab_channel=AdnanAfzal    [(9:55)]
-            const findQuoteInfo = firebase.firestore().collection('ALL_quote').id(q_hash_num); //how can I find hashid
+            const findQuoteInfo = firebase.firestore().collection('ALL_quote').where("quote_hashid", "==", this.this_one_q_hash_number); //how can I find hashid
             findQuoteInfo.onSnapshot(snap => {
                 this.find_one_quote_info = [];
                 
                 snap.forEach(d => {
-                    var oneqdata = d.data();
-                    this.find_one_quote_info.push(oneqdata);
+                    var find_one_quote_info = d.data(); //undefined?
+                    console.log("->" + oneqdata.obj_ref.q_bill_fullname);
+                    console.log("->" + oneqdata.obj_ref.q_bill_address1);
+                    console.log("->" + oneqdata.obj_ref.q_bill_address2);
+                    console.log("->" + oneqdata.obj_ref.q_bill_city);
+                    console.log("->" + oneqdata.obj_ref.q_bill_postcode);
+                    
+                    console.log("->" + oneqdata.obj_ref.q_bill_fullname);
+                    this.oneqdata.push(find_one_quote_info);
                 });
                 });  
                 const obj_ref ={
@@ -151,40 +160,89 @@ export default{
                 }
         }, 
 
-        submitQuotation(use_this_hash){
+        async submitQuotation(use_this_hash){
             //everything is the same besides the po number
             let po_number = document.getElementById('po_number').value;
 
-            const ref = collection(db, 'all_clients');
+
+            const find_q_all_info = firebase.firestore().collection('ALL_quote').where("quote_hashid", "==", use_this_hash); //q_hash_id how to find it
+            find_q_all_info.onSnapshot((snapshot) => {
+            snapshot.docs.forEach(d => {
+                var product = d.data();
+                var tmp_one_sell = parseFloat(d.data().p_sell);   
+                this.tmp_sell = this.tmp_sell + tmp_one_sell;
+                this.choosen_products.push(product);
+                console.log("[choosenOneProduct] tmp sell is " + this.tmp_sell + " " + this.choosen_products);
+
+                this.$root.$emit('submitQuotation', this.choosen_products);
+                this.$root.$emit("submitQuotation", this.tmp_sell);
             
-            //.where("obj_ref.account_id", "==", "qgZ564nfEaNP3Nt4cW1K3jCeVlY2");
-            const find_q_hashid = firebase.firestore().collection('ALL_quote').where("quote_hashid", "==", use_this_hash); //q_hash_id how to find it
-            let find_q_b_fullname = "";
+            })
+            })
 
-            const invoice_obj_ref = {
+
+
+            const ref = collection(db, "ALL_invoice");
+            const obj_ref = {
+                qi_bill_fullname: "qi_bill_fullname",
+                qi_bill_address1: "qi_bill_address1",
+                qi_bill_address2: "qi_bill_address2", 
+                qi_bill_city: "qi_bill_city",
+                qi_bill_postcode: "qi_bill_postcode",
                 
-                qi_bill_fullname: "",
-                qi_bill_address1: "",
-                qi_bill_address2: "", 
-                qi_bill_city: "",
-                qi_bill_postcode: "",
+                qi_ship_fillname: "qi_ship_fillname",
+                qi_ship_address1: "qi_ship_address1",
+                qi_ship_address2: "qi_ship_address2", 
+                qi_ship_city: "qi_ship_city",
+                qi_ship_postcode: "qi_ship_postcode", 
+                
+                qi_quote_number: "qi_quote_number", 
+                qi_uploaded_date: "qi_uploaded_date",
+                qi_ref: "qi_ref",
 
-                qi_ship_fillname: "",
-                qi_ship_address1: "",
-                qi_ship_address2: "", 
-                qi_ship_city: "",
-                qi_ship_postcode: "", 
-
-                qi_quote_number: "q_number", //cannot retrieve quote_number!
-                qi_uploaded_date: "",
-                qi_ref: "",
                 qi_po: po_number,
-
-                //q_pdf_link: 'THIS_IS_FIRESTORE_URL',
+                qi_q_hashid: use_this_hash,
+            }
+            /*
+            const tmp_ff = Object.fromEntries(
+                this.choosen_products.flatMap((element, index) => [
+                    [`qi_p${index + 1}_fullname`, element.p_fullname],
+                    [`qi_p${index + 1}_code`, element.p_code],
+                    [`qi_p${index + 1}_category`, element.p_category],
+                    [`qi_p${index + 1}_cost`, element.p_cost],
+                    [`qi_p${index + 1}_margin`, element.p_margin],
+                    [`qi_p${index + 1}_sell`, element.p_sell],
+                ])
+            );
+            */
+            const price_ref = {
+                qi_subtotal: "subtotal",
+                qi_vat: "vat",
+                qi_shipping: "ship1",
+                qi_extra_1: 0,
+                qi_extra_2: 0,
+                qi_extra_3: 0,
+                qi_extra_4: 0,
+                qi_total: "total",
             }
 
+            addDoc(ref, {obj_ref, price_ref})
+            .then(docRef => {
+            const get_id = firebase.firestore().collection("ALL_invoice").doc(docRef.id);
+            const string = "/all_invoice/" + use_this_hash + "/" + docRef.id + "/";
+            //test2_storage( docRef.id, string, this.return_base64);
+            get_id
+                .update({
+                    invoice_hashid: docRef.id,
+                })
+                .then(() => {
+                    console.log("set doc");
 
-
+                    get_id.get().then((d) => {
+                        console.log("updated data:", d.data());
+                    });
+                });
+            })
             ///jspdf time!
 
         },
@@ -193,9 +251,7 @@ export default{
     created() {
 
         this.retrieveOneQuoteInfo();
-        if(this.$route.query.this_one_q_hash_number)
-            this.this_one_q_hash_number = this.$route.query.this_one_q_hash_number;
-        this.use_this_hash = this.$route.query.this_one_q_hash_number;
+
     },
 }
 </script>
