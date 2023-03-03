@@ -8,7 +8,7 @@
         <div class="grid grid-cols-3">
 
             <div>
-                <iframe src="https://firebasestorage.googleapis.com/v0/b/quote-n-invoice.appspot.com/o/all_quote%2Fco8jIw0vF8xiPspa8CWf%2Ftext4.pdf?alt=media&token=df3af25f-3c10-4877-84ba-65c355d2c76c" download="toquotationnumber.pdf" width="400px" height="300px"  ></iframe>
+                <iframe src="https://firebasestorage.googleapis.com/v0/b/quote-n-invoice.appspot.com/o/all_quote%2Fco8jIw0vF8xiPspa8CWf%2Ftext4.pdf?alt=media&token=df3af25f-3c10-4877-84ba-65c355d2c76c" download="toquotationnumber.pdf" width="800px" height="600px"  ></iframe>
             </div>
 
             <div class="grid grid-cols-1 gap-1">
@@ -80,7 +80,7 @@
             </div> <!--end grid-1-->
 
             <div>
-                <iframe class=" check_invoice"></iframe>
+                <embed id="preview_invoicenPDF" width="800px" height="600px"   src='' />
             </div>
 
 
@@ -187,9 +187,7 @@ export default{
                     */
                 });
                 });  
-                const obj_ref ={
-                    i_quotation_no:this.$refs.address_1.value,
-                }
+
         }, 
 
         async submitQuotation(use_this_hash){
@@ -287,7 +285,7 @@ export default{
                     });
                 });
             })
-            ///jspdf time!
+            ///jspdf time!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             const doc = new jsPDF(); 
             doc.addImage(cms_empty_invoice_no_table, "JPEG", 0, 0, 210, 297);
 
@@ -308,9 +306,9 @@ export default{
 
             doc.text(i_number, 159, 91);
             doc.text(today, 159, 97);
-            doc.text(copy_q_ref, 159, 103);
+            doc.text(this.copy_q_ref, 159, 103);
             doc.text(po_number, 159, 109);  
-
+            /*
             let bodyData = [];
             this.choosen_products.forEach((element, index, array) => {
                 necessary_only = [
@@ -324,6 +322,7 @@ export default{
                 ]  
                 bodyData.push(necessary_only);
             });
+            */
             var finalY = doc.lastAutoTable.finalY || 10
             autoTable(doc, {
                 //html: '#cms-quote-table',
@@ -341,7 +340,7 @@ export default{
                 tableWidth: 'auto',
                 margin: { top: 0, right: 10, bottom: 0, left: 10 }, //important2
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
-                body: [bodyData]
+                body: [["bodyData"]]
             })
             doc.setFontSize(14);
             doc.text('SUB TOTAL', 42, doc.lastAutoTable.finalY + 20)
@@ -354,11 +353,11 @@ export default{
             var finalY2 = doc.lastAutoTable.finalY;
             doc.text('Quote only valid for 30 days', 6, finalY2 + 15)
 
-
-            //debug for preview
             var string = doc.output('datauristring');
-            var embed = "<embed width='100%' height='100%' src='" + string + "'/>"
-            const a = document.getElementById('preview_quotationPDF');
+            console.log("string><" + string);
+
+            var embed = "<embed src='" + string + "'/>"
+            const a = document.getElementById('preview_invoicenPDF');
             var clone = a.cloneNode(true);
             clone.setAttribute('src', string);
             a.parentNode.replaceChild(clone, a);

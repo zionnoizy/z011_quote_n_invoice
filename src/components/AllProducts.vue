@@ -71,7 +71,7 @@ export default{
 
       async getAllProductsNewest() { 
         var all_product_ref = await firebase.firestore().collection("all_products");
-        all_product_ref.orderBy("p_insert_date", "desc")
+        all_product_ref.orderBy("p_insert_date", "asc")
 
           .onSnapshot((snapshot) => {
             this.all_products = [];
@@ -84,14 +84,14 @@ export default{
             })
           })
 
-        var lastThreeRes = await all_product_ref.orderBy('p_insert_date', 'desc').limit(3).get();
+        var lastThreeRes = await all_product_ref.orderBy('p_insert_date', 'asc').limit(3).get();
 
         
       },
 
       async getAllProductsOldest() { 
         var all_product_ref = await firebase.firestore().collection("all_products");
-        all_product_ref.orderBy("p_insert_date", "asc")
+        all_product_ref.orderBy("p_insert_date", "desc")
           .onSnapshot((snapshot) => {
             this.all_products = [];
             snapshot.forEach(d => {

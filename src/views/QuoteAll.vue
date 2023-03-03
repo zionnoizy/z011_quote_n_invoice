@@ -2,7 +2,8 @@
     <div class="AllQuote">
 
 
-
+        <button class="btn btn-primary " @click.prevent="getAllQuoteNewest()">Sort From Oldest </button>
+        <button class="btn btn-primary " @click.prevent="getAllQuoteOldest()">Sort From Newest </button>
         <table class="table table-dark mx-auto" >
 
                     
@@ -15,7 +16,7 @@
 
             <th scope="col"> REF </th>
             <th scope="col"> PO </th>
-            <th scope="col"> - </th>
+            <th scope="col"> ADDED DATE </th>
             <th scope="col"> - </th>
 
           </tr>
@@ -38,8 +39,8 @@
                   <td scope="col" style="width: 150px;"> {{ p.obj_ref.q_bill_fullname}} </td>
                   <td scope="col" style="width: 150px;"> REF_NUM_HERE </td> <!--{{ p.q_ref }}-->
                   <td scope="col" style="width: 150px;"> PO_NUMBER_HERE </td> <!--{{ p.q_po }}-->
-                  <!-- <td scope="col" style="width: 200px;"> {{ p.quote_hashid }} </td>
-                  {{ p.q_pdf_link }} -->
+                  <td scope="col" style="width: 200px;"> {{ p.obj_ref.q_uploaded_date }} </td>
+
                   <!-- <td > {{ p.q_p1_fullname}} </td> -->
 
               </router-link>
@@ -99,7 +100,33 @@ export default{
     },
     components: {},
     methods: {
+      async getAllQuoteNewest() { 
+        var all_product_ref = await firebase.firestore().collection("ALL_quote");
+        all_product_ref.orderBy("obj_ref.q_uploaded_date_timestamp", "asc")
 
+          .onSnapshot((snapshot) => {
+            this.all_quotes = [];
+            snapshot.forEach(d => {
+
+
+                var product = d.data();
+
+                this.all_quotes.push(product);
+            })
+          })
+      },
+      async getAllQuoteOldest() { 
+        var all_product_ref = await firebase.firestore().collection("ALL_quote");
+        all_product_ref.orderBy("obj_ref.q_uploaded_date_timestamp", "desc")
+          .onSnapshot((snapshot) => {
+            this.all_quotes = [];
+            snapshot.forEach(d => {
+                var product = d.data();
+
+                this.all_quotes.push(product);
+            })
+          })
+      },
       async getAllQuote() { 
 
         //console.log("[getAllQuote]=====================");

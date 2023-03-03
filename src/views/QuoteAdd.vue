@@ -364,11 +364,7 @@ export default {
             } catch (e) {
                 //console.log("Error Typing s_product2");
             }
-            watch(tmp_sell,
-            (newValue, oldValue) => {
-                document.getElementById('q_subtotal').value = newValue;
-                },
-            );
+
 
         });
         return { s_product2 };
@@ -641,7 +637,7 @@ export default {
             
             let bodyData = [];
             this.choosen_products.forEach((element, index, array) => {
-                necessary_only = [
+                let necessary_only = [
                     element.p_fullname,
                     element.p_code,
                     element.p_quantity,
@@ -721,13 +717,7 @@ export default {
 
             //[new_task] create all pic of information push to firestore.
             //https://www.koderhq.com/tutorial/vue/firestore-database/
-            let quote_number = await this.auto_quote_no_generator2();
-            try { 
-            const result = await this.auto_quote_no_generator2();
-            //console.log("check quote_num-----> " + result );
-            } catch(errorReason) { 
-             //console.log(errorReason);
-            }
+            
 
             
 
@@ -770,15 +760,16 @@ export default {
                 q_uploaded_date: todayDateTime,
                 q_ref: reference_number,
                 q_po: null,
+                q_uploaded_date_timestamp: serverTimestamp(),
                 //q_pdf_link: 'THIS_IS_FIRESTORE_URL',
             }
 
             let hash_id = '';
             addDoc(ref, {obj_ref, tmp_ff})
             .then(docRef => {
-
+                console.log(docRef.id);
                 const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
-                //console.log("[QuoteAdd] Document written with ID: ", docRef.id);
+
 
                 const string = "/all_quote/" + docRef.id + "/";
                 test2_storage( docRef.id, string, this.return_base64);//use this    
@@ -794,7 +785,7 @@ export default {
                         });
                     });
                 ////////////////////////////////////////////////////////////
-                /*
+                
                 const storage = getStorage(app);
                 const storage_ref = ref(storage, "tex5.txt");
                 uploadString(storage_ref, pdf_base64, 'data_url')
@@ -823,7 +814,7 @@ export default {
 
                     //console.log('Uploaded a base64 string pdf version!');
                 });
-                */
+                
                 ////////////////////////////////////////////////////////////
             })
             /*  
@@ -968,6 +959,9 @@ async function auto_quote_no_generator2(){
 
     
     const dSize = querySnapshot.size;
+    if (dSize == undefined){
+        dSize = "0";
+    }
     const docSize = dSize.toString();
 
 
