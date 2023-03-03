@@ -213,7 +213,7 @@ export default{
                 this.copy_q_ref = copycat.obj_ref.q_ref;
                 this.copy_q_invoice = copycat.obj_ref.q_quote_number;
 
-
+                console.log(copy_q_ref);
                 //this.copy_tmp_ff.add({ tmp_ff: doc.data().tmp_ff }); //is not defined?
             });
             
@@ -267,7 +267,7 @@ export default{
                 qi_total: "total",
             }
 
-            addDoc(ref, {obj_ref, price_ref, copy_tmp_ff}) //copy_tmp_ff
+            addDoc(ref, {obj_ref, price_ref}) //copy_tmp_ff
             .then(docRef => {
             const get_id = firebase.firestore().collection("ALL_invoice").doc(docRef.id);
             const string = "/all_invoice/" + use_this_hash + "/" + docRef.id + "/";
@@ -276,7 +276,7 @@ export default{
                 .update({
                     invoice_hashid: docRef.id,
                     qi_q_hashid: use_this_hash,
-                    tmp_ff: copy_tmp_ff,
+                    tmp_ff: "copy_tmp_ff",
                 })
                 .then(() => {
                     const allInvoiceRef = firebase.firestore().collection('ALL_invoice');

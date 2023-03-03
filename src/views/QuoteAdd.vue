@@ -155,7 +155,7 @@
                     <div>
                         <label for="q_subtotal">Subtotal</label>
                         <!--disabled @change="CalculateSubtotal"-->
-                        <input ref="q_subtotal" placeholder="Subtotal" id="q_subtotal" v-on:tmp_sell="getTmpSell"  />
+                        <input type="number" ref="q_subtotal" placeholder="Subtotal" id="q_subtotal"   />
                     </div>
 
 
@@ -202,9 +202,10 @@
                                 </div>
                                 <!---->
                                 <div class="modal-body">
-                                    <!--v-on:tmp_sell="getChoosenProducts($event);"     v-on:tmp_sell="getTmpSell" -->
+                                    <!--v-on:tmp_sell="getChoosenProducts($event);"     -->
                                     <all-products-choose 
-                                        v-on:choosen_products="getChoosenProducts($event); "  v-on:tmp_sell="getTmpSell">
+                                        v-on:choosen_products="getChoosenProducts($event); "  
+                                        v-on:tmp_sell="getTmpSell($event)">
                                     </all-products-choose>
 
 
@@ -343,9 +344,11 @@ import { app, db, auth } from "@/firebase.js";
 
 
 
+
 export default {
     name: 'QuoteAdd',
-    props: ['choosen_products','tmp_sell'],
+    
+    props: ['choosen_products', 'tmp_sell'],
     setup() {
         const s_product2 = reactive([]);
         onMounted(async () => {
@@ -361,11 +364,18 @@ export default {
             } catch (e) {
                 console.log("Error Typing s_product2");
             }
+            watch(tmp_sell,
+            (newValue, oldValue) => {
+                document.getElementById('q_subtotal').value = newValue;
+                },
+            );
+
         });
         return { s_product2 };
 
-        let quote_number = auto_quote_no_generator2();
-        return {quote_number}
+       
+
+
     },
     data() {
 
@@ -454,7 +464,7 @@ export default {
             this.tmp_sell = tmp_sell;
 
             
-            document.getElementById('q_subtotal').value = this.tmp_sell;
+            //document.getElementById('q_subtotal').value = this.tmp_sell;
 
         },   
 

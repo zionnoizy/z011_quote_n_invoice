@@ -15,7 +15,7 @@
               <th scope="col">[Catagory]</th>
               <th scope="col">[&#163; Product Cost]</th>
               <th scope="col">[Product Margin &percnt;]</th>
-              <th scope="col">[= *Product Sell]</th>
+              <th scope="col">[=*Product Sell]</th>
             </tr>
           </thead>
 
