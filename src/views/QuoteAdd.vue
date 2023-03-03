@@ -3,6 +3,8 @@
     <div class="QuoteAdd">
 
         <p>{{tmp_sell}}</p>
+
+        <p>{{choosen_products}}</p>
         <p class="dashboard_txt pt-5" ><router-link to="/dashboard" exact>
             
             <a><strong class="link">Dashboard</strong></a></router-link>  > Quote Add
@@ -153,7 +155,7 @@
                     <div>
                         <label for="q_subtotal">Subtotal</label>
                         <!--disabled @change="CalculateSubtotal"-->
-                        <input ref="q_subtotal" placeholder="Subtotal" id="q_subtotal" value="tmp_sell" disabled/>
+                        <input ref="q_subtotal" placeholder="Subtotal" id="q_subtotal" @tmp_sell="getTmpSell"  />
                     </div>
 
 
@@ -200,7 +202,7 @@
                                 </div>
                                 <!---->
                                 <div class="modal-body">
-                                    <!--v-on:choosen_products="getChoosenProducts($event)"-->
+                                    <!--v-on:tmp_sell="getChoosenProducts($event);"     v-on:tmp_sell="getTmpSell" -->
                                     <all-products-choose 
                                         v-on:choosen_products="getChoosenProducts($event); "
                                         v-on:tmp_sell="getTmpSell($event);"
@@ -252,7 +254,7 @@
                                 </td>
 
                                 <td> <button class="btn btn-info" @click.prevent="plusProduct"> [+] </button>
-                                    <button class="btn btn-danger" @click.prevent="minusProduct"> [-] </button>
+                                    <button class="btn btn-danger" @click.prevent="minusProduct(i, p.p_fullname)"> [-] </button>
                                 </td>
                             </tr>
 
@@ -262,7 +264,7 @@
                 </div>
             </div>
 
-
+            <buttons @navigate="navigateTo" ></buttons>
 
 
             <div>
@@ -429,7 +431,7 @@ export default {
 
             final_merch: {},
 
-            tmp_subtotal: 0,
+            //tmp_subtotal: 0,
         }
     },
     components: {
@@ -439,19 +441,24 @@ export default {
     methods: {
         getChoosenProducts(e) { //call when new page
             this.choosen_products = e;
-
-
+            /*
+            this.tmp_sell = e;
+            
+            document.getElementById('q_subtotal').value = this.tmp_sell;
+            */
             
 
             console.log("#[QuoteAdd-------]");
-            console.log("get tmp_sell.");
+            console.log("get tmp_sell." );
             console.log("#[QuoteAdd-------]");
         },
-        getTmpSell(e){
-            this.tmp_sell = e;
-            console.log(this.tmp_sell);
+        getTmpSell(dest){ //call when new page ONLY
+            this.tmp_sell = dest;
+            console.log('received value      ', dest);
+            
             document.getElementById('q_subtotal').value = this.tmp_sell;
-        },
+
+        },   
 
         async getAllClient1() {
 
@@ -719,11 +726,17 @@ export default {
 
             //[new_task] create all pic of information push to firestore.
             //https://www.koderhq.com/tutorial/vue/firestore-database/
-            let quote_number = auto_quote_no_generator2();
+            let quote_number = await this.auto_quote_no_generator2();
+            try { 
+            const result = await this.auto_quote_no_generator2();
+            console.log("check quote_num-----> " + result );
+            } catch(errorReason) { 
+             console.log(errorReason);
+            }
 
             
 
-            console.log("check quote_num-----> " + quote_number );
+            
 
 
             let reference_number = document.getElementById('q_reference_number').value;
@@ -832,11 +845,6 @@ export default {
             */
         },
 
-        doSomenthing(data) {
-            this.$root.$on('ChooseOneProduct', function (choosen_products) {
-                console.log(choosen_products)
-            })
-        },
 
         //seperate function
         firebaseStorageUpload() {
@@ -879,8 +887,17 @@ export default {
             );
             console.log("[firebaseStorageUpload]==================================");
         },
-        dannySumbition(){
-
+        danny(){
+            let q_number = auto_quote_no_generator2();
+            const myTimestamp = firebase.firestore.Timestamp.now();
+            let today = myTimestamp.toDate().toLocaleDateString("en-UK");
+            const input_ref = document.getElementById('q_reference_number').value;
+            
+            const q_subtotal = document.getElementById('q_subtotal').value
+            const vat = document.getElementById('q_vat').value;
+            const input_shipping = document.getElementById('q_shipping').value;
+            let cal_total = addVatSHip(q_subtotal, vat, input_shipping);
+            let po = "";
 
             //generatePDFSecurantly()
 
@@ -904,6 +921,11 @@ export default {
         CalculateTotal(){
             document.getElementById('q_total').value = tmp_ans;
         },
+        minusProduct(i, p_fullname){
+            var find_i = this.choosen_products.indexOf(this.choosen_products.p_fullname);
+            this.choosen_products.splice(i, 1);
+
+        },
     },
     created() {
 
@@ -914,63 +936,73 @@ export default {
 ////////////////////////////////////////////////////////////////////////////////////
 function add_zero(num){
 
-const  onez= "0";
-const twoz= "00";
-const threez = "000";
-const fourz = "0000";
+    const  onez= "0";
+    const twoz= "00";
+    const threez = "000";
+    const fourz = "0000";
 
+    if (num > 0 && num < 10){
 
+    let returnans = fourz + num;
+    
+    return returnans;
+    }
+    else if (num > 10 && num < 100){
+    
+    let returnans = threez + num;
 
-if (num > 0 && num < 10){
-  console.log("1");
-  let returnans = fourz + num;
-  
-  return returnans;
-}
-else if (num > 10 && num < 100){
-  
-  let returnans = threez + num;
-  console.log("2." + returnans);
-  return returnans;
-}
-else if (num > 100 && num < 1000){
-  console.log("3.");
-  let returnans = twoz + num;
-  console.log(returnans);
-  return returnans;
-}
-else if (num > 1000 && num < 10000){
-  console.log("4.");
-  let returnans = onez + num;
-  console.log(onez + num);
-  return returnans;
-}
+    return returnans;
+    }
+    else if (num > 100 && num < 1000){
+
+    let returnans = twoz + num;
+
+    return returnans;
+    }
+    else if (num > 1000 && num < 10000){
+
+    let returnans = onez + num;
+
+    return returnans;
+    }
 
 }
 function auto_quote_no_generator2(){
 
     let ans = "";
-    let first_half = "Q-CMS";
+    let first_half =  "Q-CMS";
 
     const q = firebase.firestore().collection('ALL_quote');
-    const snapshot = q.get(); //count is not a function
-    firebase.firestore().collection("ALL_quote").get().then(function(querySnapshot) {
+    firebase.firestore().collection("ALL_quote").get().then( function(querySnapshot) {
 
-    console.log("auto_quote_no_generator3" +querySnapshot.size);
-    const docSize = parseFloat(querySnapshot.size);
-    console.log("auto_quote_no_generator4" +docSize);
+    
+    const dSize = querySnapshot.size;
+    const docSize = dSize.toString();
+
 
     let addedz = add_zero(docSize);
+    
 
-
-    ans = first_half + addedz;
-    return {ans};
+     ans =  first_half + addedz;
+     console.log("auto_quote_no_generator5 " + ans);
+    return ans.toString();
+    
+     
 
     });
-
-
+    
 
 }
+
+function addVatSHip(subtotal, shipping, extra){
+    
+    let vat = 20;
+    let tmp_ans = +subtotal + (+(subtotal / 100) * vat); 
+    let ans = +tmp_ans + +shipping + +extra;
+    return ans;
+
+}
+
 
 </script>
 

@@ -133,33 +133,23 @@ export default{
     },
 
      choosenOneProduct(ev, p, i){
-      console.log("[choosenOneProduct] --------------------" + ev + "  "  + i);
-      console.log("[choosenOneProduct] you have chosen  " + p.p_fullname);
-
-
       var choose_product_ref =  firebase.firestore().collection("all_products").where("p_fullname", "==", p.p_fullname);
       choose_product_ref.onSnapshot((snapshot) => {
 
           snapshot.docs.forEach(d => {
-              console.log("[choosenOneProduct], delete data! clicked->" + p.p_fullname);
-
               var product = d.data();
-              var tmp_one_sell = parseFloat(d.data().p_sell);
-              console.log("[choosenOneProduct] called one element from d.data() " + d.data().p_sell);
-              
-              this.tmp_sell = this.tmp_sell + tmp_one_sell; //[cannot transfer tmp_sell to QuoteAdd]
-
+              var tmp_one_sell = parseFloat(d.data().p_sell);   
+              this.tmp_sell = this.tmp_sell + tmp_one_sell;
               this.choosen_products.push(product);
+              console.log("[choosenOneProduct] tmp sell is " + this.tmp_sell + " " + this.choosen_products);
 
-              console.log("[choosenOneProduct] tmp sell is " + this.tmp_sell + " ");
-
-              //this.$root.$emit('choosenOneProduct', this.choosen_products);
+              this.$root.$emit('choosenOneProduct', this.choosen_products);
+              this.$root.$emit('choosenOneProduct', this.tmp_sell);
             
           })
         })
-        console.log("[choosenOneProduct] --------------------");
     },
-
+    
     emitEventChanged () {
           this.$root.$emit('choosenOneProduct', this.choosen_products);
           this.$root.$emit('choosenOneProduct', this.tmp_sell);
