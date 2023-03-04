@@ -679,7 +679,7 @@ export default {
             autoTable(doc, {
                 //html: '#cms-quote-table',
                 theme: 'striped',
-                startY: finalY + 109, //important
+                startY: finalY + 112, //important
                 columnStyles: {
                     0: { cellWidth: 65 },
                     1: { cellWidth: 18 },
