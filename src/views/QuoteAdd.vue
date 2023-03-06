@@ -155,7 +155,7 @@
                     <div>
                         <label for="q_subtotal">Subtotal</label>
                         <!--disabled @change="CalculateSubtotal"-->
-                        <input type="number" ref="q_subtotal" placeholder="Subtotal" v-model="tmp_sell"  id="q_subtotal" disabled  />
+                        <input type="number" ref="q_subtotal" placeholder="Subtotal" v-on:tmp_sell="tmp_sell" @change="getTmpSell($event)" id="q_subtotal" disabled  />
                     </div>
 
 
@@ -205,7 +205,8 @@
                                     <!--v-on:tmp_sell="getChoosenProducts($event);"     -->
                                     <all-products-choose 
                                         v-on:choosen_products="getChoosenProducts($event); "  
-                                        v-on:tmp_sell="getTmpSell($event)">
+
+                                        v-on:tmp_sell="getTmpSell($event);">
                                     </all-products-choose>
 
 
@@ -240,7 +241,7 @@
                         <tbody>
 
 
-                            <tr v-for="p, i in choosen_products">
+                            <tr v-for="p, i in choosen_products" @change="CalculateSubtotal(i)">
 
                                 <td> {{ p.p_fullname }} </td>
                                 <td> {{ p.p_code }} </td>
@@ -328,7 +329,7 @@ import "jspdf/dist/polyfills.es.js";
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import { reactive, computed, ref } from 'vue'
 
-import { onMounted, nextTick } from 'vue';
+import { onMounted, nextTick, watch } from 'vue';
 
 //ref
 import { getStorage, uploadBytes, uploadBytesResumable, ref2 as firebaseStorageRef, getDownloadURL } from "firebase/storage";
@@ -351,6 +352,10 @@ export default {
     
     props: ['choosen_products', 'tmp_sell'],
     setup() {
+
+        watch(() => this.choosen_products.length, (choosen_products) => {
+            console.log(this.choosen_products.length);
+        })
         const s_product2 = reactive([]);
         onMounted(async () => {
             try {
@@ -365,7 +370,7 @@ export default {
             } catch (e) {
                 //console.log("Error Typing s_product2");
             }
-
+            
 
         });
         return { s_product2 };
@@ -444,24 +449,14 @@ export default {
 
     },
     methods: {
-        update() {
-            this.$attrs.update(this.tmp_sell)
-        },
+
         getChoosenProducts(e) { //call when new page
             this.choosen_products = e;
-            /*
-            this.tmp_sell = e;
-            
-            document.getElementById('q_subtotal').value = this.tmp_sell;
-            */
-            
 
-            //console.log("#[QuoteAdd-------]");
-            //console.log("get tmp_sell." );
-            //console.log("#[QuoteAdd-------]");
         },
-        getTmpSell(tmp_sell){ //call when new page ONLY
-            this.tmp_sell = tmp_sell;
+        getTmpSell(e){ //call when new page ONLY
+
+            this.tmp_sell = e;
 
             
             //document.getElementById('q_subtotal').value = this.tmp_sell;
@@ -916,9 +911,18 @@ export default {
             //firebaseStorageUpload()
         },
         CalculateSubtotal(i){
+
+            console.log("[calculateSubtotal] print         ");
+
+            let ans = 0;
             let dynamic = "add_all_sell"+i;
+            let cum = document.getElementById(dynamic).value;
             let b = td.getElementById(dynamic).innerText;
 
+            for(let z=0; z<i; ++z){
+                ans = ans + cum;
+                console.log("[calculateSubtotal]" + ans);
+            }
             const one_p_money = document.getElementById(dynamic).value;
             //console.log("[CalculateSubtotal]       " + one_p_money);
 

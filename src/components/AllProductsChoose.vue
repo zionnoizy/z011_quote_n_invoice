@@ -139,7 +139,7 @@ export default{
           snapshot.docs.forEach(d => {
               var product = d.data();
               this.choosen_products.push(product);
-              this.$root.$emit('choosenOneProduct', this.choosen_products);
+              //this.$root.$emit('choosenOneProduct', this.choosen_products);
           })
         })
     },
@@ -151,15 +151,15 @@ export default{
 
               var tmp_one_sell = parseFloat(d.data().p_sell);   
               this.tmp_sell = this.tmp_sell + tmp_one_sell;
-              this.$root.$emit("choosenProductSell", this.tmp_sell);
+              //this.$root.$emit("choosenProductSell", this.tmp_sell);
             
           })
         })
 
     },
     emitEventChanged () {
-          this.$root.$emit('choosenOneProduct', this.choosen_products);
-          this.$root.$emit('choosenProductSell', this.tmp_sell);
+          //this.$root.$emit('choosenOneProduct', this.choosen_products);
+          //this.$root.$emit('choosenProductSell', this.tmp_sell);
     },
     emptyChoosenProduct(){
       
