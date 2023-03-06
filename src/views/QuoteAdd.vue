@@ -5,6 +5,7 @@
         <p>{{tmp_sell}}</p>
 
         <p>{{choosen_products}}</p>
+        
         <p class="dashboard_txt pt-5" ><router-link to="/dashboard" exact>
             
             <a><strong class="link">Dashboard</strong></a></router-link>  > Quote Add
@@ -155,7 +156,8 @@
                     <div>
                         <label for="q_subtotal">Subtotal</label>
                         <!--disabled @change="CalculateSubtotal"-->
-                        <input type="number" ref="q_subtotal" placeholder="Subtotal" v-on:tmp_sell="tmp_sell" @change="getTmpSell($event)" id="q_subtotal" disabled  />
+                        <p @tmp_sell="getTmpSell" ></p>
+                        <input ref="q_subtotal" placeholder="Subtotal" @tmp_sell="getTmpSell"  id="q_subtotal"   />
                     </div>
 
 
@@ -205,7 +207,9 @@
                                     <!--v-on:tmp_sell="getChoosenProducts($event);"     -->
                                     <all-products-choose 
                                         v-on:choosen_products="getChoosenProducts($event); "  
-                                        v-on:tmp_sell="getTmpSell($event);">
+                                        @tmp_sell="getTmpSell" 
+                                     >
+                                     
                                     </all-products-choose>
 
 
@@ -240,7 +244,7 @@
                         <tbody>
 
 
-                            <tr v-for="p, i in choosen_products" @change="CalculateSubtotal(i)">
+                            <tr v-for="p, i in choosen_products" >
 
                                 <td> {{ p.p_fullname }} </td>
                                 <td> {{ p.p_code }} </td>
@@ -265,7 +269,7 @@
 
             <buttons @navigate="navigateTo" ></buttons>
 
-
+            
             <div>
                 <button class="preview_btn btn btn-info btn-lg btn-block" data-bs-toggle="modal"
                     data-bs-target="#preview_quotation" @click.prevent=previewBtn()> Preview Quotation</button>
@@ -345,19 +349,15 @@ import { app, db, auth } from "@/firebase.js";
 
 
 
+const choosen_products = ref([]);
+const tmp_sell = ref(0);
 
 export default {
     name: 'QuoteAdd',
     
     props: ['choosen_products', 'tmp_sell'],
     setup() {
-        const choosen_products = ref([]);
-        const tmp_sell = ref(0);
-        //const CalculateSubtotal = () => { console.log(choosen_products.value.length) }
-
-        watch(() => choosen_products.value.length, (choosen_products) => {
-            console.log(choosen_products.value.length);
-        })
+        
         const s_product2 = reactive([]);
         onMounted(async () => {
             try {
@@ -375,7 +375,7 @@ export default {
             
 
         });
-        return { s_product2, choosen_products, CalculateSubtotal };
+        return { s_product2};
 
        
 
@@ -457,11 +457,11 @@ export default {
 
         },
         getTmpSell(e){ //call when new page ONLY
-
+            
             this.tmp_sell = e;
 
             
-            //document.getElementById('q_subtotal').value = this.tmp_sell;
+            document.getElementById('q_subtotal').value = this.tmp_sell;
 
         },   
 
@@ -914,7 +914,16 @@ export default {
         },
         CalculateSubtotal(i){
 
-            console.log("[calculateSubtotal] print         ");
+            choosen_products.forEach(element => {      
+
+            this.tmp_sell = this.tmp_sell + element.p_sell;
+
+            document.getElementById('q_subtotal').value = this.tmp_sell;
+            console.log("print");
+
+            });    
+
+            console.log("[calculateSubtotal?] print         ");
 
             let ans = 0;
             let dynamic = "add_all_sell"+i;
@@ -923,7 +932,7 @@ export default {
 
             for(let z=0; z<i; ++z){
                 ans = ans + cum;
-                console.log("[calculateSubtotal]" + ans);
+                console.log("[calculateSubtotal?]" + ans);
             }
             const one_p_money = document.getElementById(dynamic).value;
             //console.log("[CalculateSubtotal]       " + one_p_money);

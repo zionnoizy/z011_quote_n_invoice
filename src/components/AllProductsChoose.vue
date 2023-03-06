@@ -151,7 +151,7 @@ export default{
 
               var tmp_one_sell = parseFloat(d.data().p_sell);   
               this.tmp_sell = this.tmp_sell + tmp_one_sell;
-              // this.$root.$emit("choosenProductSell", this.tmp_sell);
+              this.$emit("tmp_sell", this.tmp_sell);
             
           })
         })
@@ -159,12 +159,16 @@ export default{
     },
     emitEventChanged () {
           this.$root.$emit('choosenOneProduct', this.choosen_products);
-          //this.$root.$emit('choosenProductSell', this.tmp_sell);
+
+          this.$emit("tmp_sell", this.tmp_sell);
     },
     emptyChoosenProduct(){
       
       //console.log("[emptyChoosenProduct] empty--------------------");
-    }
+    },
+    TmpSell: function(str){
+            console.log(str);
+          }
 
   },
   created() {
