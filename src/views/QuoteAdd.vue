@@ -205,7 +205,6 @@
                                     <!--v-on:tmp_sell="getChoosenProducts($event);"     -->
                                     <all-products-choose 
                                         v-on:choosen_products="getChoosenProducts($event); "  
-
                                         v-on:tmp_sell="getTmpSell($event);">
                                     </all-products-choose>
 
@@ -345,16 +344,19 @@ import { app, db, auth } from "@/firebase.js";
 
 
 
-const tmp_sell = ref(0);
+
 
 export default {
     name: 'QuoteAdd',
     
     props: ['choosen_products', 'tmp_sell'],
     setup() {
+        const choosen_products = ref([]);
+        const tmp_sell = ref(0);
+        //const CalculateSubtotal = () => { console.log(choosen_products.value.length) }
 
-        watch(() => this.choosen_products.length, (choosen_products) => {
-            console.log(this.choosen_products.length);
+        watch(() => choosen_products.value.length, (choosen_products) => {
+            console.log(choosen_products.value.length);
         })
         const s_product2 = reactive([]);
         onMounted(async () => {
@@ -373,7 +375,7 @@ export default {
             
 
         });
-        return { s_product2 };
+        return { s_product2, choosen_products, CalculateSubtotal };
 
        
 
