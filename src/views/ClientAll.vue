@@ -10,7 +10,7 @@
         <p class="dashboard_txt" >
           <router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  > All Clients</p>
 
-        <client-add></client-add>
+        <client-add ></client-add>
 
         <p>...................................................</p>
 
@@ -35,52 +35,83 @@
         <div class="px-5 mx-5 grid grid-cols-5 gap-3 ">
           <!--[new_task] on click client-->
 
-      
-        <div class="client_card" v-for="c in all_clients" type="button"  data-bs-toggle="modal" data-bs-target="#add_delievery_address"  > 
-          
-          <div class="row">
 
-            <div>
-              <strong>{{ c.c_fullname }}</strong>
-            </div>
+          <div class="client_card"  v-for="c, i in all_clients"     > 
             
-            <div>
-              <strong>{{ c.c_address_1 }}</strong>
+            <div class="row" data-bs-toggle="modal" data-bs-target="#add_delievery_address" @click.prevent="this.passVariable($event, c, i)">
+
+              <div>
+                <strong>{{ c.c_fullname }}</strong>
+              </div>
+              
+              <div>
+                <strong>{{ c.c_address_1 }}</strong>
+              </div>
+              
+              <div>
+                <strong>{{ c.c_address_2 }}</strong>
+              </div>
+
+              <div>
+                <p>{{ c.c_city }}, {{ c.c_post_code }} </p>
+              </div>
+
+              <div> {{ c.client_hashid }} </div>
+
             </div>
-            
-            <div>
-              <strong>{{ c.c_address_2 }}</strong>
-            </div>
 
-            <div>
-              <p>{{ c.c_city }}, {{ c.c_post_code }} </p>
-            </div>
-
-          </div>
-
-        </div>
-
-        <div class="modal fade" id="add_delievery_address" tabindex="-1" aria-labelledby="" aria-hidden="true">
           
-          <div class="modal-dialog modal-xl">
-              <div class="modal-content text-black">
 
+          <div class="modal fade" id="add_delievery_address" tabindex="-1" aria-labelledby="" aria-hidden="true" >
+            
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content text-black">
+
+                    
                   <div class="modal-header">
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"> X </button>
-                      <p id="this_is_edit_fullname" class="this_is_edit_fullname"> You Are Adding Client Delivery Address. </p>
+                    
                   </div>
 
                   <div class="modal-body">
+
+
+                      <p id="this_is_edit_fullname" class="this_is_edit_fullname"> You Are Adding Client Delivery Address: {{ delivery_fullname }}  </p>
+                        <div class="grid grid-cols-2 gap-2" >
+                          
+                          <div><label>Delievery Company Name*</label></div>
+                          <div><input ref="delivery_cpyname" type="text" placeholder="Client Company Name" id="delivery_cpyname" required/></div>
+
+                      </div>
+
+                        <h2>Delivery Full Address</h2>
+
+                      <div class="grid grid-cols-2 gap-3">
+                        <div><label>Address Line1 * </label> </div>
+                        <div> <input ref="d_address_1" placeholder="Address Line1" id="d_address_1"  required/></div>
+
+                        <div><label>Address Line2 (Optional)</label>  </div>
+                        <div> <input ref="d_address_2" placeholder="Address Line2" id="d_address_2" /></div>
+
+                        <div><label>City *</label> </div>
+                        <div><input ref="d_city" placeholder="City" id="d_city" required/></div>
+
+                        <div><label>Post Code *</label> </div>
+                        <div> <input ref="post_code" placeholder="Post Code" id="post_code" required/></div>
+                      </div>
+
                   </div>
 
-                  <div class="modal-footer" style="background-color: #1267aa;">
-                    <button @click="() =>createDelieveryAddress(c.c_cid)">Submit Delivery Address</button>
-                  </div>
-              </div>
+                    <div class="modal-footer" style="background-color: #1267aa;">
+
+                      <button @click.prevent="createDelieveryAddress" class="btn btn-info" >Add Delivery Information </button>
+
+                    </div>
+                    
+                </div>
+            </div>
+
           </div>
-
         </div>
-
 
 
 
@@ -94,10 +125,13 @@
 <script>
 import { setDoc } from '@firebase/firestore';
 import ClientAdd from "@/components/ClientAdd.vue";
+import DeliveryAdd from "@/components/DeliveryAdd.vue";
 import { app, db2, auth } from "@/firebase.js";
 import { onMounted, reactive } from "vue";
+import { ref } from 'vue';
 
 export default{
+
     name: 'ClientAll',
     setup() {},
     data(){
@@ -112,13 +146,29 @@ export default{
             c_insert_date: null,
             c_post_code: null,
             c_cid: null,
-          }
+            client_hashid: null,
+          },
+          delivery_client_hashid: '',
+          delivery_fullname: '',
+
+          delivery_cpyname: '',
+          d_address_1: '',
         }
     },
     components: {
       ClientAdd,
+      DeliveryAdd,
     },
     methods: {
+      passVariable(ev, c, i){
+        this.delivery_client_hashid = c.client_hashid;
+        console.log("you are adding delivery address in  " + c.c_fullname);
+        this.delivery_fullname = c.c_fullname;
+
+      },
+      client_hashid(client_hashid) {
+          this.client_hashid = client_hashid
+      },
 
       async getAllClient() { 
         var all_client_ref = await firebase.firestore().collection("all_clients");
@@ -152,29 +202,51 @@ export default{
         }
       },
 
-      async createDelieveryAddress(c_cid){
-        //if ($refs.client_cpyname.value == '' || this.$refs.address_1.value == '' || this.$refs.address_2.value == '' || this.$refs.city.value == '' || this.$refs.post_code.value == ''){
+      createDelieveryAddress(){
+
+        const d_fullname = document.getElementById("delivery_cpyname").value;
+        const d_address_1 = document.getElementById("d_address_1").value;
+        const d_address_2 =  document.getElementById("d_address_2").value;
+        const d_city =  document.getElementById("d_city").value;
+        const d_post_code =  document.getElementById("d_post_code").value;
+
+        console.log(d_fullname + " " + d_address_1 + " " + d_address_2 + " " + d_city + " " + d_post_code);
         
-        //console.log("[ClientAdd] create new client." + c_cid);
+        //if (d_fullname == '' || d_address_1 == '' || d_address_2 == '' || d_city == '' || d_post_code == ''){
+
+
         const db_id = firebase.firestore();
-        const get_id = db_id.collection('all_delivery').doc(c_cid);
-        const id = get_id.id;
-        
+        const get_id = db_id.collection('all_delivery').doc()
+                            .collection(this.delivery_client_hashid).doc();
         const obj_ref ={
-          d_fullname:this.$refs.client_cpyname.value,
-          d_address_1:this.$refs.address_1.value,
-          d_address_2:this.$refs.address_2.value,
-          d_city:this.$refs.city.value,
-          d_post_code:this.$refs.post_code.value,
+
+          d_fullname: d_fullname,
+          d_address_1: d_address_1,
+          d_address_2: d_address_2,
+          d_city: d_city,
+          d_post_code: d_post_code,
+
+          d_client_hash_id: this.delivery_client_hashid,
           d_insert_date: serverTimestamp(),
-          d_cid: c_id,
         }
 
-        const doc_ref = await addDoc(get_id, obj_ref);
-      }
+        addDoc(get_id, obj_ref)
+        .then(docRef => {
+            console.log(docRef.id);
+            const get_id = firebase.firestore().collection("all_delivery").doc().collection(this.delivery_client_hashid).doc(docRef.id);
+            get_id
+                .update({
+                   delivery_hashid: docRef.id,
+                })
+                .then(() => {
+                });
+        })
+      },
     },
+      
     created() {
       this.getAllClient();
+      this.getUser();
     },
 }
 </script>

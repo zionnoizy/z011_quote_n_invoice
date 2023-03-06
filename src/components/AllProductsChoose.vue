@@ -30,14 +30,14 @@
         </tr>
 
         
-        <tr class="choose_product" v-for="p, i in all_products" @click.prevent="choosenOneProduct($event,p, i);" @change="emitEventChanged">
+        <tr class="choose_product" v-for="p, i in all_products" @click.prevent="choosenOneProduct($event,p, i); choosenProductSell($event,p, i);" @change="emitEventChanged">
             <td> {{ p.p_code }} </td>
             <td> {{ p.p_fullname }} </td>
             <td> {{ p.p_category }} </td>
             <td> {{ p.p_cost }} </td>
             <td> {{ p.p_margin }} </td>
             <td> {{ p.p_sell }} </td>
-            <td> <div><button class="btn btn-info" @click.prevent="choosenOneProduct($event,p, i);" > [+] </button> </div> </td>
+            <td> <div><button class="btn btn-info" @click.prevent="choosenOneProduct($event,p, i); choosenProductSell($event,p, i);" @change="emitEventChanged"> [+] </button> </div> </td>
         </tr>
         
         </tbody>
@@ -138,21 +138,28 @@ export default{
 
           snapshot.docs.forEach(d => {
               var product = d.data();
-              var tmp_one_sell = parseFloat(d.data().p_sell);   
-              this.tmp_sell = this.tmp_sell + tmp_one_sell;
               this.choosen_products.push(product);
-              //console.log("[choosenOneProduct] tmp sell is " + this.tmp_sell + " " + this.choosen_products);
-
               this.$root.$emit('choosenOneProduct', this.choosen_products);
-              this.$root.$emit("choosenOneProduct", this.tmp_sell);
-            
           })
         })
     },
-    
+    choosenProductSell(ev, p, i){
+      var choose_product_ref =  firebase.firestore().collection("all_products").where("p_fullname", "==", p.p_fullname);
+      choose_product_ref.onSnapshot((snapshot) => {
+
+          snapshot.docs.forEach(d => {
+
+              var tmp_one_sell = parseFloat(d.data().p_sell);   
+              this.tmp_sell = this.tmp_sell + tmp_one_sell;
+              this.$root.$emit("choosenProductSell", this.tmp_sell);
+            
+          })
+        })
+
+    },
     emitEventChanged () {
           this.$root.$emit('choosenOneProduct', this.choosen_products);
-          this.$root.$emit('choosenOneProduct', this.tmp_sell);
+          this.$root.$emit('choosenProductSell', this.tmp_sell);
     },
     emptyChoosenProduct(){
       

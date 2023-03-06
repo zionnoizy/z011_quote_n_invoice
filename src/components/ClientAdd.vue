@@ -50,8 +50,8 @@ export default{
         //console.log("[ClientAdd] create new client.");
 
         const db_id = firebase.firestore();
-        const get_id = db_id.collection('all_clients').doc();
-        const c_id = get_id.id;
+        const get_id = db_id.collection('all_clients');
+
         
         const ref = collection(db, 'all_clients');
         
@@ -62,13 +62,26 @@ export default{
           c_city:this.$refs.city.value,
           c_post_code:this.$refs.post_code.value,
           c_insert_date: serverTimestamp(),
-          c_cid: c_id,
+
         }
 
-        const doc_ref = await addDoc(ref, obj_ref);
-      }
-    },
+        addDoc(ref, obj_ref)
+        .then(docRef => {
 
+            const get_id = firebase.firestore().collection("all_clients").doc(docRef.id);
+            get_id
+                .update({
+                    client_hashid: docRef.id,
+                })
+                .then(() => {
+                    console.log("set doc");
+
+                });
+            ////////////////////////////////////////////////////////////
+
+        })
+      },
+    }
 }
 
 // const addClient = () => {

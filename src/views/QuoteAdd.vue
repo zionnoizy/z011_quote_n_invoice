@@ -155,7 +155,7 @@
                     <div>
                         <label for="q_subtotal">Subtotal</label>
                         <!--disabled @change="CalculateSubtotal"-->
-                        <input type="number" ref="q_subtotal" placeholder="Subtotal" id="q_subtotal"   />
+                        <input type="number" ref="q_subtotal" placeholder="Subtotal" v-model="tmp_sell"  id="q_subtotal" disabled  />
                     </div>
 
 
@@ -344,6 +344,7 @@ import { app, db, auth } from "@/firebase.js";
 
 
 
+const tmp_sell = ref(0);
 
 export default {
     name: 'QuoteAdd',
@@ -435,7 +436,7 @@ export default {
 
             final_merch: {},
 
-            //tmp_subtotal: 0,
+
         }
     },
     components: {
@@ -443,6 +444,9 @@ export default {
 
     },
     methods: {
+        update() {
+            this.$attrs.update(this.tmp_sell)
+        },
         getChoosenProducts(e) { //call when new page
             this.choosen_products = e;
             /*
@@ -929,6 +933,11 @@ export default {
             this.choosen_products.splice(i, 1);
 
         },
+        createSHipping(){
+            var input = document.createElement("input");
+            input.setAttribute('type', 'text');
+            input.appendChildinout;
+        }
     },
     created() {
 
