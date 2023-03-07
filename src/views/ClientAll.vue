@@ -123,14 +123,14 @@
 
 
 <script>
-import { setDoc } from '@firebase/firestore';
+import { setDoc, addDoc } from '@firebase/firestore';
 import ClientAdd from "@/components/ClientAdd.vue";
 import DeliveryAdd from "@/components/DeliveryAdd.vue";
-import { app, db2, auth } from "@/firebase.js";
+import { db, db2, auth } from "@/firebase.js";
 import { onMounted, reactive } from "vue";
 import { ref } from 'vue';
 import { serverTimestamp } from 'firebase/firestore';
-import { addDoc, collection } from "@firebase/firestore";
+import { collection, doc } from "@firebase/firestore";
 export default{
 
     name: 'ClientAll',
@@ -217,8 +217,12 @@ export default{
 
 
         const db_id = firebase.firestore();
-        const get_id = db_id.collection('all_delivery').doc()
-                            .collection(this.delivery_client_hashid).doc();
+        //const ref = collection(db, 'all_delivery', this.delivery_client_hashid);
+
+        const get_id = db_id.collection('all_delivery').doc(this.delivery_client_hashid);
+        const c_id = get_id.id;
+        const get_id2 = firebase.firestore().collection('all_delivery').doc(this.delivery_client_hashid).collection("this_client_delivery").doc();
+        const c_id2 = get_id2.id;
         const obj_ref ={
 
           d_fullname: d_fullname,
@@ -228,21 +232,24 @@ export default{
           d_post_code: d_post_code,
 
           d_client_hash_id: this.delivery_client_hashid,
+          //d_id: c_id2,
           d_insert_date: serverTimestamp(),
         }
+        //, "this_client_delivery" , c_id2
+        const d = doc(db, "all_delivery", this.delivery_client_hashid, "this_client_delivery");
 
-        setDoc(get_id, obj_ref)
+         setDoc(get_id2 , obj_ref )
         .then(docRef => {
-            console.log(docRef.id);
-            const get_id = firebase.firestore().collection("all_delivery").doc().collection(this.delivery_client_hashid).doc(docRef.id);
-            get_id
-                .update({
-                   delivery_hashid: docRef.id,
-                })
-                .then(() => {
-                });
+          console.log(docRef.id);
+          const get_id = firebase.firestore().collection("all_delivery").doc(this.delivery_client_hashid).collection("this_client_delivery").doc(docRef.id);
+          get_id
+              .update({
+                  delivery_hashid: docRef.id,
+              })
+              .then(() => {
+              });
         })
-
+        
       },
     },
       

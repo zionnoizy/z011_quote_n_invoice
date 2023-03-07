@@ -1,9 +1,14 @@
 <template>
     <div class="OneQuote">
 
-        <p> debug here only - view specific quote.</p>
-        <p> The quote id is= {{ $route.params.id }}</p>
-        <p> One Q Hash is= {{ $route.query.this_one_q_hash_number }} <!--cannot pass each quote to here--> </p>
+        <div class="border">
+            <p> debug here only - view specific quote.</p>
+            <p> The quote id is= {{ $route.params.id }}</p>
+            <p> One Q Hash is= {{ $route.query.this_one_q_hash_number }} <!--cannot pass each quote to here--> </p>
+            <input class="quote_num" id="quote_num"/> <br> {{ copy_q_b_f }}
+            <br>
+            <input class="ref_num" id="ref_num"/> {{ copy_exact_product }}
+        </div>
 
         <div class="grid grid-cols-3">
 
@@ -106,6 +111,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { test2_storage } from '../firebase';
 import { onSnapshot, query, collection, collectionGroup, getDocs, where, doc, updateDoc, getDoc, orderBy, addDoc, limit } from 'firebase/firestore'
+import { threadId } from "worker_threads";
 export default{
     name: "OneQuote",
     each_quote:{
@@ -147,16 +153,9 @@ export default{
             copy_q_ref: '',
             copy_q_invoice: '',
 
-            copy_tmp_ff: {
-                q_fullname: null,
-                q_address_1: null,
-                q_address_2: null,
-                q_city: null,
-                q_insert_date: null,
-                q_post_code: null,
-                quote_hashid: null,
-            },
+            
 
+            copy_exact_product: {},
         }
     },
     components:{
@@ -164,74 +163,75 @@ export default{
     },
     methods:{
 
-        retrieveOneQuoteInfo(){
+        async retrieveOneQuoteInfo(){
             //console.log("find quotation pdf url + retrieve all quotation inforamtion in here." + this.this_one_q_hash_number)
             // https://www.youtube.com/watch?v=CGrNNGrKCJU&ab_channel=AdnanAfzal    [(9:55)]
-            const findQuoteInfo = firebase.firestore().collection('ALL_quote').where("quote_hashid", "==", this.this_one_q_hash_number); 
-            findQuoteInfo.onSnapshot(snap => {
-                this.oneqdata = [];
-                
-                snap.forEach(d => {
-                    //console.log("print111");
-                    this.oneqdata.push(d.data());
-                    var find_one_quote_info = d.data(); //undefined?
-                    /*
-                    //console.log("->" + oneqdata.obj_ref.q_bill_fullname);
-                    //console.log("->" + oneqdata.obj_ref.q_bill_address1);
-                    //console.log("->" + oneqdata.obj_ref.q_bill_address2);
-                    //console.log("->" + oneqdata.obj_ref.q_bill_city);
-                    //console.log("->" + oneqdata.obj_ref.q_bill_postcode);
-                    
-                    //console.log("->" + oneqdata.obj_ref.q_bill_fullname);
-                    
-                    */
-                });
-                });  
 
-        }, 
-
-        async submitQuotation(use_this_hash){
-            let po_number = document.getElementById('po_number').value;
-
-            await firebase.firestore().collection("ALL_quote").doc(use_this_hash)
+            //
+            
+            await firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number)
             .onSnapshot(doc => {
+
                 var copycat = doc.data();
+                
                 this.copy_q_b_f = copycat.obj_ref.q_bill_fullname;
                 this.copy_q_b_a1 = copycat.obj_ref.q_bill_address1;
                 this.copy_q_b_a2 = copycat.obj_ref.q_bill_address2;
                 this.copy_q_b_c = copycat.obj_ref.q_bill_city;
                 this.copy_q_b_pc = copycat.obj_ref.q_bill_postcode;
 
-                this.copy_q_b_f = copycat.obj_ref.q_ship_fullname;
-                this.copy_q_b_a1 = copycat.obj_ref.q_ship_address1;
-                this.copy_q_b_a2 = copycat.obj_ref.q_ship_address2;
-                this.copy_q_b_c = copycat.obj_ref.q_ship_city;
-                this.copy_q_b_pc = copycat.obj_ref.q_ship_postcode;
+                this.copy_q_s_f = copycat.obj_ref.q_ship_fillname;
+                this.copy_q_s_a1 = copycat.obj_ref.q_ship_address1;
+                this.copy_q_s_a2 = copycat.obj_ref.q_ship_address2;
+                this.copy_q_s_c = copycat.obj_ref.q_ship_city;
+                this.copy_q_s_pc = copycat.obj_ref.q_ship_postcode;
                 
                 this.copy_q_ref = copycat.obj_ref.q_ref;
                 this.copy_q_invoice = copycat.obj_ref.q_quote_number;
 
-                //console.log(copy_q_ref);
-                //this.copy_tmp_ff.add({ tmp_ff: doc.data().tmp_ff }); //is not defined?
+                this.copy_exact_product = copycat.tmp_ff;
+                
+
+                console.log("[debug3] " + this.copy_q_b_f);
             });
             
-           
+            
+
+
+            //[DEBUG]
+            console.log("=====>     " + this.copy_q_b_f );
+            await document.getElementById('quote_num').setAttribute('value', this.copy_q_ref);
+            await document.getElementById('ref_num').setAttribute('value', "debug");
+
+
+        }, 
+
+        async submitQuotation(use_this_hash){
+
+            console.log(" " + this.copy_q_b_f + " " +  this.copy_q_b_a1 + " " + this.copy_q_s_f + " " +  this.copy_q_ref+ " " + this.copy_exact_product);
+
+
+            let po_number = document.getElementById('po_number').value;
+
+            
+
             const myTimestamp = firebase.firestore.Timestamp.now();
             let today = myTimestamp.toDate().toLocaleDateString("en-UK");    
             let i_number = await auto_invoice_no_generator3(this.copy_q_invoice);    
 
             const ref = collection(db, "ALL_invoice");
             const obj_ref = {
-                qi_bill_fullname: "qi_bill_fullname",
-                qi_bill_address1: "qi_bill_address1",
-                qi_bill_address2: "qi_bill_address2", 
-                qi_bill_city: "qi_bill_city",
-                qi_bill_postcode: "qi_bill_postcode",
-                qi_ship_fillname: "qi_ship_fillname",
-                qi_ship_address1: "qi_ship_address1",
-                qi_ship_address2: "qi_ship_address2", 
-                qi_ship_city: "qi_ship_city",
-                qi_ship_postcode: "qi_ship_postcode", 
+                qi_bill_fullname: this.copy_q_b_f,
+                qi_bill_address1: this.copy_q_b_a1,
+                qi_bill_address2: this.copy_q_b_a2, 
+                qi_bill_city: this.copy_q_b_c,
+                qi_bill_postcode: this.copy_q_b_pc,
+
+                qi_ship_fillname: this.copy_q_s_f,
+                qi_ship_address1: this.copy_q_s_a1,
+                qi_ship_address2: this.copy_q_s_a2, 
+                qi_ship_city: this.copy_q_s_c,
+                qi_ship_postcode: this.copy_q_s_pc, 
                 
                 qi_invoice_number: i_number, 
                 qi_uploaded_date: today,
@@ -242,18 +242,6 @@ export default{
                 
                 
             }
-            /*
-            const tmp_ff = Object.fromEntries(
-                this.choosen_products.flatMap((element, index) => [
-                    [`qi_p${index + 1}_fullname`, element.p_fullname],
-                    [`qi_p${index + 1}_code`, element.p_code],
-                    [`qi_p${index + 1}_category`, element.p_category],
-                    [`qi_p${index + 1}_cost`, element.p_cost],
-                    [`qi_p${index + 1}_margin`, element.p_margin],
-                    [`qi_p${index + 1}_sell`, element.p_sell],
-                ])
-            );
-            */
             const price_ref = {
                 qi_subtotal: "subtotal",
                 qi_vat: "vat",
@@ -265,16 +253,19 @@ export default{
                 qi_total: "total",
             }
 
-            addDoc(ref, {obj_ref, price_ref}) //copy_tmp_ff
+            const pro_ref = this.copy_exact_product;
+
+            addDoc(ref, {obj_ref, pro_ref, price_ref}) 
             .then(docRef => {
             const get_id = firebase.firestore().collection("ALL_invoice").doc(docRef.id);
-            const string = "/all_invoice/" + use_this_hash + "/" + docRef.id + "/";
+            const string = "/ALL_invoice/" + use_this_hash + "/" + docRef.id + "/";
             test2_storage( docRef.id, string, this.return_base64);
+            
             get_id
                 .update({
                     invoice_hashid: docRef.id,
-                    qi_q_hashid: use_this_hash,
-                    tmp_ff: "copy_tmp_ff",
+                    quote_hashid: use_this_hash,
+
                 })
                 .then(() => {
                     const allInvoiceRef = firebase.firestore().collection('ALL_invoice');
@@ -293,21 +284,33 @@ export default{
             doc.setFontSize(10);
             doc.text(this.copy_q_b_f, 6, 93);
             doc.text(this.copy_q_b_a1, 6, 98);
-            doc.text(this.copy_q_b_a2, 6, 103);
-            doc.text(this.copy_q_b_c, 6, 108);
-            doc.text(this.copy_q_b_pc, 6, 113);
+            if (this.copy_q_b_a2 == '' || this.copy_q_b_a2 == null){
+                doc.text(this.copy_q_b_c, 6, 103);
+                doc.text(this.copy_q_b_pc, 6, 108);
+            }
+            else{
+                doc.text(this.copy_q_b_a2, 6, 103);
+                doc.text(this.copy_q_b_c, 6, 108);
+                doc.text(this.copy_q_b_pc, 6, 113);
+            }
 
             doc.setFontSize(10);
-            doc.text(this.copy_q_b_f, 72, 93);
-            doc.text(this.copy_q_b_a1, 72, 98);
-            doc.text(this.copy_q_b_a2, 72, 103);
-            doc.text(this.copy_q_b_c, 72, 108);
-            doc.text(this.copy_q_b_pc, 72, 113);      
+            doc.text(this.copy_q_s_f, 72, 93);
+            doc.text(this.copy_q_s_a1, 72, 98);
+            if (this.copy_q_s_a2 == '' || this.copy_q_s_a2 == null){
+                doc.text(this.copy_q_s_c, 72, 103);
+                doc.text(this.copy_q_s_pc, 72, 108);  
+            }    
+            else{
+                doc.text(this.copy_q_s_a2, 72, 103);
+                doc.text(this.copy_q_s_c, 72, 108);
+                doc.text(this.copy_q_s_pc, 72, 113); 
+            }
 
-            doc.text(i_number, 159, 91);
-            doc.text(today, 159, 97);
-            doc.text(this.copy_q_ref, 159, 103);
-            doc.text(po_number, 159, 109);  
+            doc.text(i_number, 159, 94);
+            doc.text(today, 159, 100);
+            doc.text(this.copy_q_ref, 159, 105);
+            doc.text(po_number, 159, 111);  
             /*
             let bodyData = [];
             this.choosen_products.forEach((element, index, array) => {
@@ -342,7 +345,7 @@ export default{
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
                 body: [["bodyData"]]
             })
-            doc.setFontSize(14);
+            doc.setFontSize(12);
             doc.text('SUB TOTAL', 42, doc.lastAutoTable.finalY + 20)
             doc.text('100', 152, doc.lastAutoTable.finalY + 20)
             doc.text('VAT', 42, doc.lastAutoTable.finalY + 25)
@@ -350,8 +353,9 @@ export default{
             doc.text('SHIPPING. HANDLING', 42, doc.lastAutoTable.finalY + 30)
             doc.text('150', 152, doc.lastAutoTable.finalY + 30)
 
-            var finalY2 = doc.lastAutoTable.finalY;
-            doc.text('Quote only valid for 30 days', 6, finalY2 + 15)
+            doc.setFontSize(9);
+            doc.text('Terms & Instructions', 6,  doc.lastAutoTable.finalY + 40).setFont(undefined, 'bold');
+            doc.text('Quote only valid for 30 days', 6, doc.lastAutoTable.finalY + 44)
 
             var string = doc.output('datauristring');
             console.log("string><" + string);
@@ -445,7 +449,9 @@ export default{
             doc.text('150', 152, doc.lastAutoTable.finalY + 30)
 
             var finalY2 = doc.lastAutoTable.finalY;
-            doc.text('Quote only valid for 30 days', 6, finalY2 + 15)
+            doc.setFontSize(9);
+            doc.text('Terms & Instructions', 6,  doc.lastAutoTable.finalY + 36).setFont(undefined, 'bold');
+            doc.text('Quote only valid for 30 days', 6, doc.lastAutoTable.finalY + 39)
 
 
             //debug for preview
