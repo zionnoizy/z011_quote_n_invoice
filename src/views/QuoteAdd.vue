@@ -156,7 +156,7 @@
                     <div>
                         <label for="q_subtotal">Subtotal</label>
                         <!--disabled @change="CalculateSubtotal"-->
-                        <p @tmp_sell="getTmpSell" ></p>
+                        <p @tmp_sell="getTmpSell" >?</p>
                         <input ref="q_subtotal" placeholder="Subtotal" @tmp_sell="getTmpSell"  id="q_subtotal"   />
                     </div>
 

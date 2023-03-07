@@ -96,7 +96,7 @@
                         <div><input ref="d_city" placeholder="City" id="d_city" required/></div>
 
                         <div><label>Post Code *</label> </div>
-                        <div> <input ref="post_code" placeholder="Post Code" id="post_code" required/></div>
+                        <div> <input ref="post_code" placeholder="Post Code" id="d_post_code" required/></div>
                       </div>
 
                   </div>
@@ -129,7 +129,8 @@ import DeliveryAdd from "@/components/DeliveryAdd.vue";
 import { app, db2, auth } from "@/firebase.js";
 import { onMounted, reactive } from "vue";
 import { ref } from 'vue';
-
+import { serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection } from "@firebase/firestore";
 export default{
 
     name: 'ClientAll',
@@ -204,7 +205,7 @@ export default{
 
       createDelieveryAddress(){
 
-        const d_fullname = document.getElementById("delivery_cpyname").value;
+        const d_fullname = document.getElementById("delivery_cpyname").value; //okay
         const d_address_1 = document.getElementById("d_address_1").value;
         const d_address_2 =  document.getElementById("d_address_2").value;
         const d_city =  document.getElementById("d_city").value;
@@ -230,7 +231,7 @@ export default{
           d_insert_date: serverTimestamp(),
         }
 
-        addDoc(get_id, obj_ref)
+        setDoc(get_id, obj_ref)
         .then(docRef => {
             console.log(docRef.id);
             const get_id = firebase.firestore().collection("all_delivery").doc().collection(this.delivery_client_hashid).doc(docRef.id);
@@ -241,6 +242,7 @@ export default{
                 .then(() => {
                 });
         })
+
       },
     },
       
