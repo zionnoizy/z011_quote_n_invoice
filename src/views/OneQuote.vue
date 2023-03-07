@@ -13,7 +13,8 @@
         <div class="grid grid-cols-3">
 
             <div>
-                <iframe src="https://firebasestorage.googleapis.com/v0/b/quote-n-invoice.appspot.com/o/all_quote%2Fco8jIw0vF8xiPspa8CWf%2Ftext4.pdf?alt=media&token=df3af25f-3c10-4877-84ba-65c355d2c76c" download="toquotationnumber.pdf" width="800px" height="600px"  ></iframe>
+                <embed id="preview_quotenPDF"  class="preview_quotenPDF" width="800px" height="600px"   src='' />
+                <!-- <iframe id="preview_quotenPDF" src="" download="toquotationnumber.pdf" width="800px" height="600px"  ></iframe> -->
             </div>
 
             <div class="grid grid-cols-1 gap-1">
@@ -122,7 +123,7 @@ export default{
         return{
             id: this.$route.params.id, //[change from hash to quote number]
             this_one_q_hash_number: this.$route.query.this_one_q_hash_number,
-            
+            this_one_q_pdf_link: this.$route.query.this_one_q_pdf_link,
             
             one_quote_url: '',
 
@@ -162,13 +163,23 @@ export default{
         EditQuote,
     },
     methods:{
-
+        showQuotePDF(){
+            const z = document.getElementById('preview_quotenPDF');
+            console.log("zzzzzz" + z + " " + this.this_one_q_pdf_link);
+            z.setAttribute('src', this.this_one_q_pdf_link);
+            z.parentNode.replaceChild(clone1, z);
+        },
         async retrieveOneQuoteInfo(){
             //console.log("find quotation pdf url + retrieve all quotation inforamtion in here." + this.this_one_q_hash_number)
             // https://www.youtube.com/watch?v=CGrNNGrKCJU&ab_channel=AdnanAfzal    [(9:55)]
 
             //
+
+
             
+
+
+
             await firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number)
             .onSnapshot(doc => {
 
@@ -470,7 +481,7 @@ export default{
     created() {
 
         this.retrieveOneQuoteInfo();
-
+        this.showQuotePDF();
     },
 }
 function add_zero(num){

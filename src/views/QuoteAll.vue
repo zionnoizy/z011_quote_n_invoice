@@ -32,7 +32,7 @@
                 
                 { id: p.obj_ref.q_quote_number, 
                   //[that's a lot to pass]
-                }, query: {this_one_q_hash_number: p.quote_hashid}}">
+                }, query: {this_one_q_hash_number: p.quote_hashid, this_one_q_pdf_link: p.q_pdf_link}}">
 
                   <td scope="col" style="width: 150px;"  > {{ p.obj_ref.q_quote_number }} </td>
                   <td scope="col" style="width: 150px;"> INVOICE_NUMBER_HERE </td>  <!--{{ p.q_invoice_number }}-->

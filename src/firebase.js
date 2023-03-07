@@ -55,14 +55,14 @@ export const test2_storage = (quote_or_invoice_hash, fullPath, pdf_base64) => {
   .then((snapshot) => {
 
     getDownloadURL(snapshot.ref).then(async (url) => {
-      const get_id = firebase.firestore().collection("ALL_quote").doc(tmp);
-      await get_id //await
+      const get_id = firebase.firestore().collection("ALL_quote").doc(quote_or_invoice_hash);
+      await get_id 
       .update({
-          quote_hashid: tmp,
+
           q_pdf_link: url.toString(),
       })
       .then(() => {
-          //console.log("set doc");
+          console.log("set doc" + url.toString());
 
           get_id.get().then((d) => {
               //console.log("updated data:", d.data());

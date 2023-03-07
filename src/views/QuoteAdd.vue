@@ -2,10 +2,11 @@
 <template>
     <div class="QuoteAdd">
 
-        <p>{{tmp_sell}}</p>
+        <div class="border">
+            <p>{{tmp_sell}}</p>
 
-        <p>{{choosen_products}}</p>
-        
+            <p>{{choosen_products}}</p>
+        </div>
         <p class="dashboard_txt pt-5" ><router-link to="/dashboard" exact>
             
             <a><strong class="link">Dashboard</strong></a></router-link>  > Quote Add
@@ -660,21 +661,7 @@ export default {
 
 
             });    
-            /*
-            let bodyData = [];
-            this.choosen_products.forEach((element, index, array) => {
-                let necessary_only = [
-                    element.p_fullname,
-                    element.p_code,
-                    element.p_quantity,
-                    element.p_sell,
-                    "discoun999t",
-                    element.p_sell,
-
-                ]  
-                bodyData.push(necessary_only);
-            });
-            */
+            
             //https://github.com/simonbengtsson/jsPDF-AutoTable/blob/master/examples/examples.js
             var finalY = doc.lastAutoTable.finalY || 10
             autoTable(doc, {
@@ -731,8 +718,8 @@ export default {
             //console.log();
             
             
-            let tmp3 = '';
-            let tmp2 = test2_storage( tmp3, path_string, this.return_base64);
+            //let tmp3 = '';
+            //let tmp2 = test2_storage( tmp3, path_string, this.return_base64);
             //console.log("[uploadQuotePDF] final_pdf url + " + tmp2 + " " + tmp3);    
 
             // storage ref + upload task
@@ -807,7 +794,7 @@ export default {
                         });
                     });
                 ////////////////////////////////////////////////////////////
-                
+                /*
                 const storage = getStorage(app);
                 const storage_ref = ref(storage, "tex5.txt");
                 uploadString(storage_ref, pdf_base64, 'data_url')
@@ -836,7 +823,7 @@ export default {
 
                     //console.log('Uploaded a base64 string pdf version!');
                 });
-                
+                */
                 ////////////////////////////////////////////////////////////
             })
             /*  
