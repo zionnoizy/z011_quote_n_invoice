@@ -1,5 +1,6 @@
 <template>
 
+    
     <p> Instruction For This Page (Quicker-QuoteIn v0.1) </p>
     <p> This is a easy-version for invoice generator page. There is total 78 input field below,
         Look carefully what input text is displayed because it will reflect on your final invoice positions. For instance, the bill_to_name is the name or company who send the quote. </p>
@@ -95,8 +96,13 @@
     <button class="btn btn-warning btn-lg mb-3" @click="writePDF2_I">DOWNLOAD INVOICE </button> 
     <button class="btn btn-warning btn-lg mb-3" @click="test_write">Debug Button </button>   
     <button class="btn btn-warning btn-lg mb-3" @click="test_write2">Debug Button 2 </button>  
+
+    <all-products-choose :tmp_sell="getTmpSell" ></all-products-choose>
+
 </template>
 
+
+                                     
 
 
 
@@ -108,11 +114,24 @@ import autoTable from 'jspdf-autotable'
 
 import { app, db, auth, fv } from "@/firebase.js";
 import { addDoc, collection } from "@firebase/firestore";
-
+import AllProductsChoose from "@/components/AllProductsChoose.vue";
 
 //import {firebase} from "firebase/app";
 export default{
     name: 'empty',
+    props:{
+        tmp_sell:{
+            type: Number,
+            required: true
+
+        },
+    },
+    data() {
+
+    return {
+        tmp_sell: 0,
+    }
+    },
     methods:{
         async writePDF2_Q(){
             //bill_in
@@ -289,6 +308,7 @@ export default{
                     count: firebase.firestore.FieldValue.increment(0),
 
                     doc_id: docRef.id,
+                    
                 })
                 .then(() => {
                     //console.log("set doc");

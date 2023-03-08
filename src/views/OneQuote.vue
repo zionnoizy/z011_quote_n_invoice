@@ -116,8 +116,8 @@ import { threadId } from "worker_threads";
 export default{
     name: "OneQuote",
     each_quote:{
-            type: Object,
-            required: true,
+        type: Object,
+        required: true,
     },
     data(){
         return{
@@ -153,8 +153,6 @@ export default{
 
             copy_q_ref: '',
             copy_q_invoice: '',
-
-            
 
             copy_exact_product: {},
         }
@@ -474,7 +472,6 @@ export default{
             a.parentNode.replaceChild(clone, a);
             var base64 = doc.output('datauri');
             this.return_base64 = base64;
-            
         }
 
     },

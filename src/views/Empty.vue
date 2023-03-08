@@ -33,8 +33,9 @@
                     <input ref="p_sell" placeholder="Product Sell" id="p_sell1" @input="EnterProduct();" @change="CumulativeTotal();" disabled/>   
                 </div>
 
-            </div>
+        </div>
 
+        
     </div>
 </template>
 

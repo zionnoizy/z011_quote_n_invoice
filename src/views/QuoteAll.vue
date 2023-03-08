@@ -98,6 +98,7 @@ export default{
           }
         }
     },
+
     components: {},
     methods: {
       async getAllQuoteNewest() { 

@@ -1,51 +1,5 @@
 <template>
-  <div class="all-products-choose">
-
-    <th>PRODUCT IN DATABASE:</th>
-
-    <button class="btn btn-primary " @click.prevent="getAllProductsNewest()">Sort From Oldest </button>
-    <button class="btn btn-primary " @click.prevent="getAllProductsOldest()">Sort From Newest </button>
-
-    <table class="table table-dark" >
-        <thead>
-        
-          <tr>
-          <th scope="col"> - </th>
-          <th scope="col">Code</th>
-          <th scope="col">Name</th>
-
-          <th scope="col">&#163; Cost</th>
-          <th scope="col">Margin &percnt;</th>
-          <th scope="col">Sell</th>
-          <th scopr="col">choose</th>
-        </tr>
-
-        </thead>
-
-        <tbody>
-        <tr>
-
-
-
-        </tr>
-
-        <!--choosenProductSell($event,p, i);-->
-        <tr class="choose_product" v-for="p, i in all_products" @click.prevent="choosenOneProduct($event,p, i); " @change="emitEventChanged">
-            <td> {{ p.p_code }} </td>
-            <td> {{ p.p_fullname }} </td>
-            <td> {{ p.p_category }} </td>
-            <td> {{ p.p_cost }} </td>
-            <td> {{ p.p_margin }} </td>
-            <td> {{ p.p_sell }} </td>
-            <td> <div><button class="btn btn-info" @click.prevent="choosenOneProduct($event,p, i); " @change="emitEventChanged"> [+] </button> </div> </td>
-        </tr>
-        
-        </tbody>
-
-          
-      </table>  
-
-  </div>
+  
 
 </template>
 
@@ -58,12 +12,22 @@ import { serverTimestamp } from 'firebase/firestore';
 
 export default{
   name: 'all-products-choose',
-  props:['choosen_products', 'tmp_sell'],
+  props:{
+    choosen_products:{
+      type: Object,
+      required: true
+
+    },
+    tmp_sell:{
+      type: Number,
+      required: true
+
+    },
+  },
   setup() {},
   data(){
       return{
       all_products: [],
-      
       product:{
           p_code: null,
           p_fullname: null,
@@ -132,26 +96,34 @@ export default{
         })
     },
 
-     choosenOneProduct(ev, p, i){
-      var choose_product_ref =  firebase.firestore().collection("all_products").where("p_fullname", "==", p.p_fullname);
-      choose_product_ref.onSnapshot((snapshot) => {
+    async choosenOneProduct(ev, p, i){
+      var choose_product_ref = await firebase.firestore().collection("all_products").where("p_fullname", "==", p.p_fullname);
+       choose_product_ref.onSnapshot((snapshot) => {
 
           snapshot.docs.forEach(d => {
               var product = d.data();
               this.choosen_products.push(product);
-              this.$root.$emit('choosenOneProduct', this.choosen_products);
+              var tmp_one_sell = parseFloat(d.data().p_sell);  
+              this.tmp_sell = this.tmp_sell + tmp_one_sell;
+
+              console.log("!!!!!!!!!!!!!!!!!!!!!!!updateing this.tmp_sell     " + this.tmp_sell);
+
           })
         })
     },
-    choosenProductSell(ev, p, i){
+    async choosenProductSell(ev, p, i){
       var choose_product_ref =  firebase.firestore().collection("all_products").where("p_fullname", "==", p.p_fullname);
-      choose_product_ref.onSnapshot((snapshot) => {
+      await choose_product_ref.onSnapshot((snapshot) => {
 
           snapshot.docs.forEach(d => {
 
-              var tmp_one_sell = parseFloat(d.data().p_sell);   
+              
+
               this.tmp_sell = this.tmp_sell + tmp_one_sell;
+
               this.$emit("tmp_sell", this.tmp_sell);
+
+             
             
           })
         })

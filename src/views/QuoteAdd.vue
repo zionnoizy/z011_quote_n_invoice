@@ -3,7 +3,8 @@
     <div class="QuoteAdd">
 
         <div class="border">
-            <p>{{tmp_sell}}</p>
+           
+            {{ tmp_sell }}
 
             <p>{{choosen_products}}</p>
         </div>
@@ -157,8 +158,8 @@
                     <div>
                         <label for="q_subtotal">Subtotal</label>
                         <!--disabled @change="CalculateSubtotal"-->
-                        <p @tmp_sell="getTmpSell" >?</p>
-                        <input ref="q_subtotal" placeholder="Subtotal" @tmp_sell="getTmpSell"  id="q_subtotal"   />
+
+                        <input ref="q_subtotal" placeholder="Subtotal"  id="q_subtotal"   />
                     </div>
 
 
@@ -207,12 +208,53 @@
                                 <div class="modal-body">
                                     <!--v-on:tmp_sell="getChoosenProducts($event);"     -->
                                     <all-products-choose 
-                                        v-on:choosen_products="getChoosenProducts($event); "  
-                                        @tmp_sell="getTmpSell" 
-                                     >
+
+                                        v-on:choosen_products="getChoosenProducts($event); " 
+
+                                        :tmp_sell="getTmpSell"
+
+                                    >
                                      
                                     </all-products-choose>
 
+                                    <!--all-rpducts-choose -->
+                                    <th>PRODUCT IN DATABASE:</th>
+                                    <button class="btn btn-primary " @click.prevent="getAllProductsNewest()">Sort From Oldest </button>
+                                    <button class="btn btn-primary " @click.prevent="getAllProductsOldest()">Sort From Newest </button>
+                                    <table class="table table-dark" >
+                                        <thead>
+                                        <tr>
+                                        <th scope="col"> - </th>
+                                        <th scope="col">Code</th>
+                                        <th scope="col">Name</th>
+
+                                        <th scope="col">&#163; Cost</th>
+                                        <th scope="col">Margin &percnt;</th>
+                                        <th scope="col">Sell</th>
+                                        <th scopr="col">choose</th>
+                                        </tr>
+
+                                        </thead>
+
+                                        <tbody>
+                                        <!--choosenProductSell($event,p, i);-->
+                                        <tr class="choose_product" v-for="p, i in all_products"  @click.prevent="choosenOneProduct($event,p, i); ">
+                                            <td> {{ p.p_code }} </td>
+                                            <td> {{ p.p_fullname }} </td>
+                                            <td> {{ p.p_category }} </td>
+                                            <td> {{ p.p_cost }} </td>
+                                            <td> {{ p.p_margin }} </td>
+                                            <td> {{ p.p_sell }} </td>
+                                            <td> <div><button class="btn btn-info" @click.prevent="choosenOneProduct($event,p, i); " > [+] </button> </div> </td>
+                                        </tr>
+                                        
+                                        </tbody>
+
+                                        
+                                    </table>  
+
+
+                                    <!--all products choose end-->
 
 
                                 </div>
@@ -262,7 +304,9 @@
                                 </td>
                             </tr>
 
-
+                            <input ref="tmp_sell"/>
+                            
+                    
                         </tbody>
                     </table>
                 </div>
@@ -350,15 +394,20 @@ import { app, db, auth } from "@/firebase.js";
 
 
 
-const choosen_products = ref([]);
-const tmp_sell = ref(0);
+
 
 export default {
     name: 'QuoteAdd',
-    
-    props: ['choosen_products', 'tmp_sell'],
+
+    props:{
+        tmp_sell: Number
+
+    },
     setup() {
         
+
+
+
         const s_product2 = reactive([]);
         onMounted(async () => {
             try {
@@ -382,6 +431,7 @@ export default {
 
 
     },
+
     data() {
 
         return {
@@ -444,22 +494,44 @@ export default {
 
             final_merch: {},
 
+            //ALLPRODUCTSHOOSE.VUE
+            all_products: [],
+            product:{
+                p_code: null,
+                p_fullname: null,
+                p_category: null,
+                p_cost: null,
+                p_margin: null,
+                p_sell: null,
+            },
+            choosen_products: [],
+            choose_product:{
+                p_code: null,
+                p_fullname: null,
+                p_category: null,
+                p_cost: null,
+                p_margin: null,
+                p_sell: null,
 
+            },
+            tmp_sell: 0,
+            //ALLPRODUCTSHOOSE.VUE
         }
     },
     components: {
         AllProductsChoose,
 
     },
+    
     methods: {
 
         getChoosenProducts(e) { //call when new page
             this.choosen_products = e;
 
         },
-        getTmpSell(e){ //call when new page ONLY
-            
-            this.tmp_sell = e;
+        getTmpSell(tmp_sell){ //call when new page ONLY
+            alert(e);
+            this.tmp_sell = tmp_sell;
 
             
             document.getElementById('q_subtotal').value = this.tmp_sell;
@@ -924,7 +996,7 @@ export default {
             const one_p_money = document.getElementById(dynamic).value;
             //console.log("[CalculateSubtotal]       " + one_p_money);
 
-            document.getElementById('q_subtotal').value = tmp_ans;
+            document.getElementById('q_subtotal').value = this.tmp_ans;
 
         },
         CalculateTotal(){
@@ -939,9 +1011,76 @@ export default {
             var input = document.createElement("input");
             input.setAttribute('type', 'text');
             input.appendChildinout;
-        }
+        },
+        ////////////////////////////ALLPRODCUTSCHOOSE
+        async getAllProductsNewest() { 
+        var all_product_ref = await firebase.firestore().collection("all_products");
+        all_product_ref.orderBy("p_insert_date", "desc")
+            .onSnapshot((snapshot) => {
+            if (snapshot.empty) {
+                //console.log("[getAllProductsNewest] all_products not exist.")
+                
+            }
+            else{
+                this.all_products = [];
+                snapshot.forEach(d => {
+
+
+                    var product = d.data();
+                    //console.log("[ProductAll]-2 " + product);
+                    this.all_products.push(product);
+                })
+            }  
+            })
+        var lastThreeRes = await all_product_ref.orderBy('p_insert_date', 'desc').limit(3).get();
+        },
+
+        async getAllProductsOldest() { 
+        var all_product_ref = await firebase.firestore().collection("all_products");
+        all_product_ref.orderBy("p_insert_date", "asc")
+            .onSnapshot((snapshot) => {
+            if (snapshot.empty) {
+                //console.log("[getAllProductsNewest] all_products not exist.")
+                
+            }
+            else{
+                this.all_products = [];
+                snapshot.forEach(d => {
+                    var product = d.data();
+                    //console.log("[ProductAll]-3 " + product);
+                    this.all_products.push(product);
+                })
+            }  
+            })
+        },
+
+        async choosenOneProduct(ev, p, i){
+        var choose_product_ref = await firebase.firestore().collection("all_products").where("p_fullname", "==", p.p_fullname);
+        choose_product_ref.onSnapshot((snapshot) => {
+
+            snapshot.docs.forEach(d => {
+                var product = d.data();
+                this.choosen_products.push(product);
+                var tmp_one_sell = parseFloat(d.data().p_sell);  
+                this.tmp_sell = this.tmp_sell + tmp_one_sell;
+
+
+                //this.$root.$emit('choosenOneProduct', this.choosen_products);
+                console.log("!!!!!!!!!!!!!!!!!!!!!!!updateing this.tmp_sell     " + this.tmp_sell);
+                let input2 = document.getElementById('q_subtotal').value; 
+                console.log("!!!!!!!!!2" +input2 )
+                
+                document.getElementById('q_subtotal').setAttribute('value', this.tmp_sell);
+                input2 = this.tmp_sell;
+                //this.$root.$emit('choosenOneProduct', this.tmp_sell);
+            })
+            })
+        },
     },
     created() {
+
+
+        this.getAllProductsNewest();
 
         this.getAllProducts();
 

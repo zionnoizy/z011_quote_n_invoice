@@ -48,6 +48,7 @@ export default{
     methods: {
 
         async getAllCategory(){
+            
             var all_client_ref = await firebase.firestore().collection("all_categorys");
             all_client_ref.onSnapshot(snap => {
             this.all_categorys = [];
