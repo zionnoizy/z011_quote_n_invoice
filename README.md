@@ -1,7 +1,8 @@
 # CMSQuoteIn all version list
 
-0.1.0 Iron Barbs
-0.5.0 Volt Absorb
+0.1.0 Iron Barbs <br />
+0.5.0 Volt Absorb <br />
+0.6.0 Prankster <br />
 
 ## Recommended IDE Setup
 
