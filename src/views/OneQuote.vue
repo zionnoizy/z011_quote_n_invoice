@@ -155,6 +155,7 @@ export default{
             copy_q_invoice: '',
 
             copy_exact_product: {},
+            invoice_hashid: '',
         }
     },
     components:{
@@ -264,26 +265,28 @@ export default{
 
             const pro_ref = this.copy_exact_product;
 
-            addDoc(ref, {obj_ref, pro_ref, price_ref}) 
+            await addDoc(ref, {obj_ref, pro_ref, price_ref}) 
             .then(docRef => {
-            const get_id = firebase.firestore().collection("ALL_invoice").doc(docRef.id);
-            const string = "/ALL_invoice/" + use_this_hash + "/" + docRef.id + "/";
-            test2_storage( docRef.id, string, this.return_base64);
-            
-            get_id
-                .update({
-                    invoice_hashid: docRef.id,
-                    quote_hashid: use_this_hash,
+                const get_id = firebase.firestore().collection("ALL_invoice").doc(docRef.id);
+                const string = "/ALL_invoice/" + use_this_hash + "/" + docRef.id + "/";
 
-                })
-                .then(() => {
-                    const allInvoiceRef = firebase.firestore().collection('ALL_invoice');
-                    //console.log("set doc");
+                this.invoice_hashid = docRef.id;
+                //
+    
+                get_id
+                    .update({
+                        invoice_hashid: docRef.id,
+                        quote_hashid: use_this_hash,
 
-                    get_id.get().then((d) => {
-                        //console.log("updated data:", d.data());
+                    })
+                    .then(() => {
+                        const allInvoiceRef = firebase.firestore().collection('ALL_invoice');
+                        //console.log("set doc");
+
+                        get_id.get().then((d) => {
+                            //console.log("updated data:", d.data());
+                        });
                     });
-                });
             })
             ///jspdf time!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             const doc = new jsPDF(); 
@@ -376,6 +379,10 @@ export default{
             a.parentNode.replaceChild(clone, a);
             var base64 = doc.output('datauri');
             this.return_base64 = base64;
+            //
+            console.log("calling  test2_storage1     ");
+            test2_storage( this.invoice_hashid, string, this.return_base64);
+            console.log("calling  test2_storage2     ");
 
         },
 
@@ -406,11 +413,6 @@ export default{
             doc.text(oo_s_a2, 72, 103);
             doc.text(oo_s_city, 72, 108);
             doc.text(oo_s_postcode, 72, 113);      
-            
-
-        
-            
-            
             
             doc.text(q_number, 159, 91);
             doc.text(today, 159, 97);
@@ -472,6 +474,7 @@ export default{
             a.parentNode.replaceChild(clone, a);
             var base64 = doc.output('datauri');
             this.return_base64 = base64;
+            
         }
 
     },

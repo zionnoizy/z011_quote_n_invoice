@@ -15,6 +15,7 @@
 
             <!--1/3-->
             <div class="float-to-bottom">
+                
                 <label>2.SHIP TO</label>
                 <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button "
                     data-bs-toggle="modal" data-bs-target="#choose_ship_to" v-on:click="this.getAllClient1();">

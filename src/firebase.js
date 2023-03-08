@@ -48,6 +48,7 @@ export const save_2_storage = (fullPath, my_url) => {
 export const test2_storage = (quote_or_invoice_hash, fullPath, pdf_base64) => {
 
   const image_ref = ref(storage, fullPath);
+
   const storage_ref = ref(storage, fullPath + quote_or_invoice_hash+".pdf");
 
 
@@ -81,6 +82,42 @@ export const test2_storage = (quote_or_invoice_hash, fullPath, pdf_base64) => {
   
 }
 
+export const test_storage = (invoice_hash, fullPath, pdf_base64) => {
+
+  const image_ref = ref(storage, fullPath);
+  
+  const storage_ref = ref(storage, fullPath + invoice_hash+".pdf");
+
+
+  uploadString(storage_ref, pdf_base64, 'data_url')
+  .then((snapshot) => {
+
+    getDownloadURL(snapshot.ref).then(async (url) => {
+      const get_id = firebase.firestore().collection("ALL_invoice").doc(invoice_hash);
+      await get_id 
+      .update({
+
+          i_pdf_link: url.toString(),
+      })
+      .then(() => {
+          console.log("set doc" + url.toString());
+
+          get_id.get().then((d) => {
+              //console.log("updated data:", d.data());
+          });
+      });
+      tmp = url.toString();
+
+
+      return { tmp };
+
+
+    })
+
+    //console.log('Uploaded a base64 string pdf version!');
+  });
+  
+}
 
 
 const ans = ref('test');

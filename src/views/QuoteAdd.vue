@@ -89,7 +89,7 @@
                 <div class="float-to-bottom">
                     <label>2.SHIP TO</label>
                     <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button "
-                        data-bs-toggle="modal" data-bs-target="#choose_ship_to" v-on:click="this.getAllClient1();">
+                        data-bs-toggle="modal" data-bs-target="#choose_ship_to" v-on:click="this.getAllDelivery();">
 
                         <p ref="tmp_s_fullname" id="tmp_s_fullname"></p>
                         <p ref="tmp_s_address1" id="tmp_s_address1"></p>
@@ -105,28 +105,26 @@
                             <div class="modal-content text-black">
 
                                 <div class="modal-header">
-                                    <h4 class="modal-title"> List of Address </h4>
+                                    <h4 class="modal-title"> List of Address from Client <b>{{ choosen_client_fullname }}</b></h4>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"
                                         v-on:click="showShipToModal = false"> X </button>
                                 </div>
-
-                                <div class="modal-body">
-
+                                <div class="modal-body" style="background-color: #1267aa;">
                                     <div class="px-5 mx-5 grid grid-cols-3 gap-2  ">
-                                        <div class="" v-for="s, i in all_clients2">
+                                        <div class="" v-for="s, i in this_client_delivey">
                                             <div class="client_card row" @click="ChooseShipTo($event, s, i);"
                                                 data-bs-dismiss="modal" aria-label="close">
                                                 <div>
-                                                    <strong>{{ s.c_fullname }}</strong>
+                                                    <strong>{{ s.d_fullname }}</strong>
                                                 </div>
                                                 <div>
-                                                    <strong>{{ s.c_address_1 }}</strong>
+                                                    <strong>{{ s.d_address_1 }}</strong>
                                                 </div>
                                                 <div>
-                                                    <strong>{{ s.c_address_2 }}</strong>
+                                                    <strong>{{ s.d_address_2 }}</strong>
                                                 </div>
                                                 <div>
-                                                    <p>{{ s.c_city }}, {{ s.c_post_code }} </p>
+                                                    <p>{{ s.d_city }}, {{ s.d_post_code }} </p>
                                                 </div>
 
                                             </div>
@@ -159,21 +157,22 @@
                         <label for="q_subtotal">Subtotal</label>
                         <!--disabled @change="CalculateSubtotal"-->
 
-                        <input ref="q_subtotal" placeholder="Subtotal"  id="q_subtotal"   />
+                        <input ref="q_subtotal" placeholder="Subtotal"  id="q_subtotal" @input="addVatSHip($event.target.value)" disabled  />
                     </div>
 
 
                     <div>
                         <label for="q_vat">VAT</label>
-                        <input ref="q_vat" placeholder="Vat" id="q_vat" value="20" disabled />
+                        <input ref="q_vat" placeholder="Vat" id="q_vat" min="1" max="100" value="20" disabled />
                     </div>
                     <div>
                         <label for="q_shipping">Shipping</label>
-                        <input ref="q_shipping" placeholder="Shipping" id="q_shipping" />
+                        <input ref="q_shipping" placeholder="Shipping" id="q_shipping" @input="addVatSHip"/>
                     </div>
                     <div>
                         <label for="q_total">Total</label>
-                        <input ref="q_total" placeholder="Total" id="q_total" class="input-lg" @input="CalculateTotal"
+                        <!--@input="CalculateTotal"-->
+                        <input ref="q_total" placeholder="Total" id="q_total" class="input-lg"  @input="addVatSHip($event)"
                             disabled />
                     </div>
                     <div>-----------------------------</div>
@@ -304,7 +303,7 @@
                                 </td>
                             </tr>
 
-                            <input ref="tmp_sell"/>
+
                             
                     
                         </tbody>
@@ -440,7 +439,7 @@ export default {
             //
             showBillToModal: false,
             all_clients1: [],
-            all_clients2: [],
+            this_client_delivey: [],
             hidden_bill_fullname: null,
             hidden_bill_address_1: null,
             hidden_bill_address_2: null,
@@ -516,6 +515,19 @@ export default {
             },
             tmp_sell: 0,
             //ALLPRODUCTSHOOSE.VUE
+            store_bill_2_info: '',
+            choosen_client_fullname: '',
+            this_client_delivey: [],
+            choose_product:{
+                p_code: null,
+                p_fullname: null,
+                p_category: null,
+                p_cost: null,
+                p_margin: null,
+                p_sell: null,
+
+            },
+
         }
     },
     components: {
@@ -544,18 +556,39 @@ export default {
             var all_client_ref = await firebase.firestore().collection("all_clients");
             all_client_ref.onSnapshot(snap => {
                 this.all_clients1 = [];
-                this.all_clients2 = [];
+
                 snap.forEach(d => {
                     //console.log("[QuoteAdd-getAllClient] print");
 
                     var client = d.data();
+                    
                     this.all_clients1.push(client);
-                    this.all_clients2.push(client);
+
                 });
             });
 
         },
 
+
+        async getAllDelivery() {
+
+        console.log("[QuoteAdd-getAllClient] print-1" + this.store_bill_2_info);
+
+        const all_client_s_delivey_ref = await firebase.firestore().collection("all_delivery").doc(this.store_bill_2_info).collection("this_client_delivery");
+        all_client_s_delivey_ref.onSnapshot(snap => {
+
+            //if snap onSnapshot empty()
+            this.this_client_delivey = [];
+            snap.forEach(d => {
+                //console.log("[QuoteAdd-getAllClient] print");
+
+                var delivery = d.data();
+                this.this_client_delivey.push(delivery);
+ 
+            });
+        });
+
+        },
 
         ChooseBillTo(ev, b, i) {
             //console.log("[QuoteAdd-ChooseBillTo] comming soon, click client and retrieve text." + ev + "  " + i);
@@ -567,19 +600,19 @@ export default {
             document.getElementById('tmp_b_city').innerHTML = b.c_city;
             document.getElementById('tmp_b_postcode').innerHTML = b.c_post_code;
 
+            this.store_bill_2_info = b.client_hashid;
+            console.log("[QuoteAdd-ChooseBillTo]store_bill_2_info   " + this.store_bill_2_info);
 
-            //console.log("[QuoteAdd-ChooseBillTo]@ you have chosen");
-
-            this.showBillToModal = false;
+            this.choosen_client_fullname = b.c_fullname;
         },
         ChooseShipTo(ev, s, i) {
             //console.log("[QuoteAdd-ChooseShipTo] comming soon, click client and retrieve text." + ev + "  " + i);
             //console.log("[QuoteAdd-ChooseShipTo] you have chosen" + s.c_fullname);
-            document.getElementById('tmp_s_fullname').innerHTML = s.c_fullname;
-            document.getElementById('tmp_s_address1').innerHTML = s.c_address_1;
-            document.getElementById('tmp_s_address2').innerHTML = s.c_address_2;
-            document.getElementById('tmp_s_city').innerHTML = s.c_city;
-            document.getElementById('tmp_s_postcode').innerHTML = s.c_post_code;
+            document.getElementById('tmp_s_fullname').innerHTML = s.d_fullname;
+            document.getElementById('tmp_s_address1').innerHTML = s.d_address_1;
+            document.getElementById('tmp_s_address2').innerHTML = s.d_address_2;
+            document.getElementById('tmp_s_city').innerHTML = s.d_city;
+            document.getElementById('tmp_s_postcode').innerHTML = s.d_post_code;
 
 
         },
@@ -1069,9 +1102,10 @@ export default {
                 console.log("!!!!!!!!!!!!!!!!!!!!!!!updateing this.tmp_sell     " + this.tmp_sell);
                 let input2 = document.getElementById('q_subtotal').value; 
                 console.log("!!!!!!!!!2" +input2 )
-                
+
                 document.getElementById('q_subtotal').setAttribute('value', this.tmp_sell);
-                input2 = this.tmp_sell;
+                addVatSHip();
+
                 //this.$root.$emit('choosenOneProduct', this.tmp_sell);
             })
             })
@@ -1100,19 +1134,19 @@ function add_zero(num){
     
     return returnans;
     }
-    else if (num > 10 && num < 100){
+    else if (num => 10 && num < 100){
     
     let returnans = threez + num;
 
     return returnans;
     }
-    else if (num > 100 && num < 1000){
+    else if (num => 100 && num < 1000){
 
     let returnans = twoz + num;
 
     return returnans;
     }
-    else if (num > 1000 && num < 10000){
+    else if (num => 1000 && num < 10000){
 
     let returnans = onez + num;
 
@@ -1130,7 +1164,8 @@ async function auto_quote_no_generator2(){
 
     
     const dSize = querySnapshot.size;
-    if (dSize == undefined){
+
+    if (dSize === undefined){
         dSize = "0";
     }
     const docSize = dSize.toString();
@@ -1150,11 +1185,26 @@ async function auto_quote_no_generator2(){
     return ans.toString();
 }
 
-function addVatSHip(subtotal, shipping, extra){
+function addVatSHip(){
+    console.log("SUBtotal input tag changed " );
+    let i_subtotal = document.getElementById('q_subtotal').value;
+    let i_vat = document.getElementById('q_vat').value;
+    let i_shipping = document.getElementById('q_shipping').value;
+
     
-    let vat = 20;
-    let tmp_ans = +subtotal + (+(subtotal / 100) * vat); 
-    let ans = +tmp_ans + +shipping + +extra;
+    
+    //let i_extra = document.getElementById('q_e1').value;
+    let added_vat = +i_subtotal + (+(i_subtotal / 100) * +i_vat); 
+
+    console.log("SUBtotal input tag changed " + i_subtotal +" "+ i_vat +" "+ added_vat);
+
+
+    let ans = +added_vat + +i_shipping;
+
+    document.getElementById('q_total').setAttribute('value', ans);
+
+
+    console.log("SUBtotal input tag changed2 " + ans);
     return ans;
 
 }

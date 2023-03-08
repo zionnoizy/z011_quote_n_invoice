@@ -75,7 +75,7 @@
                   <div class="modal-body">
 
 
-                      <p id="this_is_edit_fullname" class="this_is_edit_fullname"> You Are Adding Client Delivery Address: {{ delivery_fullname }}  </p>
+                      <p id="this_is_edit_fullname" class="this_is_edit_fullname"> You Are Adding Client Delivery Address: <b>{{ delivery_fullname }}</b>  </p>
                         <div class="grid grid-cols-2 gap-2" >
                           
                           <div><label>Delievery Company Name*</label></div>
@@ -214,15 +214,9 @@ export default{
         console.log(d_fullname + " " + d_address_1 + " " + d_address_2 + " " + d_city + " " + d_post_code);
         
         //if (d_fullname == '' || d_address_1 == '' || d_address_2 == '' || d_city == '' || d_post_code == ''){
+        const ref = collection(db, 'all_delivery', this.delivery_client_hashid,'this_client_delivery');
+        const get_id2 = firebase.firestore().collection('all_delivery').doc();
 
-
-        const db_id = firebase.firestore();
-        //const ref = collection(db, 'all_delivery', this.delivery_client_hashid);
-
-        const get_id = db_id.collection('all_delivery').doc(this.delivery_client_hashid);
-        const c_id = get_id.id;
-        const get_id2 = firebase.firestore().collection('all_delivery').doc(this.delivery_client_hashid).collection("this_client_delivery").doc();
-        const c_id2 = get_id2.id;
         const obj_ref ={
 
           d_fullname: d_fullname,
@@ -232,14 +226,19 @@ export default{
           d_post_code: d_post_code,
 
           d_client_hash_id: this.delivery_client_hashid,
-          //d_id: c_id2,
           d_insert_date: serverTimestamp(),
+
         }
         //, "this_client_delivery" , c_id2
-        const d = doc(db, "all_delivery", this.delivery_client_hashid, "this_client_delivery");
+        //const docref = doc (collection(db, 'all_delivery'));
+        //const colref = collection (docref, 'this_client_delivery');
 
-         setDoc(get_id2 , obj_ref )
+        console.log("deliver address adding..." + this.delivery_client_hashid);
+
+
+        addDoc(ref , obj_ref )
         .then(docRef => {
+          
           console.log(docRef.id);
           const get_id = firebase.firestore().collection("all_delivery").doc(this.delivery_client_hashid).collection("this_client_delivery").doc(docRef.id);
           get_id
@@ -249,7 +248,7 @@ export default{
               .then(() => {
               });
         })
-        
+        console.log("deliver address adding2...");
       },
     },
       

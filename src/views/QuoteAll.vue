@@ -4,6 +4,7 @@
 
         <button class="btn btn-primary " @click.prevent="getAllQuoteNewest()">Sort From Oldest </button>
         <button class="btn btn-primary " @click.prevent="getAllQuoteOldest()">Sort From Newest </button>
+        
         <table class="table table-dark mx-auto" >
 
                     
