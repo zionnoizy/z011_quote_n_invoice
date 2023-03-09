@@ -810,22 +810,14 @@ export default {
 
             const myTimestamp = firebase.firestore.Timestamp.now(); //
             let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK"); //
-
-
+            /*
             const today_year = myTimestamp.toDate().getFullYear();
             const tmp_today_month = myTimestamp.toDate().getMonth();
-
-            //console.log("[uploadQuotePDF] " + myTimestamp + " " + today_year + " " + tmp_today_month);
             const month_folder = this.convert_to_month[tmp_today_month];
-
-            //const today_month = convert_month(tmp_today_month);
             const path_string = "/all_quote/" + today_year + "/" + month_folder + "/"
-            //console.log();
+            */
             
-            
-            //let tmp3 = '';
-            //let tmp2 = test2_storage( tmp3, path_string, this.return_base64);
-            //console.log("[uploadQuotePDF] final_pdf url + " + tmp2 + " " + tmp3);    
+
 
             // storage ref + upload task
 
@@ -837,7 +829,7 @@ export default {
 
             
 
-
+            const quote_number = await auto_quote_no_generator2();
             let reference_number = document.getElementById('q_reference_number').value;
 
             const ref = collection(db, "ALL_quote");
@@ -870,12 +862,13 @@ export default {
                 q_ship_city: document.getElementById('tmp_s_city').innerHTML,
                 q_ship_postcode: document.getElementById('tmp_s_postcode').innerHTML, 
 
-                q_quote_number: "q_number", //cannot retrieve quote_number!
+                q_quote_number: quote_number, //cannot retrieve quote_number!
                 q_uploaded_date: todayDateTime,
                 q_ref: reference_number,
                 q_po: null,
-                q_uploaded_date_timestamp: serverTimestamp(),
-                //q_pdf_link: 'THIS_IS_FIRESTORE_URL',
+                q_uploaded_date_timestamp: serverTimestamp(), //
+                q_extra_space_1: '',
+                q_extra_space_2: '',
             }
 
             let hash_id = '';

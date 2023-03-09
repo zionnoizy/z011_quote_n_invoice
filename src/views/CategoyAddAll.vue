@@ -1,17 +1,19 @@
 <template>
     <div class="CategoyAddAll">
 
-        <p class="dashboard_txt" ><router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  > 
+        <p class="dashboard_txt" ><router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  >
             
-            <router-link to="/dashboard/all_product" exact><a><strong class="link">All Products</strong></a></router-link> > 
+            <router-link to="/dashboard/all_product" exact><a><strong class="link">All Products</strong></a></router-link> >
             
             Category</p>
 
         <from @sumbit.prevent="addCategory">
+
             <div class="grid gird-cols-2 gap-2">
                 <div><label>Category Name</label></div>
-                <div><input id="category_id" ref="category_enter" type="text" placeholder="category input" required/></div>
+                <div><input id="input_category" ref="input_category" type="text" placeholder="category input" required/></div>
             </div>
+
         </from>
         
 
@@ -22,7 +24,7 @@
 
         <div class="px-5 mx-5 grid grid-cols-2 gap-1" v-for="ca in all_categorys">
             <div class=""  >
-                {{ ca.cat_fullname }}
+                {{ ca.category_fullname }}
             </div> 
 
             <div class="">
@@ -36,36 +38,31 @@
 import { db, auth, fv } from "@/firebase.js";
 import { create } from "domain";
 import { collection, addDoc, FieldValue, DocumentReference } from "firebase/firestore";
+import { serverTimestamp } from 'firebase/firestore';
+
 export default{
     name: 'CategoyAddAll',
     setup() {},
     data(){
         return{
-            all_categorys: [],
+            all_categories: [],
             category:{
-                cat_fullname: null,
-                cat_counter: null,
+                category_fullname: null,
+                category_time: null,
             }
         }
     },
     components: {},
     methods:{
-        //
         async createCategory(){
             validate_category_input();
            //console.log("[CategoryAddAll] create new Category.");
 
-           const db_id = firebase.firestore();
-           const get_id = db_id.collection('all_categorys').doc();
-           const category_id = get_id.id; 
 
-           //console.log("[CategoryAddAll] id.");
 
-           const increment = firebase.firestore.FieldValue.increment(1);
 
-           //console.log("[CategoryAddAll] id2.");
-           const ref = collection(db, 'all_categorys');
-           const ref2 = db_id.collection('all_categorys');
+           const ref = collection(db, 'all_categories');
+           const ref2 = db_id.collection('all_categories');
            //get_id.update({ reads: increment });
            
 
@@ -74,24 +71,32 @@ export default{
            const obj_ref ={
 
                 category_fullname : this.$refs.category_enter.value,
-                category_increment : increment,
+                category_time: serverTimestamp(),
 
 
            }
-            const doc_ref = await addDoc(ref, obj_ref);
-            const batch = db_id.batch();
-            batch.set(get_id, {category_increment: increment}, { merge: true });
-            batch.commit();
-        //get_id.update({ category_increment: increment });
+            addDoc(ref, obj_ref)
+            .then(docRef => {
+          
+            console.log(docRef.id);
+            const get_id = firebase.firestore().collection("all_categories").doc(docRef.id);
+            get_id
+                .update({
+                    delivery_hashid: docRef.id,
+                })
+                .then(() => {
+                });
+            })
+
         },
         async getCategory(){
 
-            var categoryRef = await firebase.firestore().collection("all_categorys");
+            var categoryRef = await firebase.firestore().collection("all_categories");
             categoryRef.onSnapshot(snap =>{
                 this.all_category = [];
                 snap.forEach(d =>{
                     var category = d.data();
-                    this.all_clients.push(category);
+                    this.all_categories.push(category);
                 });
             }); 
         },
@@ -102,14 +107,20 @@ export default{
 }
 
 function validate_category_input(){
-      var pc_1 = document.getElementById('category_id').value;
-      var pcc_1 = document.getElementById('category_id');
-
-      //console.log("[CategoryAddAll]  " + pcc_1 + " ");
-
+      var pc_1 = document.getElementById('input_category').value;
+      var pcc_1 = document.getElementById('input_category');
       if (pc_1.length <= 0){
         pcc_1.classList.add("red");
+        return false;
       }
+      //console.log("[CategoryAddAll]  " + pcc_1 + " ");
+      const check = firebase.firestore().collection("all_categories").where(category_fullname, "==", pc_1);
+      check.querySnapshot((q) => {
+        if (q.size >= 0){
+            alert("duplicateion, cannot submit.")
+            return false;
+        }
+      })
 
 }
 </script>

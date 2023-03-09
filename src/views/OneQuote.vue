@@ -13,21 +13,20 @@
         <div class="grid grid-cols-3">
 
             <div>
+                <!-- <embed id="preview_quotationPDF" width='100%' height='100%' src='' /> -->
                 <embed id="preview_quotenPDF"  class="preview_quotenPDF" width="800px" height="600px"   src='' />
-                <!-- <iframe id="preview_quotenPDF" src="" download="toquotationnumber.pdf" width="800px" height="600px"  ></iframe> -->
+                
             </div>
 
             <div class="grid grid-cols-1 gap-1">
+
+                <!--1-->
                 <div>
-
-                <button class="choose_address_btn border btn btn-secondary" type="button"
-                    data-bs-toggle="modal" data-bs-target="#edit_quotation">
-                    Edit Quotation
-                </button>
-
-
-                <!--NEW-----EDIT QUOTATION MODAL---------------------------------------------------------------------->
-                <div class="modal fade" id="edit_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true">
+                    <button class="choose_address_btn border btn btn-secondary" type="button"
+                        data-bs-toggle="modal" data-bs-target="#edit_quotation">
+                        Edit Quotation
+                    </button>
+                    <div class="modal fade" id="edit_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true">
                         <div class="modal-dialog modal-xl">
 
                             <div class="modal-content text-black">
@@ -37,29 +36,66 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="close">X</button>
                                 </div>
-                                <!---->
                                 <div class="modal-body">
-                                    <edit-quote></edit-quote>
+                                    <!--------------------------EDIT QUOTATION START----------------------->
+                                    <div class="grid grid-cols-2 gap-1 ">
+                                        <div class="mx-auto" style="display: flex;;">
+                                            <div class="flex-grow-0 mx-2 px-3">
+                                                <label>1.BILL TO (CLIENT)</label>
+                                                <select class="form-select" aria-label="Default select example"  >
+                                                    <option >{{ showAllClient }}</option>
+                                                </select>
+                                            </div>    
+                                            <div class="flex-grow-0 mx-2 px-3">
+                                                <label>2.SHIP TO (DELIVERY)</label>
+                                                <select class="form-select" aria-label="Default select example"  >
+                                                    <option >{{ showAllDelivery }}</option>
+                                                </select>
 
-   
+                                            </div>  
+                                        </div>   
+                                        <div class="mx-auto" style="display: flex;;">
+                                            <label>Quote No. </label>
+                                            <p> {{ copy_q_number }} </p>
+                                        </div>    
+                                    </div>    
+                                    
+
+                                    <div class="" v-for="pp, i in copy_exact_product">
+                                            <div>
+                                                <strong>{{ pp.p_fullname }}</strong>
+                                            </div>
+                                            <div>
+                                                <strong>{{ pp.p_code }}</strong>
+                                            </div>
+                                            <div>
+                                                <label>Qty</label>
+                                                <input ref="i_quality" id="i_quality" placeholder="Qty">
+                                            </div>
+                                            <div>
+                                                <label>Discount</label>
+                                                <input ref="i_discount" id="i_discount" placeholder="Discount">
+                                            </div>
+                                    </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="close">Add Product To Quote</button>
-                                </div>
+                                    <div class="modal-footer" style="background-color: #1267aa;">
+                                        <button type="button" data-bs-dismiss="modal" aria-label="close" class="btn btn-success" @click="ClickEditQuote($event)">SAVE</button>
+                                    </div>
                             </div>
+
+
+
+
                         </div>
+                    </div>
                 </div>
-
-                </div>
+                <!--2-->
                 <div>
-
-                    
-                <button class="border btn btn-secondary" type="button"
-                    data-bs-toggle="modal" data-bs-target="#add_po_number">
-                    Create New Invoice From This Quotation
-                </button>
-                <!--modal for PO-->
-                <div class="modal fade" id="add_po_number" tabindex="-1" aria-labelledby="" aria-hidden="true">
+                    <button class="border btn btn-secondary" type="button"
+                        data-bs-toggle="modal" data-bs-target="#add_po_number">
+                        Create New Invoice From This Quotation w/ PO
+                    </button>
+                    <div class="modal fade" id="add_po_number" tabindex="-1" aria-labelledby="" aria-hidden="true">
                         <div class="modal-dialog modal-xl">
 
                             <div class="modal-content text-black">
@@ -69,36 +105,31 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="close">X</button>
                                 </div>
-                                <!---->
                                 <div class="modal-body">
                                     <input ref="po_number" id="po_number" placeholder="PO Number" />
                                     
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="close" v-on:click="this.submitQuotation(this.this_one_q_hash_number);">Submit Quotation to Invoice</button>
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                                 </div>
                             </div>
                         </div>
+                    </div>
                 </div>
-                <!--End modal for PO-->
-                </div>
-
-            </div> <!--end grid-1-->
+            </div>
 
             <div>
                 <embed id="preview_invoicenPDF" width="800px" height="600px"   src='' />
             </div>
-
-
-            <div>
-
-            </div>
-
+            
         </div>
-        
-        
-        
+        <!----------------------------------------------------------------------->
+
+        <!----------------------------------------------------------------------->
+
     </div>
+            
 
 </template>
 
@@ -152,16 +183,21 @@ export default{
             copy_q_s_pc: '',
 
             copy_q_ref: '',
-            copy_q_invoice: '',
+            copy_q_number: '',
 
-            copy_exact_product: {},
+            copy_exact_product: {}, //
             invoice_hashid: '',
+            //[NEW FACE]
+            all_previous_products: [], //
+            showAllClient: [],
+            showAllDelivery: [],
         }
     },
     components:{
         EditQuote,
     },
     methods:{
+        
         showQuotePDF(){
             const z = document.getElementById('preview_quotenPDF');
             console.log("zzzzzz" + z + " " + this.this_one_q_pdf_link);
@@ -169,19 +205,8 @@ export default{
             z.parentNode.replaceChild(clone1, z);
         },
         async retrieveOneQuoteInfo(){
-            //console.log("find quotation pdf url + retrieve all quotation inforamtion in here." + this.this_one_q_hash_number)
-            // https://www.youtube.com/watch?v=CGrNNGrKCJU&ab_channel=AdnanAfzal    [(9:55)]
-
-            //
-
-
-            
-
-
-
             await firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number)
             .onSnapshot(doc => {
-
                 var copycat = doc.data();
                 
                 this.copy_q_b_f = copycat.obj_ref.q_bill_fullname;
@@ -197,17 +222,19 @@ export default{
                 this.copy_q_s_pc = copycat.obj_ref.q_ship_postcode;
                 
                 this.copy_q_ref = copycat.obj_ref.q_ref;
-                this.copy_q_invoice = copycat.obj_ref.q_quote_number;
+                this.copy_q_number = copycat.obj_ref.q_quote_number;
 
                 this.copy_exact_product = copycat.tmp_ff;
                 
 
                 console.log("[debug3] " + this.copy_q_b_f);
+
+                this.showAllClient.push(this.copy_q_b_f);
+                this.showAllDelivery.push(this.copy_q_s_f);
+
+
+                
             });
-            
-            
-
-
             //[DEBUG]
             console.log("=====>     " + this.copy_q_b_f );
             await document.getElementById('quote_num').setAttribute('value', this.copy_q_ref);
@@ -227,7 +254,7 @@ export default{
 
             const myTimestamp = firebase.firestore.Timestamp.now();
             let today = myTimestamp.toDate().toLocaleDateString("en-UK");    
-            let i_number = await auto_invoice_no_generator3(this.copy_q_invoice);    
+            let i_number = await auto_invoice_no_generator3(this.copy_q_number);    
 
             const ref = collection(db, "ALL_invoice");
             const obj_ref = {
@@ -322,22 +349,22 @@ export default{
             doc.text(i_number, 159, 94);
             doc.text(today, 159, 100);
             doc.text(this.copy_q_ref, 159, 105);
-            doc.text(po_number, 159, 111);  
-            /*
+            doc.text(po_number, 159, 110);  
+            
             let bodyData = [];
-            this.choosen_products.forEach((element, index, array) => {
+            this.copy_exact_product.forEach((element, index, array) => {
                 necessary_only = [
                     element.p_fullname,
                     element.p_code,
                     element.p_quantity,
                     element.p_sell,
-                    "discoun999t",
-                    element.p_sell,
+                    "0",
+                    "£" + element.p_sell,
 
                 ]  
                 bodyData.push(necessary_only);
             });
-            */
+            
             var finalY = doc.lastAutoTable.finalY || 10
             autoTable(doc, {
                 //html: '#cms-quote-table',
@@ -380,7 +407,7 @@ export default{
             var base64 = doc.output('datauri');
             this.return_base64 = base64;
             //
-            console.log("calling  test2_storage1     ");
+            console.log("calling  test2_storage1     " + this.invoice_hashid + " ");
             test2_storage( this.invoice_hashid, string, this.return_base64);
             console.log("calling  test2_storage2     ");
 
