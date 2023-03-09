@@ -1,8 +1,14 @@
 <template>
+  <div class="ClientCard">
+    
 
-<div class="client_card"  v-for="c, i in all_client_card"     > 
+    <div class="lg:px-5 lg:mx-5 grid grid-cols-5 gap-3 ">
+          <!--[new_task] on click client-->
+
+
+          <div class="client_card row col-span-1 flex-col text-center"  v-for="c, i in all_client_card"     > 
             
-            <div class="row" data-bs-toggle="modal" data-bs-target="#add_delievery_address" @click.prevent="this.passVariable($event, c, i)">
+            <div class="row" >
 
               <div>
                 <strong>{{ c.c_fullname }}</strong>
@@ -23,6 +29,9 @@
               <div> {{ c.client_hashid }} </div>
 
             </div>
+          </div>
+    </div>
+    
 </div>
 </template>
 
@@ -42,16 +51,19 @@ export default{
         var all_client_ref = await firebase.firestore().collection("all_clients");
 
         all_client_ref.onSnapshot(snap => {
-            this.all_clients = [];
+            this.all_client_card = [];
             
             snap.forEach(d => {
                 var client = d.data();
-                this.all_clients.push(client);
+                this.all_client_card.push(client);
             });
         });
         
         
       },
+    },
+    created(){
+      this.getAllClient();
     }
 
 }

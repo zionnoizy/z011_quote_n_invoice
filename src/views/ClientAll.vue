@@ -32,7 +32,7 @@
         </div>
         </div>
 
-        <div class="px-5 mx-5 grid grid-cols-5 gap-3 ">
+        <div class="lg:px-5 lg:mx-5 grid grid-cols-5 gap-3 ">
           <!--[new_task] on click client-->
 
 

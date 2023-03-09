@@ -5,6 +5,8 @@
             <p> debug here only - view specific quote.</p>
             <p> The quote id is= {{ $route.params.id }}</p>
             <p> One Q Hash is= {{ $route.query.this_one_q_hash_number }} <!--cannot pass each quote to here--> </p>
+
+            <p> One PDF Link is= {{ $route.query.this_one_q_pdf_link }}</p>
             <input class="quote_num" id="quote_num"/> <br> {{ copy_q_b_f }}
             <br>
             <input class="ref_num" id="ref_num"/> {{ copy_exact_product }}
@@ -200,8 +202,8 @@ export default{
         
         showQuotePDF(){
             const z = document.getElementById('preview_quotenPDF');
-            console.log("zzzzzz" + z + " " + this.this_one_q_pdf_link);
-            z.setAttribute('src', this.this_one_q_pdf_link);
+            console.log("zzzzzz" + z + " " + this.$route.query.this_one_q_pdf_link);
+            z.setAttribute('src', this.$route.query.this_one_q_pdf_link);
             z.parentNode.replaceChild(clone1, z);
         },
         async retrieveOneQuoteInfo(){

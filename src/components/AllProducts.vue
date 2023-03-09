@@ -9,6 +9,7 @@
         <table class="table table-dark" id="store_to_excel" >
             <thead>
             <tr>
+            <th scope="col"> # </th>
             <th scope="col"> Code </th>
             <th scope="col">Name</th>
             <th scope="col">Category</th>
@@ -25,6 +26,7 @@
 
             </tr>
             <tr id="list_of_productss" v-for="p, i in all_products" @blur="handleBlur" @focusout="handleFocusout($event,  p.pid, data-field   )">
+                <td contenteditable="true"> {{i}} </td>
                 <td contenteditable="true" data-field="p_code" :id= "`ep_code_${i}`" > {{ p.p_code }} </td>
                 <td contenteditable="true" data-field="p_fullname" :id= "`ep_fn_${i}`" > {{ p.p_fullname }} </td>
                 <td contenteditable="true" data-field="p_category" :id= "`ep_category_${i}`"> {{ p.p_category }} </td>
@@ -74,8 +76,8 @@ export default{
           console.log("handleFocusout: " + e.target.id + "   pid= " + pid + " data-field=" );
 
           var updated_field = document.getElementById(e.target.id);
-          var tdText = updated_field.innerText | updated_field.textContent;
-          console.log("handleFocusout: " + tdText);
+          var tdText = updated_field.innerText
+          console.log("handleFocusout: " + "updated_field" + updated_field +  tdText);
 
 
           var sortOrder = e.target.getAttribute("data-field");
@@ -169,6 +171,7 @@ export default{
         var dataType = 'application/vnd.ms-excel';
         var tableSelect = document.getElementById(tableID);
         var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+
         // Create download link element
         console.log(tableSelect);
 
@@ -176,8 +179,9 @@ export default{
         let today = myTimestamp.toDate().toLocaleDateString("en-UK");    
 
         let filename = "QuoteIn_Product_" + today;
-        downloadLink = document.createElement("a");
+        let downloadLink = document.createElement("a");
         document.body.appendChild(downloadLink);
+        
         if(navigator.msSaveOrOpenBlob){
             var blob = new Blob(['\ufeff', tableHTML], {
                 type: dataType
@@ -185,9 +189,11 @@ export default{
             navigator.msSaveOrOpenBlob( blob, filename);
 
         }else{
+
             downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
             downloadLink.download = filename;
             downloadLink.click();
+
         }
       },
     },

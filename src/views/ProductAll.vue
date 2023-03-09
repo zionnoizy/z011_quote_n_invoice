@@ -7,9 +7,9 @@
           <router-link to="/dashboard/all_product" exact><a><strong class="link">Product Add</strong></a></router-link>
         
         </p>
-        
-        <button>UPDATE PRODUCTS</button>
-
+        <router-link :to="{name: 'CategoyAddAll'}">
+          <button class="btn btn-primary">Go To Add Category</button>
+        </router-link>
         <product-add></product-add>
 
         <all-products></all-products>  

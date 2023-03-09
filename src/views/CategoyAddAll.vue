@@ -11,18 +11,24 @@
 
             <div class="grid gird-cols-2 gap-2">
                 <div><label>Category Name</label></div>
-                <div><input id="input_category" ref="input_category" type="text" placeholder="category input" required/></div>
+                <br>
+                <div>
+                    <label ref="category">Category</label>
+                    <input id="input_category" ref="input_category" type="text" placeholder="category input" required/>
+                </div>
+                <br>
             </div>
 
         </from>
         
-
+        <br>
+        <br>
         <button @click="createCategory(); " class="btn btn-info" >Add Category Infomation</button>
     
         <br>
         <br>
 
-        <div class="px-5 mx-5 grid grid-cols-2 gap-1" v-for="ca in all_categorys">
+        <div class="px-5 mx-5 grid grid-cols-2 gap-1" v-for="ca in all_categories">
             <div class=""  >
                 {{ ca.category_fullname }}
             </div> 
@@ -55,22 +61,21 @@ export default{
     components: {},
     methods:{
         async createCategory(){
-            validate_category_input();
+            //validate_category_input();
            //console.log("[CategoryAddAll] create new Category.");
 
 
 
 
            const ref = collection(db, 'all_categories');
-           const ref2 = db_id.collection('all_categories');
-           //get_id.update({ reads: increment });
-           
 
+           
+           var t = document.getElementById('input_category').value;
            //https://fireship.io/snippets/firestore-increment-tips/
-           //console.log("[CategoryAddAll] update incremented. " + this.$refs.category_enter.value);
+           console.log("[CategoryAddAll] update incremented.           " + t);
            const obj_ref ={
 
-                category_fullname : this.$refs.category_enter.value,
+                category_fullname : t,
                 category_time: serverTimestamp(),
 
 
@@ -82,7 +87,7 @@ export default{
             const get_id = firebase.firestore().collection("all_categories").doc(docRef.id);
             get_id
                 .update({
-                    delivery_hashid: docRef.id,
+                    category_hashid: docRef.id,
                 })
                 .then(() => {
                 });

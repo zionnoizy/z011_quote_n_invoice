@@ -28,7 +28,15 @@
 
               <td> <input ref="p_code" placeholder="Product Code" id="pi_code" required/> </td>
               <td> <input ref="p_enter" placeholder="Item Name" id="pi_name" required/> </td>
-              <td> <input ref="p_category" placeholder="Product Category" id="pi_catrgory" required/> </td>
+              <td>
+                <select id="p_category" class="form-select" aria-label="Default select example">
+                  <option selected>Select Category Here</option>
+                  <option   v-for="c in all_category" :value="`${c.category_fullname}`" >{{c.category_fullname}}</option>
+                </select>
+              </td>
+              
+
+              
               <td> <input ref="p_cost" placeholder="Product Cost (digit only)" id="pi_cost" v-on:keypress="NumbersOnly" @input="CalculateSell" required /> </td>
               <td> <input ref="p_margin" placeholder="Product Margin (digit only)" id="pi_margin" onkeypress='return event.charCode >= 48 && event.charCode <= 57' @input="CalculateSell" required /> </td>
               <td> <input ref="p_sell" placeholder="Product Sell" id="pi_sell" @input="CalculateSell" disabled/> </td>
@@ -59,28 +67,48 @@
 <script>
 import { db, auth, increment, admin } from "@/firebase.js";
 import { collection, addDoc, DocumentSnapshot } from "firebase/firestore";
-import { ref } from 'vue';
+
 import { serverTimestamp } from 'firebase/firestore';
 
 export default{
+
   name: 'ProductAdd',
   
   components: {},
+  data() {
+    return {
+      all_category: [],
+    }
+  },
   methods:{
-    
+    async getAllCategory(){
+      var all_client_ref = await firebase.firestore().collection("all_categories");
+        all_client_ref.onSnapshot(snap => {
+            this.all_category = [];
+
+            snap.forEach(d => {
+
+                var c = d.data();
+                
+                this.all_category.push(c);
+
+            });
+        });
+    },
     async createProduct(){
 
-      validate_p_input();
+      //validate_p_input();
       
       const db_id = firebase.firestore();
-      //UPDATE: https://saveyourtime.medium.com/firebase-cloud-firestore-add-set-update-delete-get-data-6da566513b1b
-      const ref = collection(db, 'all_products'); //how to add sepcific id
-      let aaaaaaaaa;
 
+      const pcategory = document.getElementById("p_category").value;
+      console.log(pcategory);
+
+      const ref = collection(db, 'all_products'); //how to add sepcific id
       const obj_ref = {
         p_code: this.$refs.p_code.value,
         p_fullname: this.$refs.p_enter.value,
-        p_category: this.$refs.p_category.value,
+        p_category: pcategory,
         p_cost: this.$refs.p_cost.value,
         p_margin: this.$refs.p_margin.value,
         p_sell: this.$refs.p_sell.value,
@@ -89,7 +117,7 @@ export default{
         p_edit_date: serverTimestamp(),
 
       }
-      //const doc_ref = await   .child(docRef.id)
+
       await addDoc(ref, obj_ref)
       .then(docRef => {
           const get_id = firebase.firestore().collection("all_products").doc(docRef.id);
@@ -130,6 +158,13 @@ export default{
 
     },
     
+  },
+  created() {
+
+
+    this.getAllCategory();
+
+
   },
 
 }
