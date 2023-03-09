@@ -58,7 +58,6 @@ export default{
       ClientAdd,
     },
     methods: {
-
       async getAllClient() { 
         var all_client_ref = await firebase.firestore().collection("all_clients");
 

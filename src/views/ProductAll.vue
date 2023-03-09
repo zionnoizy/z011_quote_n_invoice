@@ -1,4 +1,5 @@
 <template>
+
   <div class="ProductAll">
 
         <p class="dashboard_txt pt-5" ><router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  > 
@@ -6,11 +7,14 @@
           <router-link to="/dashboard/all_product" exact><a><strong class="link">Product Add</strong></a></router-link>
         
         </p>
+        
         <button>UPDATE PRODUCTS</button>
+
         <product-add></product-add>
 
         <all-products></all-products>  
   </div>
+
 </template>
 
 

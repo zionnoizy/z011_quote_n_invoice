@@ -71,53 +71,37 @@ export default{
     async createProduct(){
 
       validate_p_input();
-      //console.log("[ProductAdd-createProduct] create new Category.");
       
+      const db_id = firebase.firestore();
+      //UPDATE: https://saveyourtime.medium.com/firebase-cloud-firestore-add-set-update-delete-get-data-6da566513b1b
+      const ref = collection(db, 'all_products'); //how to add sepcific id
+      let aaaaaaaaa;
 
-        //console.log("[ProductAdd-createProduct] create new product");
+      const obj_ref = {
+        p_code: this.$refs.p_code.value,
+        p_fullname: this.$refs.p_enter.value,
+        p_category: this.$refs.p_category.value,
+        p_cost: this.$refs.p_cost.value,
+        p_margin: this.$refs.p_margin.value,
+        p_sell: this.$refs.p_sell.value,
+        p_quantity: 0,
+        p_insert_date: serverTimestamp(),
+        p_edit_date: serverTimestamp(),
 
-        const db_id = firebase.firestore();
-        const get_id = db_id.collection('all_products').doc();
-        const p_id = get_id.id;
+      }
+      //const doc_ref = await   .child(docRef.id)
+      await addDoc(ref, obj_ref)
+      .then(docRef => {
+          const get_id = firebase.firestore().collection("all_products").doc(docRef.id);
+          get_id
+            .update({
+                pid: docRef.id,
+            })
+            .then(() => {
+                console.log("set doc");
 
-
-        
-        //console.log("[ProductAdd-createProduct] id. " + p_id);
-
-
-        //const increment = firebase.firestore.FieldValue.increment(1);
-        //UPDATE: https://saveyourtime.medium.com/firebase-cloud-firestore-add-set-update-delete-get-data-6da566513b1b
-        const ref = collection(db, 'all_products'); //how to add sepcific id
-        let aaaaaaaaa;
-
-        const obj_ref = {
-          p_code: this.$refs.p_code.value,
-          p_fullname: this.$refs.p_enter.value,
-          p_category: this.$refs.p_category.value,
-          p_cost: this.$refs.p_cost.value,
-          p_margin: this.$refs.p_margin.value,
-          p_sell: this.$refs.p_sell.value,
-          p_quantity: 0,
-          p_insert_date: serverTimestamp(),
-          p_edit_date: serverTimestamp(),
-          pid: p_id,
-        }
-        //const doc_ref = await   .child(docRef.id)
-        addDoc(ref, obj_ref)
-        .then(docRef => {
-            //console.log("[ProductAdd-createProduct] Document has been added successfully" + docRef.id); 
-            //console.log("[ProductAdd-createProduct] product id?1   "  + docRef.id.toString() + " " + aaaaaaaaa);
-
-
-
-        })
-        //console.log("[ProductAdd-createProduct] product id?2   "  + aaaaaaaaa);
-
-        
-        
-        
-        //console.log("[ProductAdd-createProduct] not end. ")
-
+            });
+      })
     },
     
     NumbersOnly(e){

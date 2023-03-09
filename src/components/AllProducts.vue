@@ -4,12 +4,14 @@
         <button class="btn btn-primary " @click.prevent="getAllProductsNewest()">Sort From Oldest </button>
         <button class="btn btn-primary " @click.prevent="getAllProductsOldest()">Sort From Newest </button>
 
-        <table class="table table-dark" >
+        <!-- <button @click.prevent="ChangingProduct">EDIT ALL</button> -->
+        
+        <table class="table table-dark" id="store_to_excel" >
             <thead>
             <tr>
-            <th scope="col"> - </th>
-            <th scope="col">Code</th>
+            <th scope="col"> Code </th>
             <th scope="col">Name</th>
+            <th scope="col">Category</th>
 
             <th scope="col">&#163; Cost</th>
             <th scope="col">Margin &percnt;</th>
@@ -22,21 +24,19 @@
 
 
             </tr>
-
-
-            <tr  v-for="p in all_products">
-                <td> {{ p.p_code }} </td>
-                <td> {{ p.p_fullname }} </td>
-                <td> {{ p.p_category }} </td>
-                <td> {{ p.p_cost }} </td>
-                <td> {{ p.p_margin }} </td>
-                <td> {{ p.p_sell }} </td>
+            <tr id="list_of_productss" v-for="p, i in all_products" @blur="handleBlur" @focusout="handleFocusout($event,  p.pid, data-field   )">
+                <td contenteditable="true" data-field="p_code" :id= "`ep_code_${i}`" > {{ p.p_code }} </td>
+                <td contenteditable="true" data-field="p_fullname" :id= "`ep_fn_${i}`" > {{ p.p_fullname }} </td>
+                <td contenteditable="true" data-field="p_category" :id= "`ep_category_${i}`"> {{ p.p_category }} </td>
+                <td contenteditable="true" data-field="p_cost" :id= "`ep_cost_${i}`" > {{ p.p_cost }} </td>
+                <td contenteditable="true" data-field="p_margin" :id= "`ep_margin_${i}`" > {{ p.p_margin }} </td>
+                <td contenteditable="true" data-field="p_sell" :id= "`ep_sell_${i}`" > {{ p.p_sell }} </td>
             </tr>
             </tbody>
 
         </table>  
 
-
+        <button class="btn btn-primary " @click.prevent="to_excel('store_to_excel')">SAVE TO EXCEL </button>
 
 </template>
 
@@ -44,10 +44,53 @@
 import ProductAdd from "@/components/ProductAdd.vue";
 import { orderBy, query } from "@firebase/firestore";
 import { serverTimestamp } from 'firebase/firestore';
+import { onMounted, reactive } from "vue";
 
 export default{
     name: 'ProductAll',
-    setup() {},
+    setup() {
+
+        onMounted(async () => {
+
+          let el = document.getElementsByClassName('list_of_productss');
+          for(var i = 0; i< el.length; i++) {
+            el[i].addEventListener('focusout', function(e) {
+              //how to know which id I am typing for i here
+              console.log("product_things changed: " + e.target.id);
+            });      
+          }
+            
+
+        });
+        
+        const handleBlur = (e) => {
+          console.log("handleBlur: " + e.target.id)
+
+
+        }
+
+
+        const handleFocusout = (e, pid) => {
+          console.log("handleFocusout: " + e.target.id + "   pid= " + pid + " data-field=" );
+
+          var updated_field = document.getElementById(e.target.id);
+          var tdText = updated_field.innerText | updated_field.textContent;
+          console.log("handleFocusout: " + tdText);
+
+
+          var sortOrder = e.target.getAttribute("data-field");
+          console.log("handleFocusout: " + sortOrder);
+
+          const edit_this_product_col = firebase.firestore().collection("all_products");
+          edit_this_product_col.doc(pid).update({
+            [sortOrder] : tdText,
+
+          })
+          
+        }
+
+        return { handleBlur, handleFocusout };
+    },
     data(){
         return{
         all_products: [],
@@ -116,11 +159,51 @@ export default{
             //console.log(error);
           })
         }
-      }
+      },
+      ChangingProduct(){
+        
 
+      },
+      to_excel(tableID){
+
+        var dataType = 'application/vnd.ms-excel';
+        var tableSelect = document.getElementById(tableID);
+        var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+        // Create download link element
+        console.log(tableSelect);
+
+        const myTimestamp = firebase.firestore.Timestamp.now();
+        let today = myTimestamp.toDate().toLocaleDateString("en-UK");    
+
+        let filename = "QuoteIn_Product_" + today;
+        downloadLink = document.createElement("a");
+        document.body.appendChild(downloadLink);
+        if(navigator.msSaveOrOpenBlob){
+            var blob = new Blob(['\ufeff', tableHTML], {
+                type: dataType
+            });
+            navigator.msSaveOrOpenBlob( blob, filename);
+
+        }else{
+            downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+            downloadLink.download = filename;
+            downloadLink.click();
+        }
+      },
     },
     created() {
+
       this.getAllProductsNewest();
+      
     },
 }
+var editable_elements = document.querySelectorAll("[contenteditable]").forEach(function(el) 
+{ 
+  alert("You edit this field with index with data-field");
+});
+
+
+
+
+
 </script>
