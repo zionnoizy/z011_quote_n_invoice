@@ -354,18 +354,55 @@ export default{
             doc.text(po_number, 159, 110);  
             
             let bodyData = [];
-            this.copy_exact_product.forEach((element, index, array) => {
-                necessary_only = [
-                    element.p_fullname,
-                    element.p_code,
-                    element.p_quantity,
-                    element.p_sell,
-                    "0",
-                    "£" + element.p_sell,
+            let necessary_only = [];
+            console.log("a-a-a-a-a-a-a" + this.copy_exact_product);
+            for (const [index, [key, value]] of Object.entries(Object.entries(this.copy_exact_product))) {
+            console.log(`${index}: ${key} = ${value}`);
+                const s1 = `${index}`+"_fullname";
+                const s2 = `${index}`+"_code";
+                const s3 = `${index}`+"_quantity";
+                const s4 = "";
+                const s5 = "";
+                const s6 = `${index}`+"_sell";
+                if ( key.indexOf(s1) > -1 ) {
+                    necessary_only[`${index}`] = `${value}`;
+                } 
+            }
+            /*
+            for (var [index, key] in this.copy_exact_product) {
+                console.log("lopp # " + index + key);
 
-                ]  
+                const s1 = "_fullname";
+                const s2 = "_code";
+                const s3 = "_quantity";
+                const s4 = "";
+                const s5 = "";
+                const s6 = "_sell";
+                
+                if ( key.indexOf(s1) > -1 ) {
+                    necessary_only[index] = this.copy_exact_product[key];
+                } 
+                else if ( key.indexOf(s2) > -1 ){
+                    necessary_only[index] = this.copy_exact_product[key];
+                }
+                else if ( key.indexOf(s3) > -1 ){
+                    necessary_only[index] = this.copy_exact_product[key];
+                }
+                else if ( key.indexOf(s4) > -1 ){
+                    necessary_only[index] = this.copy_exact_product[key];
+                }
+                else if ( key.indexOf(s5) > -1 ){
+                    necessary_only[index] = this.copy_exact_product[key];
+                }
+                else if ( key.indexOf(s6) > -1 ){
+                    necessary_only[index] = this.copy_exact_product[key];
+                }
+                console.log("necessary_only[i]     " + necessary_only[index]);
                 bodyData.push(necessary_only);
-            });
+                console.log("necessary_only[i]     " + bodyData);
+            }
+            */
+            
             
             var finalY = doc.lastAutoTable.finalY || 10
             autoTable(doc, {
@@ -384,7 +421,7 @@ export default{
                 tableWidth: 'auto',
                 margin: { top: 0, right: 10, bottom: 0, left: 10 }, //important2
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
-                body: [["bodyData"]]
+                body: [this.copy_exact_product]
             })
             doc.setFontSize(12);
             doc.text('SUB TOTAL', 42, doc.lastAutoTable.finalY + 20)
@@ -478,7 +515,7 @@ export default{
                 tableWidth: 'auto',
                 margin: { top: 0, right: 10, bottom: 0, left: 10 }, //important2
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
-                body: [bodyData]
+                body: bodyData
             })
             doc.setFontSize(14);
             doc.text('SUB TOTAL', 42, doc.lastAutoTable.finalY + 20)

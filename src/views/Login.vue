@@ -47,7 +47,7 @@ const login = () => {
     .then((data) =>{
         //context.commit('SET_USER', response.user);
         //console.log('Successfully Login!');
-        router.push('/dashboard');
+        router.push('/dashboard/client');
     })
     .catch(error => {
         //console.log(error.code)
