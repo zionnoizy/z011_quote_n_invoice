@@ -15,8 +15,8 @@
         <div class="grid grid-cols-3">
 
             <div>
-                <!-- <embed id="preview_quotationPDF" width='100%' height='100%' src='' /> -->
-                <embed id="preview_quotenPDF"  class="preview_quotenPDF" width="800px" height="600px"   src='' />
+                <iframe id="preview_quotenPDF"  class="preview_quotenPDF" src="" download="toquotationnumber.pdf" width="800px" height="600px"  ></iframe>
+                
                 
             </div>
 
@@ -200,11 +200,10 @@ export default{
     },
     methods:{
         
-        showQuotePDF(){
-            const z = document.getElementById('preview_quotenPDF');
-            console.log("zzzzzz" + z + " " + this.$route.query.this_one_q_pdf_link);
-            z.setAttribute('src', this.$route.query.this_one_q_pdf_link);
-            z.parentNode.replaceChild(clone1, z);
+        async showQuotePDF(){
+            await console.log(this.this_one_q_pdf_link);
+
+            document.getElementById('preview_quotenPDF').src = this.this_one_q_pdf_link;
         },
         async retrieveOneQuoteInfo(){
             await firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number)

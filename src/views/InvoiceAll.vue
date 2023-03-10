@@ -6,40 +6,37 @@
                     
             <thead>
             <tr class="table-header">
-
                 <th scope="col"> QUOTE NUMBER </th>
                 <th scope="col"> INVOICE NUMBER </th>
                 <th scope="col"> CLIENT </th>
-
                 <th scope="col"> REF </th>
                 <th scope="col"> PO </th>
                 <th scope="col"> ADDED DATE </th>
-                <th scope="col"> - </th>
+
 
             </tr>
             </thead>
 
             <tbody>
                 <!--not exist yet! this_one_i_pdf_link, more router-link to HERE [NEW FACE]-->
-                <router-link 
+                <!-- <router-link 
                     tag="tr"
                     :to="{ name: 'OneInvoice', 
                     params: { id: i.obj_ref.qi_invoice_number, },
-                    query: {this_one_i_hash_number: p.invoice_hashid, this_one_i_pdf_link: p.q_pdf_link}}">
+                    query: {this_one_i_hash_number: p.invoice_hashid, this_one_i_pdf_link: p.q_pdf_link}}"> -->
                 <tr v-for="i in all_invoices">
-                
-                
 
-                    <td scope="col" style="width: 150px;"  > {{ i.obj_ref.qi_quote_number }} </td>
-                    <td scope="col" style="width: 150px;"> {{ i.obj_ref.qi_invoice_number }} </td>  
+                    <td scope="col" style="width: 150px;"  > i.obj_ref.qi_quote_number </td>
+                    <td scope="col" style="width: 150px;"> {{ i.obj_ref.qi_invoice_number }} </td>   
+                    <td scope="col" style="width: 150px;"> {{ i.obj_ref.qi_bill_fullname}} </td>
                     <td scope="col" style="width: 150px;"> {{ i.obj_ref.qi_ref}} </td>
-                    <td scope="col" style="width: 150px;"> REF_NUM_HERE </td> 
+
                     <td scope="col" style="width: 150px;"> {{ i.obj_ref.qi_po}} </td>
-                    <td scope="col" style="width: 200px;"> {{ p.obj_ref.qi_uploaded_date }} </td>
+                    <td scope="col" style="width: 200px;"> {{ i.obj_ref.qi_uploaded_date }} </td>
                 
 
                 </tr>
-                </router-link>
+                <!-- </router-link> -->
 
 
             </tbody>
@@ -106,9 +103,10 @@ export default {
             this.all_invoices = [];
             
             snap.forEach(i => {
-                var each_invoice = i.data();
+                var e_invoice = i.data();
                 
-                this.all_invoices.push(each_invoice);
+                this.all_invoices.push(e_invoice);
+                console.log("e invoice" + this.all_invoices);
             });
         });
 
