@@ -3,10 +3,9 @@
     <div class="QuoteAdd">
 
         <div class="border">
-           
-            {{ tmp_sell }}
-
-            <p>{{choosen_products}}</p>
+            calculate tmp_sell: {{ tmp_sell }}
+            list of choosen product: <p>{{choosen_products}}</p>
+            choosen_client_fullname(not bill to):: {{ choosen_client_fullname }}
         </div>
         <p class="dashboard_txt pt-5" ><router-link to="/dashboard" exact>
             
@@ -604,6 +603,13 @@ export default {
             console.log("[QuoteAdd-ChooseBillTo]store_bill_2_info   " + this.store_bill_2_info);
 
             this.choosen_client_fullname = b.c_fullname;
+
+            //clearn ship to
+            document.getElementById('tmp_s_fullname').innerHTML = '';
+            document.getElementById('tmp_s_address1').innerHTML = '';
+            document.getElementById('tmp_s_address2').innerHTML = '';
+            document.getElementById('tmp_s_city').innerHTML = '';
+            document.getElementById('tmp_s_postcode').innerHTML = '';
         },
         ChooseShipTo(ev, s, i) {
             //console.log("[QuoteAdd-ChooseShipTo] comming soon, click client and retrieve text." + ev + "  " + i);

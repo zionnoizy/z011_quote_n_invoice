@@ -38,7 +38,7 @@
 
         </table>  
 
-        <button class="btn btn-primary " @click.prevent="to_excel('store_to_excel')">SAVE TO EXCEL </button>
+        <button class="btn btn-primary " @click.prevent="to_excel('store_to_excel')">SAVE TO EXCEL (NOT RELEASE YET) </button>
 
 </template>
 
