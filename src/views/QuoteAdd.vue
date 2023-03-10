@@ -165,7 +165,7 @@
                         <label for="q_vat">VAT</label>
                         <input ref="q_vat" placeholder="Vat" id="q_vat" min="1" max="100" value="20" disabled />
                     </div>
-                    <div>
+                    <div class="hidden">
                         <label for="q_shipping">Shipping</label>
                         <input ref="q_shipping" placeholder="Shipping" id="q_shipping" @input="addVatSHip"/>
                     </div>

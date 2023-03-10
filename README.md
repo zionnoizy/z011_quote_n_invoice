@@ -2,7 +2,7 @@
 
 0.1.0 Iron Barbs <br />
 0.5.0 Volt Absorb <br />
-0.6.0 Prankster <br />
+0.6.0 Friend Guard <br />
 
 ## Recommended IDE Setup
 
