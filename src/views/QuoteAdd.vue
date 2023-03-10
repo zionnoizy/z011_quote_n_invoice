@@ -165,7 +165,7 @@
                         <label for="q_vat">VAT</label>
                         <input ref="q_vat" placeholder="Vat" id="q_vat" min="1" max="100" value="20" disabled />
                     </div>
-                    <div class="hidden">
+                    <div class="d-lg-none">
                         <label for="q_shipping">Shipping</label>
                         <input ref="q_shipping" placeholder="Shipping" id="q_shipping" @input="addVatSHip"/>
                     </div>
@@ -830,6 +830,7 @@ export default {
             
 
             const quote_number = await auto_quote_no_generator2();
+
             let reference_number = document.getElementById('q_reference_number').value;
 
             const ref = collection(db, "ALL_quote");
