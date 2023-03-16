@@ -36,7 +36,7 @@
                 }, query: {this_one_q_hash_number: p.quote_hashid, this_one_q_pdf_link: p.q_pdf_link}}">
 
                   <td scope="col" style="width: 150px;"  > {{ p.obj_ref.q_quote_number }} </td>
-                  <td scope="col" style="width: 150px;">   </td>  <!--{{ p.q_invoice_number }}-->
+                  <td scope="col" style="width: 150px;"> {{ p.obj_ref.q_invoice_number }}  </td>  <!--{{ p.q_invoice_number }}-->
                   <td scope="col" style="width: 150px;"> {{ p.obj_ref.q_bill_fullname}} </td>
                   <td scope="col" style="width: 150px;"> {{ p.obj_ref.q_ref }} </td> <!--{{ p.q_ref }}-->
                   <td scope="col" style="width: 150px;"> {{ p.obj_ref.q_po }} </td> <!--{{ p.q_po }}-->

@@ -763,7 +763,7 @@ export default {
             let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK");
             doc.text(quote_number, 159, 94);
             doc.text(todayDateTime, 159, 100);
-            doc.text(input_reference_number, 159, 106);
+            doc.text(input_reference_number, 159, 105);
             let bodyData = [];
             this.choosen_products.forEach(element => {      
                 var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_sell,"discoun999t", element.p_sell];
@@ -842,16 +842,28 @@ export default {
             const ref = collection(db, "ALL_quote");
             const ref2 = collection(db, "ALL_quote");    
 
-            const tmp_ff = Object.fromEntries(
-            this.choosen_products.flatMap((element, index) => [
-                [`q_p${index + 1}_fullname`, element.p_fullname],
-                [`q_p${index + 1}_code`, element.p_code],
-                [`q_p${index + 1}_category`, element.p_category],
-                [`q_p${index + 1}_cost`, element.p_cost],
-                [`q_p${index + 1}_margin`, element.p_margin],
-                [`q_p${index + 1}_sell`, element.p_sell],
-            ])
+            var choosen_product_qty = Object.keys(this.choosen_products).length;
+            let tmp_ff = Object.fromEntries(
+                
+                
+                this.choosen_products.flatMap((element, index) => [
+                    [`q_p${index + 1}_fullname`, element.p_fullname],
+                    [`q_p${index + 1}_code`, element.p_code],
+                    [`q_p${index + 1}_category`, element.p_category],
+                    [`q_p${index + 1}_cost`, element.p_cost],
+                    [`q_p${index + 1}_margin`, element.p_margin],
+                    [`q_p${index + 1}_sell`, element.p_sell],
+                    
+                ]),
+                
+                
+            
             );
+            
+            tmp_ff["choosen_product_qty"] = choosen_product_qty;
+
+            console.log("tmp_ff  " + tmp_ff);
+
             
             
             //upload multi doc
@@ -869,13 +881,16 @@ export default {
                 q_ship_city: document.getElementById('tmp_s_city').innerHTML,
                 q_ship_postcode: document.getElementById('tmp_s_postcode').innerHTML, 
 
-                q_quote_number: quote_number, //cannot retrieve quote_number!
+                q_quote_number: quote_number, 
+                q_invoice_number: '', 
                 q_uploaded_date: todayDateTime,
                 q_ref: reference_number,
                 q_po: null,
                 q_uploaded_date_timestamp: serverTimestamp(), //
                 q_extra_space_1: '',
                 q_extra_space_2: '',
+                q_extra_space_3: '',
+                q_extra_space_4: '',
             }
 
             let hash_id = '';
@@ -883,8 +898,6 @@ export default {
             .then(docRef => {
                 console.log(docRef.id);
                 const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
-
-
                 const string = "/all_quote/" + docRef.id + "/";
                 test2_storage( docRef.id, string, this.return_base64);//use this    
                 get_id
@@ -895,50 +908,11 @@ export default {
                         //console.log("set doc");
 
                         get_id.get().then((d) => {
-                            //console.log("updated data:", d.data());
                         });
                     });
-                ////////////////////////////////////////////////////////////
-                /*
-                const storage = getStorage(app);
-                const storage_ref = ref(storage, "tex5.txt");
-                uploadString(storage_ref, pdf_base64, 'data_url')
-                .then((snapshot) => {
 
-                    getDownloadURL(snapshot.ref).then(async (url) => {
-                    
-                    get_id
-                    .update({
-                        q_pdf_link: url,
-                    })
-                    .then(() => {
-                        //console.log("set doc");
-
-                        get_id.get().then((d) => {
-                            //console.log("updated data:", d.data());
-                        });
-                    });
-                    tmp = url.toString();
-
-
-                    return { tmp };
-
-
-                    })
-
-                    //console.log('Uploaded a base64 string pdf version!');
-                });
-                */
-                ////////////////////////////////////////////////////////////
             })
-            /*  
-            addDoc(ref, obj_ref)
-                .then(docRef => {
 
-                     //console.log("updated data3:");
-
-                })   
-            */
         },
 
 

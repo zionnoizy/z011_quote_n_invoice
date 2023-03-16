@@ -2,6 +2,7 @@
     <div class="OneQuote">
 
         <div class="border">
+
             <p> debug here only - view specific quote.</p>
             <p> The quote id is= {{ $route.params.id }}</p>
             <p> One Q Hash is= {{ $route.query.this_one_q_hash_number }} <!--cannot pass each quote to here--> </p>
@@ -10,6 +11,9 @@
             <input class="quote_num" id="quote_num"/> <br> {{ copy_q_b_f }}
             <br>
             <input class="ref_num" id="ref_num"/> {{ copy_exact_product }}
+
+            <p> The invoice id is= {{ invoice_hashid }}</p>
+
         </div>
 
         <div class="grid grid-cols-3">
@@ -55,33 +59,55 @@
                                                 </select>
 
                                             </div>  
+
+                                            <div class="flex-grow-0 mx-2 px-3">
+                                                <label>3.REFERENCE NUMBER</label>
+                                                    <input ref="i_reference" placeholder="Change Your Reference" id="i_reference" required/> 
+                                                    <!-- <option >{{ showREFERENCE }}</option> -->
+
+                                            </div> 
                                         </div>   
                                         <div class="mx-auto" style="display: flex;;">
                                             <label>Quote No. </label>
-                                            <p> {{ copy_q_number }} </p>
+                                            <p><strong> {{ copy_q_number }} </strong></p>
                                         </div>    
                                     </div>    
                                     
 
-                                    <div class="" v-for="pp, i in copy_exact_product">
+                                    <div class="" >
+                                        <div class="grid grid-cols-5 gap-1">
+                                            <div>Index</div>
+                                            <div>Items</div>
+                                            <div>Code</div>
+                                            <div>Qty</div>
+                                            <div>Unit</div>
+                                            <div>Discount</div>
+                                        </div>
+                                        <div class="grid grid-cols-6 gap-1" v-for="(pp, i, index) in copy_exact_product" :key="index">
                                             <div>
-                                                <strong>{{ pp.p_fullname }}</strong>
+                                                <strong>{{  i }} </strong>
+                                            </div>
+                                            <div>
+                                                <strong>{{ pp}}</strong>
+                                            </div>
+
+                                            <div>
+                                                <strong>{{ index }}</strong>
+                                            </div>
+                                            <div>
+                                                <input class="form-control" :ref="'i_quality'+i" :id="'i_quality'+i"  placeholder="Qty" :value="`pp.p_code`">
                                             </div>
                                             <div>
                                                 <strong>{{ pp.p_code }}</strong>
                                             </div>
                                             <div>
-                                                <label>Qty</label>
-                                                <input ref="i_quality" id="i_quality" placeholder="Qty">
+                                                <input class="form-control" :ref="'i_discount'+i" :id="'i_discount'+i"  placeholder="Discount">
                                             </div>
-                                            <div>
-                                                <label>Discount</label>
-                                                <input ref="i_discount" id="i_discount" placeholder="Discount">
-                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                     <div class="modal-footer" style="background-color: #1267aa;">
-                                        <button type="button" data-bs-dismiss="modal" aria-label="close" class="btn btn-success" @click="ClickEditQuote($event)">SAVE</button>
+                                        <button type="button" data-bs-dismiss="modal" aria-label="close" class="btn btn-success" @click="ClickEditQuote($event)">SAVE / CHANGE YOUR QUOTE</button>
                                     </div>
                             </div>
 
@@ -94,8 +120,8 @@
                 <!--2-->
                 <div>
                     <button class="border btn btn-secondary" type="button"
-                        data-bs-toggle="modal" data-bs-target="#add_po_number">
-                        Create New Invoice From This Quotation w/ PO
+                        data-bs-toggle="modal" data-bs-target="#add_po_number" >
+                        Create New Invoice From This Quotation w/ PO, Don't Add The Invoice Again If you see right-hand-side has one already.
                     </button>
                     <div class="modal fade" id="add_po_number" tabindex="-1" aria-labelledby="" aria-hidden="true">
                         <div class="modal-dialog modal-xl">
@@ -122,7 +148,7 @@
             </div>
 
             <div>
-                <embed id="preview_invoicenPDF" width="800px" height="600px"   src='' />
+                <embed id="preview_invoicenPDF" class="preview_invoicenPDF" src='' width="800px" height="600px"    />
             </div>
             
         </div>
@@ -146,6 +172,7 @@ import autoTable from 'jspdf-autotable';
 import { test2_storage } from '../firebase';
 import { onSnapshot, query, collection, collectionGroup, getDocs, where, doc, updateDoc, getDoc, orderBy, addDoc, limit } from 'firebase/firestore'
 import { threadId } from "worker_threads";
+import { serverTimestamp } from 'firebase/firestore'
 export default{
     name: "OneQuote",
     each_quote:{
@@ -157,7 +184,7 @@ export default{
             id: this.$route.params.id, //[change from hash to quote number]
             this_one_q_hash_number: this.$route.query.this_one_q_hash_number,
             this_one_q_pdf_link: this.$route.query.this_one_q_pdf_link,
-            
+            this_one_i_pdf_link: '',    
             one_quote_url: '',
 
             oneqdata: [],
@@ -188,17 +215,42 @@ export default{
             copy_q_number: '',
 
             copy_exact_product: {}, //
+            copy_exact_product_size: '',
             invoice_hashid: '',
             //[NEW FACE]
             all_previous_products: [], //
             showAllClient: [],
             showAllDelivery: [],
+            showREFERENCE: [],
+            showREFERENCE2: '',
+
+
         }
     },
     components:{
         EditQuote,
     },
     methods:{
+
+        async loadInvoicePDF(){
+
+
+            const find_invoice_pdf = firebase.firestore().collection("ALL_invoice").where("quote_hashid", "==", this.this_one_q_hash_number);
+            await find_invoice_pdf.onSnapshot((snapshot) => {
+
+            snapshot.docs.forEach(d => {
+
+                var i = d.data();
+
+                console.log("=======find existed invoice pdf" + i.i_pdf_link);
+
+                this.this_one_i_pdf_link = i.i_pdf_link;
+            })
+            })
+            document.getElementById('preview_invoicenPDF').src = this.this_one_i_pdf_link;
+
+
+        },
         
         async showQuotePDF(){
             await console.log(this.this_one_q_pdf_link);
@@ -222,16 +274,20 @@ export default{
                 this.copy_q_s_c = copycat.obj_ref.q_ship_city;
                 this.copy_q_s_pc = copycat.obj_ref.q_ship_postcode;
                 
-                this.copy_q_ref = copycat.obj_ref.q_ref;
+                
                 this.copy_q_number = copycat.obj_ref.q_quote_number;
+                this.copy_q_ref = copycat.obj_ref.q_ref;
 
                 this.copy_exact_product = copycat.tmp_ff;
-                
+                this.copy_exact_product_size = copycat.tmp_ff.choosen_product_qty;
 
-                console.log("[debug3] " + this.copy_q_b_f);
+
 
                 this.showAllClient.push(this.copy_q_b_f);
                 this.showAllDelivery.push(this.copy_q_s_f);
+                this.showREFERENCE.push(this.copy_q_ref);
+                this.showREFERENCE2 = this.copy_q_ref;
+                document.getElementById('i_reference').value = this.showREFERENCE2;
 
 
                 
@@ -257,6 +313,8 @@ export default{
             let today = myTimestamp.toDate().toLocaleDateString("en-UK");    
             let i_number = await auto_invoice_no_generator3(this.copy_q_number);    
 
+            console.log("i_number      " + i_number);
+
             const ref = collection(db, "ALL_invoice");
             const obj_ref = {
                 qi_bill_fullname: this.copy_q_b_f,
@@ -270,12 +328,18 @@ export default{
                 qi_ship_address2: this.copy_q_s_a2, 
                 qi_ship_city: this.copy_q_s_c,
                 qi_ship_postcode: this.copy_q_s_pc, 
-                
+                    
                 qi_invoice_number: i_number, 
                 qi_uploaded_date: today,
+                qi_ref: this.copy_q_ref,
                 qi_po: po_number,
+                qi_uploaded_date_timestamp: serverTimestamp(), //
+                qi_extra_space_1: '',
+                qi_extra_space_2: '',
+                qi_extra_space_3: '',
+                qi_extra_space_4: '',
                 
-                qi_ref: "qi_ref",
+
 
                 
                 
@@ -316,6 +380,16 @@ export default{
                         });
                     });
             })
+            //update to Invoice Number in Quote
+            const get_id = firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number);
+            get_id
+                .update({
+                    "obj_ref.q_invoice_number": i_number,
+                })
+                .then(() => {
+                    console.log("set doc?");
+
+                });
             ///jspdf time!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             const doc = new jsPDF(); 
             doc.addImage(cms_empty_invoice_no_table, "JPEG", 0, 0, 210, 297);
@@ -355,6 +429,7 @@ export default{
             let bodyData = [];
             let necessary_only = [];
             console.log("a-a-a-a-a-a-a" + this.copy_exact_product);
+
             for (const [index, [key, value]] of Object.entries(Object.entries(this.copy_exact_product))) {
             console.log(`${index}: ${key} = ${value}`);
                 const s1 = `${index}`+"_fullname";
@@ -367,40 +442,7 @@ export default{
                     necessary_only[`${index}`] = `${value}`;
                 } 
             }
-            /*
-            for (var [index, key] in this.copy_exact_product) {
-                console.log("lopp # " + index + key);
 
-                const s1 = "_fullname";
-                const s2 = "_code";
-                const s3 = "_quantity";
-                const s4 = "";
-                const s5 = "";
-                const s6 = "_sell";
-                
-                if ( key.indexOf(s1) > -1 ) {
-                    necessary_only[index] = this.copy_exact_product[key];
-                } 
-                else if ( key.indexOf(s2) > -1 ){
-                    necessary_only[index] = this.copy_exact_product[key];
-                }
-                else if ( key.indexOf(s3) > -1 ){
-                    necessary_only[index] = this.copy_exact_product[key];
-                }
-                else if ( key.indexOf(s4) > -1 ){
-                    necessary_only[index] = this.copy_exact_product[key];
-                }
-                else if ( key.indexOf(s5) > -1 ){
-                    necessary_only[index] = this.copy_exact_product[key];
-                }
-                else if ( key.indexOf(s6) > -1 ){
-                    necessary_only[index] = this.copy_exact_product[key];
-                }
-                console.log("necessary_only[i]     " + necessary_only[index]);
-                bodyData.push(necessary_only);
-                console.log("necessary_only[i]     " + bodyData);
-            }
-            */
             
             
             var finalY = doc.lastAutoTable.finalY || 10
@@ -446,7 +488,7 @@ export default{
             this.return_base64 = base64;
             //
             console.log("calling  test2_storage1     " + this.invoice_hashid + " ");
-            test2_storage( this.invoice_hashid, string, this.return_base64);
+            test_storage( this.invoice_hashid, string, this.return_base64);
             console.log("calling  test2_storage2     ");
 
         },
@@ -544,9 +586,10 @@ export default{
 
     },
     created() {
-
-        this.retrieveOneQuoteInfo();
+        this.loadInvoicePDF();
         this.showQuotePDF();
+        this.retrieveOneQuoteInfo();
+        
     },
 }
 function add_zero(num){

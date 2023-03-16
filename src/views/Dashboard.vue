@@ -9,8 +9,8 @@
             
             <h2 class="dont_blur info_head text-4xl font-sans-b mb-16 text-left max-w-lg uppercase lg:ml-16 mt-12 text-white"> Welcome Back To CMS-QuoteIn </h2>
             
-            <div class="  mr-auto" style="">
-                <div class=" grid grid-cols-2 gap-2" style="z-index: 2;">
+            <div class="  mx-auto" style="">
+                <div class=" grid gird-cols-1 lg:grid-cols-2 gap-5" style="z-index: 2;">
                     <div><button class="btn btn-lg mt-5 mb-4 font-weight-bold" style="background-color: rgb(161, 204, 254) !important; border: none; height: 55px;">
                         <a href="/dashboard/all_client" class=""> View / Add Client </a>
                     </button></div>
@@ -26,7 +26,7 @@
 
         <div class="container">
             <div class="row">
-                <div class="col-8">
+                <div class="col-8 mx-auto">
 
                     <button class="btn btn-primary btn-lg mb-3 btn-block mx-auto" style="width:100%;">  <router-link :to="{name: 'QuoteAdd' }"> Add New Quote </router-link> </button>
                 </div>
