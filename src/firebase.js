@@ -85,7 +85,6 @@ export const test2_storage = (quote_or_invoice_hash, fullPath, pdf_base64) => {
 export const test_storage = (invoice_hash, fullPath, pdf_base64) => {
 
   const image_ref = ref(storage, fullPath);
-  
   const storage_ref = ref(storage, fullPath + invoice_hash+".pdf");
 
 
@@ -93,6 +92,9 @@ export const test_storage = (invoice_hash, fullPath, pdf_base64) => {
   .then((snapshot) => {
 
     getDownloadURL(snapshot.ref).then(async (url) => {
+      console.log("SHOW PDF INVOICE? " + url.toString());
+
+
       const get_id = firebase.firestore().collection("ALL_invoice").doc(invoice_hash);
       await get_id 
       .update({

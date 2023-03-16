@@ -153,7 +153,7 @@
                 <div class="grid grid-cols-1 gap-1 ">
 
                     <div>
-                        <label for="q_subtotal">Subtotal</label>
+                        <label for="q_subtotal">Subtotal </label>
                         <!--disabled @change="CalculateSubtotal"-->
 
                         <input ref="q_subtotal" placeholder="Subtotal"  id="q_subtotal" @input="addVatSHip($event.target.value)" disabled  />
@@ -161,15 +161,15 @@
 
 
                     <div>
-                        <label for="q_vat">VAT</label>
+                        <label for="q_vat">VAT </label>
                         <input ref="q_vat" placeholder="Vat" id="q_vat" min="1" max="100" value="20" disabled />
                     </div>
                     <div class="d-lg-none">
-                        <label for="q_shipping">Shipping</label>
+                        <label for="q_shipping">Shipping </label>
                         <input ref="q_shipping" placeholder="Shipping" id="q_shipping" @input="addVatSHip"/>
                     </div>
                     <div>
-                        <label for="q_total">Total</label>
+                        <label for="q_total">Total </label>
                         <!--@input="CalculateTotal"-->
                         <input ref="q_total" placeholder="Total" id="q_total" class="input-lg"  @input="addVatSHip($event)"
                             disabled />
@@ -766,7 +766,7 @@ export default {
             doc.text(input_reference_number, 159, 105);
             let bodyData = [];
             this.choosen_products.forEach(element => {      
-                var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_sell,"discoun999t", element.p_sell];
+                var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_sell, "0", element.p_sell];
   
                 bodyData.push(tmp);
 
@@ -794,6 +794,23 @@ export default {
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
                 body: bodyData
             })
+            const st = document.getElementById('q_subtotal').value;
+            const v = document.getElementById('q_vat').value;
+            const s = document.getElementById('q_shipping').value;
+            const t = document.getElementById('q_total').value;
+            doc.text('SUB TOTAL', 42, doc.lastAutoTable.finalY + 20)
+            doc.text(st, 152, doc.lastAutoTable.finalY + 20)
+            doc.text('VAT', 42, doc.lastAutoTable.finalY + 25)
+            doc.text(v, 152, doc.lastAutoTable.finalY + 25)
+            doc.text('SHIPPING. HANDLING', 42, doc.lastAutoTable.finalY + 30)
+            doc.text('000', 152, doc.lastAutoTable.finalY + 30)
+            doc.text('TOTAL', 42, doc.lastAutoTable.finalY + 35)
+            doc.text( parseFloat(t).toFixed(2) , 152, doc.lastAutoTable.finalY + 35)
+
+            doc.setFontSize(9);
+            doc.text('Terms & Instructions', 6,  doc.lastAutoTable.finalY + 40).setFont(undefined, 'bold');
+            doc.text('Quote only valid for 30 days', 6, doc.lastAutoTable.finalY + 44)
+
             var string = doc.output('datauristring');
             var embed = "<embed width='100%' height='100%' src='" + string + "'/>"
 
@@ -829,12 +846,6 @@ export default {
 
             //[new_task] create all pic of information push to firestore.
             //https://www.koderhq.com/tutorial/vue/firestore-database/
-            
-
-            
-
-            
-
             const quote_number = await auto_quote_no_generator2();
 
             let reference_number = document.getElementById('q_reference_number').value;
@@ -843,17 +854,18 @@ export default {
             const ref2 = collection(db, "ALL_quote");    
 
             var choosen_product_qty = Object.keys(this.choosen_products).length;
+
             let tmp_ff = Object.fromEntries(
-                
-                
                 this.choosen_products.flatMap((element, index) => [
-                    [`q_p${index + 1}_fullname`, element.p_fullname],
-                    [`q_p${index + 1}_code`, element.p_code],
-                    [`q_p${index + 1}_category`, element.p_category],
-                    [`q_p${index + 1}_cost`, element.p_cost],
-                    [`q_p${index + 1}_margin`, element.p_margin],
-                    [`q_p${index + 1}_sell`, element.p_sell],
-                    
+                        
+                        [`q_p${index + 1}_fullname`, element.p_fullname],
+                        [`q_p${index + 1}_code`, element.p_code],
+                        [`q_p${index + 1}_category`, element.p_category],
+                        [`q_p${index + 1}_cost`, element.p_cost],
+                        [`q_p${index + 1}_margin`, element.p_margin],
+                        [`q_p${index + 1}_sell`, element.p_sell],
+
+
                 ]),
                 
                 

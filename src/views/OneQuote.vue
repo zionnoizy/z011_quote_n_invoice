@@ -83,22 +83,22 @@
                                             <div>Unit</div>
                                             <div>Discount</div>
                                         </div>
-                                        <div class="grid grid-cols-6 gap-1" v-for="(pp, i, index) in copy_exact_product" :key="index">
+                                        <div class="grid grid-cols-6 gap-1" v-for="(k, i) in copy_exact_product" >
                                             <div>
-                                                <strong>{{  i }} </strong>
+                                                <strong> {{ k.q_p1_fullname }} </strong>
                                             </div>
                                             <div>
-                                                <strong>{{ pp}}</strong>
+                                                <strong>{{ i }}</strong>
                                             </div>
 
                                             <div>
-                                                <strong>{{ index }}</strong>
+                                                <strong>{{ k }}</strong>
                                             </div>
                                             <div>
                                                 <input class="form-control" :ref="'i_quality'+i" :id="'i_quality'+i"  placeholder="Qty" :value="`pp.p_code`">
                                             </div>
                                             <div>
-                                                <strong>{{ pp.p_code }}</strong>
+                                                <strong> value.p_code </strong>
                                             </div>
                                             <div>
                                                 <input class="form-control" :ref="'i_discount'+i" :id="'i_discount'+i"  placeholder="Discount">
@@ -169,7 +169,7 @@ import { ref } from 'vue'
 import { app, db, auth } from "@/firebase.js";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { test2_storage } from '../firebase';
+import { test_storage } from '../firebase';
 import { onSnapshot, query, collection, collectionGroup, getDocs, where, doc, updateDoc, getDoc, orderBy, addDoc, limit } from 'firebase/firestore'
 import { threadId } from "worker_threads";
 import { serverTimestamp } from 'firebase/firestore'
@@ -214,7 +214,7 @@ export default{
             copy_q_ref: '',
             copy_q_number: '',
 
-            copy_exact_product: {}, //
+            copy_exact_product: [], //
             copy_exact_product_size: '',
             invoice_hashid: '',
             //[NEW FACE]
@@ -233,8 +233,6 @@ export default{
     methods:{
 
         async loadInvoicePDF(){
-
-
             const find_invoice_pdf = firebase.firestore().collection("ALL_invoice").where("quote_hashid", "==", this.this_one_q_hash_number);
             await find_invoice_pdf.onSnapshot((snapshot) => {
 
@@ -244,10 +242,15 @@ export default{
 
                 console.log("=======find existed invoice pdf" + i.i_pdf_link);
 
-                this.this_one_i_pdf_link = i.i_pdf_link;
+                if ( typeof i.i_pdf_link !== 'undefined'){
+                    this.this_one_i_pdf_link = i.i_pdf_link;
+                    document.getElementById('preview_invoicenPDF').src = this.this_one_i_pdf_link;
+
+                }
+                
             })
             })
-            document.getElementById('preview_invoicenPDF').src = this.this_one_i_pdf_link;
+            
 
 
         },
@@ -488,7 +491,8 @@ export default{
             this.return_base64 = base64;
             //
             console.log("calling  test2_storage1     " + this.invoice_hashid + " ");
-            test_storage( this.invoice_hashid, string, this.return_base64);
+            const path = "/all_invoice/" + this.invoice_hashid + "/";
+            test_storage( this.invoice_hashid, path, this.return_base64);
             console.log("calling  test2_storage2     ");
 
         },

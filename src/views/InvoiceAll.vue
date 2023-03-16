@@ -1,6 +1,10 @@
 <template>
     <div class="AllInvoice">
         
+      <button class="btn btn-primary " @click.prevent="getAllInvoiceOldest()">Sort From Oldest Invoice </button>
+        <button class="btn btn-primary " @click.prevent="getAllInvoiceNewest()">Sort From Newest Invoice </button>
+        
+
         <table class="table table-dark mx-auto" >
 
                     
@@ -93,12 +97,39 @@ export default {
     components: {},
     
     methods: {
+      async getAllInvoiceNewest() { //not check yet
+        var all_invoice_ref = await firebase.firestore().collection("ALL_invoice");
+        all_invoice_ref.orderBy("obj_ref.qi_uploaded_date_timestamp", "asc")
+
+          .onSnapshot((snapshot) => {
+            this.all_quotes = [];
+            snapshot.forEach(d => {
+
+
+                var product = d.data();
+
+                this.all_quotes.push(product);
+            })
+          })
+      },
+      async getAllInvoiceOldest() { 
+        var all_invoice_ref = await firebase.firestore().collection("ALL_invoice");
+        all_invoice_ref.orderBy("obj_ref.qi_uploaded_date_timestamp", "desc")
+          .onSnapshot((snapshot) => {
+            this.all_quotes = [];
+            snapshot.forEach(d => {
+                var product = d.data();
+
+                this.all_quotes.push(product);
+            })
+          })
+      },
 
       
       async getAllInvoice_Newest() { 
 
         var all_invoice_ref = await firebase.firestore().collection("ALL_invoice");
-        //all_invoice_ref.orderBy("obj_ref.qi_uploaded_date_timestamp", "asc")
+        all_invoice_ref.orderBy("obj_ref.qi_uploaded_date_timestamp", "asc")
         all_invoice_ref.onSnapshot(snap => {
             this.all_invoices = [];
             

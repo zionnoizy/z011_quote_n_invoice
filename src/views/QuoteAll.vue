@@ -101,7 +101,8 @@ export default{
 
     components: {},
     methods: {
-      async getAllQuoteNewest() { 
+      async getAllQuoteNewest() { //not check yet
+        
         var all_product_ref = await firebase.firestore().collection("ALL_quote");
         all_product_ref.orderBy("obj_ref.q_uploaded_date_timestamp", "asc")
 
