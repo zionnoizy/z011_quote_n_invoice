@@ -857,8 +857,8 @@ export default {
 
 
 
-            const tmp_ff = Object.fromEntries([
-                this.choosen_products.flatMap(element => [
+            
+            const tmp_ff = this.choosen_products.flatMap(element => [
                     Object.fromEntries(
                             [
                                 ["q_p_fullname", element.p_fullname], 
@@ -887,9 +887,9 @@ export default {
                         
                     ])
                     
-            ]);
+     
 
-            console.log("this.choosen_products" + this.choosen_products);
+            //console.log("this.choosen_products" + typeof(this.choosen_products));
             
             tmp_ff["choosen_product_qty"] = choosen_product_qty;
 
