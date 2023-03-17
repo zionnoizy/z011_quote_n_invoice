@@ -222,7 +222,7 @@
                                     <table class="table table-dark" >
                                         <thead>
                                         <tr>
-                                        <th scope="col"> - </th>
+                                        <th scope="col">tmp#</th>
                                         <th scope="col">Code</th>
                                         <th scope="col">Name</th>
 
@@ -237,6 +237,7 @@
                                         <tbody>
                                         <!--choosenProductSell($event,p, i);-->
                                         <tr class="choose_product" v-for="p, i in all_products"  @click.prevent="choosenOneProduct($event,p, i); ">
+                                            <td> {{ i }} </td>
                                             <td> {{ p.p_code }} </td>
                                             <td> {{ p.p_fullname }} </td>
                                             <td> {{ p.p_category }} </td>
@@ -272,12 +273,16 @@
                         <thead>
                             <tr class="d-flex">
                                 <th class="col-5" scope="col">Choosen Product Name</th>
-                                <th class="col-5" scope="col">Product Code</th>
+                                <th class="col" scope="col">Product Code</th>
                                 <th scope="col">Product Category</th>
                                 <th scope="col">Product Cost</th>
                                 <th scope="col">Product Margin</th>
                                 <th scope="col">Product Sell</th>
-                                <th scope="col">Add/ Delete</th>
+                                <th scope="col" style="color:grey;">Add Qunatity #</th>
+                                <th scope="col" style="color:grey;">Add Unit £</th>
+                                <th scope="col" style="color:grey;">Add Discount %</th>
+                                <th scope="col" style="color:grey; text-decoration: underline;">Product Total</th>
+                                <th scope="col"> Delete</th>
                             </tr>
                         </thead>
 
@@ -285,17 +290,20 @@
                         <tbody>
 
 
-                            <tr v-for="p, i in choosen_products" >
+                            <tr v-for="p, i in choosen_products" @focusout="handleFocusout($event,  p.pid, data-field, i   )" >
 
-                                <td> {{ p.p_fullname }} </td>
-                                <td> {{ p.p_code }} </td>
+                                <td class="col-5" scope="col"> {{ p.p_fullname }} </td>
+                                <td class="col"> {{ p.p_code }} </td>
                                 <td> {{ p.p_category }} </td>
                                 <td> {{ p.p_cost }} </td>
                                 <td> {{ p.p_margin }} </td>
 
-                                <td :ref="'add_all_sell'+i" :id="'add_all_sell'+i" th:onload="CalculateSubtotal(i)"> 
+                                <td :ref="'add_all_sell'+i" :id="'add_all_sell'+i" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i);"> 
                                     {{ p.p_sell }} 
                                 </td>
+                                <td contenteditable="true" data-field="p_qty" :id="`ep_qty_${i}`" th:onload="CalculateEachPTotal(i)">0</td>
+                                <td contenteditable="true" data-field="p_discount" :id= "`ep_discount_${i}`" th:onload="CalculateEachPTotal(i)">0</td>
+                                <td :ref="'qd_total_sell'+i" :id="'qd_total_'+i" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i)"></td>
 
                                 <td> 
                                     <button class="btn btn-danger" @click.prevent="minusProduct(i, p.p_fullname)"> [-] </button>
@@ -402,32 +410,30 @@ export default {
 
     },
     setup() {
-        
+        const handleFocusout = (e, pid, df, i) => {
+          console.log("handleFocusout: " + e.target.id + "   pid= " + pid + "    data-field=" + df + "     i=" + i);
 
+          var updated_field = document.getElementById(e.target.id);
+          console.log("handleFocusout");
 
+          let dynamic_sell_id = "add_all_sell"+i;
+          let dynamic_qty_id = "ep_qty_"+i;
+          let dynamic_ep_discount_id = "ep_discount_"+i;
 
-        const s_product2 = reactive([]);
-        onMounted(async () => {
-            try {
-                const typing_product = await firebase
-                    .firestore() 
-                    .collection("all_products")
-                    .get();
-                typing_product.forEach((doc) => {
-                    s_product2.push(doc.data());
-
-                });
-            } catch (e) {
-                //console.log("Error Typing s_product2");
-            }
-            
-
-        });
-        return { s_product2};
-
-       
-
-
+          let cum0 = document.getElementById(dynamic_sell_id).innerHTML;
+          console.log("handleFocusout1 " + cum0);
+          let cum1 = document.getElementById(dynamic_qty_id).innerHTML;
+          console.log("handleFocusout2 " + cum1);
+          let cum3 = document.getElementById(dynamic_ep_discount_id).innerHTML;
+          console.log("handleFocusout3 " + cum3);
+          
+          let s_times_q = cum0 * cum1;
+          let tmp_ans = +s_times_q - (+(s_times_q / 100) * +i_vat);  ;
+          //final goal
+          let dynamic_each_p_total_id = "qd_total_"+i;
+          document.getElementById(dynamic_each_p_total_id).innerHTML = tmp_ans;
+        }
+        return { handleFocusout };
     },
 
     data() {
@@ -567,8 +573,6 @@ export default {
             });
 
         },
-
-
         async getAllDelivery() {
 
         console.log("[QuoteAdd-getAllClient] print-1" + this.store_bill_2_info);
@@ -588,7 +592,6 @@ export default {
         });
 
         },
-
         ChooseBillTo(ev, b, i) {
             //console.log("[QuoteAdd-ChooseBillTo] comming soon, click client and retrieve text." + ev + "  " + i);
             //console.log("[QuoteAdd-ChooseBillTo] you have chosen  " + b.c_fullname);
@@ -623,11 +626,9 @@ export default {
 
         },
         async EnterProduct() {
-
             const typed_product = document.getElementById('p_enter').value;
             //console.log("[><QuoteAdd-EnterProduct] ");
             //console.log("[><QuoteAdd-EnterProduct] typed_product" + typed_product);
-
             var one_product_ref = await firebase.firestore().collection("all_products").where( 'p_fullname', '==', typed_product );
             one_product_ref
                 .get()
@@ -649,9 +650,6 @@ export default {
                         this.o_products.push(one_product);
                     })
                 })
-
-
-
         },
         async CumulativeTotal() {
 
@@ -926,8 +924,6 @@ export default {
             })
 
         },
-
-
         //seperate function
         firebaseStorageUpload() {
             //console.log("[firebaseStorageUpload]==================================");
@@ -1014,12 +1010,14 @@ export default {
             }
             const one_p_money = document.getElementById(dynamic).value;
             //console.log("[CalculateSubtotal]       " + one_p_money);
-
             document.getElementById('q_subtotal').value = this.tmp_ans;
-
+            ////new
+            let dynamic2 = "qd_total_sell"+i;
+            document.getElementById(dynamic2).value = this.tmp_ans;;
         },
-        CalculateTotal(){
-            document.getElementById('q_total').value = tmp_ans;
+        CalculateEachPTotal(i){
+            
+
         },
         minusProduct(i, p_fullname){
             var find_i = this.choosen_products.indexOf(this.choosen_products.p_fullname);
@@ -1073,9 +1071,9 @@ export default {
             })
         },
 
-        async choosenOneProduct(ev, p, i){
+        async choosenOneProduct(ev, p, i){ //IMPORTANT
         var choose_product_ref = await firebase.firestore().collection("all_products").where("p_fullname", "==", p.p_fullname);
-        choose_product_ref.onSnapshot((snapshot) => {
+        await choose_product_ref.onSnapshot((snapshot) => {
 
             snapshot.docs.forEach(d => {
                 var product = d.data();
@@ -1087,15 +1085,17 @@ export default {
                 //this.$root.$emit('choosenOneProduct', this.choosen_products);
                 console.log("!!!!!!!!!!!!!!!!!!!!!!!updateing this.tmp_sell     " + this.tmp_sell);
                 let input2 = document.getElementById('q_subtotal').value; 
-                console.log("!!!!!!!!!2" +input2 )
+                console.log("!!!!!!!!!2 " +input2 )
 
                 document.getElementById('q_subtotal').setAttribute('value', this.tmp_sell);
                 addVatSHip();
-
+                
                 //this.$root.$emit('choosenOneProduct', this.tmp_sell);
             })
-            })
-        },
+        })
+            
+            },
+        
     },
     created() {
 
