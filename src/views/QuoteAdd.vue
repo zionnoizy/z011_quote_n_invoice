@@ -487,7 +487,7 @@ export default {
 
             return_base64: null,
 
-            choosen_products: [],
+            //choosen_products: [],
             tmp_sell: 0,
 
             bodyData: [],
@@ -853,22 +853,43 @@ export default {
 
             var choosen_product_qty = Object.keys(this.choosen_products).length;
 
-            let tmp_ff = Object.fromEntries(
-                this.choosen_products.flatMap((element, index) => [
+            console.log("this.choosen_products" + this.choosen_products);
+
+
+
+            const tmp_ff = Object.fromEntries([
+                this.choosen_products.flatMap(element => [
+                    Object.fromEntries(
+                            [
+                                ["q_p_fullname", element.p_fullname], 
+                                ["q_p_code", element.p_code], 
+                                ["q_p_category", element.p_category], 
+                                ["q_p_cost", element.p_cost],
+                                ["q_p_margin", element.p_margin],
+                                ["q_p_sell", element.p_sell]
+                            ]
+                        )
+
+                    //["q_p_fullname", Object.fromEntries([element])]
+                    /*
+                    Object.fromEntries(arr => (
+                            {
+                                q_p_fullname: element.p_fullname, 
+                                q_p_code: element.p_code, 
+                                q_p_category: element.p_category, 
+                                q_p_cost: element.q_cost,
+                                q_p_margin: element.q_margin,
+                                q_p_sell: element.q_sell
+                            }
+                        ))
+                    */        
+                            
                         
-                        [`q_p${index + 1}_fullname`, element.p_fullname],
-                        [`q_p${index + 1}_code`, element.p_code],
-                        [`q_p${index + 1}_category`, element.p_category],
-                        [`q_p${index + 1}_cost`, element.p_cost],
-                        [`q_p${index + 1}_margin`, element.p_margin],
-                        [`q_p${index + 1}_sell`, element.p_sell],
+                    ])
+                    
+            ]);
 
-
-                ]),
-                
-                
-            
-            );
+            console.log("this.choosen_products" + this.choosen_products);
             
             tmp_ff["choosen_product_qty"] = choosen_product_qty;
 
