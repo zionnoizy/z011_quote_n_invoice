@@ -69,10 +69,7 @@ export const test2_storage = (quote_or_invoice_hash, fullPath, pdf_base64) => {
               //console.log("updated data:", d.data());
           });
       });
-      tmp = url.toString();
 
-
-      return { tmp };
 
 
     })

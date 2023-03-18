@@ -217,6 +217,10 @@ export default{
             copy_exact_product: [], //
             copy_exact_product_size: '',
             invoice_hashid: '',
+            //
+            copy_subtotal: '',
+            copy_vat: '',
+            copy_total: '',
             //[NEW FACE]
             all_previous_products: [], //
             showAllClient: [],
@@ -281,7 +285,7 @@ export default{
                 this.copy_q_number = copycat.obj_ref.q_quote_number;
                 this.copy_q_ref = copycat.obj_ref.q_ref;
 
-                this.copy_exact_product = copycat.tmp_ff;
+                this.copy_exact_product = copycat.tmp_ff; //
                 this.copy_exact_product_size = copycat.tmp_ff.choosen_product_qty;
 
 

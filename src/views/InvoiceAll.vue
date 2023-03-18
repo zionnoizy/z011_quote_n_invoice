@@ -4,6 +4,7 @@
       <button class="btn btn-primary " @click.prevent="getAllInvoiceOldest()">Sort From Oldest Invoice </button>
         <button class="btn btn-primary " @click.prevent="getAllInvoiceNewest()">Sort From Newest Invoice </button>
         
+        <input type="text" ref="search_invoice_num" class="search_invoice_num" id="search_invoice_num" placeholder="Search from invoice number..." v-model="searchQ1" />
 
         <table class="table table-dark mx-auto" >
 
@@ -28,7 +29,7 @@
                     :to="{ name: 'OneInvoice', 
                     params: { id: i.obj_ref.qi_invoice_number, },
                     query: {this_one_i_hash_number: p.invoice_hashid, this_one_i_pdf_link: p.q_pdf_link}}"> -->
-                <tr v-for="i in all_invoices">
+                <tr v-for="inv in searchINUM">
 
                     <td scope="col" style="width: 150px;"  > i.obj_ref.qi_quote_number </td>
                     <td scope="col" style="width: 150px;"> {{ i.obj_ref.qi_invoice_number }} </td>   
@@ -53,9 +54,44 @@
     
     
 <script>
+import AllProducts from '../components/AllProducts.vue';
+import { onMounted, reactive } from "vue";
 export default {
     name: "AllInvoice",
-    setup() {},
+    setup() {
+      
+      const all_invoices = reactive([]);
+      const searchQ1 = ref("");
+      const searchINUM = computed(() => {
+        return all_invoices.value.filter((inv) =>{
+          return(
+            inv.obj_ref.qi_invoice_number
+              .toLowerCase()
+              .indexOf(searchQ1.value.toLowerCase()) != -1
+          );
+        })
+      })
+
+        onMounted(async () => {
+            try {
+                const snap_i_num = await firebase
+                    .firestore() 
+                    .collection("ALL_invoice")
+                    .orderBy("obj_ref.qi_uploaded_date_timestamp", "asc")
+                    .get();
+                    snap_i_num.forEach((doc) => {
+                      let invoice = doc.data();
+                      //invoice.id = doc.id;
+                      all_invoices.push(invoice);
+                });
+            } catch (e) {
+                //console.log("Error Typing all_invoices");
+            }
+            
+        });
+      
+        return { searchINUM, searchQ1  };
+    },
     data(){
       
         return{
