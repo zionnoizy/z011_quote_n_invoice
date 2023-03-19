@@ -7,6 +7,7 @@
             list of choosen product: <p>{{choosen_products}}</p>
             choosen_client_fullname(not bill to):: {{ choosen_client_fullname }}
         </div>
+
         <p class="dashboard_txt pt-5 pb-2" style="border-bottom: 3px solid #fff;" ><router-link to="/dashboard" exact>
             
             <a><strong class="link">Dashboard</strong></a></router-link>  > Quote Add
@@ -22,7 +23,6 @@
         </p>
 
         <button href="@/assets/files/quote_instruction.pdf" download>Downlaod Instruction</button>
-
         <div class="grid grid-cols-1 gap-1 ">
             <!--1/3-------------------BILL-SHIP-TO-------------------------------------->
             <div class="mx-auto" style="display: flex;;">
@@ -177,7 +177,7 @@
                     <div>
                         <label for="q_total">Total </label>
                         <input ref="q_total" placeholder="Total" id="q_total" class="input-lg"  @input="addVatSHip($event)"
-                            disabled />
+                        disabled />
                     </div>
                     <div>-----------------------------</div>
                     <div>
@@ -282,11 +282,11 @@
                                 <th scope="col">Product Category</th>
                                 <th scope="col">Product Cost</th>
                                 <th scope="col">Product Margin</th>
-                                <th scope="col">Product Sell</th>
+                                <th scope="col" style="text-decoration:underline;">Product Sell</th>
                                 <th scope="col" style="color:grey;">Add Qunatity #</th>
-                                <th scope="col" style="color:grey;">Add Unit £</th>
+                                <!-- <th scope="col" style="color:grey;">Add Unit £</th> -->
                                 <th scope="col" style="color:grey;">Add Discount %</th>
-                                <th scope="col" style="color:grey; text-decoration: underline;">Final Total</th>
+                                <th scope="col" style="color:grey; text-decoration-line: underline; text-decoration-style: double;">Final Total</th>
                                 <th scope="col"> Delete</th>
                             </tr>
                         </thead>
@@ -303,13 +303,15 @@
                                 <td> {{ p.p_cost }} </td>
                                 <td> {{ p.p_margin }} </td>
 
-                                <td :ref="'add_all_sell'+i" :id="'add_all_sell'+i" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i);"> 
+                                <td :ref="'add_all_sell'+i" :id="'add_all_sell'+i" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i);" style="text-decoration:underline;"> 
                                     {{ p.p_sell }} 
                                 </td>
-                                <td contenteditable="true"  data-field="p_qty" :id="`ep_qty_${i}`" th:onChange="c();">0</td>
-                                <td contenteditable="true"  data-field="p_discount" :id= "`ep_discount_${i}`" th:onChange="c();">0</td>
+                                <td contenteditable="true"  data-field="p_qty" :id="`ep_qty_${i}`" th:onChange="c();"> {{p.p_qty}} </td>
+                                <td contenteditable="true"  data-field="p_discount" :id= "`ep_discount_${i}`" th:onChange="c();">{{p.p_discount}}</td>
                                 
-                                <td :ref="'qd_total_sell'+i" :id="'qd_total_'+i" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i)" ></td>
+                                <td :ref="'qd_total_sell'+i" :id="'qd_total_'+i" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i)" style="text-decoration-line: underline; text-decoration-style: double;" >
+                                    {{ p.p_final_total }} 
+                                </td>
                                    
                                 <td> 
                                     <button class="btn btn-danger" @click.prevent="minusProduct(i, p.p_fullname)"> [-] </button>
@@ -438,6 +440,8 @@ export default {
           //final goal
           let dynamic_each_p_total_id = "qd_total_"+i;
           document.getElementById(dynamic_each_p_total_id).innerHTML = tmp_ans;
+
+          reCalculateFCSubtotal();
         }
         return { handleFocusout };
     },
@@ -1087,7 +1091,7 @@ export default {
             snapshot.docs.forEach(d => {
                 var product = d.data();
                 this.choosen_products.push(product);
-                var tmp_one_sell = parseFloat(d.data().p_sell);  
+                var tmp_one_sell = parseFloat(d.data().p_final_total);  //p_final_total
                 this.tmp_sell = this.tmp_sell + tmp_one_sell;
 
                 let input2 = document.getElementById('q_subtotal').value; 
@@ -1271,6 +1275,18 @@ function validate_q_input(){
       }
 
       return flag;
+}
+function reCalculateFCSubtotal(){
+    let ans = 0;
+    var choosen_product_qty = Object.keys(this.choosen_products).length;
+    var x = document.getElementById("my_favoriate_table").rows.length;
+    for (let rs=1; rs < x+1; ++rs){
+        let dynamic_each_p_total_id = "qd_total_"+rs;
+        document.getElementById(dynamic_each_p_total_id).innerHTML = tmp_ans;
+        ans = +ans + +tmp_ans;
+    }
+    console.log("recalcuatle total= " + ans);
+    document.getElementById('q_subtotal').value = this.ans;
 }
 </script>
 

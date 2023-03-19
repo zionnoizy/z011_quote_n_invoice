@@ -13,6 +13,8 @@
       </figcaption>
       </figure>
 
+      <p class="text-danger" id="warning_msg"></p>
+
       <form @sumbit.prevent="addProduct">
 
         <table class="table table-dark" >
@@ -101,8 +103,12 @@ export default{
     },
     async createProduct(){
 
-      let flag = validate_p_input();
-      if (flag){
+      let flag = await validate_p_input();
+      console.log("flag1");
+      let flag_2 = await validate_p_fullname();
+      console.log("flag2" + flag_2);
+
+      if (flag && flag_2){
         const db_id = firebase.firestore();
 
         const pcategory = document.getElementById("p_category").value;
@@ -116,7 +122,11 @@ export default{
           p_cost: this.$refs.p_cost.value,
           p_margin: this.$refs.p_margin.value,
           p_sell: this.$refs.p_sell.value,
+          //NEW NEW
           p_quantity: 0,
+          p_unit: 0,
+          p_discount: 0,
+          p_final_total: this.$refs.p_sell.value,
           p_insert_date: serverTimestamp(),
           p_edit_date: serverTimestamp(),
 
@@ -213,6 +223,32 @@ function validate_p_input(){
       }
       return flag;
 }
+
+async function validate_p_fullname(){
+  let flag = true;
+  var pc_2 = document.getElementById('pi_name').value;
+  var vpc_2 = document.getElementById('pi_name');
+  console.log("validate_p_fullname" + pc_2);
+  
+  var all_client_ref = firebase.firestore().collection("all_products").where("p_fullname", "==", pc_2);
+  await all_client_ref.get().then(function(doc) {
+    if (!doc.empty) {
+        flag = false;
+        var wm = document.getElementById('warning_msg');
+        wm.textContent += "Product pre-exist! please check the product name again.";
+        vpc_2.style.color = '#FF0000';
+        console.log("1Document data NOT Empty:");
+        return flag;
+    } else {
+        console.log("2No such document!");
+        return flag;
+    }
+    }).catch(function(error) {
+        console.log("3Error getting document:", error);
+    });
+    return flag;  
+  }
+  
 </script>
 
 <style>
