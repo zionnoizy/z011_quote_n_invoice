@@ -2,7 +2,9 @@
 
   <div class="ProductAll">
 
-        <p class="dashboard_txt pt-5" ><router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  > 
+        <p class="dashboard_txt pt-5 pb-2" style="border-bottom: 3px solid #fff;">
+          
+          <router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  > 
             
           <router-link to="/dashboard/all_product" exact><a><strong class="link">Product Add</strong></a></router-link>
         

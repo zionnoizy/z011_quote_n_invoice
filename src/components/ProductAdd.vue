@@ -4,12 +4,21 @@
       <p class="pb-2">= Purpose: User can ADD + UPDATE + DELETE products they created, all products will reflect on quote pages </p>
       <p class="pb-20">= *The Sell Will Auto-Generate After Typing Cost & Margin Sessions. </p>
 
+      <figure class="text-center">
+      <blockquote class="blockquote">
+        <p>code // name // category // cost // margin // sell == REQUIREMENT </p>
+      </blockquote>
+      <figcaption class="blockquote-footer">
+        Cost * (1 + Margin) <cite title="Source Title"> = Product Sell</cite>
+      </figcaption>
+      </figure>
+
       <form @sumbit.prevent="addProduct">
 
         <table class="table table-dark" >
           <thead>
             <tr>
-              <th scope="col">[Add/ Delete]</th>
+              <th scope="col">[Add]</th>
               <th scope="col">[Code#]</th>
               <th scope="col">[Name]</th>
               <th scope="col">[Catagory]</th>
@@ -44,12 +53,7 @@
             </tr>
 
             
-            <tr>
-              <th scope="row">-</th>
-              <td>Example1</td>
-              <td>Example2</td>
-              <td >Example3</td>
-            </tr>
+            
           
         </tbody>
         </table>
@@ -97,39 +101,40 @@ export default{
     },
     async createProduct(){
 
-      //validate_p_input();
-      
-      const db_id = firebase.firestore();
+      let flag = validate_p_input();
+      if (flag){
+        const db_id = firebase.firestore();
 
-      const pcategory = document.getElementById("p_category").value;
-      console.log(pcategory);
+        const pcategory = document.getElementById("p_category").value;
+        console.log(pcategory);
 
-      const ref = collection(db, 'all_products'); //how to add sepcific id
-      const obj_ref = {
-        p_code: this.$refs.p_code.value,
-        p_fullname: this.$refs.p_enter.value,
-        p_category: pcategory,
-        p_cost: this.$refs.p_cost.value,
-        p_margin: this.$refs.p_margin.value,
-        p_sell: this.$refs.p_sell.value,
-        p_quantity: 0,
-        p_insert_date: serverTimestamp(),
-        p_edit_date: serverTimestamp(),
+        const ref = collection(db, 'all_products'); //how to add sepcific id
+        const obj_ref = {
+          p_code: this.$refs.p_code.value,
+          p_fullname: this.$refs.p_enter.value,
+          p_category: pcategory,
+          p_cost: this.$refs.p_cost.value,
+          p_margin: this.$refs.p_margin.value,
+          p_sell: this.$refs.p_sell.value,
+          p_quantity: 0,
+          p_insert_date: serverTimestamp(),
+          p_edit_date: serverTimestamp(),
 
+        }
+
+        await addDoc(ref, obj_ref)
+        .then(docRef => {
+            const get_id = firebase.firestore().collection("all_products").doc(docRef.id);
+            get_id
+              .update({
+                  pid: docRef.id,
+              })
+              .then(() => {
+                  console.log("set doc");
+
+              });
+        })
       }
-
-      await addDoc(ref, obj_ref)
-      .then(docRef => {
-          const get_id = firebase.firestore().collection("all_products").doc(docRef.id);
-          get_id
-            .update({
-                pid: docRef.id,
-            })
-            .then(() => {
-                console.log("set doc");
-
-            });
-      })
     },
     
     NumbersOnly(e){
@@ -169,38 +174,44 @@ export default{
 
 }
 function validate_p_input(){
+      let flag = true;
       var pc_1 = document.getElementById('pi_code').value;
       var pc_2 = document.getElementById('pi_name').value;
-      var pc_3 = document.getElementById('pi_catrgory').value;
+      var pc_3 = document.getElementById('p_category').value;
       var pc_4 = document.getElementById('pi_cost').value;
       var pc_5 = document.getElementById('pi_margin').value;
       
       var pcc_1 = document.getElementById('pi_code');
       var pcc_2 = document.getElementById('pi_name');
-      var pcc_3 = document.getElementById('pi_catrgory');
+      var pcc_3 = document.getElementById('p_category');
       var pcc_4 = document.getElementById('pi_cost');
       var pcc_5 = document.getElementById('pi_margin');
 
-      pcc_1.classList.add("red");
-      pcc_3.classList.add("red");
 
-      //console.log("[ProductAdd]  " + pcc_1 + " " + pc_2.length);
+
+      console.log("[ProductAdd]  " + pc_3 + " " + pc_2.length);
 
       if (pc_1.length <= 0){
         pcc_1.classList.add("red");
+        flag = false;
       }
       if (pc_2.length <= 0){
         pcc_2.classList.add("red");
+        flag = false;
       }
       if (pc_3.length <= 0){
         pcc_3.classList.add("red");
+        flag = false;
       }
       if (pc_4.length <= 0){
         pcc_4.classList.add("red");
+        flag = false;
       }
       if (pc_5.length <= 0){
         pcc_5.classList.add("red");
+        flag = false;
       }
+      return flag;
 }
 </script>
 

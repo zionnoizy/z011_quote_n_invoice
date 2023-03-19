@@ -7,13 +7,19 @@
             list of choosen product: <p>{{choosen_products}}</p>
             choosen_client_fullname(not bill to):: {{ choosen_client_fullname }}
         </div>
-        <p class="dashboard_txt pt-5" ><router-link to="/dashboard" exact>
+        <p class="dashboard_txt pt-5 pb-2" style="border-bottom: 3px solid #fff;" ><router-link to="/dashboard" exact>
             
             <a><strong class="link">Dashboard</strong></a></router-link>  > Quote Add
           
         </p>
 
 
+        <p class="text-center">
+            <p>1.BILL TO // 2.SHIP TO // 3.Add Products of Goods // 5.Reference Number == REQUIREMENT </p>
+            <p>3A.Add Quantity // 3B.Add Unit // 3C.Add Discount  == (optional) inside 3.Add Products of Goods </p>
+            <p>4.Final Calculation == auto-generate besides shipping</p>
+            <p>4A.Shipping == REQUIREMENT </p>
+        </p>
 
         <button href="@/assets/files/quote_instruction.pdf" download>Downlaod Instruction</button>
 
@@ -23,7 +29,7 @@
                 <!--1/3-->
                 <div class="flex-grow-0 mx-2 px-3">
                     <label>1.BILL TO</label>
-                    <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button"
+                    <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button" id="choose_bill_btn"
                         data-bs-toggle="modal" data-bs-target="#choose_bill_to" v-on:click="this.getAllClient1();">
 
                         <p ref="tmp_b_fullname" id="tmp_b_fullname"></p>
@@ -87,7 +93,7 @@
                 <!--1/3-->
                 <div class="float-to-bottom">
                     <label>2.SHIP TO</label>
-                    <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button "
+                    <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button " id="choose_delivery_btn"
                         data-bs-toggle="modal" data-bs-target="#choose_ship_to" v-on:click="this.getAllDelivery();">
 
                         <p ref="tmp_s_fullname" id="tmp_s_fullname"></p>
@@ -149,7 +155,7 @@
 
 
                 <!--3/3-->
-                <p class="text-2xl underline">Final Calculation</p>
+                <p class="text-2xl underline">4.Final Calculation</p>
                 <div class="grid grid-cols-1 gap-1 ">
 
                     <div>
@@ -165,7 +171,7 @@
                         <input ref="q_vat" placeholder="Vat" id="q_vat" min="1" max="100" value="20" disabled />
                     </div>
                     <div class="">
-                        <label for="q_shipping">Shipping </label>
+                        <label for="q_shipping"> <figcaption title="Source Title">4A.</figcaption> Shipping </label>
                         <input ref="q_shipping" placeholder="Shipping" id="q_shipping" @focusout="addShip" value="0"/>
                     </div>
                     <div>
@@ -175,7 +181,7 @@
                     </div>
                     <div>-----------------------------</div>
                     <div>
-                        <label for="q_total">Reference Number</label>
+                        <label for="q_total">5. Reference Number</label>
                         <input ref="q_reference_number" placeholder="Reference" id="q_reference_number" class="input-lg" />
                     </div>
                 </div>
@@ -186,9 +192,9 @@
             
             <div class="mx-auto grid grid-cols-2 gap-2" style="display: flex;;">
                 <div>
-                    <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button "
+                    <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button " id="add_products_btn"
                         data-bs-toggle="modal" data-bs-target="#choose_products" v-on:click="this.getAllProducts();">
-                        Add Products of Goods
+                        3.Add Products of Goods
                     </button>
                     <!--NEW-----product-modal---------------------------------------------------------------------->
                     <div class="modal fade" id="choose_products" tabindex="-1" aria-labelledby="" aria-hidden="true">
@@ -268,7 +274,7 @@
 
                 <!--show choosen products-->
                 <div>
-                    <table class="table table-dark">
+                    <table class="table table-dark" id="my_favoriate_table">
                         <thead>
                             <tr class="d-flex">
                                 <th class="col-5" scope="col">Choosen Product Name</th>
@@ -828,7 +834,8 @@ export default {
         },
         //https://medium.com/runthatline/uploading-files-to-firebase-cloud-storage-using-vue-3-and-the-composition-api-d8370d1c03f7
         async uploadQuotePDF(e) {
-
+            let flag = validate_q_input();
+            if (flag){
             const myTimestamp = firebase.firestore.Timestamp.now(); //
             let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK"); //
             
@@ -839,7 +846,7 @@ export default {
             const ref = collection(db, "ALL_quote");
             const ref2 = collection(db, "ALL_quote");    
 
-            var choosen_product_qty = Object.keys(this.choosen_products).length;
+            
 
             const s = JSON.parse(JSON.stringify(this.choosen_products))
             
@@ -868,36 +875,8 @@ export default {
             for (let [key, value] of Object.entries(s)) {
                 console.log(key, value);
             }
-            /*     
-            const tmp =  Object.fromEntries(this.choosen_products).forEach(([element, value]) => {
 
-                    Object.fromEntries(
-                            [
-                                ["q_p_fullname", element.p_fullname], 
-                                ["q_p_code", element.p_code], 
-                                ["q_p_category", element.p_category], 
-                                ["q_p_cost", element.p_cost],
-                                ["q_p_margin", element.p_margin],
-                                ["q_p_sell", element.p_sell]
-                            ]
-                        )        
-            });
-            */
             
-            const tmp_ff = this.choosen_products.flatMap(element => [
-                    Object.fromEntries(
-                            [
-                                ["q_p_fullname", element.p_fullname], 
-                                ["q_p_code", element.p_code], 
-                                ["q_p_category", element.p_category], 
-                                ["q_p_cost", element.p_cost],
-                                ["q_p_margin", element.p_margin],
-                                ["q_p_sell", element.p_sell]
-                            ]
-                        )        
-                    ])
-
-            tmp_ff["choosen_product_qty"] = choosen_product_qty;
             //upload multi doc
             ///////////////////////////////////////////////////////////////////////////
             const obj_ref = {          
@@ -936,16 +915,20 @@ export default {
 
             addDoc(ref, {obj_ref, s})
             .then(docRef => {
-                //console.log(docRef.id);
+                console.log(docRef.id);
                 const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
                 const string = "/all_quote/" + docRef.id + "/";
-                test2_storage( docRef.id, string, this.return_base64);//use this    
+                test2_storage( docRef.id, string, this.return_base64);//use this   
+                //NEW NEW
+                var choosen_product_qty = Object.keys(this.choosen_products).length;
+                s["choosen_product_qty"] = choosen_product_qty;
                 get_id
                     .update({
                         quote_hashid: docRef.id,
+                        choosen_product_qty: choosen_product_qty,
                     })
                     .then(() => {
-                        ////console.log("set doc");
+                        console.log("set doc1");
 
                         get_id.get().then((d) => {
                         });
@@ -953,6 +936,7 @@ export default {
 
             })
 
+        }//flag
         },
         //seperate function
         firebaseStorageUpload() {
@@ -1253,8 +1237,40 @@ async function addFinalTotal(i){
         console.log("[0 0]");
     }
 }
-async function c(){
-    console.log("[0 0]");
+function validate_q_input(){
+      let flag = true;
+      var qc_1 = document.getElementById('tmp_b_fullname').innerHTML;
+      var qc_2 = document.getElementById('tmp_s_fullname').innerHTML;
+      var x = document.getElementById("my_favoriate_table").rows.length;
+      var qc_4 = document.getElementById('q_reference_number').value;
+
+      var qcc_1 = document.getElementById('tmp_b_fullname');
+      var qcc_2 = document.getElementById('tmp_s_fullname');
+      var qcc_4 = document.getElementById('q_reference_number');
+
+      console.log("no0" + qc_1 + "      " + qcc_1 + qcc_2 + "     " + x);
+
+      if (qc_1.length <= 0){
+        document.getElementById("choose_bill_btn").style.background='#990000';
+        console.log("no1");
+        flag = false;
+      }
+      if (qc_2.length <= 0){
+        document.getElementById("choose_delivery_btn").style.background='#990000';
+        console.log("no2");
+        flag = false;
+      }
+      if (x <= 1){
+        document.getElementById("add_products_btn").style.background='#990000';
+        console.log("no3");
+        flag = false;
+      }
+      if (qc_4.length <= 0){
+        qcc_4.classList.add("red");
+        flag = false;
+      }
+
+      return flag;
 }
 </script>
 

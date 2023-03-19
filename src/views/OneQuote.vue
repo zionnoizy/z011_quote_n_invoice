@@ -32,8 +32,8 @@
                         data-bs-toggle="modal" data-bs-target="#edit_quotation">
                         Edit Quotation
                     </button>
-                    <div class="modal fade" id="edit_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true">
-                        <div class="modal-dialog modal-xl">
+                    <div class="modal fade" id="edit_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true" >
+                        <div class="modal-dialog modal-xl" style="width:150%">
 
                             <div class="modal-content text-black">
 
@@ -76,29 +76,29 @@
 
                                     <div class="" >
                                         <div class="grid grid-cols-5 gap-1">
-                                            <div>Index</div>
+                                            <div>index</div>
                                             <div>Items</div>
                                             <div>Code</div>
-                                            <div>Qty</div>
+                                            <div>Qty</div> <!--missing-->
                                             <div>Unit</div>
-                                            <div>Discount</div>
+                                            <div>Discount</div> <!--missing-->
                                         </div>
                                         <div class="grid grid-cols-6 gap-1" v-for="(k, i) in copy_exact_product" >
                                             <div>
-                                                <strong> {{ k.q_p1_fullname }} </strong>
+                                                <strong> {{ i }} </strong>
                                             </div>
                                             <div>
-                                                <strong>{{ i }}</strong>
+                                                <strong>{{ k.p_fullname }}</strong>
                                             </div>
 
                                             <div>
-                                                <strong>{{ k }}</strong>
+                                                <strong>{{ k.p_code }}</strong>
                                             </div>
                                             <div>
-                                                <input class="form-control" :ref="'i_quality'+i" :id="'i_quality'+i"  placeholder="Qty" :value="`pp.p_code`">
+                                                <input class="form-control" :ref="'i_quality'+i" :id="'i_quality'+i"  placeholder="Qty" >
                                             </div>
                                             <div>
-                                                <strong> value.p_code </strong>
+                                                <input class="form-control" :ref="'i_quality'+i" :id="'i_quality'+i"  placeholder="Unit" >
                                             </div>
                                             <div>
                                                 <input class="form-control" :ref="'i_discount'+i" :id="'i_discount'+i"  placeholder="Discount">
@@ -117,7 +117,6 @@
                         </div>
                     </div>
                 </div>
-                <!--2-->
                 <div>
                     <button class="border btn btn-secondary" type="button"
                         data-bs-toggle="modal" data-bs-target="#add_po_number" >
@@ -285,8 +284,8 @@ export default{
                 this.copy_q_number = copycat.obj_ref.q_quote_number;
                 this.copy_q_ref = copycat.obj_ref.q_ref;
 
-                this.copy_exact_product = copycat.tmp_ff; //
-                this.copy_exact_product_size = copycat.tmp_ff.choosen_product_qty;
+                this.copy_exact_product = copycat.s; //
+                this.copy_exact_product_size = copycat.choosen_product_qty;
 
 
 

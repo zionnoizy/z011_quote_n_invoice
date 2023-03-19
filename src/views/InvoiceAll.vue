@@ -1,10 +1,10 @@
 <template>
     <div class="AllInvoice">
         
-      <button class="btn btn-primary " @click.prevent="getAllInvoiceOldest()">Sort From Oldest Invoice </button>
+        <button class="btn btn-primary " @click.prevent="getAllInvoiceOldest()">Sort From Oldest Invoice </button>
         <button class="btn btn-primary " @click.prevent="getAllInvoiceNewest()">Sort From Newest Invoice </button>
         
-        <input type="text" ref="search_invoice_num" class="search_invoice_num" id="search_invoice_num" placeholder="Search from invoice number..." v-model="searchQ1" />
+        <input type="text" class="search_invoice_num" id="search_invoice_num" placeholder="Search from invoice number..." v-model="s_invoice_num" @input="searchI_N"/>
 
         <table class="table table-dark mx-auto" >
 
@@ -29,7 +29,7 @@
                     :to="{ name: 'OneInvoice', 
                     params: { id: i.obj_ref.qi_invoice_number, },
                     query: {this_one_i_hash_number: p.invoice_hashid, this_one_i_pdf_link: p.q_pdf_link}}"> -->
-                <tr v-for="inv in searchINUM">
+                <tr v-for="i in include_search_all_invoice">
 
                     <td scope="col" style="width: 150px;"  > i.obj_ref.qi_quote_number </td>
                     <td scope="col" style="width: 150px;"> {{ i.obj_ref.qi_invoice_number }} </td>   
@@ -41,13 +41,12 @@
                 
 
                 </tr>
-                <!-- </router-link> -->
+
 
 
             </tbody>
 
         </table> 
-
     </div>
 </template>
     
@@ -55,42 +54,30 @@
     
 <script>
 import AllProducts from '../components/AllProducts.vue';
-import { onMounted, reactive } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 export default {
     name: "AllInvoice",
     setup() {
       
-      const all_invoices = reactive([]);
-      const searchQ1 = ref("");
-      const searchINUM = computed(() => {
-        return all_invoices.value.filter((inv) =>{
-          return(
-            inv.obj_ref.qi_invoice_number
-              .toLowerCase()
-              .indexOf(searchQ1.value.toLowerCase()) != -1
-          );
-        })
-      })
+      const include_search_all_invoice = reactive([]);
 
-        onMounted(async () => {
-            try {
-                const snap_i_num = await firebase
-                    .firestore() 
-                    .collection("ALL_invoice")
-                    .orderBy("obj_ref.qi_uploaded_date_timestamp", "asc")
-                    .get();
-                    snap_i_num.forEach((doc) => {
-                      let invoice = doc.data();
-                      //invoice.id = doc.id;
-                      all_invoices.push(invoice);
-                });
-            } catch (e) {
-                //console.log("Error Typing all_invoices");
-            }
-            
-        });
-      
-        return { searchINUM, searchQ1  };
+      onMounted(async () => {
+        try {
+            const type_filter = await firebase
+              .firestore() 
+              .collection("ALL_invoice")
+              .orderBy("obj_ref.qi_uploaded_date_timestamp", "asc")
+              .get();
+              type_filter.forEach((doc) => {
+                include_search_all_invoice.push(doc.data());
+            });
+        } catch (e) {
+            console.log("Error Typing all_invoices" + e);
+        }
+          
+      });
+    
+      return { include_search_all_invoice  };
     },
     data(){
       
@@ -126,6 +113,10 @@ export default {
             q_ship_postcode: null,
 
             quote_hashid: null,
+            All_invoice: [],
+
+            s_invoice_num: '',
+            include_search_all_invoice: [],
           }
         }
     },
@@ -192,9 +183,25 @@ export default {
             })
           })
       },
+
+      async searchI_N(){
+        console.log("search...")
+        const typed_invoice_num = document.getElementById('search_invoice_num').value;
+        var one_product_ref = await firebase.firestore().collection("ALL_invoice").where("obj_ref.qi_invoice_number", "==", typed_invoice_num);
+            one_product_ref
+            .get()
+            .then((snapshot) => {
+                this.include_search_all_invoice = [];
+                snapshot.forEach(d => {
+                    var one_inv = d.data();
+                    this.include_search_all_invoice.push(one_inv);
+                })
+            })
+
+      },
     },
     created() {
-      this.getAllInvoice_Newest();
+      //this.getAllInvoice_Newest();
     },
 }
 </script>
