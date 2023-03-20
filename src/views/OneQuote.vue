@@ -49,14 +49,14 @@
                                             <div class="flex-grow-0 mx-2 px-3">
                                                 <label>1.BILL TO (CLIENT)</label>
                                                 <select class="form-select" aria-label="Default select example"  >
-                                                    <option selected>{{s_cur_client}}</option>
+                                                    <option selected> {{copy_q_b_f}} </option>
                                                     <option v-for="c in all_client" :value="`${c.c_fullname}`">{{c.c_fullname}}</option>
                                                 </select>
                                             </div>    
                                             <div class="flex-grow-0 mx-2 px-3">
                                                 <label>2.SHIP TO (DELIVERY)</label>
                                                 <select class="form-select" aria-label="Default select example"  >
-                                                    <option selected>{{ s_cur_delivery }}</option>
+                                                    <option selected> {{ copy_q_s_f }} </option>
                                                     <option v-for="d in all_delivery" :value="`${d.d_fullname}`">{{d.d_fullname}}</option>
                                                 </select>
 
@@ -295,8 +295,7 @@ export default{
 
 
 
-                this.s_cur_client.push(this.copy_q_b_f);
-                this.s_cur_delivery.push(this.copy_q_s_f);
+                
 
                 this.showREFERENCE.push(this.copy_q_ref);
                 this.showREFERENCE2 = this.copy_q_ref;
@@ -629,7 +628,7 @@ export default{
                 snap.forEach(d => {
 
                     var c = d.data();
-                    
+                    console.log("client: " + c);
                     this.all_client.push(c);
 
                 });
@@ -644,7 +643,7 @@ export default{
                 snap.forEach(d => {
 
                     var delivery = d.data();
-                    
+                    console.log("delivery: " + d);
                     this.all_delivery.push(delivery);
 
                 });

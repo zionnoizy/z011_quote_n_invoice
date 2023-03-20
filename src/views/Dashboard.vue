@@ -3,8 +3,11 @@
 
 
 
-    <div class="dashboard">
-
+    <div class="dashboard ">
+        <!--v-if="!isloaded" overlay-->
+        <div class="cms_loader overlay" >
+            <img src="../assets/load1.gif" class="loading">
+        </div>
         <section class="warehouse_background" style="background-image: url(&quot;/assets/Warehouse_Nologo-3ff955ec.png&quot;);">
             
             <h2 class="dont_blur info_head text-4xl font-sans-b mb-16 text-left max-w-lg uppercase lg:ml-16 mt-12 text-white"> Welcome Back To CMS-QuoteIn </h2>
@@ -75,13 +78,24 @@ const name = ref("");
 
 
 import warehouse from "@/assets/Warehouse_Nologo.png";
+import load1 from "@/assets/load1.gif";
 export default{
     name:"Dashboard",
     data(){
         return{
             my_email: null,
             warehouse: warehouse,
+            isLoaded: false,
         }
+    },
+    mounted(){
+
+        window.addEventListener('load', () => {
+            this.isLoaded =  true;
+            console.log("page completely load2.");
+        })
+
+
     },
     setup(){
 
@@ -170,5 +184,23 @@ const sign_out = () =>{
     z-index: 2;
 
 
+}
+
+.cms_loader{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background: url('../assets/load2.gif') no-repeat;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    background: rgba(0, 0, 0, 0.5);
 }
 </style>
