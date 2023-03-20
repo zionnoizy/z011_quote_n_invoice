@@ -49,13 +49,15 @@
                                             <div class="flex-grow-0 mx-2 px-3">
                                                 <label>1.BILL TO (CLIENT)</label>
                                                 <select class="form-select" aria-label="Default select example"  >
-                                                    <option >{{ showAllClient }}</option>
+                                                    <option selected>{{s_cur_client}}</option>
+                                                    <option v-for="c in all_client" :value="`${c.c_fullname}`">{{c.c_fullname}}</option>
                                                 </select>
                                             </div>    
                                             <div class="flex-grow-0 mx-2 px-3">
                                                 <label>2.SHIP TO (DELIVERY)</label>
                                                 <select class="form-select" aria-label="Default select example"  >
-                                                    <option >{{ showAllDelivery }}</option>
+                                                    <option selected>{{ s_cur_delivery }}</option>
+                                                    <option v-for="d in all_delivery" :value="`${d.d_fullname}`">{{d.d_fullname}}</option>
                                                 </select>
 
                                             </div>  
@@ -220,12 +222,18 @@ export default{
             copy_total: '',
             //[NEW FACE]
             all_previous_products: [], //
-            showAllClient: [],
-            showAllDelivery: [],
+            s_cur_client: '',
+            s_cur_delivery: '',
             showREFERENCE: [],
             showREFERENCE2: '',
 
+            copy_ft_sub_total: '',
+            copy_ft_vat: '',
+            copy_ft_shipping: '',
+            copy_ft_total: '',
 
+            all_client: [],
+            all_delivery: [],
         }
     },
     components:{
@@ -287,13 +295,17 @@ export default{
 
 
 
-                this.showAllClient.push(this.copy_q_b_f);
-                this.showAllDelivery.push(this.copy_q_s_f);
+                this.s_cur_client.push(this.copy_q_b_f);
+                this.s_cur_delivery.push(this.copy_q_s_f);
+
                 this.showREFERENCE.push(this.copy_q_ref);
                 this.showREFERENCE2 = this.copy_q_ref;
                 document.getElementById('i_reference').value = this.showREFERENCE2;
 
-
+                this.copy_ft_sub_total = copycat.obj_ref.tf_sub_total;
+                this.copy_ft_vat = copycat.obj_ref.tf_vat;
+                this.copy_ft_shipping = copycat.obj_ref.tf_shipping;
+                this.copy_ft_total = copycat.obj_ref.tf_total;
                 
             });
             //[DEBUG]
@@ -467,15 +479,17 @@ export default{
                 tableWidth: 'auto',
                 margin: { top: 0, right: 10, bottom: 0, left: 10 }, //important2
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
-                body: [this.copy_exact_product]
+                body: [this.copy_exact_product],
             })
             doc.setFontSize(12);
-            doc.text('SUB TOTAL', 42, doc.lastAutoTable.finalY + 20)
-            doc.text('100', 152, doc.lastAutoTable.finalY + 20)
-            doc.text('VAT', 42, doc.lastAutoTable.finalY + 25)
-            doc.text('50', 152, doc.lastAutoTable.finalY + 25)
-            doc.text('SHIPPING. HANDLING', 42, doc.lastAutoTable.finalY + 30)
-            doc.text('150', 152, doc.lastAutoTable.finalY + 30)
+            doc.text('Sub-Total', 139, doc.lastAutoTable.finalY + 20, {align: 'right'})
+            doc.text(this.copy_ft_sub_total, 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
+            doc.text('VAT', 139, doc.lastAutoTable.finalY + 25 , {align: 'right'})
+            doc.text(this,copy_ft_vat, 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
+            doc.text('Shipping', 139, doc.lastAutoTable.finalY + 30 , {align: 'right'})
+            doc.text(this.copy_ft_shipping, 182, doc.lastAutoTable.finalY + 30 , {align: 'right'})
+            doc.text('Total', 139, doc.lastAutoTable.finalY + 35 , {align: 'right'})
+            doc.text( this.copy_ft_total , 182, doc.lastAutoTable.finalY + 35 , {align: 'right'})
 
             doc.setFontSize(9);
             doc.text('Terms & Instructions', 6,  doc.lastAutoTable.finalY + 40).setFont(undefined, 'bold');
@@ -594,17 +608,47 @@ export default{
             let d1 = "i_quality"+i;
             let d2 = "i_unit"+i;
             let d3 = "i_discount"+i;
-            document.getDoc
+
             const a = document.getElementById(d1);
             const b = document.getElementById(d2);
             const c = document.getElementById(d3);
-          const edit_this_product_col = firebase.firestore().collection("ALL_quote").doc(q_hash).update;
-          edit_this_product_col.doc(pid).update({
-            [s.p_quanitiy] : a,
-            [s.p_unit] : b,
-            [s.p_discount] : c,
-          })
+            const edit_this_product_col = firebase.firestore().collection("ALL_quote").doc(q_hash).update;
+            edit_this_product_col.doc(pid).update({
+                [s.p_quanitiy] : a,
+                [s.p_unit] : b,
+                [s.p_discount] : c,
+            })
 
+        },
+
+        async getAllClient(){
+        var all_client_ref = await firebase.firestore().collection("all_client");
+            all_client_ref.onSnapshot(snap => {
+                this.all_client = [];
+
+                snap.forEach(d => {
+
+                    var c = d.data();
+                    
+                    this.all_client.push(c);
+
+                });
+            });
+        },
+
+        async getAllDelivery(){
+        var all_delivery_ref = await firebase.firestore().collection("all_delivery").doc(this.this_one_q_hash_number).collection("this_client_delivery");
+            all_delivery_ref.onSnapshot(snap => {
+                this.all_delivery = [];
+
+                snap.forEach(d => {
+
+                    var delivery = d.data();
+                    
+                    this.all_delivery.push(delivery);
+
+                });
+            });
         },
 
     },
@@ -612,6 +656,9 @@ export default{
         this.loadInvoicePDF();
         this.showQuotePDF();
         this.retrieveOneQuoteInfo();
+
+        this.getAllClient();
+        this.getAllDelivery();
         
     },
 }

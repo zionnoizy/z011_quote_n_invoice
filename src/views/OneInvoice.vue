@@ -10,7 +10,7 @@
 
         </div>
 
-        <div class="mx-auto">
+        <div class="d-flex justify-content-center">
 
             
             <embed id="preview_invoicenPDF" width="800px" height="600px"   src='' />
@@ -33,14 +33,11 @@ export default{
 
     methods:{
         
-        showInvoicePDF(){
-            const z = document.getElementById('preview_invoicenPDF');
+        async showInvoicePDF(){
 
-            console.log("[debug99]" + z + " " + this.this_one_i_pdf_link);
+            await console.log("[debug99]" +  " " + this.this_one_i_pdf_link);
 
-            z.setAttribute('src', this.this_one_i_pdf_link);
-
-            z.parentNode.replaceChild(clone1, z);
+            document.getElementById('preview_invoicenPDF').src = this.this_one_i_pdf_link;
         },
     },
     created() {

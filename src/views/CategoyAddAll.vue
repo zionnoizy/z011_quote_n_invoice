@@ -61,37 +61,31 @@ export default{
     components: {},
     methods:{
         async createCategory(){
-            //validate_category_input();
+            var flag = await validate_category_input();
            //console.log("[CategoryAddAll] create new Category.");
 
-
-
-
-           const ref = collection(db, 'all_categories');
-
-           
-           var t = document.getElementById('input_category').value;
-           //https://fireship.io/snippets/firestore-increment-tips/
-           console.log("[CategoryAddAll] update incremented.           " + t);
-           const obj_ref ={
-
-                category_fullname : t,
-                category_time: serverTimestamp(),
-
-
-           }
-            addDoc(ref, obj_ref)
-            .then(docRef => {
-          
-            console.log(docRef.id);
-            const get_id = firebase.firestore().collection("all_categories").doc(docRef.id);
-            get_id
-                .update({
-                    category_hashid: docRef.id,
+            if (flag){
+                const ref = collection(db, 'all_categories');
+                var t = document.getElementById('input_category').value;
+                //https://fireship.io/snippets/firestore-increment-tips/
+                console.log("[CategoryAddAll] update incremented.           " + t);
+                const obj_ref ={
+                    category_fullname : t,
+                    category_time: serverTimestamp(),
+                }
+                addDoc(ref, obj_ref)
+                .then(docRef => {
+            
+                console.log(docRef.id);
+                const get_id = firebase.firestore().collection("all_categories").doc(docRef.id);
+                get_id
+                    .update({
+                        category_hashid: docRef.id,
+                    })
+                    .then(() => {
+                    });
                 })
-                .then(() => {
-                });
-            })
+            } //flag
 
         },
         async getCategory(){
@@ -111,21 +105,24 @@ export default{
     }
 }
 
-function validate_category_input(){
+async function validate_category_input(){
+    var flag = true;
       var pc_1 = document.getElementById('input_category').value;
       var pcc_1 = document.getElementById('input_category');
+      
       if (pc_1.length <= 0){
         pcc_1.classList.add("red");
-        return false;
+        flag = false;
       }
       //console.log("[CategoryAddAll]  " + pcc_1 + " ");
       const check = firebase.firestore().collection("all_categories").where(category_fullname, "==", pc_1);
-      check.querySnapshot((q) => {
+      await check.querySnapshot((q) => {
         if (q.size >= 0){
-            alert("duplicateion, cannot submit.")
-            return false;
+            alert("duplication! cannot submit!")
+            flag = false;
         }
       })
+      return flag;
 
 }
 </script>

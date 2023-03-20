@@ -687,12 +687,6 @@ export default {
 
             const pi_sell1 = document.getElementById('p_sell1').value;
 
-            //const pi_sell2 = document.getElementById('p_sell2').value;    
-            //const tmp_ans = +pi_sell1 +pi_sell2;
-
-            ////console.log("[CumulativeTotal] " + pi_sell1);
-
-
             document.getElementById('q_total').value = pi_sell1;
 
         },
@@ -920,9 +914,15 @@ export default {
                 q_extra_space_4: '',
             }
 
+            const final_tt = {
+                tf_sub_total: document.getElementById('q_subtotal').innerHTML,
+                tf_vat: document.getElementById('q_vat').innerHTML,
+                tf_shipping: document.getElementById('q_shipping').innerHTML,
+                tf_total: document.getElementById('q_total').innerHTML,
 
+            }
             let hash = '';
-            await addDoc(ref, {obj_ref, s})
+            await addDoc(ref, {obj_ref, s, final_tt})
             .then(docRef => {
                 console.log(docRef.id);
                 hash = docRef.id;

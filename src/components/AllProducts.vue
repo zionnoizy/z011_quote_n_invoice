@@ -40,8 +40,18 @@
 
         </table>  
 
-        <button class="btn btn-primary " @click.prevent="to_excel('store_to_excel')">SAVE TO EXCEL (NOT RELEASE YET) </button>
-
+        
+        <figure class="text-center">
+          <blockquote class="blockquote">
+            <p>EXPORT + IMPORT, Please refer to 
+              <a class="font-weight-bold" style="text-decoration:underline; "  target="_blank"
+              href="https://rowy.app/p/quote-n-invoice/table/allProducts#searchPage=0">this link</a> 
+               .Login in as CMS IT gmail. </p>
+          </blockquote>
+          <figcaption class="blockquote-footer">
+             <cite title="Source Title"> </cite>
+          </figcaption>
+        </figure>
 </template>
 
 <script>
