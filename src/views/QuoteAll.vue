@@ -1,7 +1,7 @@
 <template>
     <div class="AllQuote">
 
-
+        <p>test1</p>
         <button class="btn btn-primary " @click.prevent="getAllQuoteNewest()">Sort From Oldest </button>
         <button class="btn btn-primary " @click.prevent="getAllQuoteOldest()">Sort From Newest </button>
         

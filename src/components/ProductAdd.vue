@@ -123,7 +123,7 @@ export default{
           p_margin: this.$refs.p_margin.value,
           p_sell: this.$refs.p_sell.value,
           //NEW NEW
-          p_quantity: 0,
+          p_quantity: 1,
           p_unit: 0,
           p_discount: 0,
           p_final_total: this.$refs.p_sell.value,

@@ -23,25 +23,25 @@
             </thead>
 
             <tbody>
-                <!--not exist yet! this_one_i_pdf_link, more router-link to HERE [NEW FACE]-->
-                <!-- <router-link 
+                <tr v-for="i in include_search_all_invoice">
+                <router-link 
                     tag="tr"
                     :to="{ name: 'OneInvoice', 
                     params: { id: i.obj_ref.qi_invoice_number, },
-                    query: {this_one_i_hash_number: p.invoice_hashid, this_one_i_pdf_link: p.q_pdf_link}}"> -->
-                <tr v-for="i in include_search_all_invoice">
+                    query: {this_one_i_hash_number: i.invoice_hashid, this_one_i_pdf_link: i.i_pdf_link}}">
+                
 
-                    <td scope="col" style="width: 150px;"  > i.obj_ref.qi_quote_number </td>
+                    <td scope="col" style="width: 150px;">  i.obj_ref.qi_quote_number  </td>
                     <td scope="col" style="width: 150px;"> {{ i.obj_ref.qi_invoice_number }} </td>   
                     <td scope="col" style="width: 150px;"> {{ i.obj_ref.qi_bill_fullname}} </td>
                     <td scope="col" style="width: 150px;"> {{ i.obj_ref.qi_ref}} </td>
 
                     <td scope="col" style="width: 150px;"> {{ i.obj_ref.qi_po}} </td>
                     <td scope="col" style="width: 200px;"> {{ i.obj_ref.qi_uploaded_date }} </td>
-                
+                </router-link>
 
                 </tr>
-
+                
 
 
             </tbody>

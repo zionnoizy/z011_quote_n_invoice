@@ -8,7 +8,7 @@
             choosen_client_fullname(not bill to):: {{ choosen_client_fullname }}
         </div>
 
-        <p class="dashboard_txt pt-5 pb-2" style="border-bottom: 3px solid #fff;" ><router-link to="/dashboard" exact>
+        <p class="dashboard_txt pt-5 pb-2" style="border-bottom: 3px solid #fff;" ><router-link to="/dashboard/quote" exact>
             
             <a><strong class="link">Dashboard</strong></a></router-link>  > Quote Add
           
@@ -160,19 +160,20 @@
 
                     <div>
                         <label for="q_subtotal">Subtotal </label>
-                        <!--disabled @change="CalculateSubtotal"-->
+                        <!--disabled @change="CalculateSubtotal" @input="addVatSHip($event.target.value)"-->
 
-                        <input ref="q_subtotal" placeholder="Subtotal"  id="q_subtotal" @input="addVatSHip($event.target.value)" disabled  />
+                        <input ref="q_subtotal" placeholder="Subtotal"  id="q_subtotal"  disabled  />
                     </div>
 
 
                     <div>
+                        <!--min="1" max="100"-->
                         <label for="q_vat">VAT </label>
-                        <input ref="q_vat" placeholder="Vat" id="q_vat" min="1" max="100" value="20" disabled />
+                        <input ref="q_vat" placeholder="Vat" id="q_vat"   disabled />
                     </div>
                     <div class="">
-                        <label for="q_shipping"> <figcaption title="Source Title">4A.</figcaption> Shipping </label>
-                        <input ref="q_shipping" placeholder="Shipping" id="q_shipping" @focusout="addShip" value="0"/>
+                        <label for="q_shipping"> 4A. Shipping </label>
+                        <input ref="q_shipping" placeholder="Shipping" id="q_shipping" @focusout="addShip" onkeypress="only_decimial($event)" value="0"/>
                     </div>
                     <div>
                         <label for="q_total">Total </label>
@@ -295,7 +296,7 @@
                         <tbody>
 
 
-                            <tr v-for="p, i in choosen_products" @focusout="handleFocusout($event,  p.pid, data-field, i   )" >
+                            <tr v-for="p, i in choosen_products" @focusout="handleFocusout($event,  p.pid, data-field, i  )" >
 
                                 <td class="col-5" scope="col"> {{ p.p_fullname }} </td>
                                 <td class="col"> {{ p.p_code }} </td>
@@ -306,10 +307,10 @@
                                 <td :ref="'add_all_sell'+i" :id="'add_all_sell'+i" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i);" style="text-decoration:underline;"> 
                                     {{ p.p_sell }} 
                                 </td>
-                                <td contenteditable="true"  data-field="p_qty" :id="`ep_qty_${i}`" th:onChange="c();"> {{p.p_qty}} </td>
+                                <td contenteditable="true"  data-field="p_qty" :id="`ep_qty_${i}`" th:onChange="c();" > {{p.p_quantity}} </td>
                                 <td contenteditable="true"  data-field="p_discount" :id= "`ep_discount_${i}`" th:onChange="c();">{{p.p_discount}}</td>
                                 
-                                <td :ref="'qd_total_sell'+i" :id="'qd_total_'+i" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i)" style="text-decoration-line: underline; text-decoration-style: double;" >
+                                <td :ref="'qd_total_sell'+i" :id="`qd_total_${i}`" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i)" style="text-decoration-line: underline; text-decoration-style: double;" >
                                     {{ p.p_final_total }} 
                                 </td>
                                    
@@ -406,7 +407,7 @@ import { addDoc, collection } from "@firebase/firestore";
 import { app, db, auth } from "@/firebase.js";
 
 
-
+import { arrayUnion, arrayRemove } from "firebase/firestore";
 
 
 
@@ -422,7 +423,7 @@ export default {
           //console.log("handleFocusout: " + e.target.id + "   pid= " + pid + "    data-field=" + df + "     i=" + i);
 
           var updated_field = document.getElementById(e.target.id);
-          //console.log("handleFocusout");
+          console.log("handleFocusout");
 
           let dynamic_sell_id = "add_all_sell"+i;
           let dynamic_qty_id = "ep_qty_"+i;
@@ -436,12 +437,33 @@ export default {
           //console.log("handleFocusout3 " + cum3);
           
           let s_times_q = cum0 * cum1;
-          let tmp_ans = +s_times_q - (+(s_times_q / 100) * +cum3);  ;
+          let double_underline = +s_times_q - (+(s_times_q / 100) * +cum3);  ;
           //final goal
           let dynamic_each_p_total_id = "qd_total_"+i;
-          document.getElementById(dynamic_each_p_total_id).innerHTML = tmp_ans;
+          document.getElementById(dynamic_each_p_total_id).innerHTML = double_underline;
 
-          reCalculateFCSubtotal();
+          ///reCalculateFCSubtotal
+            let cimulat_du = 0;
+            console.log("recalcu.");
+            var x = document.getElementById("my_favoriate_table").rows.length;
+            for (let rs=0; rs < x-1; ++rs){
+                
+                let dynamic_ = "qd_total_"+rs;
+                console.log("recalcu." + dynamic_);
+                var one_du = document.getElementById(dynamic_).innerHTML;
+                cimulat_du = +cimulat_du + +one_du;
+
+                console.log("recalcu.loop" + cimulat_du);
+            }
+            console.log("recalcuatle total= " + cimulat_du);
+            document.getElementById('q_subtotal').value = cimulat_du;
+          ///reCalculateFCSubtotal
+          console.log("ABZ" + this.choosen_products);
+          addVatSHip(cimulat_du);
+
+          change_cp_object();
+
+          
         }
         return { handleFocusout };
     },
@@ -774,7 +796,7 @@ export default {
             doc.text(input_reference_number, 159, 105);
             let bodyData = [];
             this.choosen_products.forEach(element => {      
-                var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_sell, "0", element.p_sell];
+                var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_sell, element.p_discount, element.p_sell];
   
                 bodyData.push(tmp);
 
@@ -786,6 +808,11 @@ export default {
             autoTable(doc, {
                 //html: '#cms-quote-table',
                 theme: 'striped',
+                /*
+                styles: {
+                    halign: 'right'
+                },
+                */
                 startY: finalY + 112, //important
                 columnStyles: {
                     0: { cellWidth: 65 },
@@ -796,6 +823,8 @@ export default {
                     5: { cellWidth: 30 },
                     // etc
                 },
+
+
                 tableWidth: 'auto',
 
                 margin: { top: 0, right: 10, bottom: 0, left: 10 }, //important2
@@ -806,14 +835,15 @@ export default {
             const v = document.getElementById('q_vat').value;
             const s = document.getElementById('q_shipping').value;
             const t = document.getElementById('q_total').value;
-            doc.text('SUB TOTAL', 42, doc.lastAutoTable.finalY + 20)
-            doc.text(st, 152, doc.lastAutoTable.finalY + 20)
-            doc.text('VAT', 42, doc.lastAutoTable.finalY + 25)
-            doc.text(v, 152, doc.lastAutoTable.finalY + 25)
-            doc.text('SHIPPING. HANDLING', 42, doc.lastAutoTable.finalY + 30)
-            doc.text('000', 152, doc.lastAutoTable.finalY + 30)
-            doc.text('TOTAL', 42, doc.lastAutoTable.finalY + 35)
-            doc.text( parseFloat(t).toFixed(2) , 152, doc.lastAutoTable.finalY + 35)
+            //doc.setFontSize(10);
+            doc.text('Sub-Total', 139, doc.lastAutoTable.finalY + 20, {align: 'right'})
+            doc.text(st, 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
+            doc.text('VAT', 139, doc.lastAutoTable.finalY + 25 , {align: 'right'})
+            doc.text(v, 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
+            doc.text('Shipping', 139, doc.lastAutoTable.finalY + 30 , {align: 'right'})
+            doc.text(s, 182, doc.lastAutoTable.finalY + 30 , {align: 'right'})
+            doc.text('Total', 139, doc.lastAutoTable.finalY + 35 , {align: 'right'})
+            doc.text( t , 182, doc.lastAutoTable.finalY + 35 , {align: 'right'})
 
             doc.setFontSize(9);
             doc.text('Terms & Instructions', 6,  doc.lastAutoTable.finalY + 40).setFont(undefined, 'bold');
@@ -852,29 +882,11 @@ export default {
 
             
 
-            const s = JSON.parse(JSON.stringify(this.choosen_products))
-            
+            const s = JSON.parse(JSON.stringify(this.choosen_products));
+            console.log(typeof s);
             for (let [key, value] of Object.entries(this.choosen_products)) {
                 console.log(key, value);
             }
-            // const newObj2 = Object.fromEntries(
-            // Object.en(this.choosen_products).map(([element, val]) => 
-            
-            // [
-            //                     ["q_p_fullname", element.p_fullname], 
-            //                     ["q_p_code", element.p_code], 
-            //                     ["q_p_category", element.p_category], 
-            //                     ["q_p_cost", element.p_cost],
-            //                     ["q_p_margin", element.p_margin],
-            //                     ["q_p_sell", element.p_sell]
-            //                 ]
-            
-            
-            // ),
-            // );
-
-            
-            // console.log("this.newObj     " + newObj2);
 
             for (let [key, value] of Object.entries(s)) {
                 console.log(key, value);
@@ -908,18 +920,12 @@ export default {
                 q_extra_space_4: '',
             }
 
-            let hash_id = '';
-            const move_cp = Object.fromEntries(this.choosen_products);
 
-            const data = {
-                name: "Raja Tamil",
-                country: "Canada"
-            };
-
-
-            addDoc(ref, {obj_ref, s})
+            let hash = '';
+            await addDoc(ref, {obj_ref, s})
             .then(docRef => {
                 console.log(docRef.id);
+                hash = docRef.id;
                 const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
                 const string = "/all_quote/" + docRef.id + "/";
                 test2_storage( docRef.id, string, this.return_base64);//use this   
@@ -936,10 +942,74 @@ export default {
 
                         get_id.get().then((d) => {
                         });
-                    });
+                });
+                    
+                
 
             })
+            
 
+            
+            var cpq = Object.keys(this.choosen_products).length;
+            console.log("   for loop     " + hash);
+            for (var i=0; i< cpq; ++ i){
+                let d_qty = "ep_qty_"+i;
+                let d_discount = "ep_discount_"+i;
+
+                console.log(d_qty + "        " + d_discount);
+
+                let cum1 = document.getElementById(d_qty).innerHTML;
+                let cum2 = document.getElementById(d_discount).innerHTML;
+
+                console.log(cum1 + "        " + cum2);
+                const get_id2 = firebase.firestore().collection("ALL_quote").doc(hash);
+
+                //https://medium.com/firebase-tips-tricks/how-to-update-an-array-of-objects-in-firestore-cdb611a56073
+                const john = {
+                    "p_discount": "0",
+                }
+                const zion = {
+                    "p_quantity": "0", //1
+                }
+
+                get_id2.update("s",{
+                    "p_discount": FieldValue.arrayRemove(john) ,
+                    "p_quantity": FieldValue.arrayRemove(zion) ,
+                })
+                
+                
+                get_id2.update("s",{
+                    "p_discount": FieldValue.arrayUnion(cum1) ,
+                    "p_quantity": FieldValue.arrayUnion(cum2) ,
+                }).then(function(docRef) {
+                
+                    console.log("set doc3");
+
+                   
+                }).catch((error)=> {
+                console.log("Data could not be saved." + error);
+                });
+
+                get_id2.update({
+                    [s[i].p_discount]: cum1,
+                    [s[i].p_quantity]: cum2,
+                }).then(function(docRef) {
+                
+                    console.log("set doc3");
+
+                   
+                }).catch((error)=> {
+                console.log("Data could not be saved." + error);
+                });
+               
+                
+            }
+
+                
+
+
+        
+            
         }//flag
         },
         //seperate function
@@ -1086,27 +1156,35 @@ export default {
 
         async choosenOneProduct(ev, p, i){ //IMPORTANT
         var choose_product_ref = await firebase.firestore().collection("all_products").where("p_fullname", "==", p.p_fullname);
+        let new_subtotal = 0;
         await choose_product_ref.onSnapshot((snapshot) => {
 
-            snapshot.docs.forEach(d => {
+             snapshot.docs.forEach(d => {
                 var product = d.data();
                 this.choosen_products.push(product);
                 var tmp_one_sell = parseFloat(d.data().p_final_total);  //p_final_total
                 this.tmp_sell = this.tmp_sell + tmp_one_sell;
 
-                let input2 = document.getElementById('q_subtotal').value; 
-                //console.log("!!!!!!!!!2 " +input2 )
+                
+                console.log("!!!!!!!!!2 " + this.tmp_sell + "+" + tmp_one_sell)
 
                 document.getElementById('q_subtotal').setAttribute('value', this.tmp_sell);
-                 addVatSHip();
-                 //addFinalTotal(i);
+                
+                addVatSHip(this.tmp_sell);
                 
                 //NEW
                 
                 //this.$root.$emit('choosenOneProduct', this.tmp_sell);
                 
             })
+            new_subtotal = this.tmp_sell;
         })
+        //console.log(new_subtotal);
+        //document.getElementById('q_subtotal').setAttribute('value', this.tmp_sell);
+        //new_subtotal= document.getElementById('q_subtotal').value; 
+        
+        
+        
             
         },
 
@@ -1122,6 +1200,10 @@ export default {
             document.getElementById('q_total').setAttribute('value', ans);
             return ans;
 
+        },
+
+        change_cp_object(){
+            console.log("change_cp_object" + this.choosen_products);
         }
         
 
@@ -1201,29 +1283,41 @@ async function auto_quote_no_generator2(){
     return ans.toString();
 }
 
-function addVatSHip(){
+async function addVatSHip(i_subtotal){
 
     
 
-    let i_subtotal = document.getElementById('q_subtotal').value;
+    //let i_subtotal = document.getElementById('q_subtotal').value;
     let i_vat = document.getElementById('q_vat').value;
     let i_shipping = document.getElementById('q_shipping').value;
 
-    console.log("SUBtotal input tag changed " + i_shipping );
+    let added_vat = 0;
+    let find_vat = 0;
+    let added_shipping = 0;
+    let final = 0;
+
+    //console.log("is subtotal change? " + i_subtotal );
     
     //let i_extra = document.getElementById('q_e1').value;
-    let added_vat = +i_subtotal + (+(i_subtotal / 100) * +i_vat); 
+    added_vat = i_subtotal * 1.20; 
 
-    //console.log("SUBtotal input tag changed " + i_subtotal +" "+ i_vat +" "+ added_vat);
+    find_vat = +added_vat - +i_subtotal;
+    document.getElementById('q_vat').setAttribute('value', find_vat);
+    console.log("find vat? " + find_vat );
+
+    console.log("SUBtotal input tag changed added_vat" + added_vat);
 
 
-    let ans = +added_vat + +i_shipping;
+    added_shipping = await +added_vat + +i_shipping;
+    final = added_shipping;
 
-    document.getElementById('q_total').setAttribute('value', ans);
+    console.log("SUBtotal input tag changed added_vat" + added_shipping);
+
+    let r_final = Number(final).toFixed(2);
+    document.getElementById('q_total').setAttribute('value', r_final);
 
 
-    //console.log("SUBtotal input tag changed2 " + ans);
-    return ans;
+    return final;
 
 }
 async function addFinalTotal(i){
@@ -1241,6 +1335,7 @@ async function addFinalTotal(i){
         console.log("[0 0]");
     }
 }
+
 function validate_q_input(){
       let flag = true;
       var qc_1 = document.getElementById('tmp_b_fullname').innerHTML;
@@ -1276,17 +1371,59 @@ function validate_q_input(){
 
       return flag;
 }
-function reCalculateFCSubtotal(){
+/*
+async function reCalculateFCSubtotal(e){
     let ans = 0;
-    var choosen_product_qty = Object.keys(this.choosen_products).length;
-    var x = document.getElementById("my_favoriate_table").rows.length;
-    for (let rs=1; rs < x+1; ++rs){
-        let dynamic_each_p_total_id = "qd_total_"+rs;
-        document.getElementById(dynamic_each_p_total_id).innerHTML = tmp_ans;
+    console.log("recalcu.");
+    var x = await document.getElementById("my_favoriate_table").rows.length;
+    for (let rs=0; rs < x-1; ++rs){
+        
+        let dynamic_ = await "qd_total_"+rs;
+        console.log("recalcu." + dynamic_);
+        var  tmp_ans = await document.getElementById(dynamic_).innerHTML;
         ans = +ans + +tmp_ans;
+
+        console.log("recalcu.loop" + ans);
     }
     console.log("recalcuatle total= " + ans);
-    document.getElementById('q_subtotal').value = this.ans;
+    document.getElementById('q_subtotal').value = await ans;
+    return ans;
+}
+
+async function reCalculateFCTotal(e){
+
+    console.log("recal_total");
+    let add_vat = 0;
+    let add_shipping = 0;
+    let final_total = 0;
+    let i_subtotal = document.getElementById('q_subtotal').value;
+    let i_vat = document.getElementById('q_vat').value;
+    let i_shipping = document.getElementById('q_shipping').value;
+    let i_total = document.getElementById('q_total').value;
+
+
+    console.log("recal_total i_subtotal=  " + i_subtotal + " " + i_vat + " " + i_shipping + " " + i_total);
+
+    add_vat = i_subtotal * 1.20;
+
+    console.log("recal_total add_vat=  " + add_vat);
+
+    add_shipping = add_vat + i_shipping;
+
+    console.log("recal_total add_shipping= " + add_shipping);
+
+    final_total = add_shipping;
+    i_total = final_total;
+
+    console.log("recal_total");
+
+}
+*/
+async function only_decimial(e){
+    var txt = (evt.which) ? evt.which : evt.keyCode;
+    if (!txt.match(/[0-9.,]/)){
+        return false;
+    }
 }
 </script>
 

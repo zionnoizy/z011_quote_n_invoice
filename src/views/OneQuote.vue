@@ -76,7 +76,7 @@
 
                                     <div class="" >
                                         <div class="grid grid-cols-5 gap-1">
-                                            <div>index</div>
+                      
                                             <div>Items</div>
                                             <div>Code</div>
                                             <div>Qty</div> <!--missing-->
@@ -84,9 +84,7 @@
                                             <div>Discount</div> <!--missing-->
                                         </div>
                                         <div class="grid grid-cols-6 gap-1" v-for="(k, i) in copy_exact_product" >
-                                            <div>
-                                                <strong> {{ i }} </strong>
-                                            </div>
+
                                             <div>
                                                 <strong>{{ k.p_fullname }}</strong>
                                             </div>
@@ -95,19 +93,19 @@
                                                 <strong>{{ k.p_code }}</strong>
                                             </div>
                                             <div>
-                                                <input class="form-control" :ref="'i_quality'+i" :id="'i_quality'+i"  placeholder="Qty" >
+                                                <input class="form-control" :ref="'i_quality'+i" :id="'i_quality'+i"  placeholder="Qty" v-model="k.p_quantity" >
                                             </div>
                                             <div>
-                                                <input class="form-control" :ref="'i_quality'+i" :id="'i_quality'+i"  placeholder="Unit" >
+                                                <input class="form-control" :ref="'i_unit'+i" :id="'i_unit'+i"  placeholder="Unit" v-model="k.p_unit" >
                                             </div>
                                             <div>
-                                                <input class="form-control" :ref="'i_discount'+i" :id="'i_discount'+i"  placeholder="Discount">
+                                                <input class="form-control" :ref="'i_discount'+i" :id="'i_discount'+i"  placeholder="Discount" v-model="k.p_discount">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                     <div class="modal-footer" style="background-color: #1267aa;">
-                                        <button type="button" data-bs-dismiss="modal" aria-label="close" class="btn btn-success" @click="ClickEditQuote($event)">SAVE / CHANGE YOUR QUOTE</button>
+                                        <button type="button" data-bs-dismiss="modal" aria-label="close" class="btn btn-warning" @click="UpdateQuote($event, this.this_one_q_hash_number)">SAVE / CHANGE YOUR QUOTE</button>
                                     </div>
                             </div>
 
@@ -336,6 +334,7 @@ export default{
                 qi_ship_postcode: this.copy_q_s_pc, 
                     
                 qi_invoice_number: i_number, 
+                qi_quote_number: this.copy_q_number, 
                 qi_uploaded_date: today,
                 qi_ref: this.copy_q_ref,
                 qi_po: po_number,
@@ -589,7 +588,24 @@ export default{
             var base64 = doc.output('datauri');
             this.return_base64 = base64;
             
-        }
+        },
+
+        UpdateQuote(i, q_hash){
+            let d1 = "i_quality"+i;
+            let d2 = "i_unit"+i;
+            let d3 = "i_discount"+i;
+            document.getDoc
+            const a = document.getElementById(d1);
+            const b = document.getElementById(d2);
+            const c = document.getElementById(d3);
+          const edit_this_product_col = firebase.firestore().collection("ALL_quote").doc(q_hash).update;
+          edit_this_product_col.doc(pid).update({
+            [s.p_quanitiy] : a,
+            [s.p_unit] : b,
+            [s.p_discount] : c,
+          })
+
+        },
 
     },
     created() {

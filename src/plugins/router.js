@@ -19,6 +19,8 @@ const QuoteAdd = () => import('@/views/QuoteAdd.vue');
 const QuickerQuoteIn = () => import('@/views/QuickerQuoteIn.vue');
 
 const ClientCard = () => import('@/components/ClientCard.vue');
+
+const OneInvoice = () => import('@/views/OneInvoice.vue');
 const Empty = () => import('@/views/Empty.vue');
 
 
@@ -47,6 +49,7 @@ const router = createRouter({
 
       {path: '/dashboard/add_quote', name: 'QuoteAdd', component: QuoteAdd},
 
+      {path: '/dashboard/invoice/:id', name: 'OneInvoice', component: OneInvoice, props: true},
       {path: "/quicker-quote-in", name: "QuickerQuoteIn", component: QuickerQuoteIn},
 
   ]
