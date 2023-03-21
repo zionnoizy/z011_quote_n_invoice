@@ -285,7 +285,7 @@
                                 <th scope="col">Product Margin</th>
                                 <th scope="col" style="text-decoration:underline;">Product Sell</th>
                                 <th scope="col" style="color:grey;">Add Qunatity #</th>
-                                <!-- <th scope="col" style="color:grey;">Add Unit £</th> -->
+                                <th scope="col" style="color:grey;" title="This is the text of the tooltip">Add Unit (eg. mm, box)</th>
                                 <th scope="col" style="color:grey;">Add Discount %</th>
                                 <th scope="col" style="color:grey; text-decoration-line: underline; text-decoration-style: double;">Final Total</th>
                                 <th scope="col"> Delete</th>
@@ -303,11 +303,11 @@
                                 <td> {{ p.p_category }} </td>
                                 <td> {{ p.p_cost }} </td>
                                 <td> {{ p.p_margin }} </td>
-
                                 <td :ref="'add_all_sell'+i" :id="'add_all_sell'+i" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i);" style="text-decoration:underline;"> 
                                     {{ p.p_sell }} 
                                 </td>
                                 <td contenteditable="true"  data-field="p_qty" :id="`ep_qty_${i}`" th:onChange="c();" > {{p.p_quantity}} </td>
+                                <td contenteditable="true"  data-field="p_unit" :id="`ep_unit_${i}`" th:onChange="c();" > {{p.p_unit}} </td>
                                 <td contenteditable="true"  data-field="p_discount" :id= "`ep_discount_${i}`" th:onChange="c();">{{p.p_discount}}</td>
                                 
                                 <td :ref="'qd_total_sell'+i" :id="`qd_total_${i}`" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i)" style="text-decoration-line: underline; text-decoration-style: double;" >
@@ -315,7 +315,7 @@
                                 </td>
                                    
                                 <td> 
-                                    <button class="btn btn-danger" @click.prevent="minusProduct(i, p.p_fullname)"> [-] </button>
+                                    <button class="btn btn-warning" @click.prevent="minusProduct(i, p.p_fullname)"> [-] </button>
                                 </td>
                             </tr>
 

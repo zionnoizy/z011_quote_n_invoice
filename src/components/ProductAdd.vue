@@ -35,14 +35,12 @@
               <th scope="row">
                 <div><button class="btn btn-info"   @click.prevent="createProduct" > [+] </button> </div>
               </th>
-
-
               <td> <input ref="p_code" placeholder="Product Code" id="pi_code" required/> </td>
               <td> <input ref="p_enter" placeholder="Item Name" id="pi_name" required/> </td>
-              <td>
+              <td> 
                 <select id="p_category" class="form-select" aria-label="Default select example">
                   <option selected>Select Category Here</option>
-                  <option   v-for="c in all_category" :value="`${c.category_fullname}`" >{{c.category_fullname}}</option>
+                  <option   v-for="c in all_category" :value="`${c.category_fullname}`" > {{c.category_fullname}} </option>
                 </select>
               </td>
               
@@ -124,7 +122,7 @@ export default{
           p_sell: this.$refs.p_sell.value,
           //NEW NEW
           p_quantity: 1,
-          p_unit: 0,
+          p_unit: '',
           p_discount: 0,
           p_final_total: this.$refs.p_sell.value,
           p_insert_date: serverTimestamp(),

@@ -114,14 +114,15 @@ async function validate_category_input(){
         pcc_1.classList.add("red");
         flag = false;
       }
-      //console.log("[CategoryAddAll]  " + pcc_1 + " ");
-      const check = firebase.firestore().collection("all_categories").where(category_fullname, "==", pc_1);
+      /*
+      const check = firebase.firestore().collection("all_categories").where("category_fullname", "==", pc_1); //b
       await check.querySnapshot((q) => {
         if (q.size >= 0){
             alert("duplication! cannot submit!")
             flag = false;
         }
       })
+      */
       return flag;
 
 }

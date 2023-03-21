@@ -4,10 +4,12 @@
     <div class="d-flex justify-content-between">
         <button class="btn btn-primary " @click.prevent="getAllProductsNewest()">Sort From Oldest </button>
         <button class="btn btn-primary " @click.prevent="getAllProductsOldest()">Sort From Newest </button>
-    </div>
+        
+      </div>
         <!-- <button @click.prevent="ChangingProduct">EDIT ALL</button> -->
         <p>click eith one field on the table to edit, please type sometinhg on it otherwise will have a chance to hit a bug return '0'</p>
         <p>edit and input cannot preform at the same time, please refresh the page if you do so.</p>
+
         <table class="table table-dark" id="store_to_excel" >
             <thead>
             <tr>

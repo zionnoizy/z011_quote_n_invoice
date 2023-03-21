@@ -4,7 +4,13 @@
         <button class="btn btn-primary " @click.prevent="getAllInvoiceOldest()">Sort From Oldest Invoice </button>
         <button class="btn btn-primary " @click.prevent="getAllInvoiceNewest()">Sort From Newest Invoice </button>
         
-        <input type="text" class="search_invoice_num" id="search_invoice_num" placeholder="Search from invoice number..." v-model="s_invoice_num" @input="searchI_N"/>
+        <!-- <input type="text" class="search_invoice_num" id="search_invoice_num" placeholder="Search from invoice number..." v-model="s_invoice_num" @input="searchI_N"/> -->
+        
+        <select id="so_client" class="form-select" aria-label="select client from quote list below, and it will do sorting."
+          onchange="if (this.selectedIndex) doSort2();" onfocus="this.selectedIndex = 1;">
+          <option selected>Select Client Here</option>
+          <option v-for="c in all_quotes" :value="`${c.obj_ref.qi_bill_fullname}`" > {{ c.obj_ref.qi_bill_fullname}} </option>
+        </select>
 
         <table class="table table-dark mx-auto" >
 
@@ -145,9 +151,9 @@ export default {
           .onSnapshot((snapshot) => {
             this.all_quotes = [];
             snapshot.forEach(d => {
-                var product = d.data();
+                var o_product = d.data();
 
-                this.all_quotes.push(product);
+                this.all_quotes.push(o_product);
             })
           })
       },
@@ -161,9 +167,9 @@ export default {
             this.all_invoices = [];
             
             snap.forEach(i => {
-                var e_invoice = i.data();
+                var n_invoice = i.data();
                 
-                this.all_invoices.push(e_invoice);
+                this.all_invoices.push(n_invoice);
                 console.log("e invoice" + this.all_invoices);
             });
         });
@@ -175,11 +181,11 @@ export default {
         var all_product_ref = await firebase.firestore().collection("ALL_quote");
         all_product_ref.orderBy("obj_ref.q_uploaded_date_timestamp", "desc")
           .onSnapshot((snapshot) => {
-            this.all_quotes = [];
+            this.all_invoices = [];
             snapshot.forEach(d => {
                 var product = d.data();
 
-                this.all_quotes.push(product);
+                this.all_invoices.push(product);
             })
           })
       },
@@ -197,6 +203,20 @@ export default {
                     this.include_search_all_invoice.push(one_inv);
                 })
             })
+
+      },
+      async doSort2(e){
+        var optionValue = document.getElementById("so_client").value;
+        console.log("sort list from choosen cleint2: " + optionValue);
+        var sort_client = await firebase.firestore().collection("ALL_invoice").where("obj_ref.qi_bill_fullname", "==", optionValue);
+        sort_client.onSnapshot(snap => {
+          this.all_quotes = [];
+          snap.forEach(d => {
+            console.log("sort list from choosen cleint2: " + optionValue);
+            var sort_quote = d.data();
+            this.all_quotes.push(sort_quote);
+          });
+        })
 
       },
     },
