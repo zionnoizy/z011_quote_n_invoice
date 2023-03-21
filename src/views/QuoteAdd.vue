@@ -330,7 +330,8 @@
             <buttons @navigate="navigateTo" ></buttons>
 
             
-            <div>
+            <div class="px-5">
+                <div>
                 <button class="preview_btn btn btn-info btn-lg btn-block" data-bs-toggle="modal"
                     data-bs-target="#preview_quotation" @click.prevent=previewBtn()> Preview Quotation</button>
                 <!--@click.prevent="uploadQuotePDF($event)" download -->
@@ -343,7 +344,7 @@
                         <div class="modal-content text-black" style="height:1000px;">
 
                             <div class="modal-header">
-                                <h4 class="modal-title"> Preview Qutotation, Please make sure all information is correct </h4>
+                                <h4 class="modal-title"> Preview Qutotation, Please make sure all information is correct. </h4>
 
                             </div>
 
@@ -358,11 +359,11 @@
                             </div>
                             <div class="modal-footer" style="background-color: #1267aa;">
 
-                                <button type="button" class="btn btn-success" @click="uploadQuotePDF($event)">
+                                <!-- <button type="button" class="btn btn-primary" @click="uploadQuotePDF($event)">
                                     Submit Qutotation 
-                                </button>
+                                </button> -->
 
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel This Screen</button>
                             </div>
                         </div>
 
@@ -370,8 +371,11 @@
                     </div>
                 </div>
                 <!------------------modal end---------------------->
+                </div>
 
-                <button class="preview_btn btn btn-info btn-lg btn-block" @click="uploadQuotePDF($event)"> Upload Quote </button>
+                <div>
+                <button class="preview_btn btn btn-primarybtn-lg btn-block" @click="uploadQuotePDF($event)"> Upload Quote </button>
+                </div>
             </div>
         </div>
 
@@ -733,7 +737,57 @@ export default {
             //////console.log("[QuoteAdd]-suggesting  turn on s_flag");
             this.s_flag = true;
         },
-        async previewBtn() { //step1
+        
+        
+        async uploadQuotePDF() { //step2
+            let flag = validate_q_input();
+
+            console.log("uploadQuotePDF---------");
+            if (flag){
+            const myTimestamp = firebase.firestore.Timestamp.now();
+            let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK");
+            
+            const quote_number = await auto_quote_no_generator2();
+
+            let reference_number = document.getElementById('q_reference_number').value;
+
+            const ref = collection(db, "ALL_quote");
+
+            console.log("uploadQuotePDF2---------");
+       
+            const obj_ref = {          
+                q_bill_fullname: document.getElementById('tmp_b_fullname').innerHTML,
+                q_bill_address1: document.getElementById('tmp_b_address1').innerHTML,
+                q_bill_address2: document.getElementById('tmp_s_address2').innerHTML, 
+                q_bill_city: document.getElementById('tmp_b_city').innerHTML,
+                q_bill_postcode: document.getElementById('tmp_b_postcode').innerHTML,
+
+                q_ship_fillname: document.getElementById('tmp_s_fullname').innerHTML,
+                q_ship_address1: document.getElementById('tmp_s_address1').innerHTML,
+                q_ship_address2: document.getElementById('tmp_s_address2').innerHTML, 
+                q_ship_city: document.getElementById('tmp_s_city').innerHTML,
+                q_ship_postcode: document.getElementById('tmp_s_postcode').innerHTML, 
+
+                q_quote_number: quote_number, 
+                q_invoice_number: '', 
+                q_uploaded_date: todayDateTime,
+                q_ref: reference_number,
+                q_po: null,
+                q_uploaded_date_timestamp: serverTimestamp(), //
+                q_extra_space_1: '',
+                q_extra_space_2: '',
+                q_extra_space_3: '',
+                q_extra_space_4: '',
+            }
+
+            const final_tt = {
+                tf_sub_total: document.getElementById('q_subtotal').innerHTML,
+                tf_vat: document.getElementById('q_vat').innerHTML,
+                tf_shipping: document.getElementById('q_shipping').innerHTML,
+                tf_total: document.getElementById('q_total').innerHTML,
+
+            }
+            
             //NEW NEW NEW--
             const cp = JSON.parse(JSON.stringify(this.choosen_products));
             //console.log(typeof cp);
@@ -751,7 +805,34 @@ export default {
 
                 }
             }
-            //NEW NEW NEW--
+            console.log("uploadQuotePDF3---------");
+            await addDoc(ref, {obj_ref, cp, final_tt})
+            .then(docRef => {
+                console.log(docRef.id);
+
+                const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
+                const string = "/all_quote/" + docRef.id + "/";
+                test2_storage( docRef.id, string, this.return_base64);//use this   
+                //NEW NEW
+                var choosen_product_qty = Object.keys(this.choosen_products).length;
+                cp["choosen_product_qty"] = choosen_product_qty;
+                get_id
+                .update({
+                    quote_hashid: docRef.id,
+                    choosen_product_qty: choosen_product_qty,
+                })
+                    
+                    
+                
+
+            })
+            }//flag
+        },
+
+        async previewBtn() { //step1
+            
+            
+            console.log("previewBtn1---------");
             const doc = new jsPDF(); 
             doc.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297);
             //A-add all48 text
@@ -798,16 +879,32 @@ export default {
             doc.text(quote_number, 159, 94);
             doc.text(todayDateTime, 159, 100);
             doc.text(input_reference_number, 159, 105);
+            let tt = JSON.parse(JSON.stringify(this.choosen_products));
+            //console.log(typeof cp);
+            for (var key in tt) {
+                if (tt.hasOwnProperty(key)) {
+                    //console.log(key + " -> " + cp[key].p_fullname);
+                    let d_qty = "ep_qty_"+key;
+                    let d_discount = "ep_discount_"+key;
+                    let cum1 = document.getElementById(d_qty).innerHTML;
+                    let cum2 = document.getElementById(d_discount).innerHTML;
+                    //console.log(cum1 + "=====" + cum2);
+                    tt[key].p_quantity = cum1;
+                    tt[key].p_discount = cum2;
+                    //console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
+
+                }
+            }
 
             let bodyData = [];
-            this.choosen_products.forEach(element => {      
+            tt.forEach(element => {      
                 var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_unit, element.p_discount, element.p_sell];
   
                 bodyData.push(tmp);
 
 
             });    
-            
+
             //https://github.com/simonbengtsson/jsPDF-AutoTable/blob/master/examples/examples.js
             var finalY = doc.lastAutoTable.finalY || 10
             autoTable(doc, {
@@ -831,6 +928,7 @@ export default {
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
                 body: bodyData
             })
+            console.log("previewBtn2---------");
             const st = document.getElementById('q_subtotal').value;
             const v = document.getElementById('q_vat').value;
             const s = document.getElementById('q_shipping').value;
@@ -860,152 +958,13 @@ export default {
             var base64 = doc.output('datauri');
             this.return_base64 = base64;
 
-
-            uploadQuotePDF(cp);
+            console.log("previewBtn3---------");
+            await this.uploadQuotePDF();
             
-
+            //alert("");
 
         },
-        
-        async uploadQuotePDF(cp) { //step2
-            let flag = validate_q_input();
-            if (flag){
-            const myTimestamp = firebase.firestore.Timestamp.now(); //
-            let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK"); //
-            
-            const quote_number = await auto_quote_no_generator2();
 
-            let reference_number = document.getElementById('q_reference_number').value;
-
-            const ref = collection(db, "ALL_quote");
-
-
-       
-            const obj_ref = {          
-                q_bill_fullname: document.getElementById('tmp_b_fullname').innerHTML,
-                q_bill_address1: document.getElementById('tmp_b_address1').innerHTML,
-                q_bill_address2: document.getElementById('tmp_s_address2').innerHTML, 
-                q_bill_city: document.getElementById('tmp_b_city').innerHTML,
-                q_bill_postcode: document.getElementById('tmp_b_postcode').innerHTML,
-
-                q_ship_fillname: document.getElementById('tmp_s_fullname').innerHTML,
-                q_ship_address1: document.getElementById('tmp_s_address1').innerHTML,
-                q_ship_address2: document.getElementById('tmp_s_address2').innerHTML, 
-                q_ship_city: document.getElementById('tmp_s_city').innerHTML,
-                q_ship_postcode: document.getElementById('tmp_s_postcode').innerHTML, 
-
-                q_quote_number: quote_number, 
-                q_invoice_number: '', 
-                q_uploaded_date: todayDateTime,
-                q_ref: reference_number,
-                q_po: null,
-                q_uploaded_date_timestamp: serverTimestamp(), //
-                q_extra_space_1: '',
-                q_extra_space_2: '',
-                q_extra_space_3: '',
-                q_extra_space_4: '',
-            }
-
-            const final_tt = {
-                tf_sub_total: document.getElementById('q_subtotal').innerHTML,
-                tf_vat: document.getElementById('q_vat').innerHTML,
-                tf_shipping: document.getElementById('q_shipping').innerHTML,
-                tf_total: document.getElementById('q_total').innerHTML,
-
-            }
-
-            await addDoc(ref, {obj_ref, cp, final_tt})
-            .then(docRef => {
-                //console.log(docRef.id);
-
-                const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
-                const string = "/all_quote/" + docRef.id + "/";
-                test2_storage( docRef.id, string, this.return_base64);//use this   
-                //NEW NEW
-                var choosen_product_qty = Object.keys(this.choosen_products).length;
-                cp["choosen_product_qty"] = choosen_product_qty;
-                get_id
-                    .update({
-                        quote_hashid: docRef.id,
-                        choosen_product_qty: choosen_product_qty,
-                    })
-                    .then(() => {
-                        //console.log("set doc1");
-
-                        get_id.get().then((d) => {
-                        });
-                });
-                    
-                
-
-            })
-
-
-            /*
-            for (var i=0; i< cpq; ++ i){
-                let d_qty = "ep_qty_"+i;
-                let d_discount = "ep_discount_"+i;
-
-                //console.log(d_qty + "        " + d_discount);
-
-                let cum1 = document.getElementById(d_qty).innerHTML;
-                let cum2 = document.getElementById(d_discount).innerHTML;
-
-                //console.log(cum1 + "        " + cum2);
-                const get_id2 = firebase.firestore().collection("ALL_quote").doc(hash);
-
-                //https://medium.com/firebase-tips-tricks/how-to-update-an-array-of-objects-in-firestore-cdb611a56073
-
-                
-                const extra = {
-                    [i.p_discount]: cum1,
-                    [i.p_quantity]: cum2,
-                }
-                await addDoc(ref, extra)
-                .then(function(docRef) {
-                
-                    //console.log("set doc3");
-
-                   
-                }).catch((error)=> {
-                    //console.log("Data could not be saved." + error);
-                });
-                
-               
-                get_id2.update("s",{
-                    "p_discount": arrayUnion(cum1) ,
-                    "p_quantity": arrayUnion(cum2) ,
-                }).then(function(docRef) {
-                
-                    //console.log("set doc5");
-
-                   
-                }).catch((error)=> {
-                //console.log("Data could not be saved." + error);
-                });
-                
-                get_id2.update({
-                    [s[i].p_discount]: cum1,
-                    [s[i].p_quantity]: cum2,
-                }).then(function(docRef) {
-                
-                    //console.log("set doc3");
-
-                   
-                }).catch((error)=> {
-                //console.log("Data could not be saved." + error);
-                });
-             
-                
-            }
-            */
-                
-
-
-        
-            
-        }//flag
-        },
         //seperate function
         firebaseStorageUpload() {
             
@@ -1308,21 +1267,6 @@ async function addVatSHip(i_subtotal){
     return final;
 
 }
-async function addFinalTotal(i){
-    //NEW
-    let dynamic1 =  "ep_qty_"+i;
-    let dynamic2 = "ep_discount_"+i;
-
-    let z1 =  await document.getElementById(dynamic1).value;
-    let z2 =  await document.getElementById(dynamic2).value;
-
-    //console.log("[0 0]" + eles[0] + eles[1]);
-    if (z1 == 0 && z2 == 0){
-        let dynamic3 = "qd_total_"+i;
-        document.getElementById(dynamic3).setAttribute('value', this.tmp_sell);
-        //console.log("[0 0]");
-    }
-}
 
 function validate_q_input(){
       let flag = true;
@@ -1359,67 +1303,9 @@ function validate_q_input(){
 
       return flag;
 }
-/*
-async function reCalculateFCSubtotal(e){
-    let ans = 0;
-    //console.log("recalcu.");
-    var x = await document.getElementById("my_favoriate_table").rows.length;
-    for (let rs=0; rs < x-1; ++rs){
-        
-        let dynamic_ = await "qd_total_"+rs;
-        //console.log("recalcu." + dynamic_);
-        var  tmp_ans = await document.getElementById(dynamic_).innerHTML;
-        ans = +ans + +tmp_ans;
-
-        //console.log("recalcu.loop" + ans);
-    }
-    //console.log("recalcuatle total= " + ans);
-    document.getElementById('q_subtotal').value = await ans;
-    return ans;
-}
-
-async function reCalculateFCTotal(e){
-
-    //console.log("recal_total");
-    let add_vat = 0;
-    let add_shipping = 0;
-    let final_total = 0;
-    let i_subtotal = document.getElementById('q_subtotal').value;
-    let i_vat = document.getElementById('q_vat').value;
-    let i_shipping = document.getElementById('q_shipping').value;
-    let i_total = document.getElementById('q_total').value;
 
 
-    //console.log("recal_total i_subtotal=  " + i_subtotal + " " + i_vat + " " + i_shipping + " " + i_total);
 
-    add_vat = i_subtotal * 1.20;
-
-    //console.log("recal_total add_vat=  " + add_vat);
-
-    add_shipping = add_vat + i_shipping;
-
-    //console.log("recal_total add_shipping= " + add_shipping);
-
-    final_total = add_shipping;
-    i_total = final_total;
-
-    //console.log("recal_total");
-
-}
-*/
-async function only_decimial(e){
-    var txt = (evt.which) ? evt.which : evt.keyCode;
-    if (!txt.match(/[0-9.,]/)){
-        return false;
-    }
-}
-
-function clear_all_input_field(){
-    var inputs = document.getElementsByTagName('input');
-    for (var i = 0; i < inputs.length; i += 1) {
-        inputs[i].value = '';
-    }​​​​
-}
 </script>
 
 <style>
