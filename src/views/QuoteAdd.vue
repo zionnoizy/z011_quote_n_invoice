@@ -371,7 +371,7 @@
                 </div>
                 <!------------------modal end---------------------->
 
-                <button class="preview_btn btn btn-info btn-lg btn-block"> Comming Soon. </button>
+                <button class="preview_btn btn btn-info btn-lg btn-block" @click="uploadQuotePDF($event)"> Upload Quote </button>
             </div>
         </div>
 
@@ -733,12 +733,27 @@ export default {
             ////console.log("[QuoteAdd]-suggesting  turn on s_flag");
             this.s_flag = true;
         },
-        async previewBtn() {
-            console.log("Print this.choosen_products Object:" + this.choosen_products);
-            ////console.log("[previewBtn] +++++++++++++++++++++++++++++++++++++++++++=--");
+        async previewBtn() { //step1
+            //NEW NEW NEW--
+            const cp = JSON.parse(JSON.stringify(this.choosen_products));
+            console.log(typeof cp);
+            for (var key in cp) {
+                if (cp.hasOwnProperty(key)) {
+                    console.log(key + " -> " + cp[key].p_fullname);
+                    let d_qty = "ep_qty_"+key;
+                    let d_discount = "ep_discount_"+key;
+                    let cum1 = document.getElementById(d_qty).innerHTML;
+                    let cum2 = document.getElementById(d_discount).innerHTML;
+                    console.log(cum1 + "=====" + cum2);
+                    cp[key].p_quantity = cum1;
+                    cp[key].p_discount = cum2;
+                    console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
+
+                }
+            }
+            //NEW NEW NEW--
             const doc = new jsPDF(); 
             doc.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297);
-
             //A-add all48 text
             const oo_b_fullname = document.getElementById('tmp_b_fullname').innerHTML;
             const oo_b_a1 = document.getElementById('tmp_b_address1').innerHTML;
@@ -751,14 +766,12 @@ export default {
             if (oo_b_a2 == "" || oo_b_a2 == null|| oo_b_a2 == ''){
                 doc.text(oo_b_city, 6, 104);
                 doc.text(oo_b_postcode, 6, 109);
-
             }
             else{
                 doc.text(oo_b_a2, 6, 104);
                 doc.text(oo_b_city, 6, 109);
                 doc.text(oo_b_postcode, 6, 114);
             }
-            
             //B-add all48 text
             const oo_s_fullname = document.getElementById('tmp_s_fullname').innerHTML;
             const oo_s_a1 = document.getElementById('tmp_s_address1').innerHTML;
@@ -776,9 +789,7 @@ export default {
                 doc.text(oo_s_a2, 72, 104);
                 doc.text(oo_s_city, 72, 109);
                 doc.text(oo_s_postcode, 72, 114);   
-
             }
-
             //C-quote no + invoice date + ref
             const quote_number = await auto_quote_no_generator2();
             const input_reference_number = document.getElementById('q_reference_number').value;
@@ -788,11 +799,9 @@ export default {
             doc.text(todayDateTime, 159, 100);
             doc.text(input_reference_number, 159, 105);
 
-
-
             let bodyData = [];
             this.choosen_products.forEach(element => {      
-                var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_sell, element.p_discount, element.p_sell];
+                var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_unit, element.p_discount, element.p_sell];
   
                 bodyData.push(tmp);
 
@@ -804,11 +813,6 @@ export default {
             autoTable(doc, {
                 //html: '#cms-quote-table',
                 theme: 'striped',
-                /*
-                styles: {
-                    halign: 'right'
-                },
-                */
                 startY: finalY + 112, //important
                 columnStyles: {
                     0: { cellWidth: 65 },
@@ -857,13 +861,13 @@ export default {
             this.return_base64 = base64;
 
 
-
+            uploadQuotePDF(cp);
             
 
 
         },
         
-        async uploadQuotePDF(e) { //step2
+        async uploadQuotePDF(cp) { //step2
             let flag = validate_q_input();
             if (flag){
             const myTimestamp = firebase.firestore.Timestamp.now(); //
@@ -876,7 +880,7 @@ export default {
             const ref = collection(db, "ALL_quote");
             const ref2 = collection(db, "ALL_quote");    
 
-
+            /*
             const s = JSON.parse(JSON.stringify(this.choosen_products));
             console.log(typeof s);
             for (var key in s) {
@@ -886,14 +890,15 @@ export default {
                     let d_discount = "ep_discount_"+key;
                     let cum1 = document.getElementById(d_qty).innerHTML;
                     let cum2 = document.getElementById(d_discount).innerHTML;
-                    console.log(cum1 + "---" + cum2);
+                    console.log(cum1 + "=====" + cum2);
                     
-                    cum1 = s[key].p_quantity;
-                    cum2 = s[key].p_discount;
-                    console.log(s[key].p_quantity + "--------" + s[key].p_discount);
+                    s[key].p_quantity = cum1;
+                    s[key].p_discount = cum2;
+                    console.log(s[key].p_quantity + "======" + s[key].p_discount);
 
                 }
             }
+            */
             /*
             for (const [index, [key, value]] of Object.entries(Object.entries(s))) {
                 console.log(`${index}: ${key} = `);
@@ -926,8 +931,6 @@ export default {
                 
             }
             */
-            
-            //upload multi doc
             ///////////////////////////////////////////////////////////////////////////
             const obj_ref = {          
                 q_bill_fullname: document.getElementById('tmp_b_fullname').innerHTML,
@@ -971,7 +974,6 @@ export default {
                 test2_storage( docRef.id, string, this.return_base64);//use this   
                 //NEW NEW
                 var choosen_product_qty = Object.keys(this.choosen_products).length;
-
                 s["choosen_product_qty"] = choosen_product_qty;
                 get_id
                     .update({
@@ -993,7 +995,7 @@ export default {
             
             var cpq = Object.keys(this.choosen_products).length;
 
-            console.log("   for loop     " + hash);
+            /*
             for (var i=0; i< cpq; ++ i){
                 let d_qty = "ep_qty_"+i;
                 let d_discount = "ep_discount_"+i;
@@ -1023,7 +1025,7 @@ export default {
                     console.log("Data could not be saved." + error);
                 });
                 
-                /*
+               
                 get_id2.update("s",{
                     "p_discount": arrayUnion(cum1) ,
                     "p_quantity": arrayUnion(cum2) ,
@@ -1047,10 +1049,10 @@ export default {
                 }).catch((error)=> {
                 console.log("Data could not be saved." + error);
                 });
-               */
+             
                 
             }
-
+            */
                 
 
 
@@ -1464,6 +1466,13 @@ async function only_decimial(e){
     if (!txt.match(/[0-9.,]/)){
         return false;
     }
+}
+
+function clear_all_input_field(){
+    var inputs = document.getElementsByTagName('input');
+    for (var i = 0; i < inputs.length; i += 1) {
+        inputs[i].value = '';
+    }​​​​
 }
 </script>
 
