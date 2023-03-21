@@ -419,21 +419,21 @@ export default {
     },
     setup() {
         const handleFocusout = (e, pid, df, i) => {
-          //console.log("handleFocusout: " + e.target.id + "   pid= " + pid + "    data-field=" + df + "     i=" + i);
+          ////console.log("handleFocusout: " + e.target.id + "   pid= " + pid + "    data-field=" + df + "     i=" + i);
 
           var updated_field = document.getElementById(e.target.id);
-          console.log("handleFocusout");
+          //console.log("handleFocusout");
 
           let dynamic_sell_id = "add_all_sell"+i;
           let dynamic_qty_id = "ep_qty_"+i;
           let dynamic_ep_discount_id = "ep_discount_"+i;
 
           let cum0 = document.getElementById(dynamic_sell_id).innerHTML;
-          //console.log("handleFocusout1 " + cum0);
+          ////console.log("handleFocusout1 " + cum0);
           let cum1 = document.getElementById(dynamic_qty_id).innerHTML;
-          //console.log("handleFocusout2 " + cum1);
+          ////console.log("handleFocusout2 " + cum1);
           let cum3 = document.getElementById(dynamic_ep_discount_id).innerHTML;
-          //console.log("handleFocusout3 " + cum3);
+          ////console.log("handleFocusout3 " + cum3);
           
           let s_times_q = cum0 * cum1;
           let double_underline = +s_times_q - (+(s_times_q / 100) * +cum3);  ;
@@ -443,21 +443,21 @@ export default {
 
           ///reCalculateFCSubtotal
             let cimulat_du = 0;
-            console.log("recalcu.");
+            //console.log("recalcu.");
             var x = document.getElementById("my_favoriate_table").rows.length;
             for (let rs=0; rs < x-1; ++rs){
                 
                 let dynamic_ = "qd_total_"+rs;
-                console.log("recalcu." + dynamic_);
+                //console.log("recalcu." + dynamic_);
                 var one_du = document.getElementById(dynamic_).innerHTML;
                 cimulat_du = +cimulat_du + +one_du;
 
-                console.log("recalcu.loop" + cimulat_du);
+                //console.log("recalcu.loop" + cimulat_du);
             }
-            console.log("recalcuatle total= " + cimulat_du);
+            //console.log("recalcuatle total= " + cimulat_du);
             document.getElementById('q_subtotal').value = cimulat_du;
           ///reCalculateFCSubtotal
-          //console.log("ABZ" + this.choosen_products);
+          ////console.log("ABZ" + this.choosen_products);
           addVatSHip(cimulat_du);
 
           //change_cp_object();
@@ -588,13 +588,13 @@ export default {
 
         async getAllClient1() {
 
-            ////console.log("[QuoteAdd-getAllClient] print-1");
+            //////console.log("[QuoteAdd-getAllClient] print-1");
             var all_client_ref = await firebase.firestore().collection("all_clients");
             all_client_ref.onSnapshot(snap => {
                 this.all_clients1 = [];
 
                 snap.forEach(d => {
-                    ////console.log("[QuoteAdd-getAllClient] print");
+                    //////console.log("[QuoteAdd-getAllClient] print");
 
                     var client = d.data();
                     
@@ -606,7 +606,7 @@ export default {
         },
         async getAllDelivery() {
 
-        //console.log("[QuoteAdd-getAllClient] print-1" + this.store_bill_2_info);
+        ////console.log("[QuoteAdd-getAllClient] print-1" + this.store_bill_2_info);
 
         const all_client_s_delivey_ref = await firebase.firestore().collection("all_delivery").doc(this.store_bill_2_info).collection("this_client_delivery");
         all_client_s_delivey_ref.onSnapshot(snap => {
@@ -614,7 +614,7 @@ export default {
             //if snap onSnapshot empty()
             this.this_client_delivey = [];
             snap.forEach(d => {
-                ////console.log("[QuoteAdd-getAllClient] print");
+                //////console.log("[QuoteAdd-getAllClient] print");
 
                 var delivery = d.data();
                 this.this_client_delivey.push(delivery);
@@ -624,8 +624,8 @@ export default {
 
         },
         ChooseBillTo(ev, b, i) {
-            ////console.log("[QuoteAdd-ChooseBillTo] comming soon, click client and retrieve text." + ev + "  " + i);
-            ////console.log("[QuoteAdd-ChooseBillTo] you have chosen  " + b.c_fullname);
+            //////console.log("[QuoteAdd-ChooseBillTo] comming soon, click client and retrieve text." + ev + "  " + i);
+            //////console.log("[QuoteAdd-ChooseBillTo] you have chosen  " + b.c_fullname);
 
             document.getElementById('tmp_b_fullname').innerHTML = b.c_fullname;
             document.getElementById('tmp_b_address1').innerHTML = b.c_address_1;
@@ -634,7 +634,7 @@ export default {
             document.getElementById('tmp_b_postcode').innerHTML = b.c_post_code;
 
             this.store_bill_2_info = b.client_hashid;
-            //console.log("[QuoteAdd-ChooseBillTo]store_bill_2_info   " + this.store_bill_2_info);
+            ////console.log("[QuoteAdd-ChooseBillTo]store_bill_2_info   " + this.store_bill_2_info);
 
             this.choosen_client_fullname = b.c_fullname;
 
@@ -646,8 +646,8 @@ export default {
             document.getElementById('tmp_s_postcode').innerHTML = '';
         },
         ChooseShipTo(ev, s, i) {
-            ////console.log("[QuoteAdd-ChooseShipTo] comming soon, click client and retrieve text." + ev + "  " + i);
-            ////console.log("[QuoteAdd-ChooseShipTo] you have chosen" + s.c_fullname);
+            //////console.log("[QuoteAdd-ChooseShipTo] comming soon, click client and retrieve text." + ev + "  " + i);
+            //////console.log("[QuoteAdd-ChooseShipTo] you have chosen" + s.c_fullname);
             document.getElementById('tmp_s_fullname').innerHTML = s.d_fullname;
             document.getElementById('tmp_s_address1').innerHTML = s.d_address_1;
             document.getElementById('tmp_s_address2').innerHTML = s.d_address_2;
@@ -658,8 +658,8 @@ export default {
         },
         async EnterProduct() {
             const typed_product = document.getElementById('p_enter').value;
-            ////console.log("[><QuoteAdd-EnterProduct] ");
-            ////console.log("[><QuoteAdd-EnterProduct] typed_product" + typed_product);
+            //////console.log("[><QuoteAdd-EnterProduct] ");
+            //////console.log("[><QuoteAdd-EnterProduct] typed_product" + typed_product);
             var one_product_ref = await firebase.firestore().collection("all_products").where( 'p_fullname', '==', typed_product );
             one_product_ref
                 .get()
@@ -674,9 +674,9 @@ export default {
                         document.getElementById('p_margin').value = d.data().p_margin;
                         document.getElementById('p_sell1').value = d.data().p_sell;
 
-                        ////console.log(d.data().p_code);
+                        //////console.log(d.data().p_code);
 
-                        ////console.log("[><QuoteAdd-EnterProduct]loop=1 " + one_product);
+                        //////console.log("[><QuoteAdd-EnterProduct]loop=1 " + one_product);
 
                         this.o_products.push(one_product);
                     })
@@ -691,11 +691,11 @@ export default {
         },
 
         async writePDF() {
-            ////console.log("[QuoteAdd-writePDF] write pdf.");
+            //////console.log("[QuoteAdd-writePDF] write pdf.");
 
             const doc = new jsPDF();
             doc.addImage(cms_empty_quote, "JPEG", 0, 0, 210, 297);
-            ////console.log("[QuoteAdd-writePDF] write pdf.");
+            //////console.log("[QuoteAdd-writePDF] write pdf.");
             //
             doc.save("quote.pdf");
         },
@@ -730,24 +730,24 @@ export default {
         },
 
         suggesting() {
-            ////console.log("[QuoteAdd]-suggesting  turn on s_flag");
+            //////console.log("[QuoteAdd]-suggesting  turn on s_flag");
             this.s_flag = true;
         },
         async previewBtn() { //step1
             //NEW NEW NEW--
             const cp = JSON.parse(JSON.stringify(this.choosen_products));
-            console.log(typeof cp);
+            //console.log(typeof cp);
             for (var key in cp) {
                 if (cp.hasOwnProperty(key)) {
-                    console.log(key + " -> " + cp[key].p_fullname);
+                    //console.log(key + " -> " + cp[key].p_fullname);
                     let d_qty = "ep_qty_"+key;
                     let d_discount = "ep_discount_"+key;
                     let cum1 = document.getElementById(d_qty).innerHTML;
                     let cum2 = document.getElementById(d_discount).innerHTML;
-                    console.log(cum1 + "=====" + cum2);
+                    //console.log(cum1 + "=====" + cum2);
                     cp[key].p_quantity = cum1;
                     cp[key].p_discount = cum2;
-                    console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
+                    //console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
 
                 }
             }
@@ -878,60 +878,9 @@ export default {
             let reference_number = document.getElementById('q_reference_number').value;
 
             const ref = collection(db, "ALL_quote");
-            const ref2 = collection(db, "ALL_quote");    
 
-            /*
-            const s = JSON.parse(JSON.stringify(this.choosen_products));
-            console.log(typeof s);
-            for (var key in s) {
-                if (s.hasOwnProperty(key)) {
-                    console.log(key + " -> " + s[key].p_fullname);
-                    let d_qty = "ep_qty_"+key;
-                    let d_discount = "ep_discount_"+key;
-                    let cum1 = document.getElementById(d_qty).innerHTML;
-                    let cum2 = document.getElementById(d_discount).innerHTML;
-                    console.log(cum1 + "=====" + cum2);
-                    
-                    s[key].p_quantity = cum1;
-                    s[key].p_discount = cum2;
-                    console.log(s[key].p_quantity + "======" + s[key].p_discount);
 
-                }
-            }
-            */
-            /*
-            for (const [index, [key, value]] of Object.entries(Object.entries(s))) {
-                console.log(`${index}: ${key} = `);
-                for (const [i, [k, v]] of Object.entries(${value})){
-                    console.log(":::::"    + `${i}: ${k} = `);
-                    if (k == "p_discount"){
-                        let dynamic2 = "ep_discount_"+index;
-                        let z2 =   document.getElementById(dynamic2).value;
-                        choosen_products[key] = z2;
-                        console.log("updating p_dicount.....1" + choosen_products[key] + "  " + z2);
-                    
-                    }
-                    if (key == "p_qty"){   
-                        let dynamic1 =  "ep_qty_"+index;
-                        let z1 =  document.getElementById(dynamic1).value;
-                        choosen_products[key] = z1;
-                        console.log("updating p_dicount....2." + choosen_products[key] + "  " + z1);
-                    }
-                }
-                    
-            }
-            */
-            /*
-            for (const [index, [key, value]]  of Object.entries(s)) {
-                console.log(key + "    -   --- " + value   + "-----  " + index);
-                console.log ("><b" + key + " " + index + " " + choosen_products[key]);
-                if (key == "p_discount"){
-                    
-                }
-                
-            }
-            */
-            ///////////////////////////////////////////////////////////////////////////
+       
             const obj_ref = {          
                 q_bill_fullname: document.getElementById('tmp_b_fullname').innerHTML,
                 q_bill_address1: document.getElementById('tmp_b_address1').innerHTML,
@@ -964,24 +913,24 @@ export default {
                 tf_total: document.getElementById('q_total').innerHTML,
 
             }
-            let hash = '';
-            await addDoc(ref, {obj_ref, s, final_tt})
+
+            await addDoc(ref, {obj_ref, cp, final_tt})
             .then(docRef => {
-                console.log(docRef.id);
-                hash = docRef.id;
+                //console.log(docRef.id);
+
                 const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
                 const string = "/all_quote/" + docRef.id + "/";
                 test2_storage( docRef.id, string, this.return_base64);//use this   
                 //NEW NEW
                 var choosen_product_qty = Object.keys(this.choosen_products).length;
-                s["choosen_product_qty"] = choosen_product_qty;
+                cp["choosen_product_qty"] = choosen_product_qty;
                 get_id
                     .update({
                         quote_hashid: docRef.id,
                         choosen_product_qty: choosen_product_qty,
                     })
                     .then(() => {
-                        console.log("set doc1");
+                        //console.log("set doc1");
 
                         get_id.get().then((d) => {
                         });
@@ -990,22 +939,19 @@ export default {
                 
 
             })
-            
 
-            
-            var cpq = Object.keys(this.choosen_products).length;
 
             /*
             for (var i=0; i< cpq; ++ i){
                 let d_qty = "ep_qty_"+i;
                 let d_discount = "ep_discount_"+i;
 
-                console.log(d_qty + "        " + d_discount);
+                //console.log(d_qty + "        " + d_discount);
 
                 let cum1 = document.getElementById(d_qty).innerHTML;
                 let cum2 = document.getElementById(d_discount).innerHTML;
 
-                console.log(cum1 + "        " + cum2);
+                //console.log(cum1 + "        " + cum2);
                 const get_id2 = firebase.firestore().collection("ALL_quote").doc(hash);
 
                 //https://medium.com/firebase-tips-tricks/how-to-update-an-array-of-objects-in-firestore-cdb611a56073
@@ -1018,11 +964,11 @@ export default {
                 await addDoc(ref, extra)
                 .then(function(docRef) {
                 
-                    console.log("set doc3");
+                    //console.log("set doc3");
 
                    
                 }).catch((error)=> {
-                    console.log("Data could not be saved." + error);
+                    //console.log("Data could not be saved." + error);
                 });
                 
                
@@ -1031,11 +977,11 @@ export default {
                     "p_quantity": arrayUnion(cum2) ,
                 }).then(function(docRef) {
                 
-                    console.log("set doc5");
+                    //console.log("set doc5");
 
                    
                 }).catch((error)=> {
-                console.log("Data could not be saved." + error);
+                //console.log("Data could not be saved." + error);
                 });
                 
                 get_id2.update({
@@ -1043,11 +989,11 @@ export default {
                     [s[i].p_quantity]: cum2,
                 }).then(function(docRef) {
                 
-                    console.log("set doc3");
+                    //console.log("set doc3");
 
                    
                 }).catch((error)=> {
-                console.log("Data could not be saved." + error);
+                //console.log("Data could not be saved." + error);
                 });
              
                 
@@ -1062,18 +1008,18 @@ export default {
         },
         //seperate function
         firebaseStorageUpload() {
-            ////console.log("[firebaseStorageUpload]==================================");
+            
             const storage = getStorage();
             const myTimestamp = firebase.firestore.Timestamp.now();
             const today_year = myTimestamp.toDate().getFullYear();
             const tmp_today_month = myTimestamp.toDate().getMonth();
-            ////console.log("[firebaseStorageUpload] " + myTimestamp + " " + today_year + " " + tmp_today_month);
+            //////console.log("[firebaseStorageUpload] " + myTimestamp + " " + today_year + " " + tmp_today_month);
             const month_folder = this.convert_to_month[tmp_today_month];
 
             //const today_month = convert_month(tmp_today_month);
             const path_string = "/all_quote/" + today_year + "/" + month_folder + "/"
-            ////console.log();
-            ////console.log("[firebaseStorageUpload] + ");
+            //////console.log();
+            //////console.log("[firebaseStorageUpload] + ");
             test2_storage(path_string, this.return_base64);
             const storageref = ref(storage, path_string);
             const uploadtask = uploadBytesResumable(storageref, DATA_HERE);
@@ -1081,11 +1027,11 @@ export default {
             uploadtask.on(
                 'state_changed',
                 (snapshot) => {
-                    ////console.log("[firebaseStorageUpload]  uploaded");
+                    //////console.log("[firebaseStorageUpload]  uploaded");
                     //this.uploadValue = ( snapshot.bytesTransferred / snapshot.totalBytes )*100;
                 },
                 error => {
-                    ////console.log(error.message)
+                    //////console.log(error.message)
                 },
                 () => {
                     this.uploadValue = 'upload success';
@@ -1094,12 +1040,12 @@ export default {
                     });
                 },
                 async () => {
-                    ////console.log("[firebaseStorageUpload] 2 uploaded");
+                    //////console.log("[firebaseStorageUpload] 2 uploaded");
                     downloadUrl.value = await getDownloadURL(uploadtask.snapshot.ref)
 
                 },
             );
-            ////console.log("[firebaseStorageUpload]==================================");
+            //////console.log("[firebaseStorageUpload]==================================");
         },
         danny(){
             let q_number = auto_quote_no_generator2();
@@ -1123,7 +1069,7 @@ export default {
             //firebaseStorageUpload()
         },
         CalculateSubtotal(i){ //not use?
-            console.log("print thi1");
+            //console.log("print thi1");
             choosen_products.forEach(element => {      
 
             this.tmp_sell = this.tmp_sell + element.p_sell;
@@ -1141,7 +1087,7 @@ export default {
                 ans = ans + cum;
                 
             }
-            console.log("print thi2");
+            //console.log("print thi2");
             document.getElementById('q_subtotal').value = this.tmp_ans;
             ////new
             
@@ -1166,7 +1112,7 @@ export default {
         all_product_ref.orderBy("p_insert_date", "desc")
             .onSnapshot((snapshot) => {
             if (snapshot.empty) {
-                ////console.log("[getAllProductsNewest] all_products not exist.")
+                //////console.log("[getAllProductsNewest] all_products not exist.")
                 
             }
             else{
@@ -1175,7 +1121,7 @@ export default {
 
 
                     var product = d.data();
-                    ////console.log("[ProductAll]-2 " + product);
+                    //////console.log("[ProductAll]-2 " + product);
                     this.all_products.push(product);
                 })
             }  
@@ -1188,14 +1134,14 @@ export default {
         all_product_ref.orderBy("p_insert_date", "asc")
             .onSnapshot((snapshot) => {
             if (snapshot.empty) {
-                ////console.log("[getAllProductsNewest] all_products not exist.")
+                //////console.log("[getAllProductsNewest] all_products not exist.")
                 
             }
             else{
                 this.all_products = [];
                 snapshot.forEach(d => {
                     var product = d.data();
-                    ////console.log("[ProductAll]-3 " + product);
+                    //////console.log("[ProductAll]-3 " + product);
                     this.all_products.push(product);
                 })
             }  
@@ -1214,7 +1160,7 @@ export default {
                 this.tmp_sell = this.tmp_sell + tmp_one_sell;
 
                 
-                console.log("!!!!!!!!!2 " + this.tmp_sell + "+" + tmp_one_sell)
+                //console.log("!!!!!!!!!2 " + this.tmp_sell + "+" + tmp_one_sell)
 
                 document.getElementById('q_subtotal').setAttribute('value', this.tmp_sell);
                 
@@ -1227,7 +1173,7 @@ export default {
             })
             new_subtotal = this.tmp_sell;
         })
-        //console.log(new_subtotal);
+        ////console.log(new_subtotal);
         //document.getElementById('q_subtotal').setAttribute('value', this.tmp_sell);
         //new_subtotal= document.getElementById('q_subtotal').value; 
         
@@ -1241,7 +1187,7 @@ export default {
             let i_vat = document.getElementById('q_vat').value;
             let i_shipping = document.getElementById('q_shipping').value;
             //var i_shipping2 = document.getElementById(e.target.id);
-            console.log("SUBtotal input tag changed " + i_shipping + " ");
+            //console.log("SUBtotal input tag changed " + i_shipping + " ");
             let added_vat = +i_subtotal + (+(i_subtotal / 100) * +i_vat); 
             let ans = +added_vat + +i_shipping;
 
@@ -1251,7 +1197,7 @@ export default {
         },
 
         change_cp_object(){
-            console.log("change_cp_object" + this.choosen_products);
+            //console.log("change_cp_object" + this.choosen_products);
         }
         
 
@@ -1321,7 +1267,7 @@ async function auto_quote_no_generator2(){
     
 
      ans =  first_half + addedz;
-     ////console.log("auto_quote_no_generator5 " + ans);
+     //////console.log("auto_quote_no_generator5 " + ans);
     
     
      
@@ -1346,15 +1292,15 @@ async function addVatSHip(i_subtotal){
 
     find_vat = +added_vat - +i_subtotal;
     document.getElementById('q_vat').setAttribute('value', find_vat);
-    console.log("find vat? " + find_vat );
+    //console.log("find vat? " + find_vat );
 
-    console.log("SUBtotal input tag changed added_vat" + added_vat);
+    //console.log("SUBtotal input tag changed added_vat" + added_vat);
 
 
     added_shipping = await +added_vat + +i_shipping;
     final = added_shipping;
 
-    console.log("SUBtotal input tag changed added_vat" + added_shipping);
+    //console.log("SUBtotal input tag changed added_vat" + added_shipping);
     let r_final = Number(final).toFixed(2);
     document.getElementById('q_total').setAttribute('value', r_final);
 
@@ -1370,11 +1316,11 @@ async function addFinalTotal(i){
     let z1 =  await document.getElementById(dynamic1).value;
     let z2 =  await document.getElementById(dynamic2).value;
 
-    console.log("[0 0]" + eles[0] + eles[1]);
+    //console.log("[0 0]" + eles[0] + eles[1]);
     if (z1 == 0 && z2 == 0){
         let dynamic3 = "qd_total_"+i;
         document.getElementById(dynamic3).setAttribute('value', this.tmp_sell);
-        console.log("[0 0]");
+        //console.log("[0 0]");
     }
 }
 
@@ -1389,21 +1335,21 @@ function validate_q_input(){
       var qcc_2 = document.getElementById('tmp_s_fullname');
       var qcc_4 = document.getElementById('q_reference_number');
 
-      console.log("no0" + qc_1 + "      " + qcc_1 + qcc_2 + "     " + x);
+      //console.log("no0" + qc_1 + "      " + qcc_1 + qcc_2 + "     " + x);
 
       if (qc_1.length <= 0){
         document.getElementById("choose_bill_btn").style.background='#990000';
-        console.log("no1");
+        //console.log("no1");
         flag = false;
       }
       if (qc_2.length <= 0){
         document.getElementById("choose_delivery_btn").style.background='#990000';
-        console.log("no2");
+        //console.log("no2");
         flag = false;
       }
       if (x <= 1){
         document.getElementById("add_products_btn").style.background='#990000';
-        console.log("no3");
+        //console.log("no3");
         flag = false;
       }
       if (qc_4.length <= 0){
@@ -1416,25 +1362,25 @@ function validate_q_input(){
 /*
 async function reCalculateFCSubtotal(e){
     let ans = 0;
-    console.log("recalcu.");
+    //console.log("recalcu.");
     var x = await document.getElementById("my_favoriate_table").rows.length;
     for (let rs=0; rs < x-1; ++rs){
         
         let dynamic_ = await "qd_total_"+rs;
-        console.log("recalcu." + dynamic_);
+        //console.log("recalcu." + dynamic_);
         var  tmp_ans = await document.getElementById(dynamic_).innerHTML;
         ans = +ans + +tmp_ans;
 
-        console.log("recalcu.loop" + ans);
+        //console.log("recalcu.loop" + ans);
     }
-    console.log("recalcuatle total= " + ans);
+    //console.log("recalcuatle total= " + ans);
     document.getElementById('q_subtotal').value = await ans;
     return ans;
 }
 
 async function reCalculateFCTotal(e){
 
-    console.log("recal_total");
+    //console.log("recal_total");
     let add_vat = 0;
     let add_shipping = 0;
     let final_total = 0;
@@ -1444,20 +1390,20 @@ async function reCalculateFCTotal(e){
     let i_total = document.getElementById('q_total').value;
 
 
-    console.log("recal_total i_subtotal=  " + i_subtotal + " " + i_vat + " " + i_shipping + " " + i_total);
+    //console.log("recal_total i_subtotal=  " + i_subtotal + " " + i_vat + " " + i_shipping + " " + i_total);
 
     add_vat = i_subtotal * 1.20;
 
-    console.log("recal_total add_vat=  " + add_vat);
+    //console.log("recal_total add_vat=  " + add_vat);
 
     add_shipping = add_vat + i_shipping;
 
-    console.log("recal_total add_shipping= " + add_shipping);
+    //console.log("recal_total add_shipping= " + add_shipping);
 
     final_total = add_shipping;
     i_total = final_total;
 
-    console.log("recal_total");
+    //console.log("recal_total");
 
 }
 */
