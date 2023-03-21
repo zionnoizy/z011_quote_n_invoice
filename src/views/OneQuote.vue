@@ -267,7 +267,7 @@ export default{
         async showQuotePDF(){
             
 
-            document.getElementById('preview_quotenPDF').src = this.this_one_q_pdf_link;
+            document.getElementById('preview_quotenPDF').src = this.this_one_q_pdf_link; //null
         },
         async retrieveOneQuoteInfo(){
             await firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number)
@@ -610,7 +610,7 @@ export default{
                     let d_qty = "ep_qty_"+key;
                     let d_unit = "ep_unit_"+key;
                     let d_discount = "ep_discount_"+key;
-                    let cum1 = document.getElementById(d_qty).innerHTML;
+                    let cum1 = document.getElementById(d_qty).innerHTML; //null
                     let cum2 = document.getElementById(d_unit).innerHTML;
                     let cum3 = document.getElementById(d_discount).innerHTML;
                     //console.log(cum1 + "=====" + cum2);

@@ -117,7 +117,7 @@
                                 <div class="modal-body" style="background-color: #1267aa;">
                                     <div class="px-5 mx-5 grid grid-cols-3 gap-2  ">
                                         <div class="" v-for="s, i in this_client_delivey">
-                                            <div class="client_card row" @click="ChooseShipTo($event, s, i);"
+                                            <div class="delivery_card row" @click="ChooseShipTo($event, s, i);"
                                                 data-bs-dismiss="modal" aria-label="close">
                                                 <div>
                                                     <strong>{{ s.d_fullname }}</strong>
@@ -330,8 +330,8 @@
             <buttons @navigate="navigateTo" ></buttons>
 
             
-            <div class="px-5">
-                <div>
+
+                <div class="px-2">
                 <button class="preview_btn btn btn-info btn-lg btn-block" data-bs-toggle="modal"
                     data-bs-target="#preview_quotation" @click.prevent=previewBtn()> Preview Quotation</button>
                 <!--@click.prevent="uploadQuotePDF($event)" download -->
@@ -373,10 +373,10 @@
                 <!------------------modal end---------------------->
                 </div>
 
-                <div>
-                <button class="preview_btn btn btn-primarybtn-lg btn-block" @click="uploadQuotePDF($event)"> Upload Quote </button>
+                <div class="px-2">
+                <button class="preview_btn btn btn-primary btn-lg btn-block" @click="uploadQuotePDF($event)"> Upload Quote </button>
                 </div>
-            </div>
+
         </div>
 
 
@@ -753,7 +753,7 @@ export default {
 
             const ref = collection(db, "ALL_quote");
 
-            console.log("uploadQuotePDF2---------");
+            console.log("uploadQuotePDF2---------" );
        
             const obj_ref = {          
                 q_bill_fullname: document.getElementById('tmp_b_fullname').innerHTML,
@@ -780,6 +780,8 @@ export default {
                 q_extra_space_4: '',
             }
 
+            const t = document.getElementById('q_subtotal').innerHTML;
+            console.log("uploadQuotePDF2---------" + t ); //empty
             const final_tt = {
                 tf_sub_total: document.getElementById('q_subtotal').innerHTML,
                 tf_vat: document.getElementById('q_vat').innerHTML,

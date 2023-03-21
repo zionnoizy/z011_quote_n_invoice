@@ -13,8 +13,8 @@
         <table class="table table-dark" id="store_to_excel" >
             <thead>
             <tr>
-            <th scope="col"> # </th>
-            <th scope="col"> Code </th>
+            <th scope="col">#</th>
+            <th scope="col">Code</th>
             <th scope="col">Name</th>
             <th scope="col">Category</th>
 
@@ -30,7 +30,7 @@
 
             </tr>
             <tr id="list_of_productss" v-for="p, i in all_products" @blur="handleBlur" @focusout="handleFocusout($event,  p.pid, data-field   )">
-                <td contenteditable="true"> {{i}} </td>
+                <td style="color: grey;"> {{i}} </td>
                 <td contenteditable="true" data-field="p_code" :id= "`ep_code_${i}`" > {{ p.p_code }} </td>
                 <td contenteditable="true" data-field="p_fullname" :id= "`ep_fn_${i}`" > {{ p.p_fullname }} </td>
                 <td contenteditable="true" data-field="p_category" :id= "`ep_category_${i}`"> {{ p.p_category }} </td>
@@ -45,10 +45,10 @@
         
         <figure class="text-center">
           <blockquote class="blockquote">
-            <p>EXPORT + IMPORT, Please refer to 
+            <p>option2: EXPORT + IMPORT, Please refer to 
               <a class="font-weight-bold" style="text-decoration:underline; "  target="_blank"
               href="https://rowy.app/p/quote-n-invoice/table/allProducts#searchPage=0">this link</a> 
-               .Login in as CMS IT gmail. </p>
+               . Login in as CMS IT gmail. </p>
           </blockquote>
           <figcaption class="blockquote-footer">
              <cite title="Source Title"> </cite>

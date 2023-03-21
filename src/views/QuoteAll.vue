@@ -4,12 +4,17 @@
         <button class="btn btn-primary " @click.prevent="getAllQuoteNewest()">Sort From Oldest </button>
         <button class="btn btn-primary " @click.prevent="getAllQuoteOldest()">Sort From Newest </button>
         <!--if (this.selectedIndex)   onfocus="this.selectedIndex = 1;"-->
-        <select id="so_client" class="form-select" aria-label="select client from quote list below, and it will do sorting." @change="doSort1();" onfocus="this.selectedIndex = 1;">
+        <div class="mx-2 grid grid-cols-2 gap-1">
+          <div>
+          <select id="so_client" class="form-select" aria-label="select client from quote list below, and it will do sorting." @change="doSort1();" onfocus="this.selectedIndex = 1;">
           <option selected>Select Client Here</option>
           <option v-for="c in all_clients" :value="`${c.obj_ref.q_bill_fullname}`" > {{ c.obj_ref.q_bill_fullname }} </option>
-        </select>
-        <button class="btn btn-warning" @click.prevent="getAllQuoteOldest()"> Clear List </button>
-
+          </select>
+          </div>
+          <div>
+          <button class="btn btn-warning" @click.prevent="getAllQuoteOldest()"> Clear List </button>
+        </div>
+        </div>
         <table class="table table-dark mx-auto" >
 
                     

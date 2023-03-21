@@ -165,9 +165,9 @@ export default{
       const tmp_ans = +cost + (+(cost / 100) * margin);
 
       //console.log("[ProductAdd]" + cost + " " + margin + " " + tmp_ans);
+      let sell_final = Number(tmp_ans).toFixed(2);
 
-
-      document.getElementById('pi_sell').value = tmp_ans;
+      document.getElementById('pi_sell').value = sell_final;
 
     },
     

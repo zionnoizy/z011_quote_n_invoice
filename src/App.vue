@@ -81,6 +81,14 @@ width: 275px;
 height: 175px;
 }
 
+.delivery_card{
+
+border: 2px solid #1c9fc5;
+padding: 20px;
+width: 275px;
+height: 175px;
+}
+
 
 /* */
 tr:hover {
