@@ -410,7 +410,6 @@ import { app, db, auth } from "@/firebase.js";
 import { arrayUnion, arrayRemove } from "firebase/firestore";
 
 
-
 export default {
     name: 'QuoteAdd',
 
@@ -458,10 +457,10 @@ export default {
             console.log("recalcuatle total= " + cimulat_du);
             document.getElementById('q_subtotal').value = cimulat_du;
           ///reCalculateFCSubtotal
-          console.log("ABZ" + this.choosen_products);
+          //console.log("ABZ" + this.choosen_products);
           addVatSHip(cimulat_du);
 
-          change_cp_object();
+          //change_cp_object();
 
           
         }
@@ -788,6 +787,9 @@ export default {
             doc.text(quote_number, 159, 94);
             doc.text(todayDateTime, 159, 100);
             doc.text(input_reference_number, 159, 105);
+
+
+
             let bodyData = [];
             this.choosen_products.forEach(element => {      
                 var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_sell, element.p_discount, element.p_sell];
@@ -831,13 +833,13 @@ export default {
             const t = document.getElementById('q_total').value;
             //doc.setFontSize(10);
             doc.text('Sub-Total', 139, doc.lastAutoTable.finalY + 20, {align: 'right'})
-            doc.text(st, 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
+            doc.text( Number(st).toFixed(2) , 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
             doc.text('VAT', 139, doc.lastAutoTable.finalY + 25 , {align: 'right'})
-            doc.text(v, 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
+            doc.text( Number(v).toFixed(2), 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
             doc.text('Shipping', 139, doc.lastAutoTable.finalY + 30 , {align: 'right'})
-            doc.text(s, 182, doc.lastAutoTable.finalY + 30 , {align: 'right'})
+            doc.text( Number(s).toFixed(2), 182, doc.lastAutoTable.finalY + 30 , {align: 'right'})
             doc.text('Total', 139, doc.lastAutoTable.finalY + 35 , {align: 'right'})
-            doc.text( t , 182, doc.lastAutoTable.finalY + 35 , {align: 'right'})
+            doc.text( Number(t).toFixed(2)  , 182, doc.lastAutoTable.finalY + 35 , {align: 'right'})
 
             doc.setFontSize(9);
             doc.text('Terms & Instructions', 6,  doc.lastAutoTable.finalY + 40).setFont(undefined, 'bold');
@@ -856,12 +858,12 @@ export default {
 
 
 
-            ////console.log("[previewBtn] +++++++++++++++++++++++++++++++++++++++++++=--");
+            
 
 
         },
-        //https://medium.com/runthatline/uploading-files-to-firebase-cloud-storage-using-vue-3-and-the-composition-api-d8370d1c03f7
-        async uploadQuotePDF(e) {
+        
+        async uploadQuotePDF(e) { //step2
             let flag = validate_q_input();
             if (flag){
             const myTimestamp = firebase.firestore.Timestamp.now(); //
@@ -874,18 +876,56 @@ export default {
             const ref = collection(db, "ALL_quote");
             const ref2 = collection(db, "ALL_quote");    
 
-            
 
             const s = JSON.parse(JSON.stringify(this.choosen_products));
             console.log(typeof s);
-            for (let [key, value] of Object.entries(this.choosen_products)) {
-                console.log(key, value);
-            }
+            for (var key in s) {
+                if (s.hasOwnProperty(key)) {
+                    console.log(key + " -> " + s[key].p_fullname);
+                    let d_qty = "ep_qty_"+key;
+                    let d_discount = "ep_discount_"+key;
+                    let cum1 = document.getElementById(d_qty).innerHTML;
+                    let cum2 = document.getElementById(d_discount).innerHTML;
+                    console.log(cum1 + "---" + cum2);
+                    
+                    cum1 = s[key].p_quantity;
+                    cum2 = s[key].p_discount;
+                    console.log(s[key].p_quantity + "--------" + s[key].p_discount);
 
-            for (let [key, value] of Object.entries(s)) {
-                console.log(key, value);
+                }
             }
-
+            /*
+            for (const [index, [key, value]] of Object.entries(Object.entries(s))) {
+                console.log(`${index}: ${key} = `);
+                for (const [i, [k, v]] of Object.entries(${value})){
+                    console.log(":::::"    + `${i}: ${k} = `);
+                    if (k == "p_discount"){
+                        let dynamic2 = "ep_discount_"+index;
+                        let z2 =   document.getElementById(dynamic2).value;
+                        choosen_products[key] = z2;
+                        console.log("updating p_dicount.....1" + choosen_products[key] + "  " + z2);
+                    
+                    }
+                    if (key == "p_qty"){   
+                        let dynamic1 =  "ep_qty_"+index;
+                        let z1 =  document.getElementById(dynamic1).value;
+                        choosen_products[key] = z1;
+                        console.log("updating p_dicount....2." + choosen_products[key] + "  " + z1);
+                    }
+                }
+                    
+            }
+            */
+            /*
+            for (const [index, [key, value]]  of Object.entries(s)) {
+                console.log(key + "    -   --- " + value   + "-----  " + index);
+                console.log ("><b" + key + " " + index + " " + choosen_products[key]);
+                if (key == "p_discount"){
+                    
+                }
+                
+            }
+            */
             
             //upload multi doc
             ///////////////////////////////////////////////////////////////////////////
@@ -931,6 +971,7 @@ export default {
                 test2_storage( docRef.id, string, this.return_base64);//use this   
                 //NEW NEW
                 var choosen_product_qty = Object.keys(this.choosen_products).length;
+
                 s["choosen_product_qty"] = choosen_product_qty;
                 get_id
                     .update({
@@ -951,6 +992,7 @@ export default {
 
             
             var cpq = Object.keys(this.choosen_products).length;
+
             console.log("   for loop     " + hash);
             for (var i=0; i< cpq; ++ i){
                 let d_qty = "ep_qty_"+i;
@@ -965,31 +1007,35 @@ export default {
                 const get_id2 = firebase.firestore().collection("ALL_quote").doc(hash);
 
                 //https://medium.com/firebase-tips-tricks/how-to-update-an-array-of-objects-in-firestore-cdb611a56073
-                const john = {
-                    "p_discount": "0",
-                }
-                const zion = {
-                    "p_quantity": "0", //1
-                }
 
-                get_id2.update("s",{
-                    "p_discount": FieldValue.arrayRemove(john) ,
-                    "p_quantity": FieldValue.arrayRemove(zion) ,
-                })
                 
-                
-                get_id2.update("s",{
-                    "p_discount": FieldValue.arrayUnion(cum1) ,
-                    "p_quantity": FieldValue.arrayUnion(cum2) ,
-                }).then(function(docRef) {
+                const extra = {
+                    [i.p_discount]: cum1,
+                    [i.p_quantity]: cum2,
+                }
+                await addDoc(ref, extra)
+                .then(function(docRef) {
                 
                     console.log("set doc3");
 
                    
                 }).catch((error)=> {
+                    console.log("Data could not be saved." + error);
+                });
+                
+                /*
+                get_id2.update("s",{
+                    "p_discount": arrayUnion(cum1) ,
+                    "p_quantity": arrayUnion(cum2) ,
+                }).then(function(docRef) {
+                
+                    console.log("set doc5");
+
+                   
+                }).catch((error)=> {
                 console.log("Data could not be saved." + error);
                 });
-
+                
                 get_id2.update({
                     [s[i].p_discount]: cum1,
                     [s[i].p_quantity]: cum2,
@@ -1001,7 +1047,7 @@ export default {
                 }).catch((error)=> {
                 console.log("Data could not be saved." + error);
                 });
-               
+               */
                 
             }
 
@@ -1285,8 +1331,6 @@ async function auto_quote_no_generator2(){
 
 async function addVatSHip(i_subtotal){
 
-    
-
     //let i_subtotal = document.getElementById('q_subtotal').value;
     let i_vat = document.getElementById('q_vat').value;
     let i_shipping = document.getElementById('q_shipping').value;
@@ -1296,9 +1340,6 @@ async function addVatSHip(i_subtotal){
     let added_shipping = 0;
     let final = 0;
 
-    //console.log("is subtotal change? " + i_subtotal );
-    
-    //let i_extra = document.getElementById('q_e1').value;
     added_vat = i_subtotal * 1.20; 
 
     find_vat = +added_vat - +i_subtotal;
@@ -1312,7 +1353,6 @@ async function addVatSHip(i_subtotal){
     final = added_shipping;
 
     console.log("SUBtotal input tag changed added_vat" + added_shipping);
-
     let r_final = Number(final).toFixed(2);
     document.getElementById('q_total').setAttribute('value', r_final);
 
