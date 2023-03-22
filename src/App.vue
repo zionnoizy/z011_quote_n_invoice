@@ -16,9 +16,17 @@
 import right_corner from '@/assets/cms_logo_small.png'
 
 export default {
-  name: 'app' 
+  name: 'app',
+  methods: {
+    Oh_error_exist(whats_going_on_msg) {
+      alert ("Error exist, please report the bug or issue, email to it@companiesms.co.uk with your error message below:");
+      console.log(whats_going_on_msg);
+    },
+  } 
 
 }
+
+
 </script>
 
 <style >
@@ -109,5 +117,15 @@ tr:visited {
 
 tr:hover td {
     background-color: transparent; /* or #000 */
+}
+
+.directory_left{
+
+  position: absolute;
+  left: auto;
+  width: 100px;
+  height: 120px;
+
+
 }
 </style>

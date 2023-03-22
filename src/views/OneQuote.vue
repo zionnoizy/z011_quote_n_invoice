@@ -30,7 +30,7 @@
                 <!--1-->
                 <div>
                     <button class="choose_address_btn border btn btn-secondary" type="button"
-                        data-bs-toggle="modal" data-bs-target="#edit_quotation">
+                        id="m_edit_quotation" data-bs-toggle="modal" data-bs-target="#edit_quotation">
                         Edit Quotation
                     </button>
                     <div class="modal fade" id="edit_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true" >
@@ -119,7 +119,7 @@
                 </div>
                 <div>
                     <button class="border btn btn-secondary" type="button"
-                        data-bs-toggle="modal" data-bs-target="#add_po_number" >
+                        id="m_new_invoice" data-bs-toggle="modal" data-bs-target="#add_po_number" >
                         Create New Invoice From This Quotation w/ PO, Don't Add The Invoice Again If you see right-hand-side has one already.
                     </button>
                     <div class="modal fade" id="add_po_number" tabindex="-1" aria-labelledby="" aria-hidden="true">
@@ -270,13 +270,14 @@ export default{
 
         },
         
-        showQuotePDF(){
-    
-
+        async showQuotePDF(){
+            console.log("??!" + this.copy_q_pdf_link);
             document.getElementById('pdf_quote').src = this.copy_q_pdf_link; 
         },
         async retrieveOneQuoteInfo(){
+
             console.log(this.this_one_q_hash_number);
+
             await firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number)
             .onSnapshot(doc => {
                 var copycat = doc.data();
@@ -300,26 +301,23 @@ export default{
                 this.copy_exact_product = copycat.cp; //
                 this.copy_exact_product_size = copycat.choosen_product_qty;
 
-
-
-                
-
                 this.showREFERENCE.push(this.copy_q_ref);
                 this.showREFERENCE2 = this.copy_q_ref;
                 
 
-                this.copy_ft_sub_total = copycat.obj_ref.tf_sub_total;
-                this.copy_ft_vat = copycat.obj_ref.tf_vat;
-                this.copy_ft_shipping = copycat.obj_ref.tf_shipping;
-                this.copy_ft_total = copycat.obj_ref.tf_total;
+                this.copy_ft_sub_total = copycat.final_tt.tf_sub_total;
+                this.copy_ft_vat = copycat.final_tt.tf_vat;
+                this.copy_ft_shipping = copycat.final_tt.tf_shipping;
+                this.copy_ft_total = copycat.final_tt.tf_total;
 
 
 
                 this.copy_q_pdf_link = copycat.q_pdf_link;
+                document.getElementById('pdf_quote').src = this.copy_q_pdf_link; 
                 
             });
             //[DEBUG]
-            //console.log("=====>     " + this.copy_q_b_f );
+            console.log("??!!" + this.copy_q_pdf_link);
             await document.getElementById('quote_num').setAttribute('value', this.copy_q_ref);
             await document.getElementById('ref_num').setAttribute('value', "debug");
 
@@ -411,8 +409,7 @@ export default{
             ///jspdf time!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             const string = await this.jspdftime(i_number, today, po_number);
 
-            
-            //console.log("string><" + string);
+            console.log("string??????? " + string);
 
             var embed = "<embed src='" + string + "'/>"
             const a = document.getElementById('preview_invoicenPDF');
@@ -427,8 +424,15 @@ export default{
             test_storage( this.invoice_hashid, path, this.return_base64);
             //console.log("calling  test2_storage2     ");
 
+
+            document.getElementById("m_edit_quotation").disabled = true;
+            document.getElementById("m_new_invoice").disabled = true;
+
         },
         async jspdftime(i_number, today, po_number){
+
+            console.log("what " + " what" );
+
             const doc = new jsPDF(); 
             doc.addImage(cms_empty_invoice_no_table, "JPEG", 0, 0, 210, 297);
             doc.setFontSize(10);
@@ -457,6 +461,7 @@ export default{
                 doc.text(this.copy_q_s_pc, 72, 113); 
             }
 
+            console.log(i_number + "what" + today + "what" + po_number);
             doc.text(i_number, 159, 94);
             doc.text(today, 159, 100);
             doc.text(this.copy_q_ref, 159, 105);
@@ -495,6 +500,7 @@ export default{
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
                 body: bodyData,
             })
+            
             doc.setFontSize(12);
             doc.text('Sub-Total', 139, doc.lastAutoTable.finalY + 20, {align: 'right'})
             doc.text(this.copy_ft_sub_total, 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
@@ -508,7 +514,7 @@ export default{
             doc.setFontSize(9);
             doc.text('Terms & Instructions', 6,  doc.lastAutoTable.finalY + 40).setFont(undefined, 'bold');
             doc.text('Quote only valid for 30 days', 6, doc.lastAutoTable.finalY + 44)
-
+            
             var string = await doc.output('datauristring');
             return string;
         },
@@ -633,6 +639,9 @@ export default{
             //another jspdf
             const string = await jspdftime();
             var embed = "<embed src='" + string + "'/>"
+            if (string == undefined || string == null){
+                Oh_error_exist("OneQuote.vue! jspdf cannot return src string in Page!");
+            }
             const z = document.getElementById('preview_invoicenPDF');
             var clone = z.cloneNode(true);
             clone.setAttribute('src', string);
@@ -702,6 +711,20 @@ export default{
             });
         },
 
+        async IFInvoiceExist(){
+            const if_invoice = firebase.firestore().collection("ALL_invoice").where("quote_hashid", "==", this.this_one_q_hash_number);
+            await if_invoice.onSnapshot((snapshot) => {
+            snapshot.docs.forEach(d => {
+                var i = d.data();
+                if ( typeof i.obj_ref.invoice_number !== null){
+                    document.getElementById("m_edit_quotation").disabled = true;
+                    document.getElementById("m_new_invoice").disabled = true;
+                }
+            })
+            })
+            
+        }
+
     },
     created() {
 
@@ -714,6 +737,9 @@ export default{
 
         this.getAllClient();
         this.getAllDelivery();
+
+
+        this.IfInvoiceExist();
         
     },
 }
@@ -829,6 +855,9 @@ async function renewjspdf(){
 
     var string = doc.output('datauristring');
 }
+
+
+
 </script>
 
 <style>

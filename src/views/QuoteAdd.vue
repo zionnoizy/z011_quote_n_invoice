@@ -2,15 +2,17 @@
 <template>
     <div class="QuoteAdd">
 
+
+
         <div class="border">
             calculate tmp_sell: {{ tmp_sell }}
             list of choosen product: <p>{{choosen_products}}</p>
             choosen_client_fullname(not bill to):: {{ choosen_client_fullname }}
         </div>
 
-        <p class="dashboard_txt pt-5 pb-2" style="border-bottom: 3px solid #fff;" ><router-link to="/dashboard/quote" exact>
+        <p class="dashboard_txt pt-5 pb-3 mx-6 text-start" style="border-bottom: 3px solid #fff;" ><router-link to="/dashboard/quote" exact>
             
-            <a><strong class="link">Dashboard</strong></a></router-link>  > Quote Add
+            <a><strong class="link underline">Dashboard</strong></a></router-link>  > Quote Add
           
         </p>
 
@@ -332,8 +334,6 @@
 
             <buttons @navigate="navigateTo" ></buttons>
 
-            
-
                 <div class="px-2">
                 <button class="preview_btn btn btn-info btn-lg btn-block" data-bs-toggle="modal"
                     data-bs-target="#preview_quotation" @click.prevent=previewBtn()> Preview Quotation</button>
@@ -377,16 +377,29 @@
                 </div>
 
                 <div class="px-2">
-                <button class="preview_btn btn btn-primary btn-lg btn-block" @click="uploadQuotePDF($event)"> Upload Quote </button>
+                <button class="preview_btn btn btn-primary btn-lg btn-block" @click.prevent="previewBtn($event);"> Upload Quote </button>
                 </div>
 
         </div>
 
 
 
+        
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="my_toast1" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+            <img src="" class="rounded me-2" alt="">
+            <strong class="me-auto">Bootstrap</strong>
+            <small>11 mins ago</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+            Hello, world! This is a toast message.
+            </div>
+        </div>
+        </div>
 
-
-
+        <embed id="hidden_quotationPDF" width='100%' height='100%' src='' />
 
 
     </div>
@@ -643,9 +656,6 @@ export default {
 
         },
         ChooseBillTo(ev, b, i) {
-            //////console.log("[QuoteAdd-ChooseBillTo] comming soon, click client and retrieve text." + ev + "  " + i);
-            //////console.log("[QuoteAdd-ChooseBillTo] you have chosen  " + b.c_fullname);
-
             document.getElementById('tmp_b_fullname').innerHTML = b.c_fullname;
             document.getElementById('tmp_b_address1').innerHTML = b.c_address_1;
             document.getElementById('tmp_b_address2').innerHTML = b.c_address_2;
@@ -653,8 +663,6 @@ export default {
             document.getElementById('tmp_b_postcode').innerHTML = b.c_post_code;
 
             this.store_bill_2_info = b.client_hashid;
-            ////console.log("[QuoteAdd-ChooseBillTo]store_bill_2_info   " + this.store_bill_2_info);
-
             this.choosen_client_fullname = b.c_fullname;
 
             //clearn ship to
@@ -754,23 +762,23 @@ export default {
         },
         
         
-        async uploadQuotePDF() { //step2
+        async uploadQuotePDF(base64) { //step2
+
             let flag = validate_q_input();
 
-            console.log("uploadQuotePDF---------");
             if (flag){
-            const myTimestamp = firebase.firestore.Timestamp.now();
-            let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK");
-            
-            const quote_number = await auto_quote_no_generator2();
+                const myTimestamp = firebase.firestore.Timestamp.now();
+                let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK");
+                
+                const quote_number = await auto_quote_no_generator2();
 
-            let reference_number = document.getElementById('q_reference_number').value;
+                let reference_number = document.getElementById('q_reference_number').value;
 
-            const ref = collection(db, "ALL_quote");
+                const ref = collection(db, "ALL_quote");
 
-            console.log("uploadQuotePDF2---------" );
-       
-            const obj_ref = {          
+                console.log("uploadQuotePDF2---------" + base64);
+        
+                const obj_ref = {          
                 q_bill_fullname: document.getElementById('tmp_b_fullname').innerHTML,
                 q_bill_address1: document.getElementById('tmp_b_address1').innerHTML,
                 q_bill_address2: document.getElementById('tmp_s_address2').innerHTML, 
@@ -784,7 +792,7 @@ export default {
                 q_ship_postcode: document.getElementById('tmp_s_postcode').innerHTML, 
 
                 q_quote_number: quote_number, 
-                q_invoice_number: '', 
+                q_invoice_number: null, 
                 q_uploaded_date: todayDateTime,
                 q_ref: reference_number,
                 q_po: null,
@@ -796,7 +804,7 @@ export default {
             }
 
             const t = document.getElementById('q_subtotal').value;
-            console.log("uploadQuotePDF2---------" + t ); //empty
+
 
             const final_tt = {
                 tf_sub_total: document.getElementById('q_subtotal').value,
@@ -823,21 +831,26 @@ export default {
 
                 }
             }
-            console.log("uploadQuotePDF3---------");
+            console.log("uploadQuotePDF4---------" + base64);
             await addDoc(ref, {obj_ref, cp, final_tt})
             .then(docRef => {
                 console.log(docRef.id);
 
                 const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
                 const string = "/all_quote/" + docRef.id + "/";
-                test2_storage( docRef.id, string, this.return_base64);//use this   
+                test2_storage( docRef.id, string, base64);//use this 
+
+                console.log("uploadQuotePDF5---------");
                 //NEW NEW
                 var choosen_product_qty = Object.keys(this.choosen_products).length;
                 cp["choosen_product_qty"] = choosen_product_qty;
+                console.log("uploadQuotePDF6---------" + choosen_product_qty);
                 get_id
                 .update({
                     quote_hashid: docRef.id,
                     choosen_product_qty: choosen_product_qty,
+                }).catch((error) => {
+                    console.log(error);
                 })
                     
                     
@@ -848,8 +861,6 @@ export default {
         },
 
         async previewBtn() { //step1
-            
-            
             console.log("previewBtn1---------");
             const doc = new jsPDF(); 
             doc.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297); // w h
@@ -898,19 +909,20 @@ export default {
             doc.text(todayDateTime, 159, 100);
             doc.text(input_reference_number, 159, 105);
             let tt = JSON.parse(JSON.stringify(this.choosen_products));
-            //console.log(typeof cp);
+
             for (var key in tt) {
                 if (tt.hasOwnProperty(key)) {
-                    //console.log(key + " -> " + cp[key].p_fullname);
+
                     let d_qty = "ep_qty_"+key;
+                    let d_unit = "ep_unit_"+key;
                     let d_discount = "ep_discount_"+key;
                     let cum1 = document.getElementById(d_qty).innerHTML;
-                    let cum2 = document.getElementById(d_discount).innerHTML;
-                    //console.log(cum1 + "=====" + cum2);
-                    tt[key].p_quantity = cum1;
-                    tt[key].p_discount = cum2;
-                    //console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
+                    let cum2 = document.getElementById(d_unit).innerHTML;
+                    let cum3 = document.getElementById(d_discount).innerHTML;
 
+                    tt[key].p_quantity = cum1;
+                    tt[key].d_unit = cum2;
+                    tt[key].p_discount = cum3;
                 }
             }
 
@@ -919,8 +931,6 @@ export default {
                 var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_unit, element.p_discount, element.p_sell];
   
                 bodyData.push(tmp);
-
-
             });    
 
             //https://github.com/simonbengtsson/jsPDF-AutoTable/blob/master/examples/examples.js
@@ -938,10 +948,7 @@ export default {
                     5: { cellWidth: 30 },
                     // etc
                 },
-
-
                 tableWidth: 'auto',
-
                 margin: { top: 0, right: 10, bottom: 0, left: 10 }, //important2
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
                 body: bodyData
@@ -951,7 +958,6 @@ export default {
             const v = document.getElementById('q_vat').value;
             const s = document.getElementById('q_shipping').value;
             const t = document.getElementById('q_total').value;
-            //doc.setFontSize(10);
             doc.text('Sub-Total', 139, doc.lastAutoTable.finalY + 20, {align: 'right'})
             doc.text( Number(st).toFixed(2) , 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
             doc.text('VAT', 139, doc.lastAutoTable.finalY + 25 , {align: 'right'})
@@ -968,19 +974,115 @@ export default {
             var string = doc.output('datauristring');
             var embed = "<embed width='100%' height='100%' src='" + string + "'/>"
 
-            const a = document.getElementById('preview_quotationPDF');
+            const a = document.getElementById('hidden_quotationPDF');
             var clone = a.cloneNode(true);
             clone.setAttribute('src', string);
+
+            document.getElementById('hidden_quotationPDF').src = string;
+
             a.parentNode.replaceChild(clone, a);
-
-            var base64 = doc.output('datauri');
-            this.return_base64 = base64;
-
-            console.log("previewBtn3---------");
-            await this.uploadQuotePDF();
             
-            //alert("");
+            var base64 = doc.output('datauri');
+            this.return_base64 = await base64;
 
+            console.log("previewBtn3---------   "    + string + this.return_base64);
+
+            //////
+            let flag = await validate_q_input();
+
+            if (flag){
+            const myTimestamp = firebase.firestore.Timestamp.now();
+            let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK");
+            
+            const quote_number = await auto_quote_no_generator2();
+
+            let reference_number = document.getElementById('q_reference_number').value;
+
+            const ref = collection(db, "ALL_quote");
+
+            console.log("uploadQuotePDF2---------" + base64);
+       
+            const obj_ref = {          
+                q_bill_fullname: document.getElementById('tmp_b_fullname').innerHTML,
+                q_bill_address1: document.getElementById('tmp_b_address1').innerHTML,
+                q_bill_address2: document.getElementById('tmp_s_address2').innerHTML, 
+                q_bill_city: document.getElementById('tmp_b_city').innerHTML,
+                q_bill_postcode: document.getElementById('tmp_b_postcode').innerHTML,
+
+                q_ship_fillname: document.getElementById('tmp_s_fullname').innerHTML,
+                q_ship_address1: document.getElementById('tmp_s_address1').innerHTML,
+                q_ship_address2: document.getElementById('tmp_s_address2').innerHTML, 
+                q_ship_city: document.getElementById('tmp_s_city').innerHTML,
+                q_ship_postcode: document.getElementById('tmp_s_postcode').innerHTML, 
+
+                q_quote_number: quote_number, 
+                q_invoice_number: '', 
+                q_uploaded_date: todayDateTime,
+                q_ref: reference_number,
+                q_po: null,
+                q_uploaded_date_timestamp: serverTimestamp(), //
+                q_extra_space_1: '',
+                q_extra_space_2: '',
+                q_extra_space_3: '',
+                q_extra_space_4: '',
+            }
+
+            const t = document.getElementById('q_subtotal').value;
+
+
+            const final_tt = {
+                tf_sub_total: document.getElementById('q_subtotal').value,
+                tf_vat: document.getElementById('q_vat').value,
+                tf_shipping: document.getElementById('q_shipping').value,
+                tf_total: document.getElementById('q_total').value,
+
+            }
+            
+            //NEW NEW NEW--
+            const cp = JSON.parse(JSON.stringify(this.choosen_products));
+            //console.log(typeof cp);
+            for (var key in cp) {
+                if (cp.hasOwnProperty(key)) {
+                    //console.log(key + " -> " + cp[key].p_fullname);
+                    let d_qty = "ep_qty_"+key;
+                    let d_discount = "ep_discount_"+key;
+                    let cum1 = document.getElementById(d_qty).innerHTML;
+                    let cum2 = document.getElementById(d_discount).innerHTML;
+                    //console.log(cum1 + "=====" + cum2);
+                    cp[key].p_quantity = cum1;
+                    cp[key].p_discount = cum2;
+                    //console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
+
+                }
+            }
+            console.log("uploadQuotePDF4---------" + base64);
+            await addDoc(ref, {obj_ref, cp, final_tt})
+            .then(docRef => {
+                console.log(docRef.id);
+
+                const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
+                const string = "/all_quote/" + docRef.id + "/";
+                test2_storage( docRef.id, string, base64);//use this 
+
+                console.log("uploadQuotePDF5---------");
+                //NEW NEW
+                var choosen_product_qty = Object.keys(this.choosen_products).length;
+                cp["choosen_product_qty"] = choosen_product_qty;
+                console.log("uploadQuotePDF6---------" + choosen_product_qty);
+                get_id
+                .update({
+                    quote_hashid: docRef.id,
+                    choosen_product_qty: choosen_product_qty,
+                }).catch((error) => {
+                    console.log(error);
+                })
+                    
+                    
+                
+
+            })
+            }//flag
+            //////
         },
 
         //seperate function
@@ -995,8 +1097,6 @@ export default {
 
             //const today_month = convert_month(tmp_today_month);
             const path_string = "/all_quote/" + today_year + "/" + month_folder + "/"
-            //////console.log();
-            //////console.log("[firebaseStorageUpload] + ");
             test2_storage(path_string, this.return_base64);
             const storageref = ref(storage, path_string);
             const uploadtask = uploadBytesResumable(storageref, DATA_HERE);
@@ -1187,7 +1287,20 @@ export default {
     return false;
   }
 
-},
+        },
+
+        showOkayToast(){
+            console.log("show toast");
+            /*
+            const toastLiveExample = document.getElementById('my_toast1')
+            toastTrigger.addEventListener('click', () => {
+                const toast = new bootstrap.Toast(toastLiveExample)
+
+                toast.show()
+            })
+            */
+
+        }
             
     },
     created() {
