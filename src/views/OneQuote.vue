@@ -247,27 +247,16 @@ export default{
     methods:{
 
         async loadInvoicePDF(){
-
+            console.log(this.this_one_q_hash_number);
             const find_invoice_pdf = firebase.firestore().collection("ALL_invoice").where("quote_hashid", "==", this.this_one_q_hash_number);
             await find_invoice_pdf.onSnapshot((snapshot) => {
-
-            snapshot.docs.forEach(d => {
-
                 var i = d.data();
-
-                //console.log("=======find existed invoice pdf" + i.i_pdf_link);
-
+                console.log("=======find existed invoice pdf" + i.i_pdf_link);
                 if ( typeof i.i_pdf_link !== 'undefined'){
                     this.this_one_i_pdf_link = i.i_pdf_link;
                     document.getElementById('preview_invoicenPDF').src = this.this_one_i_pdf_link;
-
                 }
-                
             })
-            })
-            
-
-
         },
         
         async showQuotePDF(){
@@ -314,18 +303,19 @@ export default{
 
                 this.copy_q_pdf_link = copycat.q_pdf_link;
                 document.getElementById('pdf_quote').src = this.copy_q_pdf_link; 
-                
+
             });
             //[DEBUG]
-            console.log("??!!" + this.copy_q_pdf_link);
+            
             await document.getElementById('quote_num').setAttribute('value', this.copy_q_ref);
-            await document.getElementById('ref_num').setAttribute('value', "debug");
-
+            await document.getElementById('ref_num').setAttribute('value', q_ref);
+            console.log("??!!" + copy_ft_vat);
 
         }, 
 
         async submitQuotation(use_this_hash){
 
+            
             let i_number = await auto_invoice_no_generator3(this.copy_q_number);   
             const myTimestamp = firebase.firestore.Timestamp.now();
             let today = myTimestamp.toDate().toLocaleDateString("en-UK");     
@@ -355,39 +345,31 @@ export default{
                 qi_extra_space_2: '',
                 qi_extra_space_3: '',
                 qi_extra_space_4: '',
-                
-
-
-                
-                
             }
             const price_ref = {
-                qi_subtotal: "subtotal",
-                qi_vat: "vat",
-                qi_shipping: "ship1",
+                qi_subtotal: this.copy_ft_sub_total,
+                qi_vat: this.copy_ft_vat,
+                qi_shipping: this.copy_ft_shipping,
                 qi_extra_1: 0,
                 qi_extra_2: 0,
                 qi_extra_3: 0,
                 qi_extra_4: 0,
-                qi_total: "total",
+                qi_total: this.copy_ft_total,
             }
 
             const pro_ref = this.copy_exact_product;
 
             await addDoc(ref, {obj_ref, pro_ref, price_ref}) 
             .then(docRef => {
-                
                 const get_id = firebase.firestore().collection("ALL_invoice").doc(docRef.id);
                 const string = "/ALL_invoice/" + use_this_hash + "/" + docRef.id + "/";
-
                 this.invoice_hashid = docRef.id;
                 console.log(docRef.id + "     " + use_this_hash);
-    
+
                 get_id
                 .update({
                     invoice_hashid: docRef.id,
                     quote_hashid: use_this_hash,
-
                 })
                 .then(() => {
                     const allInvoiceRef = firebase.firestore().collection('ALL_invoice');
@@ -409,7 +391,7 @@ export default{
             ///jspdf time!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             const string = await this.jspdftime(i_number, today, po_number);
 
-            console.log("string??????? " + string);
+            
 
             var embed = "<embed src='" + string + "'/>"
             const a = document.getElementById('preview_invoicenPDF');
@@ -422,22 +404,25 @@ export default{
             //console.log("calling  test2_storage1     " + this.invoice_hashid + " ");
             const path = "/all_invoice/" + this.invoice_hashid + "/";
             test_storage( this.invoice_hashid, path, this.return_base64);
-            //console.log("calling  test2_storage2     ");
-
 
             document.getElementById("m_edit_quotation").disabled = true;
             document.getElementById("m_new_invoice").disabled = true;
-
         },
+
+
+
+
         async jspdftime(i_number, today, po_number){
 
             console.log("what " + " what" );
-
+            console.log(this.copy_ft_sub_total + "--" + this.copy_ft_vat + "--" + this.copy_ft_shipping + "--" + this.copy_ft_total);
+            
             const doc = new jsPDF(); 
             doc.addImage(cms_empty_invoice_no_table, "JPEG", 0, 0, 210, 297);
             doc.setFontSize(10);
             doc.text(this.copy_q_b_f, 6, 93);
             doc.text(this.copy_q_b_a1, 6, 98);
+
             if (this.copy_q_b_a2 == '' || this.copy_q_b_a2 == null){
                 doc.text(this.copy_q_b_c, 6, 103);
                 doc.text(this.copy_q_b_pc, 6, 108);
@@ -504,12 +489,15 @@ export default{
             doc.setFontSize(12);
             doc.text('Sub-Total', 139, doc.lastAutoTable.finalY + 20, {align: 'right'})
             doc.text(this.copy_ft_sub_total, 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
+
             doc.text('VAT', 139, doc.lastAutoTable.finalY + 25 , {align: 'right'})
-            doc.text(this,copy_ft_vat, 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
+            doc.text(this.copy_ft_vat, 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
+
             doc.text('Shipping', 139, doc.lastAutoTable.finalY + 30 , {align: 'right'})
             doc.text(this.copy_ft_shipping, 182, doc.lastAutoTable.finalY + 30 , {align: 'right'})
+
             doc.text('Total', 139, doc.lastAutoTable.finalY + 35 , {align: 'right'})
-            doc.text( this.copy_ft_total , 182, doc.lastAutoTable.finalY + 35 , {align: 'right'})
+            doc.text(this.copy_ft_total , 182, doc.lastAutoTable.finalY + 35 , {align: 'right'})
 
             doc.setFontSize(9);
             doc.text('Terms & Instructions', 6,  doc.lastAutoTable.finalY + 40).setFont(undefined, 'bold');
@@ -723,14 +711,14 @@ export default{
             })
             })
             
-        }
+        },
 
     },
     created() {
 
         this.retrieveOneQuoteInfo();
 
-        this.showQuotePDF();
+        
         this.loadInvoicePDF();
         
         
