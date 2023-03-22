@@ -249,13 +249,20 @@ export default{
         async loadInvoicePDF(){
             console.log(this.this_one_q_hash_number);
             const find_invoice_pdf = firebase.firestore().collection("ALL_invoice").where("quote_hashid", "==", this.this_one_q_hash_number);
-            await find_invoice_pdf.onSnapshot((snapshot) => {
-                var i = d.data();
-                console.log("=======find existed invoice pdf" + i.i_pdf_link);
-                if ( typeof i.i_pdf_link !== 'undefined'){
-                    this.this_one_i_pdf_link = i.i_pdf_link;
-                    document.getElementById('preview_invoicenPDF').src = this.this_one_i_pdf_link;
-                }
+            await find_invoice_pdf.onSnapshot((ss) => {
+                ss.docs.forEach(d => {
+
+                    
+                    var invoice_pdf = d.data().i_pdf_link;  //p_final_total
+
+                    console.log("d.data().i_pdf_link" +d.data().i_pdf_link);
+
+                    if (invoice_pdf){ //i.i_pdf_link !== 'undefined'
+                        document.getElementById('preview_invoicenPDF').src = i.i_pdf_link;
+                    }
+                
+                })
+
             })
         },
         
@@ -308,7 +315,7 @@ export default{
             //[DEBUG]
             
             await document.getElementById('quote_num').setAttribute('value', this.copy_q_ref);
-            await document.getElementById('ref_num').setAttribute('value', q_ref);
+            //await document.getElementById('ref_num').setAttribute('value', this.q_ref);
             console.log("??!!" + copy_ft_vat);
 
         }, 
@@ -393,18 +400,7 @@ export default{
 
             
 
-            var embed = "<embed src='" + string + "'/>"
-            const a = document.getElementById('preview_invoicenPDF');
-            var clone = a.cloneNode(true);
-            clone.setAttribute('src', string);
-            a.parentNode.replaceChild(clone, a);
-            var base64 = doc.output('datauri');
-            this.return_base64 = base64;
-            //
-            //console.log("calling  test2_storage1     " + this.invoice_hashid + " ");
-            const path = "/all_invoice/" + this.invoice_hashid + "/";
-            test_storage( this.invoice_hashid, path, this.return_base64);
-
+            
             document.getElementById("m_edit_quotation").disabled = true;
             document.getElementById("m_new_invoice").disabled = true;
         },
@@ -504,6 +500,20 @@ export default{
             doc.text('Quote only valid for 30 days', 6, doc.lastAutoTable.finalY + 44)
             
             var string = await doc.output('datauristring');
+            var embed = "<embed src='" + string + "'/>"
+            const a = document.getElementById('preview_invoicenPDF');
+            var clone = a.cloneNode(true);
+            clone.setAttribute('src', string);
+            a.parentNode.replaceChild(clone, a);
+            
+            var base64 = doc.output('datauri');
+            this.return_base64 = base64;
+            //
+            //console.log("calling  test2_storage1     " + this.invoice_hashid + " ");
+            const path = "/all_invoice/" + this.invoice_hashid + "/";
+            test_storage( this.invoice_hashid, path, this.return_base64);
+
+
             return string;
         },
         generatePDFSecret(q_number, today){
@@ -700,17 +710,38 @@ export default{
         },
 
         async IFInvoiceExist(){
-            const if_invoice = firebase.firestore().collection("ALL_invoice").where("quote_hashid", "==", this.this_one_q_hash_number);
-            await if_invoice.onSnapshot((snapshot) => {
-            snapshot.docs.forEach(d => {
-                var i = d.data();
-                if ( typeof i.obj_ref.invoice_number !== null){
+
+            console.log( this.this_one_q_hash_number);
+            let flag = false;
+            const if_invoice = firebase.firestore().collection("ALL_invoice").where("quote_hashid", "==", this.this_one_q_hash_number).get().then((qSnap) => {
+            if (qSnap.empty) {
+                console.log("No cart found for user")
+                flag = false;
+                return flag;
+            } else {
+
+                document.getElementById("m_edit_quotation").disabled = true; //always run this?
+                document.getElementById("m_new_invoice").disabled = true; //always run this?
+                flag = true;
+                return flag;
+            }
+            }) 
+            /*
+            if_invoice.onSnapshot((ss) => {
+                if (ss.exists()) {
+                    console.log("tag exists!" + ss.data());
                     document.getElementById("m_edit_quotation").disabled = true;
                     document.getElementById("m_new_invoice").disabled = true;
+                    flag = true;
+                    return flag;
+                 
+                } else {   
+                    console.log("tag does not exist"); 
+                    flag = false;
+                    return flag;
                 }
             })
-            })
-            
+            */
         },
 
     },
@@ -718,8 +749,9 @@ export default{
 
         this.retrieveOneQuoteInfo();
 
-        
-        this.loadInvoicePDF();
+        let flag = this.IFInvoiceExist();
+        if (flag)
+            this.loadInvoicePDF();
         
         
 
@@ -727,7 +759,7 @@ export default{
         this.getAllDelivery();
 
 
-        this.IfInvoiceExist();
+        
         
     },
 }
@@ -831,7 +863,7 @@ async function renewjspdf(){
     doc.text('Sub-Total', 139, doc.lastAutoTable.finalY + 20, {align: 'right'})
     doc.text(this.copy_ft_sub_total, 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
     doc.text('VAT', 139, doc.lastAutoTable.finalY + 25 , {align: 'right'})
-    doc.text(this,copy_ft_vat, 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
+    doc.text(this.copy_ft_vat, 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
     doc.text('Shipping', 139, doc.lastAutoTable.finalY + 30 , {align: 'right'})
     doc.text(this.copy_ft_shipping, 182, doc.lastAutoTable.finalY + 30 , {align: 'right'})
     doc.text('Total', 139, doc.lastAutoTable.finalY + 35 , {align: 'right'})

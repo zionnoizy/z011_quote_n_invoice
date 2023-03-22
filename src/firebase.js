@@ -80,11 +80,11 @@ export const test2_storage = (quote_or_invoice_hash, fullPath, pdf_base64) => {
 }
 
 export const test_storage = (invoice_hash, fullPath, pdf_base64) => {
-
+  console.log("set doc in Inoice?");
   const image_ref = ref(storage, fullPath);
   const storage_ref = ref(storage, fullPath + invoice_hash+".pdf");
 
-
+  console.log("set doc in Inoice?");
   uploadString(storage_ref, pdf_base64, 'data_url')
   .then((snapshot) => {
 
@@ -99,11 +99,12 @@ export const test_storage = (invoice_hash, fullPath, pdf_base64) => {
           i_pdf_link: url.toString(),
       })
       .then(() => {
-          console.log("set doc" + url.toString());
+          console.log("set doc in Inoice?" + url.toString());
 
-          get_id.get().then((d) => {
-              //console.log("updated data:", d.data());
-          });
+      })
+      .catch((e) => {
+        console.log("set doc in Inoice?" + e);
+
       });
       tmp = url.toString();
 
