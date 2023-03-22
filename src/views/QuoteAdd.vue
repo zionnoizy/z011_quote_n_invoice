@@ -204,7 +204,7 @@
                             <div class="modal-content text-black">
 
                                 <div class="modal-header">
-                                    <h4 class="modal-title"> Choose From Product Below</h4>
+                                    <h4 class="modal-title"> Choose From Product Below (Only Press Once, No Need to Double Click)</h4>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="close">X</button>
                                 </div>
@@ -277,7 +277,7 @@
                 <div>
                     <table class="table table-dark" id="my_favoriate_table">
                         <thead>
-                            <tr class="d-flex">
+                            <tr class="">
                                 <th class="col-5" scope="col">Choosen Product Name</th>
                                 <th class="col" scope="col">Product Code</th>
                                 <th scope="col">Product Category</th>
@@ -287,6 +287,7 @@
                                 <th scope="col" style="color:grey;">Add Qunatity #</th>
                                 <th scope="col" style="color:grey;" title="This is the text of the tooltip">Add Unit (eg. mm, box)</th>
                                 <th scope="col" style="color:grey;">Add Discount %</th>
+                                <th scope="col" style="color:grey;">Discount Deduction £ </th>
                                 <th scope="col" style="color:grey; text-decoration-line: underline; text-decoration-style: double;">Final Total</th>
                                 <th scope="col"> Delete</th>
                             </tr>
@@ -306,10 +307,12 @@
                                 <td :ref="'add_all_sell'+i" :id="'add_all_sell'+i" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i);" style="text-decoration:underline;"> 
                                     {{ p.p_sell }} 
                                 </td>
-                                <td contenteditable="true"  data-field="p_qty" :id="`ep_qty_${i}`" th:onChange="c();" > {{p.p_quantity}} </td>
+                                <td contenteditable="true"  data-field="p_qty" :id="`ep_qty_${i}`"  > {{p.p_quantity}} </td>
                                 <td contenteditable="true"  data-field="p_unit" :id="`ep_unit_${i}`" th:onChange="c();" > {{p.p_unit}} </td>
                                 <td contenteditable="true"  data-field="p_discount" :id= "`ep_discount_${i}`" th:onChange="c();">{{p.p_discount}}</td>
                                 
+                                <td contenteditable="true"  data-field="p_m_discount" :id= "`ep_m_discount_${i}`" th:onChange="c();"> - </td>
+
                                 <td :ref="'qd_total_sell'+i" :id="`qd_total_${i}`" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i)" style="text-decoration-line: underline; text-decoration-style: double;" >
                                     {{ p.p_final_total }} 
                                 </td>
@@ -344,7 +347,7 @@
                         <div class="modal-content text-black" style="height:1000px;">
 
                             <div class="modal-header">
-                                <h4 class="modal-title"> Preview Qutotation, Please make sure all information is correct. </h4>
+                                <h4 class="modal-title"> Preview Qutotation, Please make sure all information is fill-out. </h4>
 
                             </div>
 
@@ -433,17 +436,29 @@ export default {
           let dynamic_ep_discount_id = "ep_discount_"+i;
 
           let cum0 = document.getElementById(dynamic_sell_id).innerHTML;
-          ////console.log("handleFocusout1 " + cum0);
           let cum1 = document.getElementById(dynamic_qty_id).innerHTML;
-          ////console.log("handleFocusout2 " + cum1);
           let cum3 = document.getElementById(dynamic_ep_discount_id).innerHTML;
-          ////console.log("handleFocusout3 " + cum3);
+
           
           let s_times_q = cum0 * cum1;
-          let double_underline = +s_times_q - (+(s_times_q / 100) * +cum3);  ;
-          //final goal
-          let dynamic_each_p_total_id = "qd_total_"+i;
-          document.getElementById(dynamic_each_p_total_id).innerHTML = double_underline;
+          if(cum3 != 0){
+            let s_minus_d = s_times_q - (+(s_times_q / 100) * +cum3);;
+
+            let dynamic_m_discount_id = "ep_m_discount_"+i;
+            let cum4 = document.getElementById(dynamic_m_discount_id).innerHTML;
+            cum4 = s_minus_d;
+            let double_underline = +s_times_q - +cum4  ;
+            //final goal
+            let dynamic_each_p_total_id = "qd_total_"+i;
+            document.getElementById(dynamic_each_p_total_id).innerHTML = double_underline;
+          }
+          else{
+            let double_underline = +s_times_q;
+            let dynamic_each_p_total_id = "qd_total_"+i;
+            document.getElementById(dynamic_each_p_total_id).innerHTML = double_underline;
+          }
+
+          
 
           ///reCalculateFCSubtotal
             let cimulat_du = 0;
@@ -836,7 +851,7 @@ export default {
             
             console.log("previewBtn1---------");
             const doc = new jsPDF(); 
-            doc.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297);
+            doc.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297); // w h
             //A-add all48 text
             const oo_b_fullname = document.getElementById('tmp_b_fullname').innerHTML;
             const oo_b_a1 = document.getElementById('tmp_b_address1').innerHTML;
@@ -1159,9 +1174,19 @@ export default {
 
         change_cp_object(){
             //console.log("change_cp_object" + this.choosen_products);
-        }
+        },
         
+        
+        testCharacter(event) {
+  if ((event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode === 13) {
+    console.log("number");
+    return true;
+  } else {
+    console.log("no number!")
+    return false;
+  }
 
+},
             
     },
     created() {

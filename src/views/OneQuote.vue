@@ -65,8 +65,7 @@
                                             <div class="flex-grow-0 mx-2 px-3">
                                                 <label>3.REFERENCE NUMBER</label>
                                                 <p><strong> {{ showREFERENCE2 }} </strong></p>
-                                                <!-- <input ref="i_reference" placeholder="Change Your Reference" id="i_reference" required/>  -->
-                                            </div> 
+                                                
                                         </div>   
                                         <div class="mx-auto" style="display: flex;;">
                                             <label>4. Quote No. </label>
@@ -105,12 +104,12 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                    </div>
                                     <div class="modal-footer" style="background-color: #1267aa;">
                                         <button type="button" data-bs-dismiss="modal" aria-label="close" class="btn btn-warning" @click="UpdateQuote($event, this.this_one_q_hash_number)">SAVE / CHANGE YOUR QUOTE</button>
                                     </div>
+                                </div>
                             </div>
-
 
 
 
@@ -265,7 +264,7 @@ export default{
         },
         
         async showQuotePDF(){
-            
+            console.log(this.this_one_q_pdf_link);
 
             document.getElementById('preview_quotenPDF').src = this.this_one_q_pdf_link; //null
         },
@@ -299,7 +298,7 @@ export default{
 
                 this.showREFERENCE.push(this.copy_q_ref);
                 this.showREFERENCE2 = this.copy_q_ref;
-                document.getElementById('i_reference').value = this.showREFERENCE2;
+                
 
                 this.copy_ft_sub_total = copycat.obj_ref.tf_sub_total;
                 this.copy_ft_vat = copycat.obj_ref.tf_vat;
@@ -607,10 +606,10 @@ export default{
             for (var key in cep) {
                 if (cep.hasOwnProperty(key)) {
 
-                    let d_qty = "ep_qty_"+key;
-                    let d_unit = "ep_unit_"+key;
-                    let d_discount = "ep_discount_"+key;
-                    let cum1 = document.getElementById(d_qty).innerHTML; //null
+                    let d_qty = "i_quality"+key;
+                    let d_unit = "i_unit"+key;
+                    let d_discount = "i_discount"+key;
+                    let cum1 = document.getElementById(d_qty).innerHTML; //
                     let cum2 = document.getElementById(d_unit).innerHTML;
                     let cum3 = document.getElementById(d_discount).innerHTML;
                     //console.log(cum1 + "=====" + cum2);

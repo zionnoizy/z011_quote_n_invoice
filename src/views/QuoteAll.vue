@@ -52,6 +52,8 @@
                   <td scope="col" style="width: 150px;"> {{ p.obj_ref.q_po }} </td> <!--{{ p.q_po }}-->
                   <td scope="col" style="width: 200px;"> {{ p.obj_ref.q_uploaded_date }} </td>
 
+                  <!-- <td scope="col" style="width: 200px;"> {{ p.q_pdf_link }} </td> -->
+
 
               </router-link>
 
@@ -141,6 +143,7 @@ export default{
 
         //console.log("[getAllQuote]=====================");
         var all_quote_ref = await firebase.firestore().collection("ALL_quote");
+        all_quote_ref.orderBy("obj_ref.q_uploaded_date_timestamp", "desc")
 
         all_quote_ref.onSnapshot(snap => {
             this.all_quotes = [];

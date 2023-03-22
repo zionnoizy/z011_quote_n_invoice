@@ -33,7 +33,7 @@
                   </div>
                   <div class="modal-body" style="background-color: #1267aa;">
                       <div class="px-5 mx-5 grid grid-cols-3 gap-2  ">
-                          <div class="" v-for="d, i in this_client_delivey">
+                          <div class="" v-for="d in toRender" :key="d">
                               <div class="delivery_card row">
                                   <div>
                                       <strong>{{ d.d_fullname }}</strong>
@@ -50,12 +50,13 @@
 
                               </div>
 
+                              
 
 
 
                           </div>
                       </div>
-
+                      <button @click="loadnext()">next</button>
 
                   </div>
                   
@@ -80,13 +81,23 @@ export default{
             all_client_card: [],
             delivery_fullname: '',
             this_client_delivey: [],
+
+            
+            start:0,
+            end: 1,
+            toRender: [],
         }
     },
+    mounted () {
+
+     
+    },
     methods:{
+
         async getAllClient() { 
         var all_client_ref = await firebase.firestore().collection("all_clients");
 
-        all_client_ref.onSnapshot(snap => {
+        await all_client_ref.onSnapshot(snap => {
             this.all_client_card = [];
             
             snap.forEach(d => {
@@ -96,20 +107,42 @@ export default{
         });
         
         
-      },
-      async showDelivery(e, c, i) {
-        this.delivery_fullname = c.c_fullname;
-        const delivey_ref = await firebase.firestore().collection("all_delivery").doc(c.client_hashid).collection("this_client_delivery");
-        delivey_ref.onSnapshot(snap => {
-            this.this_client_delivey = [];
-            snap.forEach(d => {
-                var delivery = d.data();
-                this.this_client_delivey.push(delivery);
+        },
+        async showDelivery(e, c, i) {
+          this.delivery_fullname = c.c_fullname;
+          const delivey_ref = await firebase.firestore().collection("all_delivery").doc(c.client_hashid).collection("this_client_delivery");
+          await delivey_ref.onSnapshot(snap => {
+              this.this_client_delivey = [];
+              snap.forEach(d => {
+                  var delivery = d.data();
+                  this.this_client_delivey.push(delivery);
 
-            });
-        });
+              });
+              console.log("?" +this.this_client_delivey);
+          this.loadnext(this.this_client_delivey);
+          });
+          
+        },
 
-      },
+
+        loadnext(this_client_delivey) {
+          this.toRender = [];
+          const no_proxy = JSON.parse(JSON.stringify(this_client_delivey)); //
+
+          console.log(">" + no_proxy);
+
+          for (let i = this.start; i < this.end; i++){
+            if (no_proxy[i] !== undefined){
+              this.toRender.push(no_proxy[i])
+              console.log(no_proxy[i]);
+              
+            }
+          }
+          this.start = this.start + this.toRender.length;
+          this.end =  this.start + this.toRender.length;
+          
+
+        },
     },
     created(){
       this.getAllClient();

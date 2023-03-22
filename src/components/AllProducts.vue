@@ -29,7 +29,7 @@
 
 
             </tr>
-            <tr id="list_of_productss" v-for="p, i in all_products" @blur="handleBlur" @focusout="handleFocusout($event,  p.pid, data-field   )">
+            <tr id="list_of_productss" v-for="p, i in all_products" @blur="handleBlur" @focusout="handleFocusout( $event,  p.pid, data-field   )">
                 <td style="color: grey;"> {{i}} </td>
                 <td contenteditable="true" data-field="p_code" :id= "`ep_code_${i}`" > {{ p.p_code }} </td>
                 <td contenteditable="true" data-field="p_fullname" :id= "`ep_fn_${i}`" > {{ p.p_fullname }} </td>
@@ -123,9 +123,12 @@ export default{
 
         }
     },
-    components: {
-
+    computed:{
+        currentPageItems(){
+          return this.perguntas.slice(this.pageNumber*this.perpage, this.pageNumber*this.perpage+1+this.perpage)
+        }
     },
+
     methods: {
 
       async getAllProductsNewest() { 
