@@ -795,13 +795,14 @@ export default {
                 q_extra_space_4: '',
             }
 
-            const t = document.getElementById('q_subtotal').innerHTML;
+            const t = document.getElementById('q_subtotal').value;
             console.log("uploadQuotePDF2---------" + t ); //empty
+
             const final_tt = {
-                tf_sub_total: document.getElementById('q_subtotal').innerHTML,
-                tf_vat: document.getElementById('q_vat').innerHTML,
-                tf_shipping: document.getElementById('q_shipping').innerHTML,
-                tf_total: document.getElementById('q_total').innerHTML,
+                tf_sub_total: document.getElementById('q_subtotal').value,
+                tf_vat: document.getElementById('q_vat').value,
+                tf_shipping: document.getElementById('q_shipping').value,
+                tf_total: document.getElementById('q_total').value,
 
             }
             

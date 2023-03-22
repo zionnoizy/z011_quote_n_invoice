@@ -14,10 +14,10 @@
             
             <div class="  mx-auto" style="">
                 <div class=" grid gird-cols-1 lg:grid-cols-2 gap-5" style="z-index: 2;">
-                    <div><button class="btn btn-primary btn-lg mt-5 mb-4 font-weight-bold" style="background-color: rgb(161, 204, 254) !important; border: none; height: 75px;">
+                    <div><button class="btn btn-primary btn-lg mt-5 mb-4 font-weight-bold" style="background-color: rgb(161, 204, 254) !important; border: none; height: 105px;">
                         <a href="/dashboard/all_client" class=""> View / Add Client </a>
                     </button></div>
-                    <div><button class="btn btn-primary mt-5 btn-lg mb-4 font-weight-bold" style="background-color: rgb(161, 204, 254) !important; border: none; height: 75px;">
+                    <div><button class="btn btn-primary mt-5 btn-lg mb-4 font-weight-bold" style="background-color: rgb(161, 204, 254) !important; border: none; height: 105px;">
                         <a href="/dashboard/all_product" class=""> View / Add Product </a>
                     </button></div>
                 </div>

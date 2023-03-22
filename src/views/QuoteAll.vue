@@ -39,11 +39,12 @@
               
               <router-link 
                 tag="tr"
-                :to="{ name: 'OneQuote', params: 
-                
+                :to="{ name: 'OneQuote', 
+                params: 
                 { id: p.obj_ref.q_quote_number, 
+
                   //[that's a lot to pass]
-                }, query: {this_one_q_hash_number: p.quote_hashid, this_one_q_pdf_link: p.q_pdf_link}}">
+                }, query: { this_one_q_hash_number: p.quote_hashid,this_one_q_pdf_link: p.q_pdf_link}}">
 
                   <td scope="col" style="width: 150px;"  > {{ p.obj_ref.q_quote_number }} </td>
                   <td scope="col" style="width: 150px;"> {{ p.obj_ref.q_invoice_number }}  </td>  <!--{{ p.q_invoice_number }}-->

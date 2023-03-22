@@ -19,7 +19,8 @@
         <div class="grid grid-cols-3">
 
             <div>
-                <iframe id="preview_quotenPDF"  class="preview_quotenPDF" src="" download="toquotationnumber.pdf" width="800px" height="600px"  ></iframe>
+
+                <embed id="pdf_quote"  class="pdf_quote" width="800px" height="600px"   src='' />
                 
                 
             </div>
@@ -179,9 +180,12 @@ export default{
     },
     data(){
         return{
+
             id: this.$route.params.id, //[change from hash to quote number]
             this_one_q_hash_number: this.$route.query.this_one_q_hash_number,
             this_one_q_pdf_link: this.$route.query.this_one_q_pdf_link,
+
+
             this_one_i_pdf_link: '',    
             one_quote_url: '',
 
@@ -233,6 +237,8 @@ export default{
 
             all_client: [],
             all_delivery: [],
+
+            copy_q_pdf_link: '',
         }
     },
     components:{
@@ -241,6 +247,7 @@ export default{
     methods:{
 
         async loadInvoicePDF(){
+
             const find_invoice_pdf = firebase.firestore().collection("ALL_invoice").where("quote_hashid", "==", this.this_one_q_hash_number);
             await find_invoice_pdf.onSnapshot((snapshot) => {
 
@@ -263,12 +270,13 @@ export default{
 
         },
         
-        async showQuotePDF(){
-            console.log(this.this_one_q_pdf_link);
+        showQuotePDF(){
+    
 
-            document.getElementById('preview_quotenPDF').src = this.this_one_q_pdf_link; //null
+            document.getElementById('pdf_quote').src = this.copy_q_pdf_link; 
         },
         async retrieveOneQuoteInfo(){
+            console.log(this.this_one_q_hash_number);
             await firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number)
             .onSnapshot(doc => {
                 var copycat = doc.data();
@@ -304,6 +312,10 @@ export default{
                 this.copy_ft_vat = copycat.obj_ref.tf_vat;
                 this.copy_ft_shipping = copycat.obj_ref.tf_shipping;
                 this.copy_ft_total = copycat.obj_ref.tf_total;
+
+
+
+                this.copy_q_pdf_link = copycat.q_pdf_link;
                 
             });
             //[DEBUG]
@@ -316,19 +328,10 @@ export default{
 
         async submitQuotation(use_this_hash){
 
-            //console.log(" " + this.copy_q_b_f + " " +  this.copy_q_b_a1 + " " + this.copy_q_s_f + " " +  this.copy_q_ref+ " " + this.copy_exact_product);
-
-
-            
-
-            
-
-            
             let i_number = await auto_invoice_no_generator3(this.copy_q_number);   
             const myTimestamp = firebase.firestore.Timestamp.now();
             let today = myTimestamp.toDate().toLocaleDateString("en-UK");     
             let po_number = document.getElementById('po_number').value;
-            //console.log("i_number      " + i_number);
 
             const ref = collection(db, "ALL_invoice");
             const obj_ref = {
@@ -375,41 +378,38 @@ export default{
 
             await addDoc(ref, {obj_ref, pro_ref, price_ref}) 
             .then(docRef => {
+                
                 const get_id = firebase.firestore().collection("ALL_invoice").doc(docRef.id);
                 const string = "/ALL_invoice/" + use_this_hash + "/" + docRef.id + "/";
 
                 this.invoice_hashid = docRef.id;
-                //
+                console.log(docRef.id + "     " + use_this_hash);
     
                 get_id
-                    .update({
-                        invoice_hashid: docRef.id,
-                        quote_hashid: use_this_hash,
+                .update({
+                    invoice_hashid: docRef.id,
+                    quote_hashid: use_this_hash,
 
-                    })
-                    .then(() => {
-                        const allInvoiceRef = firebase.firestore().collection('ALL_invoice');
-                        ////console.log("set doc");
-
-                        get_id.get().then((d) => {
-                            ////console.log("updated data:", d.data());
-                        });
-                    });
+                })
+                .then(() => {
+                    const allInvoiceRef = firebase.firestore().collection('ALL_invoice');
+                    console.log("set doc");
+                });
             })
             //update to Invoice Number in Quote
             const get_id = firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number);
             get_id
-                .update({
-                    "obj_ref.q_invoice_number": i_number,
-                })
-                .then(() => {
-                    //console.log("set doc?");
+            .update({
+                "obj_ref.q_invoice_number": i_number,
+            })
+            .then(() => {
+                //console.log("set doc?");
 
-                });
+            });
 
 
             ///jspdf time!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            const string = await jspdftime();
+            const string = await this.jspdftime(i_number, today, po_number);
 
             
             //console.log("string><" + string);
@@ -462,10 +462,20 @@ export default{
             doc.text(this.copy_q_ref, 159, 105);
             doc.text(po_number, 159, 110);  
             let bodyData = [];
-            this.copy_exact_product.forEach(element => {      
+
+            console.log("what is this? " + this.copy_exact_product);
+
+            const cp = JSON.parse(JSON.stringify(this.copy_exact_product));
+
+            console.log("what is this now? " + cp);    
+
+            cp.forEach(element => {   
+ 
                 var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_unit, element.p_discount, element.p_sell];
+
                 bodyData.push(tmp);
             });    
+
             var finalY = doc.lastAutoTable.finalY || 10
             autoTable(doc, {
                 //html: '#cms-quote-table',
@@ -481,9 +491,9 @@ export default{
                     // etc
                 },
                 tableWidth: 'auto',
-                margin: { top: 0, right: 10, bottom: 0, left: 10 }, //important2
+                margin: { top: 0, right: 3, bottom: 0, left: 5 }, //important2
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
-                body: [this.copy_exact_product],
+                body: bodyData,
             })
             doc.setFontSize(12);
             doc.text('Sub-Total', 139, doc.lastAutoTable.finalY + 20, {align: 'right'})
@@ -694,9 +704,13 @@ export default{
 
     },
     created() {
-        this.loadInvoicePDF();
-        this.showQuotePDF();
+
         this.retrieveOneQuoteInfo();
+
+        this.showQuotePDF();
+        this.loadInvoicePDF();
+        
+        
 
         this.getAllClient();
         this.getAllDelivery();
