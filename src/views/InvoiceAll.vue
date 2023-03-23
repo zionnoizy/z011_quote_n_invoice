@@ -1,25 +1,35 @@
 <template>
     <div class="AllInvoice">
         
-      <div class="grid grid-cols-3 gap-2">
-        <div> <button class="btn btn-primary " @click.prevent="getAllInvoiceNewest()">Sort From Newest Invoice </button> </div>
-        <div> <button class="btn btn-primary " @click.prevent="getAllInvoiceOldest()">Sort From Oldest Invoice </button> </div>
-        <div> 
-          <select id="so_client" class="form-select" aria-label="select client from quote list below, and it will do sorting." 
+
+      <div class="mx-2 grid grid-cols-5 gap-3" style="display: flex; justify-content:center;">
+          <div>
+            <button class="btn btn-primary " @click.prevent="getAllInvoiceNewest()">Sort From Newest </button>
+          </div>
+          <div>
+            <button class="btn btn-primary " @click.prevent="getAllInvoiceOldest()">Sort From Oldest </button>
+          </div>
+
+          <div>
+            <select id="so_client" class="form-select" aria-label="select client from quote list below, and it will do sorting." 
             @change="doSort2();" onfocus="this.selectedIndex = 1;">
-            <option selected>INVOICE - Select Client Here</option>
-            <option v-for="c in all_i_clients" :value="`${c}`" > {{ c }} </option>
-          </select>
-        </div>
-      </div>  
-        
-        
-        
+              <option selected>Select Client Here</option>
+              <option v-for="c in all_clients" :value="`${c}`"  > {{ c }} </option>
+            </select>
+          </div>
+          <div>
+            <label>Search Invoice Number</label>
+            <input id="search_in" type="text" v-model="myIsearch" placeholder="ex. I-CMS00042" />
+          </div>
+          <div>
+            <button class="btn btn-warning" @click.prevent="ResetNgetAllInvoiceNewest()"> Clear Searched List </button>
+          </div>
+      </div>
 
+      <figcaption class="blockquote-footer">
+          <p> Point to the "Text", and it will redirect to invoice page. </p>
+      </figcaption>
 
-          <figcaption class="blockquote-footer">
-             <p> Point to the "Text", and it will redirect to invoice page. </p>
-          </figcaption>
         <table class="table table-dark mx-auto" >
             <thead>
             <tr class="table-header">
@@ -149,6 +159,7 @@ export default {
       
       return{
         all_invoices: [],
+        all_clients: [],
         each_quote:{
 
             q_quote_number: null,
@@ -199,7 +210,6 @@ export default {
             this.all_invoices = [];
             snapshot.forEach(d => {
                 var o_invoice = d.data();
-
                 this.all_invoices.push(o_invoice);
             })
           })
@@ -211,32 +221,28 @@ export default {
             this.all_invoices = [];
             snapshot.forEach(d => {
                 var o_invoice = d.data();
-
                 this.all_invoices.push(o_invoice);
             })
           })
       },
-
-      
       async getAllInvoice_Newest() { 
-
         var all_invoice_ref = await firebase.firestore().collection("ALL_invoice");
         all_invoice_ref.orderBy("obj_ref.qi_uploaded_date_timestamp", "asc")
         all_invoice_ref.onSnapshot(snap => {
-            this.all_invoices = [];
-            this.all_i_clients = [];
+          this.all_invoices = [];
+          this.all_clients = [];
 
-            snap.forEach(i => {
-                var n_invoice = i.data();
-                var n_invoice_cleint = i.data();
-                this.all_invoices.push(n_invoice);
+          snap.forEach(i => {
+            var n_invoice = i.data();
+            var n_invoice_cleint = i.data();
+            this.all_invoices.push(n_invoice);
 
-                console.log("ipad2" + n_invoice_cleint.obj_ref.qi_bill_fullname);
-                
-                if(!all_i_clients.includes(n_invoice_cleint.obj_ref.qi_bill_fullname))
-                  this.all_i_clients.push(n_invoice_cleint.obj_ref.qi_bill_fullname);
-                
-            });
+            console.log("ipad2    " + n_invoice_cleint.obj_ref.qi_bill_fullname);
+            
+            if(!all_clients.includes(n_invoice_cleint.obj_ref.qi_bill_fullname))
+              this.all_clients.push(n_invoice_cleint.obj_ref.qi_bill_fullname);
+            
+          });
         });
 
         
@@ -254,7 +260,23 @@ export default {
             })
           })
       },
+      async ResetNgetAllInvoiceNewest(){
 
+        document.getElementById("search_in").value= "";  
+        document.getElementById("so_client").selectedIndex = 0;
+
+
+        var all_invoice_ref = await firebase.firestore().collection("ALL_invoice");
+        all_invoice_ref.orderBy("obj_ref.qi_uploaded_date_timestamp", "desc")
+          .onSnapshot((snapshot) => {
+            this.all_invoices = [];
+            snapshot.forEach(d => {
+                var o_invoice = d.data();
+
+                this.all_invoices.push(o_invoice);
+            })
+          })
+      },
       async searchI_N(){
         console.log("search...")
         const typed_invoice_num = document.getElementById('search_invoice_num').value;

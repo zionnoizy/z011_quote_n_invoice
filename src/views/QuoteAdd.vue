@@ -1370,7 +1370,7 @@ async function auto_quote_no_generator2(){
     await firebase.firestore().collection("ALL_quote").get().then( function(querySnapshot) {
 
     
-    const dSize = querySnapshot.size;
+    let dSize = querySnapshot.size;
 
     if (dSize === undefined){
         dSize = "0";

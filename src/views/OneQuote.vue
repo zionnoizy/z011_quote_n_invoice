@@ -14,6 +14,8 @@
 
             <p> The invoice id is= {{ invoice_hashid }}</p>
 
+            <p>Subtotal? {{copy_ft_sub_total}}</p>
+            <p>$ {{ copy_ft  }}</p>
         </div>
 
         <div class="grid grid-cols-3">
@@ -51,20 +53,30 @@
                                         <div class="mx-auto" style="display: flex;;">
                                             <div class="flex-grow-0 mx-2 px-3">
                                                 <label>1.BILL TO (CLIENT)</label>
-                                                <select class="form-select" aria-label="Default select example"  >
+                                                <select id="select_bill_to" class="form-select" aria-label="Default select example" 
+                                                @change="doSort3();" >
                                                     <option selected> {{copy_q_b_f}} </option>
                                                     <option v-for="c in all_clients" :value="`${c.c_fullname}`">{{c.c_fullname}}</option>
                                                 </select>
-                                            </div>    
+                                            </div> 
+                                            <p class="hidden" id="select_a1"></p>   
+                                            <p class="hidden" id="select_a2"></p>   
+                                            <p class="hidden" id="select_city"></p>   
+                                            <p class="hidden" id="select_postcode"></p>   
+
                                             <div class="flex-grow-0 mx-2 px-3">
                                                 <label>2.SHIP TO (DELIVERY)</label>
-                                                <select class="form-select" aria-label="Default select example"  >
+                                                <select id="select_ship_to" class="form-select" aria-label="Default select example"  >
                                                     <option selected> {{ copy_q_s_f }} </option>
                                                     <!--:value="`${d.d_fullname}`"-->
                                                     <option v-for="d in all_deliverys" >{{d.d_fullname}}</option>
                                                 </select>
-
+                                                <p class="hidden" id="select_b_a1"></p>   
+                                                <p class="hidden" id="select_b_a2"></p>   
+                                                <p class="hidden" id="select_b_city"></p>   
+                                                <p class="hidden" id="select_b_postcode"></p>   
                                             </div>  
+
                                         </div>
 
                                         <div class="mx-auto" style="display: flex;">    
@@ -94,13 +106,13 @@
                                             <div>Discount£</div>
                                             <div>FInal Total</div>
                                         </div>
-                                        <div class="grid grid-cols-8 gap-1" v-for="(k, i) in copy_exact_product" @focusout="handleFocusout($event,  p.pid, data-field, i  )" >
+                                        <div class="grid grid-cols-8 gap-1" v-for="(k, i) in copy_exact_product" @focusout="handleFocusout($event,  i  )" >
                                             <div>
-                                            <select id="so_product" class="form-select" aria-label="select client from quote list below, and it will do sorting." 
-                                                @change="clearRest(i);" onfocus="this.selectedIndex = 0;">
-                                                <option selected>{{ k.p_fullname }}</option>
-                                                <option v-for="ep in e_all_product_list" :value="`${ep.p_fullname}`" > {{ ep.p_fullname }} </option>
-                                            </select>
+                                                <select id="so_product" class="form-select" aria-label="select client from quote list below, and it will do sorting." 
+                                                    @change="clearRest(i);" onfocus="this.selectedIndex = 0;">
+                                                    <option selected>{{ k.p_fullname }}</option>
+                                                    <option v-for="ep in e_all_product_list" :value="`${ep.p_fullname}`" > {{ ep.p_fullname }} </option>
+                                                </select>
                                             </div>
 
 
@@ -144,12 +156,23 @@
                                             <div><label>Shipping</label></div>
                                             <div><label>Total</label></div>
                                         </div>
-                                        <div class="grid grid-cols-4 gap1" v-for="(ft, i) in copy_ft"  >
-                                            {{ ft.tf_sub_total }}
-                                            <div> <input id="e_q_subtotal" v-model="ft.tf_sub_total"  disable> </div>
-                                            <div> <input id="e_q_vat" v-model="ft.tf_vat"  disable>  </div>
-                                            <div> <input id="e_q_shipping" v-model="ft.tf_shipping"></div>
-                                            <div> <input id="e_q_final" v-model="ft.tf_total" disable></div>
+
+                                        <div class="grid grid-cols-4 gap1" v-for="ft in copy_ft"  >
+
+                                            <div>    
+                                                <p  id="e_q_subtotal" style="color:grey;"> {{ ft.tf_sub_total }} </p> 
+                                            </div>
+
+                                            <div> 
+                                                <p  id="e_q_vat" style="color:grey;"> {{ ft.tf_vat }} </p> 
+                                            </div>
+                                            <div> 
+                                                <p  id="e_q_shipping" style="color:grey;"> {{ ft.tf_shipping }} </p> 
+                                            </div>
+                                            <div> 
+                                                <p  id="e_q_final" style="color:grey;"> {{ ft.tf_total }} </p> 
+
+                                            </div>
                                         </div>
                                     </div>
 
@@ -231,6 +254,7 @@ export default{
     },
     setup(){
         const handleFocusout = (e, i, df) => {
+            console.log("HF-0 ");
           var updated_field = document.getElementById(e.target.id);
 
           let dynamic_sell_id = "i_sell"+i;
@@ -238,32 +262,34 @@ export default{
           let dynamic_discount_id = "i_discount"+i;
           let dynamic_each_p_total_id = "i_final_total"+i;
 
-          let cum0 = document.getElementById(dynamic_sell_id).value;
+          let cum0 = document.getElementById(dynamic_sell_id).innerText;
           let cum1 = document.getElementById(dynamic_quality_id).value;
           let cum3 = document.getElementById(dynamic_discount_id).value;
-          
-          console.log("HF1 " + cum0 + "     " + cum1 + "      " + cum3);  
+          console.log("HF1 ");
+          console.log("HF2 "+ cum0 + "     " + cum1 + "      " + cum3);  
 
           let s_times_q = cum0 * cum1;
+
+          console.log("what is discount     " + s_times_q);
           if(cum3 != 0){
             let s_minus_d = s_times_q - (+(s_times_q / 100) * +cum3);;
             let get_discount_m = +(s_times_q / 100) * +cum3;
             let dynamic_m_discount_id = "i_discount_m"+i;
             let cum4 = document.getElementById(dynamic_m_discount_id).innerHTML;
             cum4 = get_discount_m;
-            console.log("HF2 discount_money" + cum4);  
+            console.log("HF3 " + get_discount_m) ;  
             let double_underline = +s_times_q - +cum4  ;
             document.getElementById(dynamic_each_p_total_id).innerHTML = double_underline;
           }
           else{
-            console.log("HF2 " + s_times_q);  
+            console.log("HF4 " + s_times_q);  
             let double_underline = +s_times_q;
             document.getElementById(dynamic_each_p_total_id).innerHTML = double_underline;
           }
 
             let cimulat_du = 0;
 
-            var x = copy_exact_product.length;
+            var x = this.copy_exact_product.length;
             for (let rs=0; rs < x; ++rs){
                 
                 let dynamic_ = "i_final_total";
@@ -273,7 +299,7 @@ export default{
 
             }
             console.log("e_q_subtotal" + cimulat_du);  
-            //this is edited quote subtotal calculation
+            console.log("HF5 " + s_times_q);  
             document.getElementById('e_q_subtotal').value = cimulat_du;
 
             console.log("ipad check first if cimulate ecist?  " + cimulat_du);
@@ -419,24 +445,27 @@ export default{
                 this.copy_ft_vat = copycat.final_tt.tf_vat;
                 this.copy_ft_shipping = copycat.final_tt.tf_shipping;
                 this.copy_ft_total = copycat.final_tt.tf_total;
-
+                //document.getElementById('e_q_subtotal').value = this.copy_ft_sub_total;
+                //document.getElementById('e_q_vat').value = this.copy_ft_vat;
+                //document.getElementById('e_q_shipping').value = this.copy_ft_shipping;
+                //document.getElementById("e_q_final").value = this.copy_ft_total;
 
 
                 this.copy_q_pdf_link = copycat.q_pdf_link;
                 document.getElementById('pdf_quote').src = this.copy_q_pdf_link; 
 
+                
+
             });
             //[DEBUG]
             
             await document.getElementById('quote_num').setAttribute('value', this.copy_q_ref);
-            //await document.getElementById('ref_num').setAttribute('value', this.q_ref);
-            console.log("??!!!" + this.copy_exact_product);
+             
+            console.log("??!!!" + this.copy_ft );
 
         }, 
 
         async submitQuotation(use_this_hash){
-
-            
             let i_number = await auto_invoice_no_generator3(this.copy_q_number);   
             const myTimestamp = firebase.firestore.Timestamp.now();
             let today = myTimestamp.toDate().toLocaleDateString("en-UK");     
@@ -735,7 +764,6 @@ export default{
             const c = document.getElementById(d3);
 
             console.log("=====edit and upoad another quote:0 ");
-            
             const cp = JSON.parse(JSON.stringify(this.copy_exact_product));
             console.log(cp);
             for (var key in cp) {
@@ -743,13 +771,13 @@ export default{
 
                     let d_qty = "i_quality"+key;
                     let d_unit = "i_unit"+key;
-                    let d_discount = "i_discount_m"+key;
+                    let d_discount_m = "i_discount_m"+key;
                     let d_sell = "i_sell"+key;
                     let d_final_total = "i_final_total"+key;
+
                     let cum1 = document.getElementById(d_qty).value; //
                     let cum2 = document.getElementById(d_unit).value;
-                    let cum3 = document.getElementById(d_discount).value;
-
+                    let cum3 = document.getElementById(d_discount_m).value;
                     let cum4 = document.getElementById(d_sell).value;
                     let cum5 = document.getElementById(d_final_total).value;
                     //console.log(cum1 + "=====" + cum2);
@@ -764,29 +792,23 @@ export default{
                 }
             }
 
-            let i_subtotal = document.getElementById('e_q_subtotal').value;
-            let i_vat = document.getElementById('e_q_vat').value;
-            let i_shipping = document.getElementById('e_q_shipping').value;
-            let i_final_total = document.getElementById("e_q_final").value;
-            
-            console.log("this.this_one_q_hash_number" + this.this_one_q_hash_number);
+            final_tt= {
+                tf_subtotal: document.getElementById('e_q_subtotal').value,
+                tf_vat: document.getElementById('e_q_vat').value;,
+                tf_shipping: document.getElementById('e_q_shipping').value,
+                tf_total: document.getElementById("e_q_final").value,
+            }
 
+            //updated
+            console.log("this.this_one_q_hash_number" + this.this_one_q_hash_number);
             const find_invoice_pdf = firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number);
             await find_invoice_pdf.onSnapshot((ss) => {
                 ss.docs.forEach(d => {
-                    var update_quote = d.data();  //p_final_total
-                    console.log("update_quote.final_tt.tf_shipping?    " + update_quote.final_tt.tf_shipping);
+                    var update_quote = d.data();
                     update_quote.final_tt.tf_sub_total = i_subtotal;
                     update_quote.final_tt.tf_vat = i_vat;
-
                     update_quote.final_tt.tf_shipping = i_shipping;
-
                     update_quote.final_tt.tf_total = i_final_total;
-
-
-
-                    
-                
                 })
             })
             await setDoc(ref, {cp}, { merge:true })
@@ -830,7 +852,7 @@ export default{
         },
 
         async getAllClient(){
-        var all_client_ref = await firebase.firestore().collection("all_client");
+        var all_client_ref = await firebase.firestore().collection("all_clients");
             all_client_ref.onSnapshot(snap => {
                 this.all_clients = [];
 
@@ -838,15 +860,16 @@ export default{
 
                     var c = d.data();
                     console.log("ipad?A " + c.c_fullname);
-                    if(!all_clients.includes(c.c_fullname))
-                        this.all_clients.push(c);
+
+                    this.all_clients.push(c);
 
                 });
             });
         },
 
         async getAllDelivery(){
-        var all_delivery_ref = await firebase.firestore().collection("all_delivery").doc(this.this_one_q_hash_number).collection("this_client_delivery");
+            console.log("=======" + this.this_one_q_hash_number);
+            var all_delivery_ref = await firebase.firestore().collection("all_delivery").doc(this.this_one_q_hash_number).collection("this_client_delivery");
             all_delivery_ref.onSnapshot(snap => {
                 this.all_deliverys = [];
 
@@ -854,8 +877,8 @@ export default{
 
                     var delivery = d.data();
                     console.log("ipad?B " + d.d_fullname);
-                    if(!all_deliverys.includes(d.d_fullname))
-                        this.all_deliverys.push(delivery);
+
+                    this.all_deliverys.push(delivery);
 
                 });
             });
@@ -900,11 +923,12 @@ export default{
             let d4 = "i_code"+i;
             let d5 = "i_sell"+i;
             let d6 = "i_final_total"+i;
-            document.getElementById(d1).value = "";
+            document.getElementById(d1).value = "1";
             document.getElementById(d2).value = "";
             document.getElementById(d3).value = "0";
             //no d5 is ok
-            document.getElementById(d6).innerText = "";
+            let sell_is = document.getElementById(d5).innerText;
+            document.getElementById(d6).innerText = sell_is;
             console.log("clear reset. 2" + select_product);
             var one_product_ref = await firebase.firestore().collection("all_products").where("p_fullname", "==", select_product);
             one_product_ref.get()
@@ -924,10 +948,62 @@ export default{
             })
         },
 
-        async retrieveFinalToal(){
-            
-            
-        }
+        async doSort3(){
+            var optionValue = document.getElementById("select_bill_to").value;
+            document.getElementById("select_ship_to").selectedIndex = -1;
+
+            var sort_client = await firebase.firestore().collection("all_clients").where("c_fullname", "==", optionValue);
+
+            sort_client.onSnapshot(snap => {
+                
+                snap.forEach(d => {
+
+                    var a1= d.data().c_address_1;
+                    var a2= d.data().c_address_2;
+                    var a3= d.data().c_city;
+                    var a4= d.data().c_post_code;
+
+                    console.log("did I found new bill address? " + a1 + " " +a2 + " " + a3 + " " + a4)
+                    select_a1.value = a1;
+                    select_a2.value = a2;
+                    select_a3.value = a3;
+                    select_a4.value = a4;
+
+                
+                });
+            })
+
+        },
+
+
+        async doSort4(){
+            var optionValue = document.getElementById("select_bill_to").value;
+            document.getElementById("select_ship_to").selectedIndex = -1;
+
+            var sort_client = await firebase.firestore().collection("all_delivery").doc(this.this_one_q_hash_number).collection("this_client_delivery");
+            sort_client.onSnapshot(snap => {
+                
+                snap.forEach(d => {
+
+                    var a1= d.data().d_address_1;
+                    var a2= d.data().d_address_2;
+                    var a3= d.data().d_city;
+                    var a4= d.data().d_post_code;
+
+                    console.log("did I found new bill address? " + a1 + " " +a2 + " " + a3 + " " + a4)
+                    select_b_a1.value = a1;
+                    select_b_a2.value = a2;
+                    select_b_a3.value = a3;
+                    select_b_a4.value = a4;
+
+                
+                });
+            })
+
+        },
+
+
+        
     },
     created() {
 
@@ -944,7 +1020,7 @@ export default{
 
         this.getAllProductsName();
 
-        this.retrieveFinalTotal();
+
         
         
     },

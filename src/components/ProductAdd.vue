@@ -194,9 +194,6 @@ function validate_p_input(){
       var pcc_3 = document.getElementById('p_category');
       var pcc_4 = document.getElementById('pi_cost');
       var pcc_5 = document.getElementById('pi_margin');
-
-
-
       console.log("[ProductAdd]  " + pc_3 + " " + pc_2.length);
 
       if (pc_1.length <= 0){
@@ -245,8 +242,7 @@ async function validate_p_fullname(){
         console.log("3Error getting document:", error);
     });
     return flag;  
-  }
-  
+}
 </script>
 
 <style>
