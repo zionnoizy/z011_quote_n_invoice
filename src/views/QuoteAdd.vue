@@ -310,7 +310,7 @@
                                     {{ p.p_sell }} 
                                 </td>
                                 <td contenteditable="true"  data-field="p_qty" :id="`ep_qty_${i}`"  > {{p.p_quantity}} </td>
-                                <td contenteditable="true"  data-field="p_unit" :id="`ep_unit_${i}`" th:onChange="c();" > {{p.p_unit}} </td>
+                                <td contenteditable="true"  data-field="p_unit" :id="`ep_unit_${i}`"> {{p.p_unit}} </td>
                                 <td contenteditable="true"  data-field="p_discount" :id= "`ep_discount_${i}`" th:onChange="c();">{{p.p_discount}}</td>
                                 
                                 <td contenteditable="true"  data-field="p_m_discount" :id= "`ep_m_discount_${i}`" th:onChange="c();"> - </td>
@@ -377,9 +377,11 @@
                 </div>
 
                 <div class="px-2">
-                <button class="preview_btn btn btn-primary btn-lg btn-block" @click.prevent="previewBtn($event);"> Upload Quote </button>
+                    <button class="preview_btn btn btn-primary btn-lg btn-block" @click.prevent="previewBtn($event);"> Upload Quote </button>
                 </div>
 
+
+                
         </div>
 
 
@@ -399,7 +401,11 @@
         </div>
         </div>
 
-        <embed id="hidden_quotationPDF" width='100%' height='100%' src='' />
+        <div>
+            <p class="dashboard_txt pt-5 pb-3 mx-6 text-start" > This is a Quote Pdf, refer this invoice number and can be find on <router-link to="/dashboard/quote" exact> dashboard/quote </router-link></p>
+
+        </div>
+        <embed id="hidden_quotationPDF" width="1200px" height="800px" src='' />
 
 
     </div>
@@ -814,19 +820,23 @@ export default {
 
             }
             
-            //NEW NEW NEW--
+            //NEW NEW NEW NEW --
             const cp = JSON.parse(JSON.stringify(this.choosen_products));
             //console.log(typeof cp);
             for (var key in cp) {
                 if (cp.hasOwnProperty(key)) {
                     //console.log(key + " -> " + cp[key].p_fullname);
-                    let d_qty = "ep_qty_"+key;
+                    let d_qty = "ep_qty_"+key; 
+                    
                     let d_discount = "ep_discount_"+key;
+                    let d_unit = "ep_unit_"+key; 
                     let cum1 = document.getElementById(d_qty).innerHTML;
                     let cum2 = document.getElementById(d_discount).innerHTML;
+                    let cum3 = document.getElementById(d_unit).innerHTML;
                     //console.log(cum1 + "=====" + cum2);
                     cp[key].p_quantity = cum1;
                     cp[key].p_discount = cum2;
+                    cp[key].p_unit = cum3;
                     //console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
 
                 }
@@ -862,6 +872,10 @@ export default {
 
         async previewBtn() { //step1
             console.log("previewBtn1---------");
+
+            let flag = await validate_q_input();
+
+            if (flag){
             const doc = new jsPDF(); 
             doc.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297); // w h
             //A-add all48 text
@@ -872,7 +886,7 @@ export default {
             const oo_b_postcode = document.getElementById('tmp_b_postcode').innerHTML;
             doc.setFontSize(10);
             doc.text(oo_b_fullname, 6, 94);
-            doc.text(oo_b_a1, 6, 99);
+            doc.text(oo_b_a1, 6, 99); 
             if (oo_b_a2 == "" || oo_b_a2 == null|| oo_b_a2 == ''){
                 doc.text(oo_b_city, 6, 104);
                 doc.text(oo_b_postcode, 6, 109);
@@ -919,16 +933,17 @@ export default {
                     let cum1 = document.getElementById(d_qty).innerHTML;
                     let cum2 = document.getElementById(d_unit).innerHTML;
                     let cum3 = document.getElementById(d_discount).innerHTML;
-
+                    
                     tt[key].p_quantity = cum1;
-                    tt[key].d_unit = cum2;
+                    tt[key].p_unit = cum2;
                     tt[key].p_discount = cum3;
+
                 }
             }
 
             let bodyData = [];
             tt.forEach(element => {      
-                var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_unit, element.p_discount, element.p_sell];
+                var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_unit, element.p_discount, "£"+element.p_sell];
   
                 bodyData.push(tmp);
             });    
@@ -959,13 +974,13 @@ export default {
             const s = document.getElementById('q_shipping').value;
             const t = document.getElementById('q_total').value;
             doc.text('Sub-Total', 139, doc.lastAutoTable.finalY + 20, {align: 'right'})
-            doc.text( Number(st).toFixed(2) , 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
+            doc.text( "£"+Number(st).toFixed(2) , 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
             doc.text('VAT', 139, doc.lastAutoTable.finalY + 25 , {align: 'right'})
-            doc.text( Number(v).toFixed(2), 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
+            doc.text( "£"+Number(v).toFixed(2), 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
             doc.text('Shipping', 139, doc.lastAutoTable.finalY + 30 , {align: 'right'})
-            doc.text( Number(s).toFixed(2), 182, doc.lastAutoTable.finalY + 30 , {align: 'right'})
+            doc.text( "£"+Number(s).toFixed(2), 182, doc.lastAutoTable.finalY + 30 , {align: 'right'})
             doc.text('Total', 139, doc.lastAutoTable.finalY + 35 , {align: 'right'})
-            doc.text( Number(t).toFixed(2)  , 182, doc.lastAutoTable.finalY + 35 , {align: 'right'})
+            doc.text( "£"+Number(t).toFixed(2)  , 182, doc.lastAutoTable.finalY + 35 , {align: 'right'})
 
             doc.setFontSize(9);
             doc.text('Terms & Instructions', 6,  doc.lastAutoTable.finalY + 40).setFont(undefined, 'bold');
@@ -988,14 +1003,11 @@ export default {
             console.log("previewBtn3---------   "    + string + this.return_base64);
 
             //////
-            let flag = await validate_q_input();
-
-            if (flag){
+            /*
             const myTimestamp = firebase.firestore.Timestamp.now();
             let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK");
-            
             const quote_number = await auto_quote_no_generator2();
-
+            */
             let reference_number = document.getElementById('q_reference_number').value;
 
             const ref = collection(db, "ALL_quote");
@@ -1027,7 +1039,7 @@ export default {
                 q_extra_space_4: '',
             }
 
-            const t = document.getElementById('q_subtotal').value;
+            //const t = document.getElementById('q_subtotal').value;
 
 
             const final_tt = {
@@ -1046,11 +1058,14 @@ export default {
                     //console.log(key + " -> " + cp[key].p_fullname);
                     let d_qty = "ep_qty_"+key;
                     let d_discount = "ep_discount_"+key;
+                    let d_final_total = "qd_total_"+key;
                     let cum1 = document.getElementById(d_qty).innerHTML;
                     let cum2 = document.getElementById(d_discount).innerHTML;
+                    let cum3 = document.getElementById(d_final_total).innerHTML;
                     //console.log(cum1 + "=====" + cum2);
                     cp[key].p_quantity = cum1;
                     cp[key].p_discount = cum2;
+                    cp[key].p_final_total = cum3;
                     //console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
 
                 }

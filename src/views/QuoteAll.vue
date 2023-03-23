@@ -1,19 +1,35 @@
 <template>
     <div class="AllQuote">
 
-        <button class="btn btn-primary " @click.prevent="getAllQuoteNewest()">Sort From Oldest </button>
-        <button class="btn btn-primary " @click.prevent="getAllQuoteOldest()">Sort From Newest </button>
+        
+        
         <!--if (this.selectedIndex)   onfocus="this.selectedIndex = 1;"-->
-        <div class="mx-2 grid grid-cols-2 gap-1">
+        <div class="mx-2 grid grid-cols-5 gap-3" style="display: flex; justify-content:center;">
+          <div>
+            <button class="btn btn-primary " @click.prevent="getAllQuoteNewest()">Sort From Newest </button>
+        
+          </div>
+
+          <div>
+            <button class="btn btn-primary " @click.prevent="getAllQuoteOldest()">Sort From Oldest </button>
+          </div>
           <div>
           <select id="so_client" class="form-select" aria-label="select client from quote list below, and it will do sorting." @change="doSort1();" onfocus="this.selectedIndex = 1;">
           <option selected>Select Client Here</option>
           <option v-for="c in all_clients" :value="`${c.obj_ref.q_bill_fullname}`" > {{ c.obj_ref.q_bill_fullname }} </option>
           </select>
           </div>
+
+
           <div>
-          <button class="btn btn-warning" @click.prevent="getAllQuoteOldest()"> Clear List </button>
-        </div>
+          <label>Search Quote Number</label>
+          <input type="text" v-model="myQsearch" placeholder="ex. Q-CMS00042" />
+          </div>
+
+
+          <div>
+          <button class="btn btn-warning" @click.prevent="getAllQuoteOldest()"> Clear Searched List </button>
+          </div>
         </div>
         <table class="table table-dark mx-auto" >
 
@@ -35,7 +51,7 @@
 
         <tbody>
 
-            <tr v-for="p in all_quotes">
+            <tr v-for="p in f_all_quotes">
               
               <router-link 
                 tag="tr"
@@ -44,9 +60,9 @@
                 { id: p.obj_ref.q_quote_number, 
 
                   //[that's a lot to pass]
-                }, query: { this_one_q_hash_number: p.quote_hashid,this_one_q_pdf_link: p.q_pdf_link}}">
+                }, query: { this_one_q_hash_number: p.quote_hashid, this_one_q_pdf_link: p.q_pdf_link}}">
 
-                  <td scope="col" style="width: 150px;"  > {{ p.obj_ref.q_quote_number }} </td>
+                  <td scope="col" style="width: 150px;"> {{ p.obj_ref.q_quote_number }} </td>
                   <td scope="col" style="width: 150px;"> {{ p.obj_ref.q_invoice_number }}  </td>  <!--{{ p.q_invoice_number }}-->
                   <td scope="col" style="width: 150px;"> {{ p.obj_ref.q_bill_fullname}} </td>
                   <td scope="col" style="width: 150px;"> {{ p.obj_ref.q_ref }} </td> <!--{{ p.q_ref }}-->
@@ -81,7 +97,7 @@ export default{
           all_clients: [],
           each_quote:{
 
-              q_quote_number: null,
+            q_quote_number: null,
 
             q_invoice_number: null,
 
@@ -109,7 +125,9 @@ export default{
             q_ship_postcode: null,
 
             quote_hashid: null,
-          }
+            
+          },
+          myQsearch: '',
         }
     },
 
@@ -117,7 +135,7 @@ export default{
     methods: {
       async getAllQuoteNewest() { //not check yet
         var all_product_ref = await firebase.firestore().collection("ALL_quote");
-        all_product_ref.orderBy("obj_ref.q_uploaded_date_timestamp", "asc")
+        all_product_ref.orderBy("obj_ref.q_uploaded_date_timestamp", "desc")
 
           .onSnapshot((snapshot) => {
             this.all_quotes = [];
@@ -130,7 +148,7 @@ export default{
       },
       async getAllQuoteOldest() { 
         var all_product_ref = await firebase.firestore().collection("ALL_quote");
-        all_product_ref.orderBy("obj_ref.q_uploaded_date_timestamp", "desc")
+        all_product_ref.orderBy("obj_ref.q_uploaded_date_timestamp", "asc")
           .onSnapshot((snapshot) => {
             this.all_quotes = [];
             snapshot.forEach(d => {
@@ -145,8 +163,7 @@ export default{
         //console.log("[getAllQuote]=====================");
         var all_quote_ref = await firebase.firestore().collection("ALL_quote");
         all_quote_ref.orderBy("obj_ref.q_uploaded_date_timestamp", "desc")
-
-        all_quote_ref.onSnapshot(snap => {
+        .onSnapshot(snap => {
             this.all_quotes = [];
             this.all_clients = [];
             snap.forEach(d => {
@@ -155,14 +172,12 @@ export default{
                 var e_quote_cleint = d.data();
 
                 this.all_quotes.push(e_quote);
-                console.log(e_quote_cleint);
-                //if(!all_clients.includes(e_quote_cleint))
+
+                if(!this.all_clients.includes(e_quote_cleint.obj_ref.q_bill_fullname))
                   this.all_clients.push(e_quote_cleint);
             });
         });
-
         //console.log("[getAllQuote]=====================");
-        
       },
 
       async doSort1(){
@@ -180,6 +195,18 @@ export default{
 
       },
 
+    },
+    computed: {
+      
+      f_all_quotes(){
+        return this.all_quotes.filter(all_quotes => 
+          all_quotes.obj_ref.q_quote_number.toLowerCase().includes(this.myQsearch.toLocaleLowerCase())
+        );
+
+        return Object.values(this.all_quotes).filter(obj_ref => 
+          obj_ref[q_quote_number].toLowerCase().includes(this.myQsearch.toLocaleLowerCase())
+        );
+      }
     },
     created() {
       this.getAllQuoteNClient();

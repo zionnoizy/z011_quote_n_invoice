@@ -36,80 +36,131 @@
                     <div class="modal fade" id="edit_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true" >
                         <div class="modal-dialog modal-xl" style="width:150%">
 
-                            <div class="modal-content text-black">
+                            <div class="modal-content text-black" style="width:1338px;">
 
                                 <div class="modal-header">
-                                    <h4 class="modal-title"> Edit Your Quotation Below.</h4>
+                                    <h4 class="modal-title"> Edit Your Quotation Below. </h4>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="close">X</button>
                                 </div>
+
                                 <div class="modal-body">
                                     <!--------------------------EDIT QUOTATION START----------------------->
+                                    
                                     <div class="grid grid-cols-2 gap-1 ">
                                         <div class="mx-auto" style="display: flex;;">
                                             <div class="flex-grow-0 mx-2 px-3">
                                                 <label>1.BILL TO (CLIENT)</label>
                                                 <select class="form-select" aria-label="Default select example"  >
                                                     <option selected> {{copy_q_b_f}} </option>
-                                                    <option v-for="c in all_client" :value="`${c.c_fullname}`">{{c.c_fullname}}</option>
+                                                    <option v-for="c in all_clients" :value="`${c.c_fullname}`">{{c.c_fullname}}</option>
                                                 </select>
                                             </div>    
                                             <div class="flex-grow-0 mx-2 px-3">
                                                 <label>2.SHIP TO (DELIVERY)</label>
                                                 <select class="form-select" aria-label="Default select example"  >
                                                     <option selected> {{ copy_q_s_f }} </option>
-                                                    <option v-for="d in all_delivery" :value="`${d.d_fullname}`">{{d.d_fullname}}</option>
+                                                    <!--:value="`${d.d_fullname}`"-->
+                                                    <option v-for="d in all_deliverys" >{{d.d_fullname}}</option>
                                                 </select>
 
                                             </div>  
+                                        </div>
 
-                                            <div class="flex-grow-0 mx-2 px-3">
-                                                <label>3.REFERENCE NUMBER</label>
+                                        <div class="mx-auto" style="display: flex;">    
+                                            <div class=" mx-2 px-3">
+                                                <label>3.Referecne Number</label>
                                                 <p><strong> {{ showREFERENCE2 }} </strong></p>
                                                 
-                                        </div>   
-                                        <div class="mx-auto" style="display: flex;;">
+                                            </div>   
+                                            <div class=" mx-2 px-3 " style="display: flex;;">
                                             <label>4. Quote No. </label>
                                             <p><strong> {{ copy_q_number }} </strong></p>
+                                            </div> 
                                         </div>    
                                     </div>    
                                     
 
                                     <div class="" >
-                                        <label>5. Products </label>
-                                        <div class="grid grid-cols-5 gap-1">
+                                        <label>5. Products Edit </label>
+                                        <div class="grid grid-cols-8 gap-1">
                       
-                                            <div>Items</div>
-                                            <div>Code</div>
-                                            <div>Qty</div> <!--missing-->
+                                            <div>ProductName</div>
+                                            <div>ProductCode</div>
+                                            <div>ProductSell</div>
+                                            <div>Qty</div> 
                                             <div>Unit</div>
-                                            <div>Discount</div> <!--missing-->
+                                            <div>Discount%</div>
+                                            <div>Discount£</div>
+                                            <div>FInal Total</div>
                                         </div>
-                                        <div class="grid grid-cols-6 gap-1" v-for="(k, i) in copy_exact_product" >
+                                        <div class="grid grid-cols-8 gap-1" v-for="(k, i) in copy_exact_product" @focusout="handleFocusout($event,  p.pid, data-field, i  )" >
+                                            <div>
+                                            <select id="so_product" class="form-select" aria-label="select client from quote list below, and it will do sorting." 
+                                                @change="clearRest(i);" onfocus="this.selectedIndex = 0;">
+                                                <option selected>{{ k.p_fullname }}</option>
+                                                <option v-for="ep in e_all_product_list" :value="`${ep.p_fullname}`" > {{ ep.p_fullname }} </option>
+                                            </select>
+                                            </div>
+
 
                                             <div>
-                                                <strong>{{ k.p_fullname }}</strong>
+                                                <p :id="'i_code'+i" style="color:grey;">  {{ k.p_code }} </p>
+                                            </div>
+                                            <div>
+                                                <p :id="'i_sell'+i" :ref="'i_sell'+i"  style="color:grey;"> {{ k.p_sell }} </p>
+                                            </div>
+                                            
+                                            <div>
+                                                <input class="form-control" :ref="'i_quantity'+i" :id="'i_quantity'+i"  placeholder="Enter #Quantity" v-model="k.p_quantity" 
+                                                 data-field="i_quantity">
+                                            </div>
+                                            
+                                            <div>
+                                                <input class="form-control" :ref="'i_unit'+i" :id="'i_unit'+i"  placeholder="Enter Unit (box,mm)" v-model="k.p_unit"
+                                                 data-field="i_input"> 
+                                            </div>
+                                            
+                                            <div>
+                                                <input class="form-control" :ref="'i_discount'+i" :id="'i_discount'+i" placeholder="Enter %Discount" v-model="k.p_discount" /> 
                                             </div>
 
                                             <div>
-                                                <strong>{{ k.p_code }}</strong>
+                                                <p  :ref="'i_discount_m'+i" :id="'i_discount_m'+i" style="color:grey;">{{ k.p_discount }} </p> 
                                             </div>
+
                                             <div>
-                                                <input class="form-control" :ref="'i_quality'+i" :id="'i_quality'+i"  placeholder="Qty" v-model="k.p_quantity" >
+                                                <p :id="'i_final_total'+i" :ref="'i_final_total'+i"  style="color:grey;"> {{ k.p_final_total }} </p>
                                             </div>
-                                            <div>
-                                                <input class="form-control" :ref="'i_unit'+i" :id="'i_unit'+i"  placeholder="Unit" v-model="k.p_unit" >
-                                            </div>
-                                            <div>
-                                                <input class="form-control" :ref="'i_discount'+i" :id="'i_discount'+i"  placeholder="Discount" v-model="k.p_discount">
-                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="">
+                                        <label>6. Edited Final Total </label>
+                                        <div class="grid grid-cols-4 gap1" >
+                                            <div><label>Subtotal</label></div>
+                                            <div><label>VAT</label></div>
+                                            <div><label>Shipping</label></div>
+                                            <div><label>Total</label></div>
+                                        </div>
+                                        <div class="grid grid-cols-4 gap1" v-for="(ft, i) in copy_ft"  >
+                                            {{ ft.tf_sub_total }}
+                                            <div> <input id="e_q_subtotal" v-model="ft.tf_sub_total"  disable> </div>
+                                            <div> <input id="e_q_vat" v-model="ft.tf_vat"  disable>  </div>
+                                            <div> <input id="e_q_shipping" v-model="ft.tf_shipping"></div>
+                                            <div> <input id="e_q_final" v-model="ft.tf_total" disable></div>
                                         </div>
                                     </div>
-                                    </div>
-                                    <div class="modal-footer" style="background-color: #1267aa;">
-                                        <button type="button" data-bs-dismiss="modal" aria-label="close" class="btn btn-warning" @click="UpdateQuote($event, this.this_one_q_hash_number)">SAVE / CHANGE YOUR QUOTE</button>
-                                    </div>
+
+
+                                    
                                 </div>
+
+                                <div class="modal-footer" style="background-color: #1267aa;">
+                                    <button type="button" data-bs-dismiss="modal" aria-label="close" class="btn btn-warning" @click="UpdateQuote($event, this.this_one_q_hash_number)">SAVE / CHANGE YOUR QUOTE</button>
+                                </div>
+                                
                             </div>
 
 
@@ -146,7 +197,7 @@
                 </div>
             </div>
 
-            <div>
+            <div class="show-invoice-area">
                 <embed id="preview_invoicenPDF" class="preview_invoicenPDF" src='' width="800px" height="600px"    />
             </div>
             
@@ -177,6 +228,61 @@ export default{
     each_quote:{
         type: Object,
         required: true,
+    },
+    setup(){
+        const handleFocusout = (e, i, df) => {
+          var updated_field = document.getElementById(e.target.id);
+
+          let dynamic_sell_id = "i_sell"+i;
+          let dynamic_quality_id = "i_quantity"+i;
+          let dynamic_discount_id = "i_discount"+i;
+          let dynamic_each_p_total_id = "i_final_total"+i;
+
+          let cum0 = document.getElementById(dynamic_sell_id).value;
+          let cum1 = document.getElementById(dynamic_quality_id).value;
+          let cum3 = document.getElementById(dynamic_discount_id).value;
+          
+          console.log("HF1 " + cum0 + "     " + cum1 + "      " + cum3);  
+
+          let s_times_q = cum0 * cum1;
+          if(cum3 != 0){
+            let s_minus_d = s_times_q - (+(s_times_q / 100) * +cum3);;
+            let get_discount_m = +(s_times_q / 100) * +cum3;
+            let dynamic_m_discount_id = "i_discount_m"+i;
+            let cum4 = document.getElementById(dynamic_m_discount_id).innerHTML;
+            cum4 = get_discount_m;
+            console.log("HF2 discount_money" + cum4);  
+            let double_underline = +s_times_q - +cum4  ;
+            document.getElementById(dynamic_each_p_total_id).innerHTML = double_underline;
+          }
+          else{
+            console.log("HF2 " + s_times_q);  
+            let double_underline = +s_times_q;
+            document.getElementById(dynamic_each_p_total_id).innerHTML = double_underline;
+          }
+
+            let cimulat_du = 0;
+
+            var x = copy_exact_product.length;
+            for (let rs=0; rs < x; ++rs){
+                
+                let dynamic_ = "i_final_total";
+
+                var one_du = document.getElementById(dynamic_).innerHTML;
+                cimulat_du = +cimulat_du + +one_du;
+
+            }
+            console.log("e_q_subtotal" + cimulat_du);  
+            //this is edited quote subtotal calculation
+            document.getElementById('e_q_subtotal').value = cimulat_du;
+
+            console.log("ipad check first if cimulate ecist?  " + cimulat_du);
+            addVatSHip(cimulat_du);
+          
+        }
+
+        return {  handleFocusout };
+
     },
     data(){
         return{
@@ -235,10 +341,12 @@ export default{
             copy_ft_shipping: '',
             copy_ft_total: '',
 
-            all_client: [],
-            all_delivery: [],
+            all_clients: [],
+            all_deliverys: [],
 
             copy_q_pdf_link: '',
+            e_all_product_list: [],
+            copy_ft: [],
         }
     },
     components:{
@@ -258,7 +366,13 @@ export default{
                     console.log("d.data().i_pdf_link" +d.data().i_pdf_link);
 
                     if (invoice_pdf){ //i.i_pdf_link !== 'undefined'
-                        document.getElementById('preview_invoicenPDF').src = i.i_pdf_link;
+                        document.getElementById('preview_invoicenPDF').src = invoice_pdf;
+                    }
+
+                    if (invoice_pdf == undefined){ 
+                        var div = document.getElementById('show-invoice-area');
+                        div.innerHTML += 'Added Your Invoice in middle button';
+
                     }
                 
                 })
@@ -300,7 +414,7 @@ export default{
                 this.showREFERENCE.push(this.copy_q_ref);
                 this.showREFERENCE2 = this.copy_q_ref;
                 
-
+                this.copy_ft = copycat.final_tt;
                 this.copy_ft_sub_total = copycat.final_tt.tf_sub_total;
                 this.copy_ft_vat = copycat.final_tt.tf_vat;
                 this.copy_ft_shipping = copycat.final_tt.tf_shipping;
@@ -316,7 +430,7 @@ export default{
             
             await document.getElementById('quote_num').setAttribute('value', this.copy_q_ref);
             //await document.getElementById('ref_num').setAttribute('value', this.q_ref);
-            console.log("??!!" + copy_ft_vat);
+            console.log("??!!!" + this.copy_exact_product);
 
         }, 
 
@@ -457,7 +571,7 @@ export default{
 
             cp.forEach(element => {   
  
-                var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_unit, element.p_discount, element.p_sell];
+                var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_unit, element.p_discount, "£"+element.p_sell];
 
                 bodyData.push(tmp);
             });    
@@ -484,16 +598,16 @@ export default{
             
             doc.setFontSize(12);
             doc.text('Sub-Total', 139, doc.lastAutoTable.finalY + 20, {align: 'right'})
-            doc.text(this.copy_ft_sub_total, 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
+            doc.text("£"+this.copy_ft_sub_total, 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
 
             doc.text('VAT', 139, doc.lastAutoTable.finalY + 25 , {align: 'right'})
-            doc.text(this.copy_ft_vat, 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
+            doc.text("£"+this.copy_ft_vat, 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
 
             doc.text('Shipping', 139, doc.lastAutoTable.finalY + 30 , {align: 'right'})
-            doc.text(this.copy_ft_shipping, 182, doc.lastAutoTable.finalY + 30 , {align: 'right'})
+            doc.text("£"+this.copy_ft_shipping, 182, doc.lastAutoTable.finalY + 30 , {align: 'right'})
 
             doc.text('Total', 139, doc.lastAutoTable.finalY + 35 , {align: 'right'})
-            doc.text(this.copy_ft_total , 182, doc.lastAutoTable.finalY + 35 , {align: 'right'})
+            doc.text("£"+this.copy_ft_total , 182, doc.lastAutoTable.finalY + 35 , {align: 'right'})
 
             doc.setFontSize(9);
             doc.text('Terms & Instructions', 6,  doc.lastAutoTable.finalY + 40).setFont(undefined, 'bold');
@@ -508,8 +622,9 @@ export default{
             
             var base64 = doc.output('datauri');
             this.return_base64 = base64;
+            
             //
-            //console.log("calling  test2_storage1     " + this.invoice_hashid + " ");
+            console.log("calling  test2_storage1     " + this.invoice_hashid + "      " + this.return_base64);
             const path = "/all_invoice/" + this.invoice_hashid + "/";
             test_storage( this.invoice_hashid, path, this.return_base64);
 
@@ -608,73 +723,108 @@ export default{
         },
 
         async UpdateQuote(i, q_hash){
+            var select_product = document.getElementById("so_product").value;
+            let d0 = "i_code"+i;
             let d1 = "i_quality"+i;
             let d2 = "i_unit"+i;
-            let d3 = "i_discount"+i;
+            let d3 = "i_discount_m"+i;
+            let d4 = "i_sell"+i;
 
             const a = document.getElementById(d1);
             const b = document.getElementById(d2);
             const c = document.getElementById(d3);
-            const cep = JSON.parse(JSON.stringify(this.copy_exact_product));
-            console.log(cep);
-            for (var key in cep) {
-                if (cep.hasOwnProperty(key)) {
+
+            console.log("=====edit and upoad another quote:0 ");
+            
+            const cp = JSON.parse(JSON.stringify(this.copy_exact_product));
+            console.log(cp);
+            for (var key in cp) {
+                if (cp.hasOwnProperty(key)) {
 
                     let d_qty = "i_quality"+key;
                     let d_unit = "i_unit"+key;
-                    let d_discount = "i_discount"+key;
-                    let cum1 = document.getElementById(d_qty).innerHTML; //
-                    let cum2 = document.getElementById(d_unit).innerHTML;
-                    let cum3 = document.getElementById(d_discount).innerHTML;
+                    let d_discount = "i_discount_m"+key;
+                    let d_sell = "i_sell"+key;
+                    let d_final_total = "i_final_total"+key;
+                    let cum1 = document.getElementById(d_qty).value; //
+                    let cum2 = document.getElementById(d_unit).value;
+                    let cum3 = document.getElementById(d_discount).value;
+
+                    let cum4 = document.getElementById(d_sell).value;
+                    let cum5 = document.getElementById(d_final_total).value;
                     //console.log(cum1 + "=====" + cum2);
-                    cep[key].p_quantity = cum1;
-                    cep[key].p_unit = cum2;
-                    cep[key].p_discount = cum3;
+                    cp[key].p_fullname = select_product;
+                    cp[key].p_quantity = cum1;
+                    cp[key].p_unit = cum2;
+                    cp[key].p_discount = cum3;
+                    cp[key].p_sell = cum4;
+                    cp[key].p_final_total = cum5;
                     //console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
 
                 }
             }
+
+            let i_subtotal = document.getElementById('e_q_subtotal').value;
+            let i_vat = document.getElementById('e_q_vat').value;
+            let i_shipping = document.getElementById('e_q_shipping').value;
+            let i_final_total = document.getElementById("e_q_final").value;
+            
+            console.log("this.this_one_q_hash_number" + this.this_one_q_hash_number);
+
+            const find_invoice_pdf = firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number);
+            await find_invoice_pdf.onSnapshot((ss) => {
+                ss.docs.forEach(d => {
+                    var update_quote = d.data();  //p_final_total
+                    console.log("update_quote.final_tt.tf_shipping?    " + update_quote.final_tt.tf_shipping);
+                    update_quote.final_tt.tf_sub_total = i_subtotal;
+                    update_quote.final_tt.tf_vat = i_vat;
+
+                    update_quote.final_tt.tf_shipping = i_shipping;
+
+                    update_quote.final_tt.tf_total = i_final_total;
+
+
+
+                    
+                
+                })
+            })
+            await setDoc(ref, {cp}, { merge:true })
+            .then(docRef => { 
+                var choosen_product_qty = Object.keys(this.cp).length;
+                cp["choosen_product_qty"] = choosen_product_qty;
+            })
+            
+            
+            
             //another jspdf
             const string = await jspdftime();
             var embed = "<embed src='" + string + "'/>"
             if (string == undefined || string == null){
                 Oh_error_exist("OneQuote.vue! jspdf cannot return src string in Page!");
             }
-            const z = document.getElementById('preview_invoicenPDF');
-            var clone = z.cloneNode(true);
+
+            console.log("=====edit and upoad another quote:1 ");
+
+            const bb = document.getElementById('pdf_quote');
+            var clone = bb.cloneNode(true);
             clone.setAttribute('src', string);
-            z.parentNode.replaceChild(clone, z);
+            bb.parentNode.replaceChild(clone, bb);
             var base64 = doc.output('datauri');
             this.return_base64 = base64;
 
+            console.log("=====edit and upoad another quote:2 " + this.copy_q_number + " " + path + " " + this.return_base64 );
+            
             const path = "/all_quote/" + this.copy_q_number + "/";
+
             test2_storage( this.copy_q_number, path, this.return_base64);
 
-            /*
-            await addDoc(ref, {cep})
-            .then(docRef => {
-                console.log("update" + docRef.id);
-                const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
-                const string = "/all_quote/" + docRef.id + "/";
-                test2_storage( docRef.id, string, this.return_base64);//use this   
-                var choosen_product_qty = Object.keys(this.choosen_products).length;
+            console.log("=====edit and upoad another quote:3 ");
+            await setDoc(ref, {cp}, { merge:true })
+            .then(docRef => { 
+                var choosen_product_qty = Object.keys(this.cp).length;
                 cp["choosen_product_qty"] = choosen_product_qty;
-                get_id
-                    .update({
-
-                        choosen_product_qty: choosen_product_qty,
-                    })
-                    .then(() => {
-                        //console.log("set doc1");
-
-                        get_id.get().then((d) => {
-                        });
-                });
-                    
-                
-
-            }),
-            */
+            })
             
 
         },
@@ -682,13 +832,14 @@ export default{
         async getAllClient(){
         var all_client_ref = await firebase.firestore().collection("all_client");
             all_client_ref.onSnapshot(snap => {
-                this.all_client = [];
+                this.all_clients = [];
 
                 snap.forEach(d => {
 
                     var c = d.data();
-                    //console.log("client: " + c);
-                    this.all_client.push(c);
+                    console.log("ipad?A " + c.c_fullname);
+                    if(!all_clients.includes(c.c_fullname))
+                        this.all_clients.push(c);
 
                 });
             });
@@ -697,13 +848,14 @@ export default{
         async getAllDelivery(){
         var all_delivery_ref = await firebase.firestore().collection("all_delivery").doc(this.this_one_q_hash_number).collection("this_client_delivery");
             all_delivery_ref.onSnapshot(snap => {
-                this.all_delivery = [];
+                this.all_deliverys = [];
 
                 snap.forEach(d => {
 
                     var delivery = d.data();
-                    //console.log("delivery: " + d);
-                    this.all_delivery.push(delivery);
+                    console.log("ipad?B " + d.d_fullname);
+                    if(!all_deliverys.includes(d.d_fullname))
+                        this.all_deliverys.push(delivery);
 
                 });
             });
@@ -726,24 +878,56 @@ export default{
                 return flag;
             }
             }) 
-            /*
-            if_invoice.onSnapshot((ss) => {
-                if (ss.exists()) {
-                    console.log("tag exists!" + ss.data());
-                    document.getElementById("m_edit_quotation").disabled = true;
-                    document.getElementById("m_new_invoice").disabled = true;
-                    flag = true;
-                    return flag;
-                 
-                } else {   
-                    console.log("tag does not exist"); 
-                    flag = false;
-                    return flag;
-                }
+            
+        },
+        async getAllProductsName() { 
+            var all_product_ref = await firebase.firestore().collection("all_products");
+            all_product_ref.onSnapshot((snapshot) => {
+            this.e_all_product_list = [];
+            snapshot.forEach(d => {
+                var product = d.data();
+
+                this.e_all_product_list.push(product);
             })
-            */
+            })     
+        },
+        async clearRest(i){ //uncheck
+            console.log("clear reset. 1" );
+            var select_product = document.getElementById("so_product").value;
+            let d1 = "i_quantity"+i;
+            let d2 = "i_unit"+i;
+            let d3 = "i_discount"+i;
+            let d4 = "i_code"+i;
+            let d5 = "i_sell"+i;
+            let d6 = "i_final_total"+i;
+            document.getElementById(d1).value = "";
+            document.getElementById(d2).value = "";
+            document.getElementById(d3).value = "0";
+            //no d5 is ok
+            document.getElementById(d6).innerText = "";
+            console.log("clear reset. 2" + select_product);
+            var one_product_ref = await firebase.firestore().collection("all_products").where("p_fullname", "==", select_product);
+            one_product_ref.get()
+            .then((snapshot) => {
+
+
+                
+                snapshot.forEach(d => {
+                    var select_p_code = d.data().p_code;
+                    var select_p_sale = d.data().p_sell;
+
+
+                    console.log("clear reset. 3" + select_p_code + "   " + select_p_sale);
+                    document.getElementById(d4).innerText = select_p_code;
+                    document.getElementById(d5).innerText = select_p_sale;
+                })
+            })
         },
 
+        async retrieveFinalToal(){
+            
+            
+        }
     },
     created() {
 
@@ -758,7 +942,9 @@ export default{
         this.getAllClient();
         this.getAllDelivery();
 
+        this.getAllProductsName();
 
+        this.retrieveFinalTotal();
         
         
     },
@@ -874,6 +1060,33 @@ async function renewjspdf(){
     doc.text('Quote only valid for 30 days', 6, doc.lastAutoTable.finalY + 44)
 
     var string = doc.output('datauristring');
+}
+
+
+async function addVatSHip(i_subtotal){
+
+    //let i_subtotal = document.getElementById('q_subtotal').value;
+    let i_vat = document.getElementById('e_q_vat').value;
+    let i_shipping = document.getElementById('e_q_shipping').value;
+
+    let added_vat = 0;
+    let find_vat = 0;
+    let added_shipping = 0;
+    let final = 0;
+    added_vat = i_subtotal * 1.20; 
+
+    find_vat = +added_vat - +i_subtotal;
+    document.getElementById("e_q_vat").value = find_vat;
+    
+
+    added_shipping = await +added_vat + +i_shipping;
+    final = added_shipping;
+
+    let r_final = Number(final).toFixed(2);
+    document.getElementById("e_q_final").value = r_final;
+
+
+    return final;
 }
 
 

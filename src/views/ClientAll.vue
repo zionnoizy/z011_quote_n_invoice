@@ -15,28 +15,16 @@
         <p>...................................................</p>
 
         <div class="px-5 mx-5 grid grid-cols-2 gap-1 ">
-        <div>
-        <label>Search Engine</label>
-        <input placeholder="search here.." />
-        </div>
-        <div>
-        <!---->
-        <div class="grid grid-cols-3">
-          
-          <div>Sort By: A-Z</div>
-          <div>Date Added</div>
-          <div>Country</div>
-
-        </div>
-        <!---->
-        </div>
+          <div>
+          <label>Search Client Name</label>
+          <input type="text" v-model="mysearch" placeholder="search here.." />
+          </div>
+        
         </div>
 
         <div class="lg:px-5 lg:mx-5 grid grid-cols-5 gap-3 ">
-          <!--[new_task] on click client-->
 
-
-          <div class="client_card"  v-for="c, i in all_clients"     > 
+          <div class="client_card"  v-for="c, i in f_all_clients" :key="c.client_hashid"     > 
             
             <div class="row" data-bs-toggle="modal" data-bs-target="#add_delievery_address" @click.prevent="this.passVariable($event, c, i)">
 
@@ -56,7 +44,7 @@
                 <p>{{ c.c_city }}, {{ c.c_post_code }} </p>
               </div>
 
-              <div> {{ c.client_hashid }} </div>
+              <!-- <div> {{ c.client_hashid }} </div> -->
 
             </div>
 
@@ -81,9 +69,9 @@
                           <div><label>Delievery Company Name*</label></div>
                           <div><input ref="delivery_cpyname" type="text" placeholder="Client Company Name" id="delivery_cpyname" required/></div>
 
-                      </div>
+                        </div>
 
-                        <h2>Delivery Full Address</h2>
+                      <h2>Delivery Full Address</h2>
 
                       <div class="grid grid-cols-2 gap-3">
                         <div><label>Address Line1 * </label> </div>
@@ -134,7 +122,23 @@ import { collection, doc } from "@firebase/firestore";
 export default{
 
     name: 'ClientAll',
-    setup() {},
+    setup() {
+        const s_product2 = reactive([]);
+        onMounted(async () => {
+            try {
+                const typing_product = await firebase
+                    .firestore()
+                    .collection("all_client")
+                    .get();
+                typing_product.forEach((doc) => {
+                    s_product2.push(doc.data());
+                });
+            } catch (e) {
+                console.log("Error Typing s_product2");
+            }
+        });
+        return { s_product2 };
+    },
     data(){
       
         return{
@@ -154,6 +158,7 @@ export default{
 
           delivery_cpyname: '',
           d_address_1: '',
+          mysearch: '',
         }
     },
     components: {
@@ -246,12 +251,39 @@ export default{
                   delivery_hashid: docRef.id,
               })
               .then(() => {
+                alert("Added, delivery address for client: " + this.delivery_fullname );
+                document.getElementById("delivery_cpyname").value = ''
+                document.getElementById("d_address_1").value= ''
+                document.getElementById("d_address_2").value = ''
+                document.getElementById("d_city").value = ''
+                document.getElementById("d_post_code").value = ''
+                
               });
         })
         console.log("deliver address adding2...");
+
       },
+
+      async findSpecific() { 
+            var all_product_ref = await firebase.firestore().collection("all_products");
+            all_product_ref.onSnapshot((snapshot) => {
+                this.s_product = [];
+                snapshot.forEach(d => {
+                    var s_product_name =d.data();
+                    this.s_product.push(s_product_name);
+                })
+            })
+            
+        },
     },
-      
+    computed: {
+      f_all_clients(){
+
+        return this.all_clients.filter(all_clients => 
+          all_clients.c_fullname.toLowerCase().includes(this.mysearch.toLocaleLowerCase())
+        );
+      }
+    },
     created() {
       this.getAllClient();
       this.getUser();

@@ -31,24 +31,23 @@
             <div class="row">
                 <div class="col-8 mx-auto">
 
-                    <button class="btn btn-primary btn-lg mb-3 btn-block mx-auto" style="width:100%;">  <router-link :to="{name: 'QuoteAdd' }"> Add New Quote </router-link> </button>
+                    <button class="btn btn-primary btn-lg mb-3 btn-block mx-auto" style="width:100%; ">  <router-link :to="{name: 'QuoteAdd' }"> Add New Quote </router-link> </button>
                 </div>
 
                 
             </div>
         </div>
 
-        <p class="text-3xl font-bold underline pb-3"> Please Select The Following </p>
 
         
         
         <div class="grid grid-cols-3 text-xl pb-6">
         
-            <div><router-link :to="{name: 'ClientCard' }"> Client </router-link></div>
+            <div><router-link :to="{name: 'ClientCard' }"> <p class="text-3xl font-bold"> Client </p> </router-link></div>
 
-            <div><router-link :to="{name: 'QuoteAll' }"> Quote </router-link></div>
+            <div><router-link :to="{name: 'QuoteAll' }"> <p class="text-3xl font-bold"> Quote </p> </router-link></div>
 
-            <div><router-link :to="{name: 'InvoiceAll' }"> Invoice </router-link></div>
+            <div><router-link :to="{name: 'InvoiceAll' }"> <p class="text-3xl font-bold"> Invoice </p> </router-link></div>
         
     
         </div>

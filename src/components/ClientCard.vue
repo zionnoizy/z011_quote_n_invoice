@@ -24,12 +24,12 @@
               <div> {{ c.client_hashid }} </div>
             </div>
           </div>
-          <div class="modal fade" id="show_delievery_address" tabindex="-1" aria-labelledby="" aria-hidden="true">
+          <div class="modal fade" id="show_delievery_address" tabindex="-1" aria-labelledby="" aria-hidden="true" @close="resetPages()">
           <div class="modal-dialog modal-xl">
               <div class="modal-content text-black">
                   <div class="modal-header">
                       <h4 class="modal-title"> List of Address From Client <b>{{ delivery_fullname }} </b></h4>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"> X </button>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close" > X </button>
                   </div>
                   <div class="modal-body" style="background-color: #1267aa;">
                       <div class="px-5 mx-5 grid grid-cols-3 gap-2  ">
@@ -56,7 +56,8 @@
 
                           </div>
                       </div>
-                      <button @click="loadnext()">next</button>
+                      <button id="previous_btn" @click="loadprevious()">previous</button>
+                      <button id="next_btn" @click="loadnext()">next</button>
 
                   </div>
                   
@@ -80,11 +81,11 @@ export default{
         return{
             all_client_card: [],
             delivery_fullname: '',
-            this_client_delivey: [],
+            all_client_delivey: [],
 
             
             start:0,
-            end: 1,
+            end: 3,
             toRender: [],
         }
     },
@@ -109,40 +110,85 @@ export default{
         
         },
         async showDelivery(e, c, i) {
+          document.getElementById('previous_btn').style.visibility = 'hidden';
           this.delivery_fullname = c.c_fullname;
+
           const delivey_ref = await firebase.firestore().collection("all_delivery").doc(c.client_hashid).collection("this_client_delivery");
           await delivey_ref.onSnapshot(snap => {
-              this.this_client_delivey = [];
+              this.all_client_delivey = [];
               snap.forEach(d => {
                   var delivery = d.data();
-                  this.this_client_delivey.push(delivery);
+                  this.all_client_delivey.push(delivery);
 
               });
-              console.log("?" +this.this_client_delivey);
-          this.loadnext(this.this_client_delivey);
+              console.log("ipad3 check if this_client_delivery" +this.all_client_delivey);
+              this.toRender = [];
+              const no_proxy = JSON.parse(JSON.stringify(this.all_client_delivey)); //
+
+              console.log("ipad3 check " + no_proxy);
+
+              for (let i = this.start; i < this.end; i++){
+                if (no_proxy[i] !== undefined){
+                  this.toRender.push(no_proxy[i])
+                  console.log("what to push1: " + no_proxy[i] );
+                  
+                }
+                
+              }
+              console.log("what to push2: " + this.toRender.length);
+              this.start = this.start + this.toRender.length;
+              this.end =  this.start + this.toRender.length;
           });
           
         },
 
 
-        loadnext(this_client_delivey) {
+        loadnext() {
+          
           this.toRender = [];
-          const no_proxy = JSON.parse(JSON.stringify(this_client_delivey)); //
-
-          console.log(">" + no_proxy);
-
+          const no_proxy = JSON.parse(JSON.stringify(this.all_client_delivey)); //
+          console.log(">   " + no_proxy );
           for (let i = this.start; i < this.end; i++){
+
             if (no_proxy[i] !== undefined){
               this.toRender.push(no_proxy[i])
-              console.log(no_proxy[i]);
+              console.log("what to push3: " + no_proxy[i] );
+              
+            }
+            if (no_proxy[i] == undefined){
+              document.getElementById('next_btn').style.visibility = 'hidden';
+            }
+
+            
+          }
+
+          this.start = this.start + this.toRender.length;
+          this.end =  this.start + this.toRender.length;
+
+        },
+        loadprevious() {
+          this.start = this.start - this.toRender.length;
+          this.end =  this.start - this.toRender.length;
+          console.log("what to push4: " + this.start + this.end);
+          this.toRender = [];
+          const no_proxy = JSON.parse(JSON.stringify(this.all_client_delivey)); //
+
+          for (let j = this.end; j < this.start; j++){
+
+            if (no_proxy[j] !== undefined){
+              this.toRender.push(no_proxy[j])
+              console.log("what to push5: " + no_proxy[j] );
               
             }
           }
-          this.start = this.start + this.toRender.length;
-          this.end =  this.start + this.toRender.length;
-          
+          console.log("what to push6: " + this.toRender.length);
+
 
         },
+        resetPages(){
+          console.log("reset start/ end / toRender to origional");
+        },
+
     },
     created(){
       this.getAllClient();
