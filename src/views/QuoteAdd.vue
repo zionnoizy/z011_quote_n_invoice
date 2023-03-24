@@ -1254,30 +1254,37 @@ export default {
         },
 
         async choosenOneProduct(ev, p, i){ //IMPORTANT
-        var choose_product_ref = await firebase.firestore().collection("all_products").where("p_fullname", "==", p.p_fullname);
-        let new_subtotal = 0;
-        await choose_product_ref.onSnapshot((snapshot) => {
+            //var size = Object.size(this.choosen_products);
+            console.log("size   " + this.choosen_products.length);
+            if (this.choosen_products.length > 12){
+                alert("reach maximum item in v1.0 at this moment.");
+            }
+            else{
+            var choose_product_ref = await firebase.firestore().collection("all_products").where("p_fullname", "==", p.p_fullname);
+            let new_subtotal = 0;
+            await choose_product_ref.onSnapshot((snapshot) => {
 
-             snapshot.docs.forEach(d => {
-                var product = d.data();
-                this.choosen_products.push(product);
-                var tmp_one_sell = parseFloat(d.data().p_final_total);  //p_final_total
-                this.tmp_sell = this.tmp_sell + tmp_one_sell;
+                snapshot.docs.forEach(d => {
+                    var product = d.data();
+                    this.choosen_products.push(product);
+                    var tmp_one_sell = parseFloat(d.data().p_final_total);  //p_final_total
+                    this.tmp_sell = this.tmp_sell + tmp_one_sell;
 
-                
-                //console.log("!!!!!!!!!2 " + this.tmp_sell + "+" + tmp_one_sell)
+                    
+                    //console.log("!!!!!!!!!2 " + this.tmp_sell + "+" + tmp_one_sell)
 
-                document.getElementById('q_subtotal').setAttribute('value', this.tmp_sell);
-                
-                addVatSHip(this.tmp_sell);
-                
-                //NEW
-                
-                //this.$root.$emit('choosenOneProduct', this.tmp_sell);
-                
+                    document.getElementById('q_subtotal').setAttribute('value', this.tmp_sell);
+                    
+                    addVatSHip(this.tmp_sell);
+                    
+                    //NEW
+                    
+                    //this.$root.$emit('choosenOneProduct', this.tmp_sell);
+                    
+                })
+                new_subtotal = this.tmp_sell;
             })
-            new_subtotal = this.tmp_sell;
-        })
+            }
         ////console.log(new_subtotal);
         //document.getElementById('q_subtotal').setAttribute('value', this.tmp_sell);
         //new_subtotal= document.getElementById('q_subtotal').value; 
