@@ -158,6 +158,7 @@ export default {
     data(){
       
       return{
+        myIsearch: '',
         all_invoices: [],
         f_all_invoices: [],
         all_clients: [],
@@ -198,7 +199,7 @@ export default {
           all_i_clients: [],
           
         },
-        myIsearch: '',
+        
       }
     },
 

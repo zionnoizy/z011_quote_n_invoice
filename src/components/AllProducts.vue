@@ -2,13 +2,21 @@
 
     <th>PRODUCT IN DATABASE:</th>
     <div class="d-flex justify-content-between">
-        <button class="btn btn-primary " @click.prevent="getAllProductsNewest()">Sort From Oldest </button>
-        <button class="btn btn-primary " @click.prevent="getAllProductsOldest()">Sort From Newest </button>
+      <div class="grid grid-cols-3 gap-3">
+        <div>
+          <label>Search Product Name</label>
+          <input type="text" v-model="mysearch" placeholder="search here.." />
+        </div>
+        <div> <button class="btn btn-primary " @click.prevent="getAllProductsNewest()">Sort From Oldest </button> </div>
+        <div> <button class="btn btn-primary " @click.prevent="getAllProductsOldest()">Sort From Newest </button> </div>
+      </div>
+        
+        
         
       </div>
         <!-- <button @click.prevent="ChangingProduct">EDIT ALL</button> -->
         <p>click eith one field on the table to edit, please type sometinhg on it otherwise will have a chance to hit a bug return '0'</p>
-        <p>edit and input cannot preform at the same time, please refresh the page if you do so.</p>
+        <p>edit, search and, input cannot preform at the same time, please refresh the page if you do so.</p>
         <p> status: <strong> {{ statuss }}</strong> </p>
         <table class="table table-dark" id="store_to_excel" >
             <thead>
@@ -30,7 +38,7 @@
 
 
             </tr>
-            <tr id="list_of_productss" v-for="p, i in all_products" @blur="handleBlur" @focusout="handleFocusout( $event,  p.pid, data-field, i   )">
+            <tr id="list_of_productss" v-for="p, i in f_all_products" @blur="handleBlur" @focusout="handleFocusout( $event,  p.pid, data-field, i   )">
                 <td style="color: grey;"> {{i}} </td>
                 <td contenteditable="true" data-field="p_code" :id= "`ep_code_${i}`" > {{ p.p_code }} </td>
                 <td contenteditable="true" data-field="p_fullname" :id= "`ep_fn_${i}`" > {{ p.p_fullname }} </td>
@@ -90,7 +98,7 @@ export default{
 
 
         const handleFocusout = (e, pid, df, i) => {
-          console.log("handleFocusout: " + e.target.id + "   pid= " + pid + " data-field=" );
+          console.log("handleFocusout: " + e.target.id + "   pid= " + pid + " data-field=" + df );
 
           var updated_field = document.getElementById(e.target.id);
           var tdText = updated_field.innerText
@@ -164,6 +172,18 @@ export default{
               this.statuss = "ERROR!" + error;
             });
           }
+          else{
+            console.log("here? ");
+            const edit_this_product_col = firebase.firestore().collection("all_products");
+            edit_this_product_col.doc(pid).update({
+              [sortOrder] : tdText,
+            }).then(function(){
+              this.statuss = "UPDATED OK";
+            }).catch(function(error) {
+              console.log("DEBUG" + error);
+              this.statuss = "ERROR!" + error;
+            });
+          }
           /*
           const edit_this_product_col = firebase.firestore().collection("all_products");
           edit_this_product_col.doc(pid).update({
@@ -189,7 +209,7 @@ export default{
 
         },
         statuss: 'NO ANY CHANGE YET',
-
+        mysearch: '',
         }
     },
     computed:{
@@ -283,6 +303,15 @@ export default{
         }
       },
     },
+    computed: {
+      f_all_products(){
+
+        return this.all_products.filter(all_products => 
+        all_products.p_fullname.toLowerCase().includes(this.mysearch.toLocaleLowerCase())
+        );
+      }
+    },
+
     created() {
 
       this.getAllProductsNewest();

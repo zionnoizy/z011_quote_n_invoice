@@ -13,7 +13,7 @@
           <button class="btn btn-primary">Go To Add Category</button>
         </router-link>
         <product-add></product-add>
-
+        
         <all-products></all-products>  
   </div>
 
