@@ -336,7 +336,7 @@
 
                 <div class="px-2">
                 <button class="preview_btn btn btn-info btn-lg btn-block" data-bs-toggle="modal"
-                    data-bs-target="#preview_quotation" @click.prevent=previewBtn()> Preview Quotation</button>
+                        data-bs-target="#preview_quotation" @click.prevent=previewBtn()> Preview Quotation</button>
                 <!--@click.prevent="uploadQuotePDF($event)" download -->
 
                 <!------------------modal start-------------------->
@@ -402,7 +402,18 @@
         </div>
 
         <div>
-            <p class="dashboard_txt pt-5 pb-3 mx-6 text-start" > This is a Quote Pdf, refer this invoice number and can be find on <router-link to="/dashboard/quote" exact> dashboard/quote </router-link></p>
+            <p class="dashboard_txt pt-5 pb-3 mx-6 text-start" > 
+                This is a Quote Pdf, refer this invoice number and can be find on dashboard/quote 
+                <router-link 
+                tag="tr"
+                :to="{ name: 'OneQuote', 
+                params: 
+                { id: this_one_q_number, 
+                  //[that's a lot to pass]
+                }, query: { this_one_q_hash_number: this_one_q_hash_number, this_one_q_pdf_link: this_one_q_pdf_link}}">
+                    dashboard/quote 
+                </router-link>
+            </p>
 
         </div>
         <embed id="hidden_quotationPDF" width="1200px" height="800px" src='' />
@@ -602,6 +613,9 @@ export default {
 
             },
 
+            this_one_q_hash_number: '',
+            this_one_q_pdf_link: '',
+            this_one_q_number: '',
         }
     },
     components: {
@@ -777,7 +791,7 @@ export default {
                 let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK");
                 
                 const quote_number = await auto_quote_no_generator2();
-
+                this.this_one_q_number = quote_number;
                 let reference_number = document.getElementById('q_reference_number').value;
 
                 const ref = collection(db, "ALL_quote");
@@ -807,7 +821,7 @@ export default {
                 q_extra_space_2: '',
                 q_extra_space_3: '',
                 q_extra_space_4: '',
-            }
+                }
 
             const t = document.getElementById('q_subtotal').value;
 
@@ -819,7 +833,6 @@ export default {
                 tf_total: document.getElementById('q_total').value,
 
             }
-            
             //NEW NEW NEW NEW --
             const cp = JSON.parse(JSON.stringify(this.choosen_products));
             //console.log(typeof cp);
@@ -827,7 +840,6 @@ export default {
                 if (cp.hasOwnProperty(key)) {
                     //console.log(key + " -> " + cp[key].p_fullname);
                     let d_qty = "ep_qty_"+key; 
-                    
                     let d_discount = "ep_discount_"+key;
                     let d_unit = "ep_unit_"+key; 
                     let cum1 = document.getElementById(d_qty).innerHTML;
@@ -838,19 +850,22 @@ export default {
                     cp[key].p_discount = cum2;
                     cp[key].p_unit = cum3;
                     //console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
-
                 }
             }
+            
             console.log("uploadQuotePDF4---------" + base64);
+
             await addDoc(ref, {obj_ref, cp, final_tt})
             .then(docRef => {
                 console.log(docRef.id);
-
                 const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
                 const string = "/all_quote/" + docRef.id + "/";
-                test2_storage( docRef.id, string, base64);//use this 
 
-                console.log("uploadQuotePDF5---------");
+                this.this_one_q_pdf_link = test2_storage( docRef.id, string, base64);//use this 
+
+                console.log("uploadQuotePDF5---------   " + this.this_one_q_pdf_link);
+
+
                 //NEW NEW
                 var choosen_product_qty = Object.keys(this.choosen_products).length;
                 cp["choosen_product_qty"] = choosen_product_qty;
@@ -862,10 +877,6 @@ export default {
                 }).catch((error) => {
                     console.log(error);
                 })
-                    
-                    
-                
-
             })
             }//flag
         },
@@ -874,7 +885,6 @@ export default {
             console.log("previewBtn1---------");
 
             let flag = await validate_q_input();
-
             if (flag){
             const doc = new jsPDF(); 
             doc.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297); // w h
@@ -1073,10 +1083,14 @@ export default {
             console.log("uploadQuotePDF4---------" + base64);
             await addDoc(ref, {obj_ref, cp, final_tt})
             .then(docRef => {
+                //**
+                this.this_one_q_hash_number = docRef.id;
+
                 console.log(docRef.id);
 
                 const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
                 const string = "/all_quote/" + docRef.id + "/";
+
                 test2_storage( docRef.id, string, base64);//use this 
 
                 console.log("uploadQuotePDF5---------");
@@ -1091,10 +1105,6 @@ export default {
                 }).catch((error) => {
                     console.log(error);
                 })
-                    
-                    
-                
-
             })
             }//flag
             //////
@@ -1113,6 +1123,9 @@ export default {
             //const today_month = convert_month(tmp_today_month);
             const path_string = "/all_quote/" + today_year + "/" + month_folder + "/"
             test2_storage(path_string, this.return_base64);
+
+            //this.this_one_q_pdf_link = ;
+
             const storageref = ref(storage, path_string);
             const uploadtask = uploadBytesResumable(storageref, DATA_HERE);
 

@@ -31,7 +31,11 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig);
 */
-
+/*
+router.beforeEach((to, from, next) => {
+  console.log("beforeEach?   " );
+})
+*/
 createApp(App)
 .use(router)
 .mount('#app')

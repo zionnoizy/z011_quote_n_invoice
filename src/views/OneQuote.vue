@@ -22,7 +22,7 @@
 
             <div>
 
-                <embed id="pdf_quote"  class="pdf_quote" width="800px" height="600px"   src='' />
+                <embed id="pdf_quote"  class="pdf_quote" width="800px" height="600px"  :download="`${ copy_q_b_f }`" src='' />
                 
                 
             </div>
@@ -36,9 +36,9 @@
                         Edit Quotation
                     </button>
                     <div class="modal fade" id="edit_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true" >
-                        <div class="modal-dialog modal-xl" style="width:150%">
+                        <div class="modal-dialog modal-xl" style="">
 
-                            <div class="modal-content text-black" style="width:1338px;">
+                            <div class="modal-content text-black" style="height: 600px;width:1338px;">
 
                                 <div class="modal-header">
                                     <h4 class="modal-title"> Edit Your Quotation Below. </h4>
@@ -104,9 +104,10 @@
                                             <div>Unit</div>
                                             <div>Discount%</div>
                                             <div>Discount£</div>
+
                                             <div style="text-decoration-line: underline; text-decoration-style: double;" >FInal Total</div>
                                         </div>
-                                        <div class="grid grid-cols-8 gap-1" v-for="(k, i) in copy_exact_product" @focusout="handleFocusout($event,  i, copy_exact_product   )" >
+                                        <div class="grid grid-cols-8 gap-1" v-for="(k, i) in copy_exact_product" @focusout="handleFocusout($event,  i, copy_exact_product   )" :props="props" >
                                             <div>
                                                 <select :id="'so_product'+i" class="form-select" aria-label="select client from quote list below, and it will do sorting." 
                                                     @change="clearRest(i);" onfocus="this.selectedIndex = 0;">
@@ -141,13 +142,24 @@
                                                 <p  :ref="'i_discount_m'+i" :id="'i_discount_m'+i" style="color:grey;">{{ k.p_discount }} </p> 
                                             </div>
 
+
+
                                             <div>
                                                 <p :id="'i_final_total'+i" :ref="'i_final_total'+i"  style="color:grey; text-decoration-line: underline; text-decoration-style: double;"> {{ k.p_final_total }} </p>
                                             </div>
-                                            <button @click="removeRow(row)">Remove Row</button>
+                                            <button @click="removeRow(i)">Remove Row</button>
                                         </div>
                                         <button @click="addRow">Add Row</button>
                                     </div>
+
+
+
+
+                                    
+                                    
+                                    
+                                    
+                                    
                                     <div class="">
                                         <label>6. Edited Final Total </label>
                                         <div class="grid grid-cols-4 gap1" >
@@ -157,21 +169,18 @@
                                             <div><label>Total</label></div>
                                         </div>
 
-                                        <div class="grid grid-cols-4 gap1"  v-for="(ft, i) in copy_ft"  >
-
+                                        <div class="grid grid-cols-4 gap1"    >
                                             <div>    
-                                                <p  id="e_q_subtotal" style="color:grey;"> {{ ft.tf_sub_total }} </p> 
-                                            </div>
-
-                                            <div> 
-                                                <p  id="e_q_vat" style="color:grey;"> {{ ft.tf_vat }} </p> 
+                                                <p id="e_q_subtotal" style="color:grey;"> {{ copy_ft.tf_sub_total }} </p> 
                                             </div>
                                             <div> 
-                                                <p  id="e_q_shipping" style="color:grey;"> {{ ft.tf_shipping }} </p> 
+                                                <p id="e_q_vat" style="color:grey;"> {{ copy_ft.tf_vat }} </p> 
                                             </div>
                                             <div> 
-                                                <p  id="e_q_final" style="color:grey; "> {{ ft.tf_total }} </p> 
-
+                                                <p id="e_q_shipping" style="color:grey;"> {{ copy_ft.tf_shipping }} </p> 
+                                            </div>
+                                            <div> 
+                                                <p id="e_q_final" style="color:grey; "> {{ copy_ft.tf_total }} </p> 
                                             </div>
                                         </div>
                                     </div>
@@ -181,7 +190,7 @@
                                 </div>
 
                                 <div class="modal-footer" style="background-color: #1267aa;">
-                                    <button type="button" data-bs-dismiss="modal" aria-label="close" class="btn btn-warning" @click="UpdateQuote($event, this.this_one_q_hash_number)">SAVE / CHANGE YOUR QUOTE</button>
+                                    <button type="button" data-bs-dismiss="modal" aria-label="close" class="btn btn-warning" @click="UpdateQuote($event, this.this_one_q_hash_number, copy_exact_product , copy_q_number, showREFERENCE2  )">SAVE / CHANGE YOUR QUOTE</button>
                                 </div>
                                 
                             </div>
@@ -305,7 +314,7 @@ export default{
             }
             console.log("e_q_subtotal" + cimulat_du);  
             console.log("HF5 " + s_times_q);  
-            document.getElementById('e_q_subtotal').value = cimulat_du;
+            document.getElementById('e_q_subtotal').innerHTML = cimulat_du;
 
             console.log("ipad check first if cimulate ecist?  " + cimulat_du);
             addVatSHip(cimulat_du);
@@ -526,6 +535,7 @@ export default{
             }
 
             const pro_ref = this.copy_exact_product;
+            
 
             await addDoc(ref, {obj_ref, pro_ref, price_ref}) 
             .then(docRef => {
@@ -556,7 +566,8 @@ export default{
             });
 
 
-            ///jspdf time!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            ///jspdf time invoice!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            
             const string = await this.jspdftime(i_number, today, po_number);
 
             
@@ -611,18 +622,12 @@ export default{
             let bodyData = [];
 
             console.log("what is this? " + this.copy_exact_product);
-
             const cp = JSON.parse(JSON.stringify(this.copy_exact_product));
-
             console.log("what is this now? " + cp);    
-
             cp.forEach(element => {   
- 
                 var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_unit, element.p_discount, "£"+element.p_sell];
-
                 bodyData.push(tmp);
             });    
-
             var finalY = doc.lastAutoTable.finalY || 10
             autoTable(doc, {
                 //html: '#cms-quote-table',
@@ -678,52 +683,64 @@ export default{
 
             return string;
         },
-        generatePDFSecret(q_number, today){
+        async jspdftimeQuote(q_number, today, ref_num, po_number, bf,ba1,ba2,bc,bpc, sf,sa1,sa2,sc,spc, cp_object ){
+
+            const r_new_st = document.getElementById('e_q_subtotal').value;
+            const r_new_vat = document.getElementById('e_q_vat').value;
+            const r_new_shipping = document.getElementById('e_q_shipping').value;
+            const r_new_final = document.getElementById("e_q_final").value;
+
+            console.log("what " + " what cp_object                     " + cp_object);
+            console.log(r_new_st + "--" + r_new_vat + "--"  + "--" + r_new_shipping +"=  " + r_new_final);
+
             const doc = new jsPDF(); 
-            doc.addImage(cms_empty_invoice_no_table, "JPEG", 0, 0, 210, 297);
-
-            const oo_b_fullname = document.getElementById('tmp_b_fullname').innerHTML;
-            const oo_b_a1 = document.getElementById('tmp_b_address1').innerHTML;
-            const oo_b_a2 = document.getElementById('tmp_b_address2').innerHTML;
-            const oo_b_city = document.getElementById('tmp_b_city').innerHTML;
-            const oo_b_postcode = document.getElementById('tmp_b_postcode').innerHTML;
+            doc.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297);
             doc.setFontSize(10);
-            doc.text(oo_b_fullname, 6, 93);
-            doc.text(oo_b_a1, 6, 98);
-            doc.text(oo_b_a2, 6, 103);
-            doc.text(oo_b_city, 6, 108);
-            doc.text(oo_b_postcode, 6, 113);
 
-            const oo_s_fullname = document.getElementById('tmp_s_fullname').innerHTML;
-            const oo_s_a1 = document.getElementById('tmp_s_address1').innerHTML;
-            const oo_s_a2 = document.getElementById('tmp_s_address2').innerHTML;
-            const oo_s_city = document.getElementById('tmp_s_city').innerHTML;
-            const oo_s_postcode = document.getElementById('tmp_s_postcode').innerHTML;
+            console.log("bf?   " + bf);
+
+            doc.text(bf, 6, 93);
+            doc.text(ba1, 6, 98);
+
+            if (this.copy_q_b_a2 == '' || this.copy_q_b_a2 == null){
+                doc.text(bc, 6, 103);
+                doc.text(bpc, 6, 108);
+            }
+            else{
+                doc.text(ba2, 6, 103);
+                doc.text(bc, 6, 108);
+                doc.text(bpc, 6, 113);
+            }
+
             doc.setFontSize(10);
-            doc.text(oo_s_fullname, 72, 93);
-            doc.text(oo_s_a1, 72, 98);
-            doc.text(oo_s_a2, 72, 103);
-            doc.text(oo_s_city, 72, 108);
-            doc.text(oo_s_postcode, 72, 113);      
-            
-            doc.text(q_number, 159, 91);
-            doc.text(today, 159, 97);
-            doc.text(input_reference_number, 159, 103);
-            doc.text(input_reference_number, 159, 119);  //try 119
 
+            console.log("sf?   " + sf);
+            doc.text(sf, 72, 93);
+            doc.text(sa1, 72, 98);
+            if (this.copy_q_s_a2 == '' || this.copy_q_s_a2 == null){
+                doc.text(sc, 72, 103);
+                doc.text(bpc, 72, 108);  
+            }    
+            else{
+                doc.text(sa2, 72, 103);
+                doc.text(sc, 72, 108);
+                doc.text(spc, 72, 113); 
+            }
+            console.log("q_number???    " + q_number + "/" + today + "/" + po_number);
+            doc.text(q_number, 159, 94);
+            doc.text(today, 159, 100);
+            doc.text(ref_num, 159, 105);
+            doc.text(po_number, 159, 110);  
             let bodyData = [];
-            this.choosen_products.forEach((element, index, array) => {
-                necessary_only = [
-                    element.p_fullname,
-                    element.p_code,
-                    element.p_quantity,
-                    element.p_sell,
-                    "discoun999t",
-                    element.p_sell,
 
-                ]  
-                bodyData.push(necessary_only);
-            });
+            console.log("what is this????????? " + this.copy_exact_product);
+            
+            const cp = JSON.parse(JSON.stringify(cp_object));
+            console.log("what is this now????? " + cp);    
+            cp.forEach(element => {   
+                var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_unit, element.p_discount, "£"+element.p_sell];
+                bodyData.push(tmp);
+            });    
             var finalY = doc.lastAutoTable.finalY || 10
             autoTable(doc, {
                 //html: '#cms-quote-table',
@@ -739,77 +756,83 @@ export default{
                     // etc
                 },
                 tableWidth: 'auto',
-                margin: { top: 0, right: 10, bottom: 0, left: 10 }, //important2
+                margin: { top: 0, right: 3, bottom: 0, left: 5 }, //important2
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
-                body: bodyData
+                body: bodyData,
             })
-            doc.setFontSize(14);
-            doc.text('SUB TOTAL', 42, doc.lastAutoTable.finalY + 20)
-            doc.text('100', 152, doc.lastAutoTable.finalY + 20)
-            doc.text('VAT', 42, doc.lastAutoTable.finalY + 25)
-            doc.text('50', 152, doc.lastAutoTable.finalY + 25)
-            doc.text('SHIPPING. HANDLING', 42, doc.lastAutoTable.finalY + 30)
-            doc.text('150', 152, doc.lastAutoTable.finalY + 30)
 
-            var finalY2 = doc.lastAutoTable.finalY;
+            doc.setFontSize(12);
+            doc.text('Sub-Total', 139, doc.lastAutoTable.finalY + 20, {align: 'right'})
+            doc.text("£"+this.copy_ft_sub_total, 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
+
+            doc.text('VAT', 139, doc.lastAutoTable.finalY + 25 , {align: 'right'})
+            doc.text("£"+this.copy_ft_vat, 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
+
+            doc.text('Shipping', 139, doc.lastAutoTable.finalY + 30 , {align: 'right'})
+            doc.text("£"+this.copy_ft_shipping, 182, doc.lastAutoTable.finalY + 30 , {align: 'right'})
+
+            doc.text('Total', 139, doc.lastAutoTable.finalY + 35 , {align: 'right'})
+            doc.text("£"+this.copy_ft_total , 182, doc.lastAutoTable.finalY + 35 , {align: 'right'})
+
             doc.setFontSize(9);
-            doc.text('Terms & Instructions', 6,  doc.lastAutoTable.finalY + 36).setFont(undefined, 'bold');
-            doc.text('Quote only valid for 30 days', 6, doc.lastAutoTable.finalY + 39)
+            doc.text('Terms & Instructions', 6,  doc.lastAutoTable.finalY + 40).setFont(undefined, 'bold');
+            doc.text('Quote only valid for 30 days', 6, doc.lastAutoTable.finalY + 44)
 
-
-            //debug for preview
-            var string = doc.output('datauristring');
-            var embed = "<embed width='100%' height='100%' src='" + string + "'/>"
-            const a = document.getElementById('preview_quotationPDF');
+            var string = await doc.output('datauristring');
+            var embed = "<embed src='" + string + "'/>"
+            const a = document.getElementById('preview_invoicenPDF');
             var clone = a.cloneNode(true);
             clone.setAttribute('src', string);
             a.parentNode.replaceChild(clone, a);
+
             var base64 = doc.output('datauri');
             this.return_base64 = base64;
-            
+
+            //
+            console.log("calling  test2_storage1     " + this.invoice_hashid + "      " + this.return_base64);
+            const path = "/all_invoice/" + this.invoice_hashid + "/";
+            test_storage( this.invoice_hashid, path, this.return_base64);
+
+
+            return string;
         },
 
-        async UpdateQuote(i, q_hash){
-            var select_product = document.getElementById("so_product").value;
-            let d0 = "i_code"+i;
-            let d1 = "i_quality"+i;
-            let d2 = "i_unit"+i;
-            let d3 = "i_discount_m"+i;
-            let d4 = "i_sell"+i;
-
-            const a = document.getElementById(d1);
-            const b = document.getElementById(d2);
-            const c = document.getElementById(d3);
+        async UpdateQuote(i, q_hash, cxp, copy_quote_number, copy_ref_num){
+            const cp = cxp;
 
             console.log("=====edit and upoad another quote:0 ");
             var x = this.copy_exact_product.length;
 
+            console.log("this.copy_exact_product" + cp + "      " + x);
+
+            this.reorganize_choosen_products = [];
+
+            /*
             for (var j=0; j<x; ++j ){
                 var dynamic = "so_product"+j;
                 var select_product = document.getElementById(dynamic).value;
 
                 console.log("select_product? " + select_product);
-                var reorganize_choosen_p = await firebase.firestore().collection("all_products").where("p_fullname", "==", select_product);
-                await reorganize_choosen_p.onSnapshot((snapshot) => {
-
-                snapshot.docs.forEach(d => {
-                    var product = d.data();
-                    this.reorganize_choosen_products.push(product);
-                    
-                    console.log("!!!!!!!!!!!!!!!!!!!!!!!updateing this.tmp_sell     ");
-
+                var reorganize_choosen_p = await firebase.firestore().collection("all_products").where("p_fullname", "==", select_product)
+                reorganize_choosen_p.onSnapshot((snapshot) => {
+                    snapshot.forEach(d => {
+                        var product = d.data();
+                        console.log("!!!!!!!!!!!!!!!!!!!!!!!updateing this.tmp_sell     " + product);
+                        //this.reorganize_choosen_products.push(product);
+                        //new_obj.push(product);
+                        console.log("this.reorganize_choosen_products    " + this.reorganize_choosen_products);
+                        
+                    })
                 })
-                })
-
+                
             }
-
-            console.log("this.reorganize_choosen_products" + this.reorganize_choosen_products);
+            */
+            await console.log("this.reorganize_choosen_products 3   " + this.reorganize_choosen_products);
             
+            //const cp = await JSON.parse(JSON.stringify(this.copy_exact_product));
 
-            const cp = JSON.parse(JSON.stringify(this.reorganize_choosen_products));
-            
-            console.log(cp);
-
+            /*
+            console.log("? " + cp);
             for (var key in cp) {
                 if (cp.hasOwnProperty(key)) {
 
@@ -835,36 +858,67 @@ export default{
 
                 }
             }
-
+            console.log("??? " + cp);
+            */
             const final_tt= {
-                tf_subtotal: document.getElementById('e_q_subtotal').value,
-                tf_vat: document.getElementById('e_q_vat').value,
-                tf_shipping: document.getElementById('e_q_shipping').value,
-                tf_total: document.getElementById("e_q_final").value,
+                tf_subtotal: document.getElementById('e_q_subtotal').innerHTML,
+                tf_vat: document.getElementById('e_q_vat').innerHTML,
+                tf_shipping: document.getElementById('e_q_shipping').innerHTML,
+                tf_total: document.getElementById("e_q_final").innerHTML,
             }
+            //const cp = this.copy_exact_product;
+            /*
+            let a = document.getElementById('e_q_subtotal').innerHTML;
+            let b = document.getElementById('e_q_vat').innerHTML;
+            let c = document.getElementById('e_q_shipping').innerHTML;
+            let d = document.getElementById("e_q_final").innerHTML;
 
+            let sb_fullname = document.getElementById("select_bill_to").value;
+            let sb_a1 = document.getElementById("select_a1").value;
+            let sb_a2 = document.getElementById("select_a2").value;
+            let sb_city = document.getElementById("select_city").value;
+            let sb_postcode = document.getElementById("select_postcode").value;
+            console.log("sb_fullname?" + sb_fullname + " " + sb_a1 + " "+ sb_a2);
+            
+            var ss_fullname = document.getElementById("select_ship_to").value;
+            let ss_a1 = document.getElementById("select_b_a1").value;
+            let ss_a2 = document.getElementById("select_b_a2").value;
+            let ss_city = document.getElementById("select_b_city").value;
+            let ss_postcode = document.getElementById("select_b_postcode").value;
             //updated
             console.log("this.this_one_q_hash_number" + this.this_one_q_hash_number);
-            const find_invoice_pdf = firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number);
-            await find_invoice_pdf.onSnapshot((ss) => {
-                ss.docs.forEach(d => {
-                    var update_quote = d.data();
-                    update_quote.final_tt.tf_sub_total = i_subtotal;
-                    update_quote.final_tt.tf_vat = i_vat;
-                    update_quote.final_tt.tf_shipping = i_shipping;
-                    update_quote.final_tt.tf_total = i_final_total;
+            const find_invoice_pdf = await firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number);
+            find_invoice_pdf.update({
+                    
+                "final_tt.tf_sub_total": a,
+                "final_tt.tf_vat": b,
+                "final_tt.tf_shipping": c,
+                "final_tt.tf_total": d,
 
-                    var sb_fullname = document.getElementById("select_bill_to").value;
-                    let sb_a1 = document.getElementById("select_a1").value;
-                    let sb_a2 = document.getElementById("select_a2").value;
-                    let sb_city = document.getElementById("select_city").value;
-                    let sb_postcode = document.getElementById("select_postcode").value;
+                "obj_ref.q_bill_fullname": sb_fullname,
+                "obj_ref.q_bill_address1": sb_a1,
+                "obj_ref.q_bill_address2": sb_a2,
+                "obj_ref.q_bill_city": sb_city,
+                "obj_ref.q_bill_postcode": sb_postcode,
 
-                    var ss_fullname = document.getElementById("select_ship_to").value;
-                    let ss_a1 = document.getElementById("select_b_a1").value;
-                    let ss_a2 = document.getElementById("select_b_a2").value;
-                    let ss_city = document.getElementById("select_b_city").value;
-                    let ss_postcode = document.getElementById("select_b_postcode").value;
+                "obj_ref.q_ship_fillname": ss_fullname,
+                "obj_ref.q_ship_address1": ss_a1,
+                "obj_ref.q_ship_address2": ss_a2,
+                "obj_ref.q_ship_city": ss_city,
+                "obj_ref.q_ship_postcode": ss_postcode,
+            })
+            */
+            /*
+            .onSnapshot((snapshot) => {
+                console.log("debug2?");
+                    var update_quote = snapshot.data();
+
+                    update_quote.final_tt.tf_sub_total = a;
+                    update_quote.final_tt.tf_vat = b;
+                    update_quote.final_tt.tf_shipping = c;
+                    update_quote.final_tt.tf_total = d;
+
+                    
 
                     update_quote.obj_ref.q_bill_fullname = sb_fullname;
                     update_quote.obj_ref.q_bill_address1 = sb_a1;
@@ -877,18 +931,54 @@ export default{
                     update_quote.obj_ref.q_ship_address2 = ss_a2;
                     update_quote.obj_ref.q_ship_city = ss_city;
                     update_quote.obj_ref.q_ship_postcode = ss_postcode;
-                })
+
+                    console.log(update_quote.obj_ref.q_ship_postcode);
+           
             })
-            await setDoc(ref, {cp, final_tt}, { merge:true })
+            */
+            firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number).update({final_tt, cp});
+
+            /*
+            let zzz = await setDoc(ref, {final_tt}, { merge: true } ) 
             .then(docRef => { 
+                console.log("succes  updated1?   " );
                 var choosen_product_qty = Object.keys(this.cp).length;
                 cp["choosen_product_qty"] = choosen_product_qty;
             })
-            
+            .catch((error) => { 
+                console.log("succes  updated2?   "  + error);
+
+            })
+            */
             
             
             //another jspdf
-            const string = await jspdftime();
+            const myTimestamp = firebase.firestore.Timestamp.now();
+            let today = myTimestamp.toDate().toLocaleDateString("en-UK");     
+            let po_number = document.getElementById('po_number').value;
+            console.log("copy_quote_number?    " + copy_quote_number);
+
+            let sb_fullname = document.getElementById("select_bill_to").value;
+            let sb_a1 = document.getElementById("select_a1").innerHTML;
+            let sb_a2 = document.getElementById("select_a2").innerHTML;
+            let sb_city = document.getElementById("select_city").innerHTML;
+            let sb_postcode = document.getElementById("select_postcode").innerHTML;
+            console.log("sb_fullname?  " + sb_fullname + " " + sb_a1 + " "+ sb_a2);
+            
+            var ss_fullname = document.getElementById("select_ship_to").value;
+            let ss_a1 = document.getElementById("select_b_a1").innerHTML;
+            let ss_a2 = document.getElementById("select_b_a2").innerHTML;
+            let ss_city = document.getElementById("select_b_city").innerHTML;
+            let ss_postcode = document.getElementById("select_b_postcode").innerHTML;
+
+
+            const string = await this.jspdftimeQuote(copy_quote_number, today, copy_ref_num, po_number, 
+            sb_fullname,sb_a1,sb_a2,sb_city,sb_postcode,
+            ss_fullname,ss_a1,ss_a2,ss_city,ss_postcode,
+            cp
+            );
+
+
             var embed = "<embed src='" + string + "'/>"
             if (string == undefined || string == null){
                 Oh_error_exist("OneQuote.vue! jspdf cannot return src string in Page!");
@@ -984,7 +1074,8 @@ export default{
         },
         async clearRest(i){ //uncheck
             console.log("clear reset. 1" );
-            var select_product = document.getElementById("so_product").value;
+            var dynamic = "so_product"+i;
+            var select_product = document.getElementById(dynamic).value;
             let d1 = "i_quantity"+i;
             let d2 = "i_unit"+i;
             let d3 = "i_discount"+i;
@@ -1021,24 +1112,37 @@ export default{
             var optionValue = document.getElementById("select_bill_to").value;
             document.getElementById("select_ship_to").selectedIndex = -1;
 
+            var build_to_hash = "";
+
             var sort_client = await firebase.firestore().collection("all_clients").where("c_fullname", "==", optionValue);
-
-            sort_client.onSnapshot(snap => {
-                
+            await sort_client.onSnapshot(snap => {
                 snap.forEach(d => {
-
                     var a1= d.data().c_address_1;
                     var a2= d.data().c_address_2;
                     var a3= d.data().c_city;
                     var a4= d.data().c_post_code;
+                    var a5= d.data().client_hashid;
 
                     console.log("did I found new bill address? " + a1 + " " +a2 + " " + a3 + " " + a4)
                     document.getElementById("select_a1").value = a1;
                     document.getElementById("select_a2").value = a2;
                     document.getElementById("select_city").value = a3;
                     document.getElementById("select_postcode").value = a4;
-
-                
+                    build_to_hash = a5;
+                });
+            })
+            var sort_client = await firebase.firestore().collection("all_delivery").doc(this.this_one_q_hash_number).collection("this_client_delivery");
+            sort_client.onSnapshot(snap => {
+                snap.forEach(d => {
+                    var a1= d.data().c_address_1;
+                    var a2= d.data().c_address_2;
+                    var a3= d.data().c_city;
+                    var a4= d.data().c_post_code;
+                    console.log("did I found new bill address? " + a1 + " " +a2 + " " + a3 + " " + a4)
+                    document.getElementById("select_a1").value = a1;
+                    document.getElementById("select_a2").value = a2;
+                    document.getElementById("select_city").value = a3;
+                    document.getElementById("select_postcode").value = a4;
                 });
             })
 
@@ -1076,7 +1180,10 @@ export default{
         this.copy_exact_product.push(this.add_empty);
         },
         removeRow(row) {
-        this.copy_exact_product.splice(this.copy_exact_product.indexOf(copy_exact_product), 1)
+            if (this.copy_exact_product.length == 1){
+
+            }
+            this.copy_exact_product.splice(this.copy_exact_product.indexOf(row), 1)
         }
     
     },
@@ -1215,11 +1322,11 @@ async function renewjspdf(){
 
 
 async function addVatSHip(i_subtotal){
-
     //let i_subtotal = document.getElementById('q_subtotal').value;
-    let i_vat = document.getElementById('e_q_vat').value;
-    let i_shipping = document.getElementById('e_q_shipping').value;
+    let i_vat = document.getElementById('e_q_vat').innerHTML;
+    let i_shipping = document.getElementById('e_q_shipping').innerHTML;
     console.log("avs2   ");
+
     let added_vat = 0;
     let find_vat = 0;
     let added_shipping = 0;
@@ -1227,18 +1334,16 @@ async function addVatSHip(i_subtotal){
     added_vat = i_subtotal * 1.20; 
     console.log("avs3   " + added_vat);
     find_vat = +added_vat - +i_subtotal;
-    document.getElementById("e_q_vat").value = find_vat;
+    document.getElementById("e_q_vat").innerHTML = find_vat;
     
-    console.log("avs4  " + find_vat);
-    added_shipping = await +added_vat + +i_shipping;
+    console.log("avs4  " + find_vat + " " + added_vat + " " + i_shipping );
+    added_shipping = +added_vat + +i_shipping;
     final = added_shipping;
-
     let r_final = Number(final).toFixed(2);
-    document.getElementById("e_q_final").value = r_final;
-
+    document.getElementById("e_q_final").innerHTML = r_final;
     console.log("avs5  " + r_final);
 
-    return final;
+    return r_final;
 }
 
 

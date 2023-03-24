@@ -50,27 +50,84 @@
         <tbody>
 
             <tr v-for="p in f_all_quotes">
-              
-              <router-link 
+              <td scope="col" style="width: 150px;"> 
+                <router-link 
                 tag="tr"
                 :to="{ name: 'OneQuote', 
                 params: 
                 { id: p.obj_ref.q_quote_number, 
                   //[that's a lot to pass]
                 }, query: { this_one_q_hash_number: p.quote_hashid, this_one_q_pdf_link: p.q_pdf_link}}">
+                
+                
+                {{ p.obj_ref.q_quote_number }} 
+                </router-link>
+              
+              </td>
 
-                  <td scope="col" style="width: 150px;"> {{ p.obj_ref.q_quote_number }} </td>
-                  <td scope="col" style="width: 150px;"> {{ p.obj_ref.q_invoice_number }}  </td>  <!--{{ p.q_invoice_number }}-->
-                  <td scope="col" style="width: 150px;"> {{ p.obj_ref.q_bill_fullname}} </td>
-                  <td scope="col" style="width: 150px;"> {{ p.obj_ref.q_ref }} </td> <!--{{ p.q_ref }}-->
-                  <td scope="col" style="width: 150px;"> {{ p.obj_ref.q_po }} </td> <!--{{ p.q_po }}-->
-                  <td scope="col" style="width: 200px;"> {{ p.obj_ref.q_uploaded_date }} </td>
+              <td scope="col" style="width: 150px;"> 
+                <router-link 
+                tag="tr"
+                :to="{ name: 'OneQuote', 
+                params: 
+                { id: p.obj_ref.q_quote_number, 
+                  //[that's a lot to pass]
+                }, query: { this_one_q_hash_number: p.quote_hashid, this_one_q_pdf_link: p.q_pdf_link}}">
+                
+                {{ p.obj_ref.q_invoice_number }}  
+                </router-link>
+              </td>  <!--{{ p.q_invoice_number }}-->
+              
+              <td scope="col" style="width: 150px;"> 
+                <router-link 
+                tag="tr"
+                :to="{ name: 'OneQuote', 
+                params: 
+                { id: p.obj_ref.q_quote_number, 
+                  //[that's a lot to pass]
+                }, query: { this_one_q_hash_number: p.quote_hashid, this_one_q_pdf_link: p.q_pdf_link}}">
+                
+                {{ p.obj_ref.q_bill_fullname}} 
+                </router-link>
+              </td>
 
-                  <!-- <td scope="col" style="width: 200px;"> {{ p.q_pdf_link }} </td> -->
+              <td scope="col" style="width: 150px;"> 
+                <router-link 
+                tag="tr"
+                :to="{ name: 'OneQuote', 
+                params: 
+                { id: p.obj_ref.q_quote_number, 
+                  //[that's a lot to pass]
+                }, query: { this_one_q_hash_number: p.quote_hashid, this_one_q_pdf_link: p.q_pdf_link}}">
+                
+                {{ p.obj_ref.q_ref }} 
+                </router-link>
+              </td> <!--{{ p.q_ref }}-->
 
+              <td scope="col" style="width: 150px;"> 
+                <router-link 
+                tag="tr"
+                :to="{ name: 'OneQuote', 
+                params: 
+                { id: p.obj_ref.q_quote_number, 
+                  //[that's a lot to pass]
+                }, query: { this_one_q_hash_number: p.quote_hashid, this_one_q_pdf_link: p.q_pdf_link}}">
+                {{ p.obj_ref.q_po }} 
+                </router-link>
+              </td> <!--{{ p.q_po }}-->
 
-              </router-link>
-
+              <td scope="col" style="width: 200px;"> 
+                <router-link 
+                tag="tr"
+                :to="{ name: 'OneQuote', 
+                params: 
+                { id: p.obj_ref.q_quote_number, 
+                  //[that's a lot to pass]
+                }, query: { this_one_q_hash_number: p.quote_hashid, this_one_q_pdf_link: p.q_pdf_link}}">
+                {{ p.obj_ref.q_uploaded_date }} 
+                </router-link>
+              </td>
+              <!-- <td scope="col" style="width: 200px;"> {{ p.q_pdf_link }} </td> -->
             </tr>
 
 

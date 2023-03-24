@@ -9,7 +9,7 @@
         <!-- <button @click.prevent="ChangingProduct">EDIT ALL</button> -->
         <p>click eith one field on the table to edit, please type sometinhg on it otherwise will have a chance to hit a bug return '0'</p>
         <p>edit and input cannot preform at the same time, please refresh the page if you do so.</p>
-
+        <p> status: <strong> {{ statuss }}</strong> </p>
         <table class="table table-dark" id="store_to_excel" >
             <thead>
             <tr>
@@ -21,6 +21,7 @@
             <th scope="col">&#163; Cost</th>
             <th scope="col">Margin &percnt;</th>
             <th scope="col">Sell</th>
+            <th scope="col">Hash</th>
             </tr>
             </thead>
             <tbody>
@@ -29,14 +30,15 @@
 
 
             </tr>
-            <tr id="list_of_productss" v-for="p, i in all_products" @blur="handleBlur" @focusout="handleFocusout( $event,  p.pid, data-field   )">
+            <tr id="list_of_productss" v-for="p, i in all_products" @blur="handleBlur" @focusout="handleFocusout( $event,  p.pid, data-field, i   )">
                 <td style="color: grey;"> {{i}} </td>
                 <td contenteditable="true" data-field="p_code" :id= "`ep_code_${i}`" > {{ p.p_code }} </td>
                 <td contenteditable="true" data-field="p_fullname" :id= "`ep_fn_${i}`" > {{ p.p_fullname }} </td>
                 <td contenteditable="true" data-field="p_category" :id= "`ep_category_${i}`"> {{ p.p_category }} </td>
                 <td contenteditable="true" data-field="p_cost" :id= "`ep_cost_${i}`" > {{ p.p_cost }} </td>
                 <td contenteditable="true" data-field="p_margin" :id= "`ep_margin_${i}`" > {{ p.p_margin }} </td>
-                <td contenteditable="true" data-field="p_sell" :id= "`ep_sell_${i}`" > {{ p.p_sell }} </td>
+                <td contenteditable="true" data-field="p_sell" :id= "`ep_sell_${i}`" disabled> {{ p.p_sell }} </td>
+                <td contenteditable="true" data-field="p_hash" :id= "`ep_hash_${i}`" > {{ p.pid }} </td>
             </tr>
             </tbody>
 
@@ -60,11 +62,12 @@
 import ProductAdd from "@/components/ProductAdd.vue";
 import { orderBy, query } from "@firebase/firestore";
 import { serverTimestamp } from 'firebase/firestore';
-import { onMounted, reactive } from "vue";
+import { onMounted, ref, reactive } from "vue";
 
 export default{
     name: 'ProductAll',
     setup() {
+        let statuss = ref("NO ANY CHANGE YET");
 
         onMounted(async () => {
 
@@ -86,7 +89,7 @@ export default{
         }
 
 
-        const handleFocusout = (e, pid) => {
+        const handleFocusout = (e, pid, df, i) => {
           console.log("handleFocusout: " + e.target.id + "   pid= " + pid + " data-field=" );
 
           var updated_field = document.getElementById(e.target.id);
@@ -96,16 +99,81 @@ export default{
 
           var sortOrder = e.target.getAttribute("data-field");
           console.log("handleFocusout: " + sortOrder);
+          if (sortOrder == "p_cost"){
+            var dynamic1 = "ep_margin_"+i;
+            var dynamic2 = "ep_sell_"+i;
 
+            var margin = document.getElementById(dynamic1).innerText;
+            var b = document.getElementById(dynamic2).innerText;
+
+            var sell = +(tdText / 100) * +margin;
+
+            console.log("update new sell?      " );
+
+            var new_sell = Number(sell).toFixed(2);
+            console.log("df?      " + df );
+            const edit_this_product_col = firebase.firestore().collection("all_products");
+            edit_this_product_col.doc(pid).update({
+              [sortOrder] : tdText,
+
+              "p_sell" : new_sell,
+            }).then(function(){
+              statuss = "UPDATED OK";
+            }).catch(function(error) {
+              console.log("DEBUG" + error);
+              statuss = "ERROR!" + error;
+            });
+
+
+          }
+          if (sortOrder == "p_margin"){
+            var dynamic_0 = "ep_cost_"+i;
+            var dynamic_2 = "ep_sell_"+i;
+
+            var cost = document.getElementById(dynamic_0).innerText;
+            var c = document.getElementById(dynamic_2).innerText;
+
+            var sell = +(cost / 100) * +tdText;
+            var new_sell = Number(sell).toFixed(2);
+            const edit_this_product_col = firebase.firestore().collection("all_products");
+            edit_this_product_col.doc(pid).update({
+              
+              [sortOrder] : tdText,
+              "p_sell" : new_sell,
+            }).then(function(){
+              statuss = "UPDATED OK";
+            }).catch(function(error) {
+              console.log("DEBUG" + error);
+              statuss = "ERROR!" + error;
+            });
+
+
+          
+          
+          }
+          if (sortOrder == "p_hash"){
+            console.log("Make Sure Hash MUST BE random and Unique digits different than other products to prevent data corruption;  20 digits recommand.");
+            alert("Make Sure Hash MUST BE random and Unique digits different than other products to prevent data corruption;  20 digits recommand.");
+            const edit_this_product_col = firebase.firestore().collection("all_products");
+            edit_this_product_col.doc(pid).update({
+              [sortOrder] : tdText,
+            }).then(function(){
+              this.statuss = "UPDATED OK";
+            }).catch(function(error) {
+              console.log("DEBUG" + error);
+              this.statuss = "ERROR!" + error;
+            });
+          }
+          /*
           const edit_this_product_col = firebase.firestore().collection("all_products");
           edit_this_product_col.doc(pid).update({
             [sortOrder] : tdText,
 
           })
-          
+          */
         }
 
-        return { handleBlur, handleFocusout };
+        return { handleBlur, handleFocusout, statuss };
     },
     data(){
         return{
@@ -119,7 +187,8 @@ export default{
             p_margin: null,
             p_sell: null,
 
-        }
+        },
+        statuss: 'NO ANY CHANGE YET',
 
         }
     },
@@ -220,11 +289,12 @@ export default{
       
     },
 }
+/*
 var editable_elements = document.querySelectorAll("[contenteditable]").forEach(function(el) 
 { 
   alert("You edit this field with index with data-field");
 });
-
+*/
 
 
 

@@ -23,19 +23,17 @@
         
         <br>
         <br>
-        <button @click="createCategory(); " class="btn btn-info" >Add Category Infomation</button>
-    
+            <button @click="createCategory(); " class="btn btn-info" >Add Category Infomation</button>
         <br>
         <br>
 
         <div class="px-5 mx-5 grid grid-cols-2 gap-1" v-for="ca in all_categories">
+
             <div class=""  >
                 {{ ca.category_fullname }}
             </div> 
 
-            <div class="">
-                
-            </div> 
+
         </div>
     </div>
 </template>
@@ -83,6 +81,7 @@ export default{
                         category_hashid: docRef.id,
                     })
                     .then(() => {
+                        document.getElementById("input_category").value = "";
                     });
                 })
             } //flag
@@ -92,7 +91,7 @@ export default{
 
             var categoryRef = await firebase.firestore().collection("all_categories");
             categoryRef.onSnapshot(snap =>{
-                this.all_category = [];
+                this.all_categories = [];
                 snap.forEach(d =>{
                     var category = d.data();
                     this.all_categories.push(category);

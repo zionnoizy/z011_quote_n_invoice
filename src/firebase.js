@@ -4,6 +4,8 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 import { collection, addDoc, DocumentReference } from "firebase/firestore";
+
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -64,16 +66,14 @@ export const test2_storage = (quote_or_invoice_hash, fullPath, pdf_base64) => {
       })
       .then(() => {
           console.log("set doc" + url.toString());
-
-          get_id.get().then((d) => {
-              //console.log("updated data:", d.data());
-          });
+          return url.toString();
+          
       });
 
 
 
     })
-
+    
     //console.log('Uploaded a base64 string pdf version!');
   });
   

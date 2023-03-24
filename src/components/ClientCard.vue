@@ -3,10 +3,11 @@
     
 
     <div class="lg:px-5 lg:mx-5 grid grid-cols-5 gap-3 ">
-          <!--[new_task] on click client-->
-
-
-          <div class="client_card row col-span-1 flex-col text-center"  v-for="c, i in all_client_card"
+      <div>
+        <label>Search Client Name</label>
+        <input type="text" v-model="myCsearch" placeholder="search here.." />
+      </div>
+          <div class="client_card row col-span-1 flex-col text-center"  v-for="c, i in f_all_client_card"
             data-bs-toggle="modal" data-bs-target="#show_delievery_address" @click.prevent="this.showDelivery($event, c, i)" > 
             <div class="row" >
               <div>
@@ -27,10 +28,12 @@
           <div class="modal fade" id="show_delievery_address" tabindex="-1" aria-labelledby="" aria-hidden="true" @close="resetPages()" @hide="resetPages()">
           <div class="modal-dialog modal-xl">
               <div class="modal-content text-black">
+
                   <div class="modal-header">
-                      <h4 class="modal-title"> List of Address From Client <b>{{ delivery_fullname }} </b></h4>
+                      <h4 class="modal-title"> List of Address From Client <b> {{ delivery_fullname }} </b></h4>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close" > X </button>
                   </div>
+
                   <div class="modal-body" style="background-color: #1267aa;">
                       <div class="px-5 mx-5 grid grid-cols-3 gap-2  ">
                           <div class="" v-for="d in all_client_delivey" :key="d">
@@ -56,10 +59,10 @@
 
                   </div>
                   
-    </div>
+              </div>
 
 
-</div>
+          </div>
           
 </div> <!--modal-->
     </div>
@@ -86,6 +89,7 @@ export default{
 
             perpage: 3,
             pageNumber:0,
+            myCsearch: '',
         }
     },
     mounted () {
@@ -207,7 +211,13 @@ export default{
     computed:{
         currentPageItems(){
           return this.all_client_delivey.slice(this.pageNumber*this.perpage,this.pageNumber*this.perpage+1+this.perpage)
+        },
+        f_all_client_card(){
+        return this.all_client_card.filter(all_client_card => 
+          all_client_card.c_fullname.toLowerCase().includes(this.myCsearch.toLocaleLowerCase())
+        );
         }
+
     },
 
 }

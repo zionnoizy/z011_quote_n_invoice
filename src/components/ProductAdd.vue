@@ -46,9 +46,9 @@
               
 
               
-              <td> <input ref="p_cost" placeholder="Product Cost (digit only)" id="pi_cost" v-on:keypress="NumbersOnly" @input="CalculateSell" required /> </td>
-              <td> <input ref="p_margin" placeholder="Product Margin (digit only)" id="pi_margin" onkeypress='return event.charCode >= 48 && event.charCode <= 57' @input="CalculateSell" required /> </td>
-              <td> <input ref="p_sell" placeholder="Product Sell" id="pi_sell" @input="CalculateSell" disabled/> </td>
+              <td> <input ref="p_cost" type="number" placeholder="Product Cost (number only)" id="pi_cost" v-on:keypress="NumbersOnly" @input="CalculateSell" required /> </td>
+              <td> <input ref="p_margin" type="number" placeholder="Product Margin (number only)" id="pi_margin" onkeypress='return event.charCode >= 48 && event.charCode <= 57' @input="CalculateSell" required /> </td>
+              <td> <input ref="p_sell" type="number" placeholder="Product Sell" id="pi_sell" @input="CalculateSell" disabled/> </td>
 
             </tr>
 

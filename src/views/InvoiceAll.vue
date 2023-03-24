@@ -46,7 +46,7 @@
 
             <tbody >
                 
-                <tr   v-for="i in all_invoices">
+                <tr   v-for="i in f_all_invoices">
                     <td scope="col" style="width: 150px;"> 
                     <router-link 
                     tag="tr"
@@ -159,6 +159,7 @@ export default {
       
       return{
         all_invoices: [],
+        f_all_invoices: [],
         all_clients: [],
         each_quote:{
 
@@ -195,6 +196,7 @@ export default {
           s_invoice_num: '',
           all_invoice: [],
           all_i_clients: [],
+          myIsearch: '',
         }
       }
     },
@@ -309,6 +311,17 @@ export default {
         })
 
       },
+    },
+    computed: {
+
+      f_all_invoices(){
+        return this.all_invoices.filter(all_invoices => 
+
+          all_invoices.obj_ref.qi_invoice_number.toLowerCase().includes(this.myIsearch.toLocaleLowerCase())
+          
+        );
+
+      }
     },
     created() {
       this.getAllInvoice_Newest();
