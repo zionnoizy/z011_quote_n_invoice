@@ -54,8 +54,8 @@
                               </div>
                           </div>
                       </div>
-                      <button id="previous_btn" @click="previous()">previous</button>
-                      <button id="next_btn" @click="next()">next</button>
+                      <button class="hidden" id="previous_btn" @click="previous()">previous</button>
+                      <button class="hidden" id="next_btn" @click="next()">next</button>
 
                   </div>
                   
