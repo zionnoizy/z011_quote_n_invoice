@@ -209,7 +209,7 @@ export default{
       },
 
       createDelieveryAddress(){
-
+        const client_fullname = this.delivery_fullname;
         const d_fullname = document.getElementById("delivery_cpyname").value; //okay
         const d_address_1 = document.getElementById("d_address_1").value;
         const d_address_2 =  document.getElementById("d_address_2").value;
@@ -232,7 +232,7 @@ export default{
 
           d_client_hash_id: this.delivery_client_hashid,
           d_insert_date: serverTimestamp(),
-
+          c_fullname: client_fullname,
         }
         //, "this_client_delivery" , c_id2
         //const docref = doc (collection(db, 'all_delivery'));

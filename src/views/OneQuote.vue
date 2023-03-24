@@ -54,11 +54,12 @@
                                             <div class="flex-grow-0 mx-2 px-3">
                                                 <label>1.BILL TO (CLIENT)</label>
                                                 <select id="select_bill_to" class="form-select" aria-label="Default select example" 
-                                                @change="doSort3();" >
+                                                @change="doSort3(`${copy_q_b_f}`);" >
                                                     <option selected> {{copy_q_b_f}} </option>
                                                     <option v-for="c in all_clients" :value="`${c.c_fullname}`">{{c.c_fullname}}</option>
                                                 </select>
                                             </div> 
+                                            <p class="hidden" id="select_fullname"></p>   
                                             <p class="hidden" id="select_a1"></p>   
                                             <p class="hidden" id="select_a2"></p>   
                                             <p class="hidden" id="select_city"></p>   
@@ -71,6 +72,7 @@
                                                     <!--:value="`${d.d_fullname}`"-->
                                                     <option v-for="d in all_deliverys" >{{d.d_fullname}}</option>
                                                 </select>
+                                                <p class="hidden" id="select_b_fullname"></p>  
                                                 <p class="hidden" id="select_b_a1"></p>   
                                                 <p class="hidden" id="select_b_a2"></p>   
                                                 <p class="hidden" id="select_b_city"></p>   
@@ -450,13 +452,22 @@ export default{
                 this.copy_q_b_a2 = copycat.obj_ref.q_bill_address2;
                 this.copy_q_b_c = copycat.obj_ref.q_bill_city;
                 this.copy_q_b_pc = copycat.obj_ref.q_bill_postcode;
+                document.getElementById("select_fullname").value = this.copy_q_b_f;    
+                document.getElementById("select_a1").value = this.copy_q_b_a1;
+                document.getElementById("select_a2").value = this.copy_q_b_a2;
+                document.getElementById("select_city").value = this.copy_q_b_c;
+                document.getElementById("select_postcode").value = this.copy_q_b_pc;
 
                 this.copy_q_s_f = copycat.obj_ref.q_ship_fillname;
                 this.copy_q_s_a1 = copycat.obj_ref.q_ship_address1;
                 this.copy_q_s_a2 = copycat.obj_ref.q_ship_address2;
                 this.copy_q_s_c = copycat.obj_ref.q_ship_city;
                 this.copy_q_s_pc = copycat.obj_ref.q_ship_postcode;
-                
+                document.getElementById("select_b_fullname").value = this.copy_q_s_f;    
+                document.getElementById("select_b_a1").value = this.copy_q_s_a1;
+                document.getElementById("select_b_a2").value = this.copy_q_s_a2;
+                document.getElementById("select_b_city").value = this.copy_q_s_c;
+                document.getElementById("select_b_postcode").value = this.copy_q_s_pc;
                 
                 this.copy_q_number = copycat.obj_ref.q_quote_number;
                 this.copy_q_ref = copycat.obj_ref.q_ref;
@@ -780,7 +791,7 @@ export default{
 
             var string = await doc.output('datauristring');
             var embed = "<embed src='" + string + "'/>"
-            const a = document.getElementById('preview_invoicenPDF');
+            const a = document.getElementById('pdf_quote');
             var clone = a.cloneNode(true);
             clone.setAttribute('src', string);
             a.parentNode.replaceChild(clone, a);
@@ -798,6 +809,16 @@ export default{
         },
 
         async UpdateQuote(i, q_hash, cxp, copy_quote_number, copy_ref_num){
+
+
+            /*
+            let sb_fullname = document.getElementById("select_bill_to").value;
+            var ss_fullname = document.getElementById("select_ship_to").value;
+            if (this.copy_q_b_f == sb_fullname){
+
+            }
+            this.copy_q_s_f
+            */
             const cp = cxp;
 
             console.log("=====edit and upoad another quote:0 ");
@@ -971,7 +992,7 @@ export default{
             let ss_city = document.getElementById("select_b_city").innerHTML;
             let ss_postcode = document.getElementById("select_b_postcode").innerHTML;
 
-
+            //another jspdf
             const string = await this.jspdftimeQuote(copy_quote_number, today, copy_ref_num, po_number, 
             sb_fullname,sb_a1,sb_a2,sb_city,sb_postcode,
             ss_fullname,ss_a1,ss_a2,ss_city,ss_postcode,
@@ -1108,9 +1129,11 @@ export default{
             })
         },
 
-        async doSort3(){
+        async doSort3(copy_q_b_f){
             var optionValue = document.getElementById("select_bill_to").value;
             document.getElementById("select_ship_to").selectedIndex = -1;
+            
+            if (copy_q_b_f != optionValue){
 
             var build_to_hash = "";
 
@@ -1131,39 +1154,46 @@ export default{
                     build_to_hash = a5;
                 });
             })
-            var sort_client = await firebase.firestore().collection("all_delivery").doc(this.this_one_q_hash_number).collection("this_client_delivery");
+            var sort_client = await firebase.firestore().collection("all_delivery").doc(this.this_one_q_hash_number).collection("this_client_delivery").where("c_fullname" , "==", optionValue);;
             sort_client.onSnapshot(snap => {
-                snap.forEach(d => {
-                    var a1= d.data().c_address_1;
-                    var a2= d.data().c_address_2;
-                    var a3= d.data().c_city;
-                    var a4= d.data().c_post_code;
+                this.all_deliverys = [];
+                snap.forEach(e => {
+                    var delivery = d.data();
+                    this.all_deliverys.push(delivery);
+                    /*
+                    var aa1= e.data().d_address_1;
+                    var aa2= e.data().d_address_2;
+                    var aa3= e.data().d_city;
+                    var aa4= e.data().d_post_code;
                     console.log("did I found new bill address? " + a1 + " " +a2 + " " + a3 + " " + a4)
-                    document.getElementById("select_a1").value = a1;
-                    document.getElementById("select_a2").value = a2;
-                    document.getElementById("select_city").value = a3;
-                    document.getElementById("select_postcode").value = a4;
+                    document.getElementById("select_a1").value = aa1;
+                    document.getElementById("select_a2").value = aa2;
+                    document.getElementById("select_city").value = aa3;
+                    document.getElementById("select_postcode").value = aa4;
+                    */
                 });
             })
+            }
 
         },
 
 
         async doSort4(){
             var optionValue = document.getElementById("select_bill_to").value;
-            document.getElementById("select_ship_to").selectedIndex = -1;
+            //document.getElementById("select_ship_to").selectedIndex = -1;
 
-            var sort_client = await firebase.firestore().collection("all_delivery").doc(this.this_one_q_hash_number).collection("this_client_delivery");
+            var sort_client = await firebase.firestore().collection("all_delivery").doc(this.this_one_q_hash_number).collection("this_client_delivery").where("c_fullname" , "==", optionValue);
             sort_client.onSnapshot(snap => {
                 
                 snap.forEach(d => {
-
+                    var a0= d.data().d_fullname;
                     var a1= d.data().d_address_1;
                     var a2= d.data().d_address_2;
                     var a3= d.data().d_city;
                     var a4= d.data().d_post_code;
 
                     console.log("did I found new bill address? " + a1 + " " +a2 + " " + a3 + " " + a4)
+                    document.getElementById("select_b_fullname").value = a0;
                     document.getElementById("select_b_a1").value = a1;
                     document.getElementById("select_b_a2").value = a2;
                     document.getElementById("select_b_city").value = a3;
