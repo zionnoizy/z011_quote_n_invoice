@@ -833,7 +833,7 @@ export default {
                     let cum1 = document.getElementById(d_qty).innerHTML;
                     let cum2 = document.getElementById(d_discount).innerHTML;
                     let cum3 = document.getElementById(d_unit).innerHTML;
-                    //console.log(cum1 + "=====" + cum2);
+                    console.log(cum1 + "=====" + cum2 + "=====" + cum3);
                     cp[key].p_quantity = cum1;
                     cp[key].p_discount = cum2;
                     cp[key].p_unit = cum3;

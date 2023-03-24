@@ -7,7 +7,7 @@
 
 
           <div class="client_card row col-span-1 flex-col text-center"  v-for="c, i in all_client_card"
-            data-bs-toggle="modal" data-bs-target="#show_delievery_address" @click.prevent="this.showDelivery($event, c, i)"> 
+            data-bs-toggle="modal" data-bs-target="#show_delievery_address" @click.prevent="this.showDelivery($event, c, i)" > 
             <div class="row" >
               <div>
                 <strong>{{ c.c_fullname }}</strong>
@@ -24,7 +24,7 @@
               <div> {{ c.client_hashid }} </div>
             </div>
           </div>
-          <div class="modal fade" id="show_delievery_address" tabindex="-1" aria-labelledby="" aria-hidden="true" @close="resetPages()">
+          <div class="modal fade" id="show_delievery_address" tabindex="-1" aria-labelledby="" aria-hidden="true" @close="resetPages()" @hide="resetPages()">
           <div class="modal-dialog modal-xl">
               <div class="modal-content text-black">
                   <div class="modal-header">
@@ -33,7 +33,7 @@
                   </div>
                   <div class="modal-body" style="background-color: #1267aa;">
                       <div class="px-5 mx-5 grid grid-cols-3 gap-2  ">
-                          <div class="" v-for="d in toRender" :key="d">
+                          <div class="" v-for="d in all_client_delivey" :key="d">
                               <div class="delivery_card row">
                                   <div>
                                       <strong>{{ d.d_fullname }}</strong>
@@ -49,15 +49,10 @@
                                   </div>
 
                               </div>
-
-                              
-
-
-
                           </div>
                       </div>
-                      <button id="previous_btn" @click="loadprevious()">previous</button>
-                      <button id="next_btn" @click="loadnext()">next</button>
+                      <button id="previous_btn" @click="previous()">previous</button>
+                      <button id="next_btn" @click="next()">next</button>
 
                   </div>
                   
@@ -86,7 +81,11 @@ export default{
             
             start:0,
             end: 3,
+            record_end: 3,
             toRender: [],
+
+            perpage: 3,
+            pageNumber:0,
         }
     },
     mounted () {
@@ -144,12 +143,13 @@ export default{
 
 
         loadnext() {
-          
+          console.log("===============loadnext");
+          document.getElementById('previous_btn').style.visibility = 'visible';
           this.toRender = [];
           const no_proxy = JSON.parse(JSON.stringify(this.all_client_delivey)); //
           console.log(">   " + no_proxy );
           for (let i = this.start; i < this.end; i++){
-
+            console.log("no_proxy[i]" + no_proxy[i]);
             if (no_proxy[i] !== undefined){
               this.toRender.push(no_proxy[i])
               console.log("what to push3: " + no_proxy[i] );
@@ -157,6 +157,10 @@ export default{
             }
             if (no_proxy[i] == undefined){
               document.getElementById('next_btn').style.visibility = 'hidden';
+              this.start = this.start + this.record_end;
+              this.end =  this.start + this.record_end;
+              console.log("start2/end2 " + this.start + "    " + this.end  );
+              return;
             }
 
             
@@ -165,16 +169,17 @@ export default{
           this.start = this.start + this.toRender.length;
           this.end =  this.start + this.toRender.length;
 
+          console.log("start/end " + this.start + "    " + this.end  );
+
         },
         loadprevious() {
+          console.log("===============loadprevious");
           this.start = this.start - this.toRender.length;
           this.end =  this.start - this.toRender.length;
-          console.log("what to push4: " + this.start + this.end);
+          console.log("what to push4: " + this.start +"    "+ this.end);
           this.toRender = [];
           const no_proxy = JSON.parse(JSON.stringify(this.all_client_delivey)); //
-
           for (let j = this.end; j < this.start; j++){
-
             if (no_proxy[j] !== undefined){
               this.toRender.push(no_proxy[j])
               console.log("what to push5: " + no_proxy[j] );
@@ -187,12 +192,23 @@ export default{
         },
         resetPages(){
           console.log("reset start/ end / toRender to origional");
+          this.toRender = [];
         },
-
+        next(){
+            this.pageNumber++;
+        },
+        previous(){
+        this.pageNumber--;
+        },
     },
     created(){
       this.getAllClient();
-    }
+    },
+    computed:{
+        currentPageItems(){
+          return this.all_client_delivey.slice(this.pageNumber*this.perpage,this.pageNumber*this.perpage+1+this.perpage)
+        }
+    },
 
 }
 </script>

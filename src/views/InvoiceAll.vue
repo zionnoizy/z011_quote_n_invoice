@@ -19,7 +19,7 @@
           </div>
           <div>
             <label>Search Invoice Number</label>
-            <input id="search_in" type="text" v-model="myIsearch" placeholder="ex. I-CMS00042" />
+            <input id="search_in" type="text" v-model="myIsearch" placeholder="ex. I-CMS00032" />
           </div>
           <div>
             <button class="btn btn-warning" @click.prevent="ResetNgetAllInvoiceNewest()"> Clear Searched List </button>
@@ -239,7 +239,7 @@ export default {
 
             console.log("ipad2    " + n_invoice_cleint.obj_ref.qi_bill_fullname);
             
-            if(!all_clients.includes(n_invoice_cleint.obj_ref.qi_bill_fullname))
+            if(!this.all_clients.includes(n_invoice_cleint.obj_ref.qi_bill_fullname))
               this.all_clients.push(n_invoice_cleint.obj_ref.qi_bill_fullname);
             
           });

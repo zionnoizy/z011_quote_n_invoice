@@ -14,7 +14,7 @@
           <div>
           <select id="so_client" class="form-select" aria-label="select client from quote list below, and it will do sorting." @change="doSort1();" onfocus="this.selectedIndex = 1;">
             <option selected>Select Client Here</option>
-            <option v-for="c in all_clients" :value="`${c.obj_ref.q_bill_fullname}`" > {{ c.obj_ref.q_bill_fullname }} </option>
+            <option v-for="c in all_clients" :value="`${c}`" > {{ c }} </option>
           </select>
           </div>
 
@@ -56,7 +56,6 @@
                 :to="{ name: 'OneQuote', 
                 params: 
                 { id: p.obj_ref.q_quote_number, 
-
                   //[that's a lot to pass]
                 }, query: { this_one_q_hash_number: p.quote_hashid, this_one_q_pdf_link: p.q_pdf_link}}">
 
@@ -92,6 +91,7 @@ export default{
       
         return{
           all_quotes: [],
+          f_all_quotes: [],
           all_clients: [],
           each_quote:{
 
@@ -187,8 +187,8 @@ export default{
 
                 this.all_quotes.push(e_quote);
 
-                if(!this.all_clients.includes(e_quote_cleint.obj_ref.q_bill_fullname))
-                  this.all_clients.push(e_quote_cleint);
+                if(! this.all_clients.includes(e_quote_cleint.obj_ref.q_bill_fullname))
+                  this.all_clients.push(e_quote_cleint.obj_ref.q_bill_fullname);
             });
         });
         //console.log("[getAllQuote]=====================");
