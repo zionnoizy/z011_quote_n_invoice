@@ -216,6 +216,7 @@ export default{
       async ResetNgetAllQuoteOldest(){
 
         document.getElementById("search_qn").value= "";  
+        document.getElementById("search_qn").text = "";
         document.getElementById("so_client").selectedIndex = 0;
 
         var all_product_ref = await firebase.firestore().collection("ALL_quote");

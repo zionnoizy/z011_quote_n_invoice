@@ -196,8 +196,9 @@ export default {
           s_invoice_num: '',
           all_invoice: [],
           all_i_clients: [],
-          myIsearch: '',
-        }
+          
+        },
+        myIsearch: '',
       }
     },
 
