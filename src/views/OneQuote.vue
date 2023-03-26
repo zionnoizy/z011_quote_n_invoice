@@ -1,7 +1,7 @@
 <template>
     <div class="OneQuote">
 
-        <div class="border">
+        <!-- <div class="border">
 
             <p> debug here only - view specific quote.</p>
             <p> The quote id is= {{ $route.params.id }}</p>
@@ -16,7 +16,7 @@
 
             <p>Subtotal? {{copy_ft_sub_total}}</p>
             <p>$ {{ copy_ft  }}</p>
-        </div>
+        </div> -->
 
         <div class="grid grid-cols-3">
 

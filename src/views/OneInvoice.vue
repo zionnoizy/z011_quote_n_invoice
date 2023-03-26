@@ -1,14 +1,14 @@
 <template>
     <div class="OneInvoice">
 
-        <div class="border">
+        <!-- <div class="border">
         <p> debug here only - view specific INVOICE.</p>
         <p> The quote id is= {{ $route.params.id }}</p>
-        <p> One Q Hash is= {{ $route.query.this_one_i_hash_number }} <!--cannot pass each quote to here--> </p>
+        <p> One Q Hash is= {{ $route.query.this_one_i_hash_number }}  </p>
 
         <p> One PDF Link is= {{ $route.query.this_one_i_pdf_link }}</p>
 
-        </div>
+        </div> -->
 
         <div class="d-flex justify-content-center">
 

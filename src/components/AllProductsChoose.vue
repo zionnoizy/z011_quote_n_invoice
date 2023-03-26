@@ -97,12 +97,8 @@ export default{
     },
 
     async choosenOneProduct(ev, p, i){
-      var size = Object.size(this.choosen_products);
-      console.log("size   " + size);
-      if (size > 2){
-        alert("maximum item in v1.0 at this moment.");
-      }
-      else{
+      
+
       var choose_product_ref = await firebase.firestore().collection("all_products").where("p_fullname", "==", p.p_fullname);
        choose_product_ref.onSnapshot((snapshot) => {
 

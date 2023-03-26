@@ -4,11 +4,11 @@
 
 
 
-        <div class="border">
+        <!-- <div class="border">
             calculate tmp_sell: {{ tmp_sell }}
             list of choosen product: <p>{{choosen_products}}</p>
             choosen_client_fullname(not bill to):: {{ choosen_client_fullname }}
-        </div>
+        </div> -->
 
         <p class="dashboard_txt pt-5 pb-3 mx-6 text-start" style="border-bottom: 3px solid #fff;" ><router-link to="/dashboard/quote" exact>
             

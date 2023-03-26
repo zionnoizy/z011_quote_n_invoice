@@ -1,14 +1,14 @@
 <template>
     <div class="login  py-12 sm:px-6 lg:px-8">
 
-        <div class="border">
+        <!-- <div class="border">
             <p> debug border here only - after login.</p>
             <p> Email is= </p>
             <p> Account ID Hash is=  </p>
             <input class="quote_num" id="quote_num"/> <br>
             <br>
             <input class="ref_num" id="ref_num"/> 
-        </div>
+        </div> -->
 
         <img alt="Vue logo" class="logo justify-center mx-auto" src="../assets/cms_logo_small.png" />
         
