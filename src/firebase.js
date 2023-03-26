@@ -48,7 +48,7 @@ export const save_2_storage = (fullPath, my_url) => {
 }
 
 export const test2_storage = (quote_or_invoice_hash, fullPath, pdf_base64) => {
-
+  console.log("set doc in Quote?"   + quote_or_invoice_hash + "/" + fullPath + "/" + pdf_base64);
   const image_ref = ref(storage, fullPath);
 
   const storage_ref = ref(storage, fullPath + quote_or_invoice_hash+".pdf");

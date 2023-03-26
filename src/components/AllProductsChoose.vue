@@ -143,7 +143,7 @@ export default{
     },
     TmpSell: function(str){
             console.log(str);
-          }
+
 
   },
   created() {

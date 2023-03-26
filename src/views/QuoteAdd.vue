@@ -874,7 +874,13 @@ export default {
                 .update({
                     quote_hashid: docRef.id,
                     choosen_product_qty: choosen_product_qty,
-                }).catch((error) => {
+                })
+                .then(() => {
+                      console.log("Z-clearning");
+                      clean_input_field();
+
+                })
+                .catch((error) => {
                     console.log(error);
                 })
             })
@@ -1480,6 +1486,16 @@ function validate_q_input(){
       return flag;
 }
 
+function clean_input_field(){
+    var elements = document.getElementsByTagName("input");
+    for (var ii=0; ii < elements.length; ii++) {
+        elements[ii].value = "";
+    }
+    var elements2 = document.getElementsByTagName("p");
+    for (var jj=0; jj < elements2.length; jj++) {
+        elements2[jj].innerHTML = "";
+    }
+}
 
 
 </script>
