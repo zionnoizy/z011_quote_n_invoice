@@ -456,11 +456,11 @@ export default{
                 document.getElementById("select_city").value = this.copy_q_b_c;
                 document.getElementById("select_postcode").value = this.copy_q_b_pc;
 
-                this.copy_q_s_f = copycat.obj_ref.q_ship_fillname;
-                this.copy_q_s_a1 = copycat.obj_ref.q_ship_address1;
-                this.copy_q_s_a2 = copycat.obj_ref.q_ship_address2;
-                this.copy_q_s_c = copycat.obj_ref.q_ship_city;
-                this.copy_q_s_pc = copycat.obj_ref.q_ship_postcode;
+                this.copy_q_s_f = copycat.bill_ship.q_ship_fillname;
+                this.copy_q_s_a1 = copycat.bill_ship.q_ship_address1;
+                this.copy_q_s_a2 = copycat.bill_ship.q_ship_address2;
+                this.copy_q_s_c = copycat.bill_ship.q_ship_city;
+                this.copy_q_s_pc = copycat.bill_ship.q_ship_postcode;
                 document.getElementById("select_b_fullname").value = this.copy_q_s_f;    
                 document.getElementById("select_b_a1").value = this.copy_q_s_a1;
                 document.getElementById("select_b_a2").value = this.copy_q_s_a2;
