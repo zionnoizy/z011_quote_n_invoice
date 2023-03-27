@@ -695,7 +695,7 @@ export default{
             return string;
         },
         async jspdftimeQuote(q_number, today, ref_num, po_number, bf,ba1,ba2,bc,bpc, sf,sa1,sa2,sc,spc, cp_object, c_sub_total,c_vat,c_shipping,c_final ){ //QUOTE
-
+            
             const r_new_st = document.getElementById('e_q_subtotal').innerHTML;
             const r_new_vat = document.getElementById('e_q_vat').innerHTML;
             const r_new_shipping = document.getElementById('e_q_shipping').innerHTML;
@@ -711,13 +711,14 @@ export default{
                 bodyData2.push(tmp2);
             });    
 
-            console.log("what " + " what cp_object                     " + cp_object);
+            console.log("what " + " what cp_object                     " + cp_object); //c object added stuff is empty
             console.log(bodyData2 + "--" + ba2 + "--"  + "--" + r_new_shipping +"=  " + r_new_final);
 
             const docq = new jsPDF(); 
+
             docq.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297);
             docq.setFontSize(10);
-
+            /*
             console.log("bf?   " + bf);
 
             docq.text(bf, 6, 93);
@@ -752,7 +753,7 @@ export default{
             docq.text(today, 159, 100);
             docq.text(ref_num, 159, 105);
             docq.text(po_number, 159, 110);  
-            
+            */
             var finalY = await docq.lastAutoTable.finalY || 10
 
             console.log("finalY?   " + finalY);
@@ -773,7 +774,7 @@ export default{
                 tableWidth: 'auto',
                 margin: { top: 0, right: 5, bottom: 0, left: 5 }, //important2
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
-                body: "bodyData2",
+                body: bodyData2,
             })
 
             docq.setFontSize(12);
@@ -830,7 +831,7 @@ export default{
             let ss_city = document.getElementById("select_b_city").value;
             let ss_postcode = document.getElementById("select_b_postcode").value;
 
-            console.log("sb_fullname2?  " + ss_fullname + " " + ss_a1 + " "+ ss_a2);  
+            console.log("sb_fullname2?  " + ss_fullname + " " + ss_a1 + " "+ ss_a2);  //undefined?
               
             const cp = cxp;
             var choosen_product_qty = Object.keys(cp).length;
@@ -1000,20 +1001,6 @@ export default{
             let po_number = document.getElementById('po_number').value;
             console.log("copy_quote_number?    " + copy_quote_number);
 
-            /*
-            let sb_fullname = document.getElementById("select_bill_to").value;
-            let sb_a1 = document.getElementById("select_a1").innerHTML;
-            let sb_a2 = document.getElementById("select_a2").innerHTML;
-            let sb_city = document.getElementById("select_city").innerHTML;
-            let sb_postcode = document.getElementById("select_postcode").innerHTML;
-            console.log("sb_fullname?  " + sb_fullname + " " + sb_a1 + " "+ sb_a2);
-            
-            var ss_fullname = document.getElementById("select_ship_to").value;
-            let ss_a1 = document.getElementById("select_b_a1").innerHTML;
-            let ss_a2 = document.getElementById("select_b_a2").innerHTML;
-            let ss_city = document.getElementById("select_b_city").innerHTML;
-            let ss_postcode = document.getElementById("select_b_postcode").innerHTML;
-            */
 
             console.log(this.copy_quote_number);
             //another jspdf
