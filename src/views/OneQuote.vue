@@ -72,13 +72,14 @@
 
                                             <div class="flex-grow-0 mx-2 px-3">
                                                 <label>2.SHIP TO (DELIVERY)</label>
-                                                <select id="select_ship_to" class="form-select" aria-label="Default select example"  >
+                                                <select id="select_ship_to" class="form-select" aria-label="Default select example"  
+                                                @change="doSort4(`${copy_q_s_f}`);">
                                                     <option selected> {{ copy_q_s_f }} </option>
                                                     <!--:value="`${d.d_fullname}`"-->
-                                                    <option v-for="d in all_deliverys" >{{d.d_fullname}}</option>
+                                                    <option v-for="d in all_deliverys" :value="`${d.d_fullname}`" >{{d.d_fullname}}</option>
                                                 </select>
                                                 <p class="hidden" id="select_b_fullname"></p>  
-                                                <p class="hidden" id="select_b_a1"></p>   
+                                                <p class="" id="select_b_a1"></p>   
                                                 <p class="hidden" id="select_b_a2"></p>   
                                                 <p class="hidden" id="select_b_city"></p>   
                                                 <p class="hidden" id="select_b_postcode"></p>   
@@ -444,11 +445,11 @@ export default{
             .onSnapshot(doc => {
                 var copycat = doc.data();
                 
-                this.copy_q_b_f = copycat.obj_ref.q_bill_fullname;
-                this.copy_q_b_a1 = copycat.obj_ref.q_bill_address1;
-                this.copy_q_b_a2 = copycat.obj_ref.q_bill_address2;
-                this.copy_q_b_c = copycat.obj_ref.q_bill_city;
-                this.copy_q_b_pc = copycat.obj_ref.q_bill_postcode;
+                this.copy_q_b_f = copycat.bill_ship.q_bill_fullname;
+                this.copy_q_b_a1 = copycat.bill_ship.q_bill_address1;
+                this.copy_q_b_a2 = copycat.bill_ship.q_bill_address2;
+                this.copy_q_b_c = copycat.bill_ship.q_bill_city;
+                this.copy_q_b_pc = copycat.bill_ship.q_bill_postcode;
                 document.getElementById("select_fullname").value = this.copy_q_b_f;    
                 document.getElementById("select_a1").value = this.copy_q_b_a1;
                 document.getElementById("select_a2").value = this.copy_q_b_a2;
@@ -820,6 +821,7 @@ export default{
             let sb_a2 = document.getElementById("select_a2").value;
             let sb_city = document.getElementById("select_city").value;
             let sb_postcode = document.getElementById("select_postcode").value;
+
             console.log("sb_fullname?  " + sb_fullname + " " + sb_a1 + " "+ sb_a2);
             
             var ss_fullname = document.getElementById("select_ship_to").value;
@@ -827,7 +829,9 @@ export default{
             let ss_a2 = document.getElementById("select_b_a2").value;
             let ss_city = document.getElementById("select_b_city").value;
             let ss_postcode = document.getElementById("select_b_postcode").value;
-            
+
+            console.log("sb_fullname2?  " + ss_fullname + " " + ss_a1 + " "+ ss_a2);  
+              
             const cp = cxp;
             var choosen_product_qty = Object.keys(cp).length;
             cp["choosen_product_qty"] = choosen_product_qty;
@@ -885,7 +889,7 @@ export default{
                 tf_total: changed_final,
             }
 
-            const obj_ref= {
+            const bill_ship= {
                 q_bill_fullname: sb_fullname,
                 q_bill_address1: sb_a1,
                 q_bill_address2: sb_a2,
@@ -897,6 +901,11 @@ export default{
                 q_ship_address2: ss_a2,
                 q_ship_city: ss_city,
                 q_ship_postcode: ss_postcode,
+
+                
+
+
+
             }
             
             //const cp = this.copy_exact_product;
@@ -969,8 +978,8 @@ export default{
            
             })
             */
-            firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number).update({final_tt, cp, obj_ref})
-            firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number).set({ obj_ref}) //!do update but copy the rest
+            firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number).update({final_tt, cp, bill_ship})
+            
             /*
             let zzz = await setDoc(ref, {final_tt}, { merge: true } ) 
             .then(docRef => { 
@@ -1173,14 +1182,16 @@ export default{
                     this.build_to_hash = a5;
                 });
             })  
+
             console.log("this.build_to_hash?   " + this.build_to_hash);
+
             var final_delivery = await firebase.firestore().collection("all_delivery").doc(this.build_to_hash).collection("this_client_delivery");
             final_delivery.onSnapshot(snap => {
 
                 console.log("renew all_deliverys?      " + this.all_deliverys);
                 this.all_deliverys = [];
                 snap.forEach(e => {
-                    var delivery = d.data();
+                    var delivery = e.data();
                     this.all_deliverys.push(delivery);
                     /*
                     var aa1= e.data().d_address_1;
@@ -1200,31 +1211,38 @@ export default{
         },
 
 
-        async doSort4(){
+        async doSort4(copy_q_s_f){
+
+            console.log("run sort4 client hash???   " + this.build_to_hash);
             var optionValue = document.getElementById("select_bill_to").value;
             //document.getElementById("select_ship_to").selectedIndex = -1;
-
-            var sort_client = await firebase.firestore().collection("all_delivery").doc(this.this_one_q_hash_number).collection("this_client_delivery").where("c_fullname" , "==", optionValue);
+            if (copy_q_s_f != optionValue){
+            var sort_client = await firebase.firestore().collection("all_delivery").doc(this.build_to_hash).collection("this_client_delivery"); //.where("c_fullname" , "==", optionValue);
             sort_client.onSnapshot(snap => {
                 
                 snap.forEach(d => {
-                    var a0= d.data().d_fullname;
-                    var a1= d.data().d_address_1;
-                    var a2= d.data().d_address_2;
-                    var a3= d.data().d_city;
-                    var a4= d.data().d_post_code;
 
-                    console.log("did I found new bill address? " + a1 + " " +a2 + " " + a3 + " " + a4)
-                    document.getElementById("select_b_fullname").value = a0;
-                    document.getElementById("select_b_a1").value = a1;
-                    document.getElementById("select_b_a2").value = a2;
-                    document.getElementById("select_b_city").value = a3;
-                    document.getElementById("select_b_postcode").value = a4;
+                    console.log("brand new delivery address?");
 
-                
+                    var aa0= d.data().d_fullname;
+                    var aa1= d.data().d_address_1;
+                    var aa2= d.data().d_address_2;
+                    var aa3= d.data().d_city;
+                    var aa4= d.data().d_post_code;
+
+                    const whatt = document.getElementById("select_b_fullname").value;
+
+                    console.log("whatt? " + whatt);                    
+                    document.getElementById("select_b_fullname").value = aa0;
+                    document.getElementById("select_b_a1").value = aa1;
+                    document.getElementById("select_b_a2").value = aa2;
+                    document.getElementById("select_b_city").value = aa3;
+                    document.getElementById("select_b_postcode").value = aa4;
+
+                    console.log("whatt2? " + whatt);     
                 });
             })
-
+            }
         },
 
 

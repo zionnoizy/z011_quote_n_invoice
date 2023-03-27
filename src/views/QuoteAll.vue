@@ -87,7 +87,7 @@
                   //[that's a lot to pass]
                 }, query: { this_one_q_hash_number: p.quote_hashid, this_one_q_pdf_link: p.q_pdf_link}}">
                 
-                {{ p.obj_ref.q_bill_fullname}} 
+                {{ p.bill_ship.q_bill_fullname}} 
                 </router-link>
               </td>
 
@@ -255,7 +255,7 @@ export default{
       async doSort1(){
         var optionValue = document.getElementById("so_client").value;
         console.log("sort list from choosen cleint: " + optionValue);
-        var sort_client = await firebase.firestore().collection("ALL_quote").where("obj_ref.q_bill_fullname", "==", optionValue);
+        var sort_client = await firebase.firestore().collection("ALL_quote").where("bill_ship.q_bill_fullname", "==", optionValue);
         sort_client.onSnapshot(snap => {
           this.all_quotes = [];
           snap.forEach(d => {

@@ -98,6 +98,7 @@ export default{
 
 
         const handleFocusout = (e, pid, df, i) => {
+          
           console.log("handleFocusout: " + e.target.id + "   pid= " + pid + " data-field=" + df );
 
           var updated_field = document.getElementById(e.target.id);
@@ -107,18 +108,20 @@ export default{
 
           var sortOrder = e.target.getAttribute("data-field");
           console.log("handleFocusout: " + sortOrder);
+          
           if (sortOrder == "p_cost"){
+            var dynamic0 = "ep_cost_"+i;
             var dynamic1 = "ep_margin_"+i;
             var dynamic2 = "ep_sell_"+i;
-
+            var cost = document.getElementById(dynamic0).innerText;
             var margin = document.getElementById(dynamic1).innerText;
             var b = document.getElementById(dynamic2).innerText;
 
             var sell = +(tdText / 100) * +margin;
-
+            var tmp_ans = +cost + +sell;
             console.log("update new sell?      " );
 
-            var new_sell = Number(sell).toFixed(2);
+            var new_sell = Number(tmp_ans).toFixed(2);
             console.log("df?      " + df );
             const edit_this_product_col = firebase.firestore().collection("all_products");
             edit_this_product_col.doc(pid).update({
@@ -142,7 +145,9 @@ export default{
             var c = document.getElementById(dynamic_2).innerText;
 
             var sell = +(cost / 100) * +tdText;
-            var new_sell = Number(sell).toFixed(2);
+            var tmp_ans = +cost + +sell;
+            var new_sell = Number(tmp_ans).toFixed(2);
+
             const edit_this_product_col = firebase.firestore().collection("all_products");
             edit_this_product_col.doc(pid).update({
               

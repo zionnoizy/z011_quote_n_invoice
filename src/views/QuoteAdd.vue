@@ -17,12 +17,12 @@
         </p>
 
 
-        <p class="text-center">
+        <!-- <p class="text-center">
             <p>1.BILL TO // 2.SHIP TO // 3.Add Products of Goods // 5.Reference Number == REQUIREMENT </p>
             <p>3A.Add Quantity // 3B.Add Unit // 3C.Add Discount  == (optional) inside 3.Add Products of Goods </p>
             <p>4.Final Calculation == auto-generate besides shipping</p>
             <p>4A.Shipping == REQUIREMENT </p>
-        </p>
+        </p> -->
 
         <button href="@/assets/files/quote_instruction.pdf" download>Downlaod Instruction</button>
         <div class="grid grid-cols-1 gap-1 ">
@@ -515,9 +515,7 @@ export default {
         }
         return { handleFocusout };
     },
-
     data() {
-
         return {
             //, 
             convert_to_month: ["01.JAN", "02.FEB", "03.MAR", "04.APR", "05.MAY", "06.JUN", "07.JUL", "08.AUG", "09.SEP", "10.OCT", "11.NOV", "12.DEC"],
@@ -798,29 +796,33 @@ export default {
 
                 console.log("uploadQuotePDF2---------" + base64);
         
-                const obj_ref = {          
-                q_bill_fullname: document.getElementById('tmp_b_fullname').innerHTML,
-                q_bill_address1: document.getElementById('tmp_b_address1').innerHTML,
-                q_bill_address2: document.getElementById('tmp_s_address2').innerHTML, 
-                q_bill_city: document.getElementById('tmp_b_city').innerHTML,
-                q_bill_postcode: document.getElementById('tmp_b_postcode').innerHTML,
+                const bill_ship = {          
+                    q_bill_fullname: document.getElementById('tmp_b_fullname').innerHTML,
+                    q_bill_address1: document.getElementById('tmp_b_address1').innerHTML,
+                    q_bill_address2: document.getElementById('tmp_s_address2').innerHTML, 
+                    q_bill_city: document.getElementById('tmp_b_city').innerHTML,
+                    q_bill_postcode: document.getElementById('tmp_b_postcode').innerHTML,
 
-                q_ship_fillname: document.getElementById('tmp_s_fullname').innerHTML,
-                q_ship_address1: document.getElementById('tmp_s_address1').innerHTML,
-                q_ship_address2: document.getElementById('tmp_s_address2').innerHTML, 
-                q_ship_city: document.getElementById('tmp_s_city').innerHTML,
-                q_ship_postcode: document.getElementById('tmp_s_postcode').innerHTML, 
+                    q_ship_fillname: document.getElementById('tmp_s_fullname').innerHTML,
+                    q_ship_address1: document.getElementById('tmp_s_address1').innerHTML,
+                    q_ship_address2: document.getElementById('tmp_s_address2').innerHTML, 
+                    q_ship_city: document.getElementById('tmp_s_city').innerHTML,
+                    q_ship_postcode: document.getElementById('tmp_s_postcode').innerHTML, 
 
-                q_quote_number: quote_number, 
-                q_invoice_number: null, 
-                q_uploaded_date: todayDateTime,
-                q_ref: reference_number,
-                q_po: null,
-                q_uploaded_date_timestamp: serverTimestamp(), //
-                q_extra_space_1: '',
-                q_extra_space_2: '',
-                q_extra_space_3: '',
-                q_extra_space_4: '',
+                
+                }
+
+                const obj_ref = {
+                    q_quote_number: quote_number, 
+                    q_invoice_number: null, 
+                    q_uploaded_date: todayDateTime,
+                    q_ref: reference_number,
+                    q_po: null,
+                    q_uploaded_date_timestamp: serverTimestamp(), //
+                    q_extra_space_1: '',
+                    q_extra_space_2: '',
+                    q_extra_space_3: '',
+                    q_extra_space_4: '',
                 }
 
             const t = document.getElementById('q_subtotal').value;
@@ -855,7 +857,7 @@ export default {
             
             console.log("uploadQuotePDF4---------" + base64);
 
-            await addDoc(ref, {obj_ref, cp, final_tt})
+            await addDoc(ref, {obj_ref, cp, final_tt, bill_ship})
             .then(docRef => {
                 console.log(docRef.id);
                 const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
@@ -888,6 +890,7 @@ export default {
         },
 
         async previewBtn() { //step1
+            
             console.log("previewBtn1---------");
 
             let flag = await validate_q_input();
@@ -1030,7 +1033,7 @@ export default {
 
             console.log("uploadQuotePDF2---------" + base64);
        
-            const obj_ref = {          
+            const bill_ship = {          
                 q_bill_fullname: document.getElementById('tmp_b_fullname').innerHTML,
                 q_bill_address1: document.getElementById('tmp_b_address1').innerHTML,
                 q_bill_address2: document.getElementById('tmp_s_address2').innerHTML, 
@@ -1043,6 +1046,10 @@ export default {
                 q_ship_city: document.getElementById('tmp_s_city').innerHTML,
                 q_ship_postcode: document.getElementById('tmp_s_postcode').innerHTML, 
 
+
+            }
+
+            const obj_ref ={
                 q_quote_number: quote_number, 
                 q_invoice_number: '', 
                 q_uploaded_date: todayDateTime,
@@ -1054,7 +1061,6 @@ export default {
                 q_extra_space_3: '',
                 q_extra_space_4: '',
             }
-
             //const t = document.getElementById('q_subtotal').value;
 
 
@@ -1087,13 +1093,12 @@ export default {
                 }
             }
             console.log("uploadQuotePDF4---------" + base64);
-            await addDoc(ref, {obj_ref, cp, final_tt})
+            await addDoc(ref, {obj_ref, cp, final_tt, bill_ship})
             .then(docRef => {
                 //**
                 this.this_one_q_hash_number = docRef.id;
 
                 console.log(docRef.id);
-
                 const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
                 const string = "/all_quote/" + docRef.id + "/";
 
