@@ -2,7 +2,7 @@
 
     <th>PRODUCT IN DATABASE:</th>
     <div class="d-flex justify-content-between">
-      <div class="grid grid-cols-3 gap-3">
+      <div class="grid grid-cols-3 gap-3" style="display: flex; justify-content: center;">
         <div>
           <label>Search Product Name</label>
           <input type="text" v-model="mysearch" placeholder="search here.." />

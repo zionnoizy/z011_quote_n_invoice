@@ -4,7 +4,7 @@
         
         
         <!--if (this.selectedIndex)   onfocus="this.selectedIndex = 1;"-->
-        <div class="mx-2 grid grid-cols-5 gap-3" style="display: flex; justify-content:center;">
+        <div class="mx-2 grid grid-cols-5 gap-3 mb-2" style="display: flex; justify-content:center;">
           <div>
             <button class="btn btn-primary " @click.prevent="getAllQuoteNewest()">Sort From Newest </button>
           </div>

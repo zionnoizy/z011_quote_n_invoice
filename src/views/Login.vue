@@ -10,9 +10,15 @@
             <input class="ref_num" id="ref_num"/> 
         </div> -->
 
-        <img alt="Vue logo" class="logo justify-center mx-auto" src="../assets/cms_logo_small.png" />
-        
-        <h1>Login QuoteiN Account </h1>
+        <div class="grid grid-cols-2 gap-2">
+            <div>
+                <img alt="Vue logo" class="logo justify-center mx-auto mb-3" src="../assets/cms_logo_small.png" />
+            </div>
+            <div>
+                <h1>QUOTE-IN</h1>
+            </div>
+        </div>
+
 
 
         <p class="pb-3"><input class="form-control" type="text" placeholder="Email" style=" color: #2c3e50 !important;" v-model="email" /></p>

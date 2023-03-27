@@ -17,6 +17,11 @@
             <p>Subtotal? {{copy_ft_sub_total}}</p>
             <p>$ {{ copy_ft  }}</p>
         </div>-->
+        <p class="dashboard_txt pt-5 pb-3 mx-6 text-start" style="border-bottom: 3px solid #fff;" ><router-link to="/dashboard/quote" exact>
+            
+            <a><strong class="link underline">Dashboard</strong></a></router-link>  > One Quote
+          
+        </p>
 
         <div class="grid grid-cols-3">
 
@@ -427,7 +432,6 @@ export default{
 
             })
         },
-        
         async showQuotePDF(){
             console.log("??!" + this.copy_q_pdf_link);
             document.getElementById('pdf_quote').src = this.copy_q_pdf_link; 
@@ -482,7 +486,6 @@ export default{
                 //document.getElementById('e_q_shipping').value = this.copy_ft_shipping;
                 //document.getElementById("e_q_final").value = this.copy_ft_total;
 
-
                 this.copy_q_pdf_link = copycat.q_pdf_link;
                 document.getElementById('pdf_quote').src = this.copy_q_pdf_link; 
                 document.getElementById('set_q_number').innerText = this.copy_q_number;
@@ -498,6 +501,7 @@ export default{
         }, 
 
         async submitQuotation(use_this_hash){
+
             let i_number = await auto_invoice_no_generator3(this.copy_q_number);   
             const myTimestamp = firebase.firestore.Timestamp.now();
             let today = myTimestamp.toDate().toLocaleDateString("en-UK");     
@@ -564,6 +568,7 @@ export default{
             get_id
             .update({
                 "obj_ref.q_invoice_number": i_number,
+                "obj_ref.q_po": po_number,
             })
             .then(() => {
                 //console.log("set doc?");
@@ -593,30 +598,30 @@ export default{
             const doc = new jsPDF(); 
             doc.addImage(cms_empty_invoice_no_table, "JPEG", 0, 0, 210, 297);
             doc.setFontSize(10);
-            doc.text(this.copy_q_b_f, 6, 93);
-            doc.text(this.copy_q_b_a1, 6, 98);
+            doc.text(this.copy_q_b_f, 6, 94);
+            doc.text(this.copy_q_b_a1, 6, 99);
 
             if (this.copy_q_b_a2 == '' || this.copy_q_b_a2 == null){
-                doc.text(this.copy_q_b_c, 6, 103);
-                doc.text(this.copy_q_b_pc, 6, 108);
+                doc.text(this.copy_q_b_c, 6, 104);
+                doc.text(this.copy_q_b_pc, 6, 109);
             }
             else{
-                doc.text(this.copy_q_b_a2, 6, 103);
-                doc.text(this.copy_q_b_c, 6, 108);
-                doc.text(this.copy_q_b_pc, 6, 113);
+                doc.text(this.copy_q_b_a2, 6, 104);
+                doc.text(this.copy_q_b_c, 6, 109);
+                doc.text(this.copy_q_b_pc, 6, 114);
             }
 
             doc.setFontSize(10);
-            doc.text(this.copy_q_s_f, 72, 93);
-            doc.text(this.copy_q_s_a1, 72, 98);
+            doc.text(this.copy_q_s_f, 72, 94);
+            doc.text(this.copy_q_s_a1, 72, 99);
             if (this.copy_q_s_a2 == '' || this.copy_q_s_a2 == null){
-                doc.text(this.copy_q_s_c, 72, 103);
-                doc.text(this.copy_q_s_pc, 72, 108);  
+                doc.text(this.copy_q_s_c, 72, 104);
+                doc.text(this.copy_q_s_pc, 72, 109);  
             }    
             else{
-                doc.text(this.copy_q_s_a2, 72, 103);
-                doc.text(this.copy_q_s_c, 72, 108);
-                doc.text(this.copy_q_s_pc, 72, 113); 
+                doc.text(this.copy_q_s_a2, 72, 104);
+                doc.text(this.copy_q_s_c, 72, 109);
+                doc.text(this.copy_q_s_pc, 72, 114); 
             }
 
             console.log(i_number + "what" + today + "what" + po_number);
