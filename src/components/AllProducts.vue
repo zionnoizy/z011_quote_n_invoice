@@ -1,7 +1,7 @@
 <template>
 
     <th>PRODUCT IN DATABASE:</th>
-    <div class="d-flex justify-content-between">
+    <div class="">
       <div class="grid grid-cols-3 gap-3" style="display: flex; justify-content: center;">
         <div>
           <label>Search Product Name</label>

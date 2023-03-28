@@ -69,7 +69,6 @@
                                             <p class="hidden" id="select_a2"></p>   
                                             <p class="hidden" id="select_city"></p>   
                                             <p class="hidden" id="select_postcode"></p>   
-
                                             <div class="flex-grow-0 mx-2 px-3">
                                                 <label>2.SHIP TO (DELIVERY)</label>
                                                 <select id="select_ship_to" class="form-select" aria-label="Default select example"  
@@ -79,7 +78,7 @@
                                                     <option v-for="d in all_deliverys" :value="`${d.d_fullname}`" >{{d.d_fullname}}</option>
                                                 </select>
                                                 <p class="hidden" id="select_b_fullname"></p>  
-                                                <p class="" id="select_b_a1"></p>   
+                                                <p class="hidden" id="select_b_a1"></p>   
                                                 <p class="hidden" id="select_b_a2"></p>   
                                                 <p class="hidden" id="select_b_city"></p>   
                                                 <p class="hidden" id="select_b_postcode"></p>   
@@ -95,7 +94,7 @@
                                             </div>   
                                             <div class=" mx-2 px-3 " style="display: flex;;">
                                             <label>4. Quote No. </label>
-                                            <p id="set_q_number"></p>
+                                            <strong><p id="set_q_number"></p></strong>
                                             </div> 
                                         </div>    
                                     </div>    
@@ -188,7 +187,7 @@
                                 </div>
 
                                 <div class="modal-footer" style="background-color: #1267aa;">
-                                    <button type="button" data-bs-dismiss="modal" aria-label="close" class="btn btn-warning" @click="UpdateQuote($event, this.this_one_q_hash_number, copy_exact_product , id, copy_q_ref  )">SAVE / CHANGE YOUR QUOTE</button>
+                                    <button type="button" data-bs-dismiss="modal" aria-label="close" class="btn btn-warning" @click="UpdateQuote($event, this.this_one_q_hash_number, copy_exact_product , id, showREFERENCE2  )">SAVE / CHANGE YOUR QUOTE</button>
                                 </div>
                                 
                             </div>
@@ -461,7 +460,7 @@ export default{
                 document.getElementById("select_city").value = this.copy_q_b_c;
                 document.getElementById("select_postcode").value = this.copy_q_b_pc;
 
-                this.copy_q_s_f = copycat.bill_ship.q_ship_fillname;
+                this.copy_q_s_f = copycat.bill_ship.q_ship_fullname;
                 this.copy_q_s_a1 = copycat.bill_ship.q_ship_address1;
                 this.copy_q_s_a2 = copycat.bill_ship.q_ship_address2;
                 this.copy_q_s_c = copycat.bill_ship.q_ship_city;
@@ -700,14 +699,9 @@ export default{
             return string;
         },
         async jspdftimeQuote(q_number, today, ref_num, po_number, bf,ba1,ba2,bc,bpc, sf,sa1,sa2,sc,spc, cp_object, c_sub_total,c_vat,c_shipping,c_final ){ //QUOTE
-            
-            const r_new_st = document.getElementById('e_q_subtotal').innerHTML;
-            const r_new_vat = document.getElementById('e_q_vat').innerHTML;
-            const r_new_shipping = document.getElementById('e_q_shipping').innerHTML;
-            const r_new_final = document.getElementById("e_q_final").innerHTML;
+            console.log("jspdftime------------------------------------------");
 
             let bodyData2 = [];
-
             console.log("what is this?????????    " + this.copy_exact_product);
             const cp = JSON.parse(JSON.stringify(cp_object));
             console.log("what is this now????? " + cp);    
@@ -717,18 +711,17 @@ export default{
             });    
 
             console.log("what " + " what cp_object                     " + cp_object); //c object added stuff is empty
-            console.log(bodyData2 + "--" + ba2 + "--"  + "--" + r_new_shipping +"=  " + r_new_final);
+            console.log("bf,ba1,ba2,bc,bpc" + bf + " / " +ba1 + " / "+ ba2 + " / " + bc + " / " + bpc);
 
             const docq = new jsPDF(); 
 
             docq.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297);
             docq.setFontSize(10);
-            /*
-            console.log("bf?   " + bf);
+            
 
+            //STEP:PDF1- / BILL-TO / SHIP-TO
             docq.text(bf, 6, 93);
             docq.text(ba1, 6, 98);
-
             if (this.copy_q_b_a2 == '' || this.copy_q_b_a2 == null){
                 docq.text(bc, 6, 103);
                 docq.text(bpc, 6, 108);
@@ -753,14 +746,15 @@ export default{
                 docq.text(sc, 72, 108);
                 docq.text(spc, 72, 113); 
             }
+           
             console.log("q_number???    " + q_number + "/" + today + "/" + po_number);
             docq.text(q_number, 159, 94);
             docq.text(today, 159, 100);
             docq.text(ref_num, 159, 105);
             docq.text(po_number, 159, 110);  
-            */
             var finalY = await docq.lastAutoTable.finalY || 10
-
+            
+            
             console.log("finalY?   " + finalY);
             console.log("c_sub_total?   " + c_sub_total + "/" + c_vat);
             autoTable(docq, {
@@ -781,7 +775,8 @@ export default{
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
                 body: bodyData2,
             })
-
+            
+            
             docq.setFontSize(12);
             docq.text('Sub-Total', 139, docq.lastAutoTable.finalY + 20, {align: 'right'})
             docq.text("£"+Number(c_sub_total).toFixed(2), 182, docq.lastAutoTable.finalY + 20 , {align: 'right'})
@@ -798,7 +793,7 @@ export default{
             docq.setFontSize(9);
             docq.text('Terms & Instructions', 6,  docq.lastAutoTable.finalY + 40).setFont(undefined, 'bold');
             docq.text('Quote only valid for 30 days', 6, docq.lastAutoTable.finalY + 44)
-
+            
             var string2 = await docq.output('datauristring');
             var embed = "<embed src='" + string2 + "'/>"
             const c = document.getElementById('pdf_quote');
@@ -829,7 +824,7 @@ export default{
             let sb_city = document.getElementById("select_city").value;
             let sb_postcode = document.getElementById("select_postcode").value;
 
-            console.log("sb_fullname?  " + sb_fullname + " " + sb_a1 + " "+ sb_a2 + " " + sb_city + " " + sb_postcode);
+            console.log("sb_fullname?  " + sb_fullname + "/" + sb_a1 + " "+ sb_a2 + " " + sb_city + " " + sb_postcode);
             
             var ss_fullname = document.getElementById("select_ship_to").value;
             let ss_a1 = document.getElementById("select_b_a1").value;
@@ -855,7 +850,7 @@ export default{
 
                     let cum1 = document.getElementById(d_code).innerHTML;
 
-                    let cum2 = document.getElementById(d_qty).innerHTML;
+                    let cum2 = document.getElementById(d_qty).value;
 
                     let cum3 = document.getElementById(d_unit).value;
                     let cum4 = document.getElementById(d_discount).value;
@@ -878,8 +873,8 @@ export default{
 
             var choosen_product_qty = Object.keys(cp).length;
             cp["choosen_product_qty"] = choosen_product_qty;
-
             console.log("=====edit and upoad another quote:0 ");
+
             //var x = this.copy_exact_product.length;
             //console.log("this.copy_exact_product" + cp + "      " + x);
             //this.reorganize_choosen_products = [];
@@ -935,7 +930,7 @@ export default{
                 q_bill_city: sb_city,
                 q_bill_postcode: sb_postcode,
 
-                q_ship_fillname: ss_fullname,
+                q_ship_fullname: ss_fullname,
                 q_ship_address1: ss_a1,
                 q_ship_address2: ss_a2,
                 q_ship_city: ss_city,
@@ -982,7 +977,7 @@ export default{
                 "obj_ref.q_bill_city": sb_city,
                 "obj_ref.q_bill_postcode": sb_postcode,
 
-                "obj_ref.q_ship_fillname": ss_fullname,
+                "obj_ref.q_ship_fullname": ss_fullname,
                 "obj_ref.q_ship_address1": ss_a1,
                 "obj_ref.q_ship_address2": ss_a2,
                 "obj_ref.q_ship_city": ss_city,
@@ -1007,7 +1002,7 @@ export default{
                     update_quote.obj_ref.q_bill_city = sb_city;
                     update_quote.obj_ref.q_bill_postcode = sb_postcode;
 
-                    update_quote.obj_ref.q_ship_fillname = ss_fullname;
+                    update_quote.obj_ref.q_ship_fullname = ss_fullname;
                     update_quote.obj_ref.q_ship_address1 = ss_a1;
                     update_quote.obj_ref.q_ship_address2 = ss_a2;
                     update_quote.obj_ref.q_ship_city = ss_city;
@@ -1040,7 +1035,7 @@ export default{
             console.log("copy_quote_number?    " + copy_quote_number);
 
 
-            console.log(this.copy_quote_number);
+
             //another jspdf
             const string = await this.jspdftimeQuote(copy_quote_number, today, copy_ref_num, po_number, 
             sb_fullname,sb_a1,sb_a2,sb_city,sb_postcode,
@@ -1230,6 +1225,8 @@ export default{
                     document.getElementById("select_postcode").value = aa4;
                     */
                 });
+
+                document.getElementById("select_ship_to").style.background = Yellow;
             })
             }
 

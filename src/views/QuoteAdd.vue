@@ -803,7 +803,7 @@ export default {
                     q_bill_city: document.getElementById('tmp_b_city').innerHTML,
                     q_bill_postcode: document.getElementById('tmp_b_postcode').innerHTML,
 
-                    q_ship_fillname: document.getElementById('tmp_s_fullname').innerHTML,
+                    q_ship_fullname: document.getElementById('tmp_s_fullname').innerHTML,
                     q_ship_address1: document.getElementById('tmp_s_address1').innerHTML,
                     q_ship_address2: document.getElementById('tmp_s_address2').innerHTML, 
                     q_ship_city: document.getElementById('tmp_s_city').innerHTML,
@@ -1040,7 +1040,7 @@ export default {
                 q_bill_city: document.getElementById('tmp_b_city').innerHTML,
                 q_bill_postcode: document.getElementById('tmp_b_postcode').innerHTML,
 
-                q_ship_fillname: document.getElementById('tmp_s_fullname').innerHTML,
+                q_ship_fullname: document.getElementById('tmp_s_fullname').innerHTML,
                 q_ship_address1: document.getElementById('tmp_s_address1').innerHTML,
                 q_ship_address2: document.getElementById('tmp_s_address2').innerHTML, 
                 q_ship_city: document.getElementById('tmp_s_city').innerHTML,
