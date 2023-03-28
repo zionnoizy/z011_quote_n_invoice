@@ -111,7 +111,7 @@
                                             <div>Discount%</div>
                                             <div>Discount£</div>
 
-                                            <div style="text-decoration-line: underline; text-decoration-style: double;" >FInal Total</div>
+                                            <div style="text-decoration-line: underline; text-decoration-style: double;" >FInal-Total</div>
                                         </div>
                                         <div class="grid grid-cols-8 gap-1" v-for="(k, i) in copy_exact_product" @focusout="handleFocusout($event,  i, copy_exact_product   )" :props="props" >
                                             <div>
@@ -145,7 +145,7 @@
                                             </div>
 
                                             <div>
-                                                <p  :ref="'i_discount_m'+i" :id="'i_discount_m'+i" style="color:grey;">{{ k.p_discount }} </p> 
+                                                <p  :ref="'i_discount_m'+i" :id="'i_discount_m'+i" style="color:grey;">  </p> 
                                             </div>
 
 
@@ -306,9 +306,14 @@ export default{
 
                 var one_du = document.getElementById(dynamic_).innerHTML;
                 
-                cimulat_du = +cimulat_du + +one_du;
-
-                console.log("double_underline?" + rs + "  " + one_du + " / " + cimulat_du);
+                console.log("final_total   +" + one_du);
+                if (one_du == "" || one_du == null){
+                    cimulat_du = "EITHER ONE FINAL TOTAL IS EMPTY!";
+                }
+                else{
+                    cimulat_du = +cimulat_du + +one_du;
+                    console.log("double_underline?" + rs + "  " + one_du + " / " + cimulat_du);
+                }
 
             }
             console.log("e_q_subtotal" + cimulat_du);  
@@ -815,15 +820,16 @@ export default{
 
         async UpdateQuote(i, q_hash, cxp, copy_quote_number, copy_ref_num){
             console.log("copy_quote_number?      " + copy_quote_number + "/" + copy_ref_num);
+            const check = document.getElementById('e_q_subtotal').innerHTML;
             //let flag = validate_q_update();
-            //if (flag){
+            if (check !== "EITHER ONE FINAL-TOTAL IS EMPTY!"){
             let sb_fullname = document.getElementById("select_bill_to").value;
             let sb_a1 = document.getElementById("select_a1").value;
             let sb_a2 = document.getElementById("select_a2").value;
             let sb_city = document.getElementById("select_city").value;
             let sb_postcode = document.getElementById("select_postcode").value;
 
-            console.log("sb_fullname?  " + sb_fullname + " " + sb_a1 + " "+ sb_a2);
+            console.log("sb_fullname?  " + sb_fullname + " " + sb_a1 + " "+ sb_a2 + " " + sb_city + " " + sb_postcode);
             
             var ss_fullname = document.getElementById("select_ship_to").value;
             let ss_a1 = document.getElementById("select_b_a1").value;
@@ -831,21 +837,53 @@ export default{
             let ss_city = document.getElementById("select_b_city").value;
             let ss_postcode = document.getElementById("select_b_postcode").value;
 
-            console.log("sb_fullname2?  " + ss_fullname + " " + ss_a1 + " "+ ss_a2);  //undefined?
+            console.log("sb_fullname2?  " + ss_fullname + " " + ss_a1 + " "+ ss_a2 + " " + ss_city + " " + ss_postcode);
               
+            //STEP1: update cxp object
             const cp = cxp;
+            for (var key in cp) {
+                if (cp.hasOwnProperty(key)) {
+                    var dynamic = "so_product"+key;
+                    var select_product = document.getElementById(dynamic).value;
+                    let d_code = "i_code"+key;
+                    let d_qty = "i_quantity"+key;
+                    let d_unit = "i_unit"+key;
+                    let d_discount = "i_discount"+key;
+                    //let d_discount_m = "i_discount_m"+key;
+                    let d_sell = "i_sell"+key;
+                    let d_final_total = "i_final_total"+key;
+
+                    let cum1 = document.getElementById(d_code).innerHTML;
+
+                    let cum2 = document.getElementById(d_qty).innerHTML;
+
+                    let cum3 = document.getElementById(d_unit).value;
+                    let cum4 = document.getElementById(d_discount).value;
+                    //let cum5 = document.getElementById(d_discount_m).value;
+                    let cum6 = document.getElementById(d_sell).innerHTML;
+                    
+                    let cum7 = document.getElementById(d_final_total).innerHTML;
+                    console.log("*key= product_name? ++ product discount_m????      " + key + "= " + select_product + "// " + cum1+ "// " + cum2 + "// " + cum3 + "//" + cum4  + "//" + "//" + cum6 + "//" + cum7);
+                    cp[key].p_fullname = select_product;
+                    cp[key].p_code = cum1;
+                    cp[key].p_quantity = cum2;
+                    cp[key].p_unit = cum3;
+                    cp[key].p_discount = cum4;
+                    //cp[key].p_discount_m = cum5;
+                    cp[key].p_sell = cum6;
+                    cp[key].p_final_total = cum7;
+                    //console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
+                }
+            }
+
             var choosen_product_qty = Object.keys(cp).length;
             cp["choosen_product_qty"] = choosen_product_qty;
 
             console.log("=====edit and upoad another quote:0 ");
-            var x = this.copy_exact_product.length;
-
-            console.log("this.copy_exact_product" + cp + "      " + x);
-
-            this.reorganize_choosen_products = [];
-
-            await console.log("this.reorganize_choosen_products 3   " + this.reorganize_choosen_products);
-            
+            //var x = this.copy_exact_product.length;
+            //console.log("this.copy_exact_product" + cp + "      " + x);
+            //this.reorganize_choosen_products = [];
+            //await console.log("this.reorganize_choosen_products 3   " + this.reorganize_choosen_products);
             //const cp = await JSON.parse(JSON.stringify(this.copy_exact_product));
 
             /*
@@ -881,7 +919,7 @@ export default{
             let changed_vat = document.getElementById('e_q_vat').innerHTML;
             let changed_shipping = document.getElementById('e_q_shipping').innerHTML;
             let changed_final = document.getElementById("e_q_final").innerHTML;
-            console.log("changed_sub_total   " + "/" + changed_vat + "/" + changed_shipping + " / " + changed_final);
+            console.log("changed_sub_total   " + changed_sub_total  + "/" + changed_vat + "/" + changed_shipping + " / " + changed_final);
             
             const final_tt= {
                 tf_subtotal: changed_sub_total,
@@ -1042,7 +1080,7 @@ export default{
             */
             
             this.retrieveOneQuoteInfo();
-        
+            }//"EITHER ONE FINAL TOTAL IS EMPTY." FLAG
         },
 
         async getAllClient(){
@@ -1217,30 +1255,65 @@ export default{
                     var aa3= d.data().d_city;
                     var aa4= d.data().d_post_code;
 
-                    const whatt = document.getElementById("select_b_fullname").value;
+                   
 
-                    console.log("whatt? " + whatt);                    
+                    console.log("whatt? " + aa1 + "//" + aa2 + "//" + aa3 + "//" + aa4 + "//");                    
                     document.getElementById("select_b_fullname").value = aa0;
                     document.getElementById("select_b_a1").value = aa1;
                     document.getElementById("select_b_a2").value = aa2;
                     document.getElementById("select_b_city").value = aa3;
                     document.getElementById("select_b_postcode").value = aa4;
 
-                    console.log("whatt2? " + whatt);     
+                    let get = document.getElementById("select_b_a1").value;
+                    console.log("whatt2? " + get);     
                 });
             })
             }
         },
 
 
-        addRow() {
-        this.copy_exact_product.push(this.add_empty);
+        async addRow() {
+            await this.copy_exact_product.push(this.add_empty);
+            let re_cimulat_du = "EITHER ONE FINAL TOTAL IS EMPTY!";
+            document.getElementById('e_q_subtotal').innerHTML = re_cimulat_du;
+            var x = Object.keys(this.copy_exact_product).length; 
+
+            var dynamic = x-1;
+            var dynamic2 = "i_discount"+dynamic;
+
+            document.getElementById('e_q_subtotal').classList.add("red");
+            document.getElementById(dynamic2).value = "0";
         },
         removeRow(row) {
             if (this.copy_exact_product.length == 1){
 
             }
             this.copy_exact_product.splice(this.copy_exact_product.indexOf(row), 1)
+
+            //STEP1: RE-CALCULATE Final
+            var x = Object.keys(copy_exact_product).length; //this.copy_exact_product.length;
+            console.log("x " + x);
+
+            let re_cimulat_du = 0;
+            for (let rs=0; rs < x; ++rs){
+                
+                let dynamic_ = "i_final_total"+rs;
+
+                var one_du = document.getElementById(dynamic_).innerHTML;
+                
+                console.log("re-final_total   +" + one_du);
+                if (one_du == "" || one_du == null){
+                    re_cimulat_du = "EITHER ONE FINAL TOTAL IS EMPTY!";
+                }
+                else{
+                    re_cimulat_du = +re_cimulat_du + +one_du;
+                    console.log("re-double_underline?" + rs + "  " + one_du + " / " + re_cimulat_du);
+                }
+                
+            }
+            document.getElementById('e_q_subtotal').innerHTML = re_cimulat_du;
+            console.log("re-ipad check first if cimulate ecist?  " + re_cimulat_du);
+            addVatSHip(re_cimulat_du);
         }
     
     },
