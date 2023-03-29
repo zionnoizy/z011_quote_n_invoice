@@ -194,7 +194,7 @@ export default{
 
             console.log("selected category?  " + pcategory);
 
-            updated_field.style.background='#990000';
+              document.getElementById(e.target.id).style.background='#990000';
 
             const edit_this_product_col = firebase.firestore().collection("all_products");
 
