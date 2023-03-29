@@ -39,10 +39,16 @@
 
             </tr>
             <tr id="list_of_productss" v-for="p, i in f_all_products" @blur="handleBlur" @focusout="handleFocusout( $event,  p.pid, data-field, i   )">
+                
                 <td style="color: grey;"> {{i}} </td>
                 <td contenteditable="true" data-field="p_code" :id= "`ep_code_${i}`" > {{ p.p_code }} </td>
                 <td contenteditable="true" data-field="p_fullname" :id= "`ep_fn_${i}`" > {{ p.p_fullname }} </td>
-                <td contenteditable="true" data-field="p_category" :id= "`ep_category_${i}`"> {{ p.p_category }} </td>
+                <td contenteditable="true"  > 
+                  <select :id= "`ep_category_${i}`" class="form-select form-select bg-dark text-white" data-field="p_category">
+                    <option selected>Select Category Here</option>
+                    <option   v-for="c in all_category" :value="`${c.category_fullname}`" > {{c.category_fullname}} </option>
+                  </select>
+                </td>
                 <td contenteditable="true" data-field="p_cost" :id= "`ep_cost_${i}`" > {{ p.p_cost }} </td>
                 <td contenteditable="true" data-field="p_margin" :id= "`ep_margin_${i}`" > {{ p.p_margin }} </td>
                 <td contenteditable="true" data-field="p_sell" :id= "`ep_sell_${i}`" disabled> {{ p.p_sell }} </td>
@@ -104,13 +110,14 @@ export default{
 
           var updated_field = document.getElementById(e.target.id);
           var tdText = updated_field.innerText
-          console.log("handleFocusout: " + "updated_field" + updated_field +  tdText);
+          console.log("handleFocusout: " + "updated_field " + updated_field + "//" + tdText);
 
 
-          var sortOrder = e.target.getAttribute("data-field");
-          console.log("handleFocusout: " + sortOrder);
+          var sortOrder =  e.target.getAttribute("data-field");
+          var real_df = sortOrder.toString();
+          console.log("handleFocusout:  " + typeof sortOrder.toString());
           
-          if (sortOrder == "p_cost"){
+          if (real_df == "p_cost"){
             var dynamic0 = "ep_cost_"+i;
             var dynamic1 = "ep_margin_"+i;
             var dynamic2 = "ep_sell_"+i;
@@ -180,6 +187,30 @@ export default{
               statuss.value = "ERROR! " + error;
             });
           }
+          if (real_df == "p_category"){
+
+            const dynamic = "ep_category_"+i;
+            const pcategory = document.getElementById(dynamic).value;
+
+            console.log("selected category?  " + pcategory);
+
+            updated_field.style.background='#990000';
+
+            const edit_this_product_col = firebase.firestore().collection("all_products");
+
+            edit_this_product_col.doc(pid).update({
+              [sortOrder] : pcategory,
+            }).then(function(){
+
+              statuss.value = "UPDATED CATEGORY"  + sortOrder + " OK.";
+
+            }).catch(function(error) {
+
+              console.log("DEBUG" + error);
+              statuss.value = "ERROR! " + error;
+            });
+          
+          }
           else{
             console.log("here? ");
             const edit_this_product_col = firebase.firestore().collection("all_products");
@@ -208,19 +239,20 @@ export default{
     },
     data(){
         return{
-        all_products: [],
-        product:{
+          all_products: [],
+          product:{
 
-            p_code: null,
-            p_fullname: null,
-            p_category: null,
-            p_cost: null,
-            p_margin: null,
-            p_sell: null,
+              p_code: null,
+              p_fullname: null,
+              p_category: null,
+              p_cost: null,
+              p_margin: null,
+              p_sell: null,
 
-        },
-        //statuss: 'NOTHING CHANGE',
-        mysearch: '',
+          },
+          //statuss: 'NOTHING CHANGE',
+          mysearch: '',
+          all_category: [],
         }
     },
     computed:{
@@ -313,6 +345,21 @@ export default{
 
         }
       },
+
+      async getAllCategory(){
+        var all_client_ref = await firebase.firestore().collection("all_categories");
+          all_client_ref.onSnapshot(snap => {
+              this.all_category = [];
+
+              snap.forEach(d => {
+
+                  var c = d.data();
+                  
+                  this.all_category.push(c);
+
+              });
+          });
+      },
     },
     computed: {
       f_all_products(){
@@ -326,6 +373,7 @@ export default{
     created() {
 
       this.getAllProductsNewest();
+      this.getAllCategory();
       
     },
 }

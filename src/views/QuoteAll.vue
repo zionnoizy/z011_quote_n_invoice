@@ -4,13 +4,19 @@
         
         
         <!--if (this.selectedIndex)   onfocus="this.selectedIndex = 1;"-->
-        <div class="mx-2 grid grid-cols-5 gap-3 mb-2" style="display: flex; justify-content:center;">
+        <div class="mx-2 grid grid-cols-6 gap-3 mb-2" style="display: flex; justify-content:center;">
           <div>
             <button class="btn btn-primary " @click.prevent="getAllQuoteNewest()">Sort From Newest </button>
           </div>
+
           <div>
             <button class="btn btn-primary " @click.prevent="getAllQuoteOldest()">Sort From Oldest </button>
           </div>
+
+          <div>
+            <button class="btn btn-primary " @click.prevent="getExistInvoice()">Invoice Number Exist </button>
+          </div>
+
           <div>
           <select id="so_client" class="form-select" aria-label="select client from quote list below, and it will do sorting." @change="doSort1();" onfocus="this.selectedIndex = 1;">
             <option selected>Select Client Here</option>
@@ -35,7 +41,7 @@
         <thead>
           <tr class="table-header">
 
-            <th scope="col"> QUOTE NUMBER </th>
+            <th scope="col" style="text-decoration:underline;">QUOTE NUMBER</th>
             <th scope="col"> INVOICE NUMBER </th>
             <th scope="col"> CLIENT </th>
 
@@ -212,6 +218,22 @@ export default{
                 this.all_quotes.push(product);
             })
           })
+      },
+
+      async getExistInvoice() { 
+        var all_product_ref = await firebase.firestore().collection("ALL_quote");
+
+        all_product_ref.orderBy("obj_ref.q_uploaded_date_timestamp", "desc")
+          .onSnapshot((snapshot) => {
+            this.all_quotes = [];
+            snapshot.forEach(d => {
+                var product = d.data();
+                console.log("d.data().obj_ref.q_invoice_number?" + d.data().q_invoice_number);
+                if(d.data().obj_ref.q_invoice_number != "")
+                  this.all_quotes.push(product);
+            })
+          })
+
       },
       async ResetNgetAllQuoteOldest(){
 

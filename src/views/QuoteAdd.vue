@@ -1004,6 +1004,7 @@ export default {
             const v = document.getElementById('q_vat').value;
             const s = document.getElementById('q_shipping').value;
             const t = document.getElementById('q_total').value;
+            doc.setFontSize(12);
             doc.text('Sub-Total', 139, doc.lastAutoTable.finalY + 20, {align: 'right'})
             doc.text( "£"+Number(st).toFixed(2) , 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
             doc.text('VAT', 139, doc.lastAutoTable.finalY + 25 , {align: 'right'})

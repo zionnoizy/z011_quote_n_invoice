@@ -100,7 +100,7 @@ export default{
         });
     },
     async createProduct(){
-
+      
       let flag = await validate_p_input();
       console.log("flag1");
       let flag_2 = await validate_p_fullname();

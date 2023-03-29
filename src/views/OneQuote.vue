@@ -23,7 +23,7 @@
           
         </p>
 
-        <div class="grid grid-cols-3">
+        <div class="grid lg:grid-cols-3 grid-cols-2">
 
             <div>
 
@@ -703,7 +703,7 @@ export default{
             const path = "/all_invoice/" + this.invoice_hashid + "/";
 
             console.log("calling  test2_storage1?     "  + path+ "/" + this.invoice_hashid);
-            
+
             test_storage( this.invoice_hashid, path, this.return_base64);
 
 
