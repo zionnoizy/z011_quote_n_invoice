@@ -334,53 +334,60 @@
 
             <buttons @navigate="navigateTo" ></buttons>
 
-                <div class="px-2">
-                <button class="preview_btn btn btn-info btn-lg btn-block" data-bs-toggle="modal"
-                        data-bs-target="#preview_quotation" @click.prevent=previewBtn()> Preview Quotation</button>
-                <!--@click.prevent="uploadQuotePDF($event)" download -->
+            <div class="grid grid-cols-2 gap2">
 
-                <!------------------modal start-------------------->
-                <div class="modal fade" id="preview_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true" >
+                <div>
+                    <div class="px-2">
 
-                    <div class="modal-dialog modal-xl">
+                    <button class="preview_btn btn btn-info btn-lg btn-block" data-bs-toggle="modal"
+                        data-bs-target="#preview_quotation" @click.prevent=previewBtn2()> Preview Quotation</button>
+                    <!--@click.prevent="uploadQuotePDF($event)" download -->
 
-                        <div class="modal-content text-black" style="height:1000px;">
+                    <!------------------modal start-------------------->
+                    <div class="modal fade" id="preview_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true" >
 
-                            <div class="modal-header">
-                                <h4 class="modal-title"> Preview Qutotation, Please make sure all information is fill-out. </h4>
+                        <div class="modal-dialog modal-xl">
 
+                            <div class="modal-content text-black" style="height:1000px;">
+
+                                <div class="modal-header">
+                                    <h4 class="modal-title"> Preview Qutotation, Please make sure all information is fill-out. </h4>
+
+                                </div>
+
+                                <div class="modal-body">
+
+
+                                    <embed id="preview_quotationPDF" width='100%' height='100%' src='' />
+
+
+
+
+                                </div>
+                                <div class="modal-footer" style="background-color: #1267aa;">
+
+                                    <!-- <button type="button" class="btn btn-primary" @click="uploadQuotePDF($event)">
+                                        Submit Qutotation 
+                                    </button> -->
+
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel This Screen</button>
+                                </div>
                             </div>
 
-                            <div class="modal-body">
 
-
-                                <embed id="preview_quotationPDF" width='100%' height='100%' src='' />
-
-
-
-
-                            </div>
-                            <div class="modal-footer" style="background-color: #1267aa;">
-
-                                <!-- <button type="button" class="btn btn-primary" @click="uploadQuotePDF($event)">
-                                    Submit Qutotation 
-                                </button> -->
-
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel This Screen</button>
-                            </div>
                         </div>
-
-
+                    </div>
+                    <!------------------modal end---------------------->
                     </div>
                 </div>
-                <!------------------modal end---------------------->
-                </div>
 
                 <div class="px-2">
-                    <button class="preview_btn btn btn-primary btn-lg btn-block" @click.prevent="previewBtn($event);"> Upload Quote </button>
+
+                    <button class="preview_btn btn btn-primary btn-lg btn-block" @click.prevent="previewBtn($event);"> Upload Quotation </button>
+                
                 </div>
 
-
+            </div>
                 
         </div>
 
@@ -403,7 +410,7 @@
 
         <div>
             <p class="dashboard_txt pt-5 pb-3 mx-6 text-start" > 
-                This is a Quote Pdf, refer this invoice number and can be find on dashboard/quote 
+                This is a Quote Pdf, refer this quote number= {{ this_one_q_number }} , can be found on Dashboard > Quote 
                 <router-link 
                 tag="tr"
                 :to="{ name: 'OneQuote', 
@@ -790,6 +797,8 @@ export default {
                 
                 const quote_number = await auto_quote_no_generator2();
                 this.this_one_q_number = quote_number;
+
+                console.log(this.this_one_q_number);
                 let reference_number = document.getElementById('q_reference_number').value;
 
                 const ref = collection(db, "ALL_quote");
@@ -886,6 +895,9 @@ export default {
                     console.log(error);
                 })
             })
+
+
+            clear_q_entry();
             }//flag
         },
 
@@ -1325,13 +1337,13 @@ export default {
         
         
         testCharacter(event) {
-  if ((event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode === 13) {
-    console.log("number");
-    return true;
-  } else {
-    console.log("no number!")
-    return false;
-  }
+            if ((event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode === 13) {
+                console.log("number");
+                return true;
+            } else {
+                console.log("no number!")
+                return false;
+            }
 
         },
 
@@ -1346,7 +1358,94 @@ export default {
             })
             */
 
-        }
+        },
+
+        async previewBtn2() {
+            //console.log("[previewBtn] +++++++++++++++++++++++++++++++++++++++++++=--");
+            const doc = new jsPDF(); 
+            doc.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297);
+            //A-add all48 text
+            const oo_b_fullname = document.getElementById('tmp_b_fullname').innerHTML;
+            const oo_b_a1 = document.getElementById('tmp_b_address1').innerHTML;
+            const oo_b_a2 = document.getElementById('tmp_b_address2').innerHTML;
+            const oo_b_city = document.getElementById('tmp_b_city').innerHTML;
+            const oo_b_postcode = document.getElementById('tmp_b_postcode').innerHTML;
+            doc.setFontSize(10);
+            doc.text(oo_b_fullname, 6, 94);
+            doc.text(oo_b_a1, 6, 99);
+            if (oo_b_a2 == "" || oo_b_a2 == null|| oo_b_a2 == ''){
+                doc.text(oo_b_city, 6, 104);
+                doc.text(oo_b_postcode, 6, 109);
+            }
+            else{
+                doc.text(oo_b_a2, 6, 104);
+                doc.text(oo_b_city, 6, 109);
+                doc.text(oo_b_postcode, 6, 114);
+            }
+            
+            //B-add all48 text
+            const oo_s_fullname = document.getElementById('tmp_s_fullname').innerHTML;
+            const oo_s_a1 = document.getElementById('tmp_s_address1').innerHTML;
+            const oo_s_a2 = document.getElementById('tmp_s_address2').innerHTML;
+            const oo_s_city = document.getElementById('tmp_s_city').innerHTML;
+            const oo_s_postcode = document.getElementById('tmp_s_postcode').innerHTML;
+            doc.setFontSize(10);
+            doc.text(oo_s_fullname, 72, 94);
+            doc.text(oo_s_a1, 72, 99);
+            if (oo_s_a2 == "" || oo_s_a2 == null|| oo_s_a2 == ''){
+                doc.text(oo_s_city, 72, 104);
+                doc.text(oo_s_postcode, 72, 109);  
+            }
+            else{
+                doc.text(oo_s_a2, 72, 104);
+                doc.text(oo_s_city, 72, 109);
+                doc.text(oo_s_postcode, 72, 114);   
+            }
+            //C-quote no + invoice date + ref
+            const quote_number = await auto_quote_no_generator2();
+            const input_reference_number = document.getElementById('q_reference_number').value;
+            const myTimestamp = firebase.firestore.Timestamp.now();
+            let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK");
+            doc.text(quote_number, 159, 94);
+            doc.text(todayDateTime, 159, 100);
+            doc.text(input_reference_number, 159, 106);
+            let tt0 = JSON.parse(JSON.stringify(this.choosen_products));
+            let bodyData2 = [];
+            tt0.forEach(element => {      
+                var tmp2 = [element.p_fullname, element.p_code, element.p_quantity, element.p_unit, element.p_discount, "£"+element.p_sell];
+  
+                bodyData2.push(tmp2);
+            });    
+            
+            //https://github.com/simonbengtsson/jsPDF-AutoTable/blob/master/examples/examples.js
+            var finalY = doc.lastAutoTable.finalY || 10
+            autoTable(doc, {
+                //html: '#cms-quote-table',
+                theme: 'striped',
+                startY: finalY + 112, //important
+                columnStyles: {
+                    0: { cellWidth: 65 },
+                    1: { cellWidth: 18 },
+                    2: { cellWidth: 15 },
+                    3: { cellWidth: 15 },
+                    4: { cellWidth: 23 },
+                    5: { cellWidth: 30 },
+                    // etc
+                },
+                tableWidth: 'auto',
+                margin: { top: 0, right: 10, bottom: 0, left: 10 }, //important2
+                head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
+                body: bodyData2
+            })
+            var string = doc.output('datauristring');
+            var embed = "<embed width='100%' height='100%' src='" + string + "'/>"
+            const a = document.getElementById('preview_quotationPDF');
+            var clone = a.cloneNode(true);
+            clone.setAttribute('src', string);
+            a.parentNode.replaceChild(clone, a);
+            var base64 = doc.output('datauri');
+            this.return_base64 = base64;
+        },
             
     },
     created() {
@@ -1502,7 +1601,32 @@ function clean_input_field(){
     }
 }
 
+function clear_q_entry(){
 
+    document.getElementById('tmp_b_fullname').innerHTML = '';
+    document.getElementById('tmp_b_address1').innerHTML = '';
+    document.getElementById('tmp_b_address2').innerHTML = '';
+    document.getElementById('tmp_b_city').innerHTML = '';
+    document.getElementById('tmp_b_postcode').innerHTML = '';
+
+    document.getElementById('tmp_s_fullname').innerHTML = '';
+    document.getElementById('tmp_s_address1').innerHTML = '';
+    document.getElementById('tmp_s_address2').innerHTML = '';
+    document.getElementById('tmp_s_city').innerHTML = '';
+    document.getElementById('tmp_s_postcode').innerHTML = '';
+
+    for (var x in this.choosen_products) 
+        delete this.this.choosen_products[x];
+    
+        document.getElementById('q_subtotal').value = "";
+        document.getElementById('q_vat').value = "";
+        document.getElementById('q_shipping').value = "";
+        document.getElementById('q_total').value = "";
+
+        
+
+
+}
 </script>
 
 <style>

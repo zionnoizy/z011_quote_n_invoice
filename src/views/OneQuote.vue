@@ -419,7 +419,7 @@ export default{
                 ss.docs.forEach(d => {
 
                     
-                    var invoice_pdf = d.data().i_pdf_link;  //p_final_total
+                    var invoice_pdf = d.data().i_pdf_link;
 
                     console.log("d.data().i_pdf_link" +d.data().i_pdf_link);
 
@@ -505,7 +505,7 @@ export default{
 
         }, 
 
-        async submitQuotation(use_this_hash){
+        async submitQuotation(use_this_hash){ //INVOICE
 
             let i_number = await auto_invoice_no_generator3(this.copy_q_number);   
             const myTimestamp = firebase.firestore.Timestamp.now();
@@ -513,7 +513,10 @@ export default{
             let po_number = document.getElementById('po_number').value;
 
             const ref = collection(db, "ALL_invoice");
-            const obj_ref = {
+
+            console.log(this.copy_q_b_f + " / " + this.copy_q_b_a1 + " / " + this.copy_q_b_a2 + " / " + this.copy_q_b_c);
+
+            const bill_chip = {
                 qi_bill_fullname: this.copy_q_b_f,
                 qi_bill_address1: this.copy_q_b_a1,
                 qi_bill_address2: this.copy_q_b_a2, 
@@ -525,20 +528,28 @@ export default{
                 qi_ship_address2: this.copy_q_s_a2, 
                 qi_ship_city: this.copy_q_s_c,
                 qi_ship_postcode: this.copy_q_s_pc, 
+
+            }
+
+            console.log(i_number + "/" + this.copy_q_number + "/" + today + "/" + this.copy_q_ref)
+            const obj_ref = {
+                
                     
                 qi_invoice_number: i_number, 
                 qi_quote_number: this.copy_q_number, 
                 qi_uploaded_date: today,
                 qi_ref: this.copy_q_ref,
                 qi_po: po_number,
-                qi_uploaded_date_timestamp: serverTimestamp(), //
+                qi_uploaded_date_timestamp: serverTimestamp(),
                 qi_extra_space_1: '',
                 qi_extra_space_2: '',
                 qi_extra_space_3: '',
                 qi_extra_space_4: '',
             }
+
+            console.log(this.copy_ft_sub_total + "/" + this.copy_ft_vat + "/" + this.copy_ft_shipping);
             const price_ref = {
-                qi_subtotal: this.copy_ft_sub_total,
+                qi_subtotal: this.copy_ft_sub_total, //after updated will it update subtotal
                 qi_vat: this.copy_ft_vat,
                 qi_shipping: this.copy_ft_shipping,
                 qi_extra_1: 0,
@@ -551,12 +562,13 @@ export default{
             const pro_ref = this.copy_exact_product;
             
 
-            await addDoc(ref, {obj_ref, pro_ref, price_ref}) 
+            await addDoc(ref, {obj_ref, pro_ref, price_ref, bill_chip}) 
             .then(docRef => {
+                console.log(docRef.id);
                 const get_id = firebase.firestore().collection("ALL_invoice").doc(docRef.id);
                 const string = "/ALL_invoice/" + use_this_hash + "/" + docRef.id + "/";
                 this.invoice_hashid = docRef.id;
-                console.log(docRef.id + "     " + use_this_hash);
+
 
                 get_id
                 .update({
@@ -582,14 +594,11 @@ export default{
 
 
             ///jspdf time invoice!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            
-            const string = await this.jspdftime(i_number, today, po_number);
-
-            
-
-            
+            console.log("this.invoice_hashid     " + this.invoice_hashid);
+            const string2 = await this.jspdftime(i_number, today, po_number);
             document.getElementById("m_edit_quotation").disabled = true;
             document.getElementById("m_new_invoice").disabled = true;
+            return string2;
         },
 
 
@@ -597,7 +606,7 @@ export default{
 
         async jspdftime(i_number, today, po_number){ //INVOICE
 
-            console.log("what " + " what" );
+            console.log("what " + " this.invoice_hashid " + this.invoice_hashid );
             console.log(this.copy_ft_sub_total + "--" + this.copy_ft_vat + "--" + this.copy_ft_shipping + "--" + this.copy_ft_total);
             
             const doc = new jsPDF(); 
@@ -665,16 +674,16 @@ export default{
             
             doc.setFontSize(12);
             doc.text('Sub-Total', 139, doc.lastAutoTable.finalY + 20, {align: 'right'})
-            doc.text("£"+this.copy_ft_sub_total, 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
+            doc.text("£"+Number(this.copy_ft_sub_total).toFixed(2) , 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
 
             doc.text('VAT', 139, doc.lastAutoTable.finalY + 25 , {align: 'right'})
-            doc.text("£"+this.copy_ft_vat, 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
+            doc.text("£"+Number(this.copy_ft_vat).toFixed(2) , 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
 
             doc.text('Shipping', 139, doc.lastAutoTable.finalY + 30 , {align: 'right'})
-            doc.text("£"+this.copy_ft_shipping, 182, doc.lastAutoTable.finalY + 30 , {align: 'right'})
+            doc.text("£"+Number(this.copy_ft_shipping).toFixed(2) , 182, doc.lastAutoTable.finalY + 30 , {align: 'right'})
 
             doc.text('Total', 139, doc.lastAutoTable.finalY + 35 , {align: 'right'})
-            doc.text("£"+this.copy_ft_total , 182, doc.lastAutoTable.finalY + 35 , {align: 'right'})
+            doc.text("£"+Number(this.copy_ft_total).toFixed(2)  , 182, doc.lastAutoTable.finalY + 35 , {align: 'right'})
 
             doc.setFontSize(9);
             doc.text('Terms & Instructions', 6,  doc.lastAutoTable.finalY + 40).setFont(undefined, 'bold');
@@ -686,13 +695,15 @@ export default{
             var clone = a.cloneNode(true);
             clone.setAttribute('src', string);
             a.parentNode.replaceChild(clone, a);
-            
             var base64 = doc.output('datauri');
             this.return_base64 = base64;
             
             //
-            console.log("calling  test2_storage1     " + this.this.this_one_q_hash_number + "      " + this.return_base64);
+            console.log("this.this_one_q_hash_number?     " + this.this_one_q_hash_number + "      " + this.return_base64);
             const path = "/all_invoice/" + this.invoice_hashid + "/";
+
+            console.log("calling  test2_storage1?     "  + path+ "/" + this.invoice_hashid);
+            
             test_storage( this.invoice_hashid, path, this.return_base64);
 
 

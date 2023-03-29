@@ -12,12 +12,12 @@
       </div>
         
         
-        
+      {{statuss}}
       </div>
         <!-- <button @click.prevent="ChangingProduct">EDIT ALL</button> -->
         <p>click eith one field on the table to edit, please type sometinhg on it otherwise will have a chance to hit a bug return '0'</p>
         <p>edit, search and, input cannot preform at the same time, please refresh the page if you do so.</p>
-        <p> status: <strong> {{ statuss }}</strong> </p>
+         status: <strong> <p ref="statuss"> {{statuss.value}} </p></strong>
         <table class="table table-dark" id="store_to_excel" >
             <thead>
             <tr>
@@ -75,7 +75,8 @@ import { onMounted, ref, reactive } from "vue";
 export default{
     name: 'ProductAll',
     setup() {
-        let statuss = ref("NO ANY CHANGE YET");
+      const statuss = ref('');
+
 
         onMounted(async () => {
 
@@ -129,10 +130,11 @@ export default{
 
               "p_sell" : new_sell,
             }).then(function(){
-              statuss = "UPDATED OK";
+              statuss.value = "UPDATED " + sortOrder + " OK.";
+
             }).catch(function(error) {
               console.log("DEBUG" + error);
-              statuss = "ERROR!" + error;
+              statuss.value = "ERROR! " + error;
             });
 
 
@@ -154,10 +156,10 @@ export default{
               [sortOrder] : tdText,
               "p_sell" : new_sell,
             }).then(function(){
-              statuss = "UPDATED OK";
+              statuss.value = "UPDATED"  + sortOrder + " OK.";
             }).catch(function(error) {
               console.log("DEBUG" + error);
-              statuss = "ERROR!" + error;
+              statuss.value = "ERROR! " + error;
             });
 
 
@@ -171,10 +173,11 @@ export default{
             edit_this_product_col.doc(pid).update({
               [sortOrder] : tdText,
             }).then(function(){
-              this.statuss = "UPDATED OK";
+              statuss.value = "UPDATED"  + sortOrder + " OK.";
+
             }).catch(function(error) {
               console.log("DEBUG" + error);
-              this.statuss = "ERROR!" + error;
+              statuss.value = "ERROR! " + error;
             });
           }
           else{
@@ -183,10 +186,13 @@ export default{
             edit_this_product_col.doc(pid).update({
               [sortOrder] : tdText,
             }).then(function(){
-              this.statuss = "UPDATED OK";
+              
+              statuss.value = "UPDATED"  + sortOrder + " OK.";
+              console.log("statuss   " + statuss + " " + statuss.value);
+
             }).catch(function(error) {
               console.log("DEBUG" + error);
-              this.statuss = "ERROR!" + error;
+              statuss.value = "ERROR! " + error;
             });
           }
           /*
@@ -197,7 +203,7 @@ export default{
           })
           */
         }
-
+        //, statuss
         return { handleBlur, handleFocusout, statuss };
     },
     data(){
@@ -213,7 +219,7 @@ export default{
             p_sell: null,
 
         },
-        statuss: 'NO ANY CHANGE YET',
+        //statuss: 'NOTHING CHANGE',
         mysearch: '',
         }
     },

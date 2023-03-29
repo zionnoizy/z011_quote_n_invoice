@@ -15,7 +15,7 @@
                 <img alt="Vue logo" class="logo justify-center mx-auto mb-3" src="../assets/cms_logo_small.png" />
             </div>
             <div>
-                <h1>QUOTE-IN</h1>
+                <h1 class="text-5xl ">QUOTE-IN</h1>
             </div>
         </div>
 

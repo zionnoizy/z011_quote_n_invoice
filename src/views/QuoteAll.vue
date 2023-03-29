@@ -245,8 +245,8 @@ export default{
 
                 this.all_quotes.push(e_quote);
 
-                if(! this.all_clients.includes(e_quote_cleint.obj_ref.q_bill_fullname))
-                  this.all_clients.push(e_quote_cleint.obj_ref.q_bill_fullname);
+                if(! this.all_clients.includes(e_quote_cleint.bill_ship.q_bill_fullname))
+                  this.all_clients.push(e_quote_cleint.bill_ship.q_bill_fullname);
             });
         });
         //console.log("[getAllQuote]=====================");

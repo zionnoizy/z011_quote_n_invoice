@@ -241,10 +241,10 @@ export default {
             var n_invoice_cleint = i.data();
             this.all_invoices.push(n_invoice);
 
-            console.log("ipad2    " + n_invoice_cleint.obj_ref.qi_bill_fullname);
+            console.log("ipad2    " + n_invoice_cleint.bill_ship.qi_bill_fullname);
             
-            if(!this.all_clients.includes(n_invoice_cleint.obj_ref.qi_bill_fullname))
-              this.all_clients.push(n_invoice_cleint.obj_ref.qi_bill_fullname);
+            if(!this.all_clients.includes(n_invoice_cleint.bill_ship.qi_bill_fullname))
+              this.all_clients.push(n_invoice_cleint.bill_ship.qi_bill_fullname);
             
           });
         });
