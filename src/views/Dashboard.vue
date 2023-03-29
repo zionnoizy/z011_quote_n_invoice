@@ -10,16 +10,16 @@
         </div>
         <section class="warehouse_background sticky top-0" style="background-image: url(&quot;/assets/Warehouse_Nologo-3ff955ec.png&quot;); z-index: 998;">
             
-            <h2 class="dont_blur info_head text-4xl font-sans-b mb-16 text-left max-w-lg uppercase  text-white"> Welcome Back To CMS-QuoteIn </h2>
+            <h2 class="dont_blur info_head text-4xl font-sans-b mb-16 mt-3 text-left max-w-lg uppercase  text-white"> Welcome Back To CMS-QuoteIn </h2>
             
             <div class="  mx-auto" style="">
                 <div class=" grid gird-cols-1 lg:grid-cols-2 gap-5" style="z-index: 2;">
-                    <div><button class="btn btn-primary btn-lg  font-weight-bold" style="background-color: rgb(161, 204, 254) !important; border: none; height: 80px;">
+                    <div><button class="btn btn-primary btn-lg mt-3  font-weight-bold" style="background-color: rgb(161, 204, 254) !important; border: none; height: 80px;">
                         <a href="/dashboard/all_client" class=""> View / Add Client 
                             <font-awesome-icon icon="fa-solid fa-user" style="color: #ffffff;" />
                         </a>
                     </button></div>
-                    <div><button class="btn btn-primary btn-lg  font-weight-bold" style="background-color: rgb(161, 204, 254) !important; border: none; height: 80px;">
+                    <div><button class="btn btn-primary btn-lg mt-3  font-weight-bold" style="background-color: rgb(161, 204, 254) !important; border: none; height: 80px;">
                         <a href="/dashboard/all_product" class=""> View / Add Product 
                             <font-awesome-icon icon="fa-solid fa-box-archive" style="color: #ffffff;" />
                         </a>
@@ -200,7 +200,7 @@ const sign_out = () =>{
     background-size: cover;
     display: flex;
     z-index: -2;
-    height: 100px;
+    height: 120px;
 }
 
 
