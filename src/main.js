@@ -11,33 +11,21 @@ import "bootstrap"
 
 import './style.css'
 
-/*
-import { initializeApp } from "firebase/app";
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
+import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { faBoxArchive } from '@fortawesome/free-solid-svg-icons'
+import { faPaperclip } from '@fortawesome/free-solid-svg-icons'
+import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { faElevator } from '@fortawesome/free-solid-svg-icons'
+/* add icons to the library */
+library.add(faUserSecret, faUser, faBoxArchive, faPaperclip, faArrowUpFromBracket, faElevator)
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyBmnk75XdGraJ2LbDC6VQAM-_J5wkwCAtw",
-    authDomain: "quote-n-invoice.firebaseapp.com",
-    projectId: "quote-n-invoice",
-    storageBucket: "quote-n-invoice.appspot.com",
-    messagingSenderId: "183239941114",
-    appId: "1:183239941114:web:001bd5427fcab85a6ce243"
-  };
-
-
-initializeApp(firebaseConfig);
-*/
-/*
-router.beforeEach((to, from, next) => {
-  console.log("beforeEach?   " );
-})
-*/
 createApp(App)
 .use(router)
+.component('font-awesome-icon', FontAwesomeIcon)
 .mount('#app')
 
 

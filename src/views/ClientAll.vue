@@ -5,10 +5,12 @@
 
     <div class="ClientAll">
         <!--https://pbs.twimg.com/media/DrM0nIdU0AEhG5b.jpg-->
-        <p>test21</p>
+
 
         <p class="dashboard_txt" >
-          <router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  > All Clients</p>
+          <router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  > All Clients
+          <font-awesome-icon icon="fa-solid fa-elevator" style="color: #ffffff;" />
+        </p>
 
         <client-add ></client-add>
 

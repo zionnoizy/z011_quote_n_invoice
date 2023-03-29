@@ -3,9 +3,13 @@
 
         <p class="dashboard_txt" ><router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  >
             
-            <router-link to="/dashboard/all_product" exact><a><strong class="link">All Products</strong></a></router-link> >
+            <router-link to="/dashboard/all_product" exact><a><strong class="link">All Products
+                <font-awesome-icon icon="fa-solid fa-box-archive" style="color: #ffffff;" />
+            </strong></a></router-link> >
             
-            Category</p>
+            Category
+            <font-awesome-icon icon="fa-solid fa-elevator" style="color: #ffffff;" />
+        </p>
 
         <from @sumbit.prevent="addCategory">
 
@@ -13,8 +17,8 @@
                 <div><label>Category Name</label></div>
                 <br>
                 <div>
-                    <label ref="category">Category</label>
-                    <input id="input_category" ref="input_category" type="text" placeholder="category input" required/>
+                    <label ref="category">Category Name </label>
+                    <input id="input_category" ref="input_category" type="text" placeholder="enter category here..." required/>
                 </div>
                 <br>
             </div>
@@ -27,13 +31,12 @@
         <br>
         <br>
 
-        <div class="px-5 mx-5 grid grid-cols-2 gap-1" v-for="ca in all_categories">
+        <p>LIST OF CATEGORY</p>
+        <div class="px-5 mx-5 grid grid-cols-2 gap-1 border">
+            <div  v-for="ca, i in all_categories">
 
-            <div class=""  >
-                {{ ca.category_fullname }}
-            </div> 
-
-
+                <p>  #{{ i }}: {{ ca.category_fullname }} </p> 
+            </div>
         </div>
     </div>
 </template>
@@ -87,21 +90,26 @@ export default{
             } //flag
 
         },
-        async getCategory(){
 
+        async getCategory(){
+            console.log("getCategory()======== ");
             var categoryRef = await firebase.firestore().collection("all_categories");
             categoryRef.onSnapshot(snap =>{
                 this.all_categories = [];
                 snap.forEach(d =>{
                     var category = d.data();
+
+                    console.log("category.category_fullname " + category.category_fullname);
+
                     this.all_categories.push(category);
                 });
             }); 
         },
-        created(){
+        
+    },
+    created(){
             this.getCategory();
-        },
-    }
+    },
 }
 
 async function validate_category_input(){

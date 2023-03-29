@@ -8,17 +8,21 @@
         <div class="cms_loader overlay" >
             <img src="../assets/load1.gif" class="loading">
         </div>
-        <section class="warehouse_background" style="background-image: url(&quot;/assets/Warehouse_Nologo-3ff955ec.png&quot;);">
+        <section class="warehouse_background sticky top-0" style="background-image: url(&quot;/assets/Warehouse_Nologo-3ff955ec.png&quot;); z-index: 998;">
             
-            <h2 class="dont_blur info_head text-4xl font-sans-b mb-16 text-left max-w-lg uppercase lg:ml-16 mt-12 text-white"> Welcome Back To CMS-QuoteIn </h2>
+            <h2 class="dont_blur info_head text-4xl font-sans-b mb-16 text-left max-w-lg uppercase  text-white"> Welcome Back To CMS-QuoteIn </h2>
             
             <div class="  mx-auto" style="">
                 <div class=" grid gird-cols-1 lg:grid-cols-2 gap-5" style="z-index: 2;">
-                    <div><button class="btn btn-primary btn-lg mt-5 mb-4 font-weight-bold" style="background-color: rgb(161, 204, 254) !important; border: none; height: 105px;">
-                        <a href="/dashboard/all_client" class=""> View / Add Client </a>
+                    <div><button class="btn btn-primary btn-lg  font-weight-bold" style="background-color: rgb(161, 204, 254) !important; border: none; height: 80px;">
+                        <a href="/dashboard/all_client" class=""> View / Add Client 
+                            <font-awesome-icon icon="fa-solid fa-user" style="color: #ffffff;" />
+                        </a>
                     </button></div>
-                    <div><button class="btn btn-primary mt-5 btn-lg mb-4 font-weight-bold" style="background-color: rgb(161, 204, 254) !important; border: none; height: 105px;">
-                        <a href="/dashboard/all_product" class=""> View / Add Product </a>
+                    <div><button class="btn btn-primary btn-lg  font-weight-bold" style="background-color: rgb(161, 204, 254) !important; border: none; height: 80px;">
+                        <a href="/dashboard/all_product" class=""> View / Add Product 
+                            <font-awesome-icon icon="fa-solid fa-box-archive" style="color: #ffffff;" />
+                        </a>
                     </button></div>
                 </div>
             </div>
@@ -31,7 +35,12 @@
             <div class="row">
                 <div class="col-8 mx-auto">
 
-                    <button class="btn btn-primary btn-lg mb-3 btn-block mx-auto" style="width:100%; ">  <router-link :to="{name: 'QuoteAdd' }"> Add New Quote </router-link> </button>
+                    <button class="btn btn-primary btn-lg mb-3 btn-block mx-auto mt-5" style="width:100%; ">  
+                        <router-link :to="{name: 'QuoteAdd' }"> 
+                            Add New Quote 
+                            <font-awesome-icon icon="fa-solid fa-paperclip" style="color: #ffffff;" />
+                        </router-link> 
+                    </button>
                 </div>
 
                 
@@ -43,11 +52,27 @@
         
         <div class="grid grid-cols-3 text-xl pb-6">
         
-            <div><router-link :to="{name: 'ClientCard' }"> <p class="text-3xl font-bold"> Client </p> </router-link></div>
+            <div><router-link :to="{name: 'ClientCard' }"> 
+                <p class="text-3xl font-bold"> Client 
 
-            <div><router-link :to="{name: 'QuoteAll' }"> <p class="text-3xl font-bold"> Quote </p> </router-link></div>
+                    <font-awesome-icon icon="fa-solid fa-user" style="color: #ffffff;" />
+                </p> 
+            
+            </router-link></div>
 
-            <div><router-link :to="{name: 'InvoiceAll' }"> <p class="text-3xl font-bold"> Invoice </p> </router-link></div>
+            <div><router-link :to="{name: 'QuoteAll' }"> 
+                <p class="text-3xl font-bold"> Quote 
+                    <font-awesome-icon icon="fa-solid fa-arrow-up-from-bracket" style="color: #ffffff;" />
+
+                </p> 
+            </router-link></div>
+
+            <div><router-link :to="{name: 'InvoiceAll' }"> 
+                <p class="text-3xl font-bold"> Invoice 
+                    <font-awesome-icon icon="fa-solid fa-paperclip" style="color: #ffffff;" />
+                </p> 
+            
+            </router-link></div>
         
     
         </div>
@@ -56,6 +81,11 @@
         <transition name="fade" mode="out-in">
         <router-view class="anime_height"></router-view>
         </transition>
+
+
+        <font-awesome-icon icon="fa-solid fa-user-secret" style=""/>
+        <font-awesome-icon icon="fa-sharp fa-solid fa-user" size="lg" />
+        <i class="fa-sharp fa-solid fa-user"></i>
 
 
         <div v-if="user">
@@ -170,7 +200,7 @@ const sign_out = () =>{
     background-size: cover;
     display: flex;
     z-index: -2;
-    height: 300px;
+    height: 100px;
 }
 
 

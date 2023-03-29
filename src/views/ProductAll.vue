@@ -6,11 +6,15 @@
           
           <router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  > 
             
-          <router-link to="/dashboard/all_product" exact><a><strong class="link">Product Add</strong></a></router-link>
+          <router-link to="/dashboard/all_product" exact><a><strong class="link">Product Add
+            <font-awesome-icon icon="fa-solid fa-box-archive" style="color: #ffffff;" />
+          </strong></a></router-link>
         
         </p>
         <router-link :to="{name: 'CategoyAddAll'}">
-          <button class="btn btn-primary">Go To Add Category</button>
+          <button class="btn btn-primary">Go To Add Category
+            <font-awesome-icon icon="fa-solid fa-elevator" style="color: #ffffff;" />
+          </button>
         </router-link>
         <product-add></product-add>
         
