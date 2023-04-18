@@ -4,8 +4,8 @@
 <!--ACCOUNCEMENT CAN BE IN HERE <p>Welcome to CMS Quote-N-Invoice.</p>  -->
 <router-view></router-view>
 
-<router-link to="/" exact><a>Login</a></router-link> | 
-<router-link :to="{name: 'Register'}">Register</router-link> |
+<!-- <router-link to="/" exact><a>Login</a></router-link> | 
+<router-link :to="{name: 'Register'}">Register</router-link> | -->
 <p>©2023 Companies Management Systems Ltd.</p>
 
 

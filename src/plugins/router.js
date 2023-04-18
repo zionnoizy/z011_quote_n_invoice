@@ -35,7 +35,7 @@ const router = createRouter({
         name: "Dashboard",
         component: Dashboard,
         auth: true,
-        meta: { requiredAuth: true},
+        //meta: { requiredAuth: true},
         children: [ {path: 'client',name: 'ClientCard',component: ClientCard},
                     {path: 'quote',name: 'QuoteAll',component: QuoteAll},
                     {path: 'invoice',name: 'InvoiceAll',component: InvoiceAll}
@@ -55,25 +55,29 @@ const router = createRouter({
   ]
 
 })
-
-router.beforeEach(( to, from, next) => {
-    const curr_usr = firebase.auth().currentUser;
-    const requires_auth = to.matched.some(record => record.meta.requires_auth);
-
-    if (requires_auth && !curr_usr){
-        const loginpath = window.location.pathname;
-        //console.log("[router.js]   false cur_usr" );
-        next("/")
-    }
-    else if(requires_auth && curr_usr){
-        //console.log("[router.js] true cur_usr" );
-        next()
-    }
-    else{
-        next()
-    }
-
-
-    
-})
+/*
+router.beforeEach((to, from, next) => {
+  
+  const currentUser = firebase.auth().currentUser;
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  
+  console.log("user need to signin" + currentUser + "    " + requiresAuth);
+  
+  
+  if (requiresAuth && !currentUser) {
+    console.log("user need to signin")
+    next({
+      path: '/',
+      replace: true
+    })
+  } else if (requiresAuth && currentUser) {
+    console.log("signin already, no need to do anything")
+   next();
+  } else {
+    console.log("signin already2, no need to do anything")
+   next();
+  }
+  
+});
+*/
 export default router

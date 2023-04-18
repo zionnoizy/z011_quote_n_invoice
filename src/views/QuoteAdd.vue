@@ -1,9 +1,7 @@
 
 <template>
+
     <div class="QuoteAdd">
-
-
-
         <!-- <div class="border">
             calculate tmp_sell: {{ tmp_sell }}
             list of choosen product: <p>{{choosen_products}}</p>
@@ -13,7 +11,7 @@
         <p class="dashboard_txt pt-5 pb-3 mx-6 text-start" style="border-bottom: 3px solid #fff;" ><router-link to="/dashboard/quote" exact>
             
             <a><strong class="link underline">Dashboard</strong></a></router-link>  > Quote Add
-          
+
         </p>
 
 
@@ -24,8 +22,44 @@
             <p>4A.Shipping == REQUIREMENT </p>
         </p> -->
 
-        <button href="@/assets/files/quote_instruction.pdf" download>Downlaod Instruction</button>
-        <div class="grid grid-cols-1 gap-1 ">
+        
+        <div class="grid grid-cols-2 gap-1 mt-5">
+
+            <div class="pl-3 lg:pl-12">
+                <div class="grid grid-flow-row gap-4">
+
+                    <font-awesome-icon icon="fa-solid fa-address-card"  size="lg" />
+
+                </div>
+
+                <div class="grid grid-flow-row gap-4">
+
+                    <font-awesome-icon icon=" fa-solid fa-plane" size="xl" />
+
+                </div>
+
+                <div class="grid grid-flow-row gap-4">
+                    
+                    <font-awesome-icon icon=" fa-solid fa-box-archive"  size="xl" style="color: #ffffff;" />
+
+                </div>
+
+                <div class="grid grid-flow-row gap-4">
+                    a4
+                </div>
+            </div>
+
+            <div class="pl-3 lg:pl-12">
+                
+                <div class="grid grid-flow-row gap-4 test-center" style="text-align: center;">
+                    INVOICE
+                </div>
+
+                
+            </div>
+
+
+
             <!--1/3-------------------BILL-SHIP-TO-------------------------------------->
             <div class="mx-auto" style="display: flex;;">
                 <!--1/3-->
@@ -230,20 +264,20 @@
                                     <table class="table table-dark" >
                                         <thead>
                                         <tr>
-                                        <th scope="col">tmp#</th>
-                                        <th scope="col">Code</th>
-                                        <th scope="col">Name</th>
-
-                                        <th scope="col">&#163; Cost</th>
-                                        <th scope="col">Margin &percnt;</th>
-                                        <th scope="col">Sell</th>
-                                        <th scopr="col">choose</th>
+                                            <th scope="col">tmp#</th>
+                                            <th scope="col">Code</th>
+                                            <th scope="col">Name</th>
+                                                
+                                            <th scope="col">&#163; Cost</th>
+                                            <th scope="col">Margin &percnt;</th>
+                                            <th scope="col">Sell</th>
+                                            <th scopr="col">choose</th>
                                         </tr>
 
                                         </thead>
 
                                         <tbody>
-                                        <!--choosenProductSell($event,p, i);-->
+                                        
                                         <tr class="choose_product" v-for="p, i in all_products"  @click.prevent="choosenOneProduct($event,p, i); ">
                                             <td> {{ i }} </td>
                                             <td> {{ p.p_code }} </td>
@@ -252,6 +286,7 @@
                                             <td> {{ p.p_cost }} </td>
                                             <td> {{ p.p_margin }} </td>
                                             <td> {{ p.p_sell }} </td>
+
                                             <td> <div><button class="btn btn-info" @click.prevent="choosenOneProduct($event,p, i); " > [+] </button> </div> </td>
                                         </tr>
                                         
@@ -270,6 +305,7 @@
                                 <div class="modal-footer">
                                     <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="close">Add Product To Quote</button>
                                 </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -351,7 +387,10 @@
                             <div class="modal-content text-black" style="height:1000px;">
 
                                 <div class="modal-header">
-                                    <h4 class="modal-title"> Preview Qutotation, Please make sure all information is fill-out. </h4>
+
+                                    <h4 class="modal-title"> Preview Qutotation, Please make sure all information is fill-out. 
+                                        The information you do not fillout has already highlighted in red.
+                                    </h4>
 
                                 </div>
 
@@ -364,14 +403,14 @@
 
 
                                 </div>
-                                <div class="modal-footer" style="background-color: #1267aa;">
+                                <!-- <div class="modal-footer" style="background-color: #1267aa;">
 
-                                    <!-- <button type="button" class="btn btn-primary" @click="uploadQuotePDF($event)">
+                                    <button type="button" class="btn btn-primary" @click="uploadQuotePDF($event)">
                                         Submit Qutotation 
-                                    </button> -->
+                                    </button>
 
                                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel This Screen</button>
-                                </div>
+                                </div> -->
                             </div>
 
 
@@ -394,23 +433,11 @@
 
 
         
-        <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        <div id="my_toast1" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-            <img src="" class="rounded me-2" alt="">
-            <strong class="me-auto">Bootstrap</strong>
-            <small>11 mins ago</small>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-            Hello, world! This is a toast message.
-            </div>
-        </div>
-        </div>
+        
 
         <div>
             <p class="dashboard_txt pt-5 pb-3 mx-6 text-start" > 
-                This is a Quote Pdf, refer this quote number= {{ this_one_q_number }} , can be found on Dashboard > Quote 
+                This is a Quote PDF, refer this quote number= {{ this_one_q_number }} , can be found on Dashboard > Quote 
                 <router-link 
                 tag="tr"
                 :to="{ name: 'OneQuote', 
@@ -798,7 +825,8 @@ export default {
                 const quote_number = await auto_quote_no_generator2();
                 this.this_one_q_number = quote_number;
 
-                console.log(this.this_one_q_number);
+                console.log("quote number:    " + this.this_one_q_number);
+
                 let reference_number = document.getElementById('q_reference_number').value;
 
                 const ref = collection(db, "ALL_quote");

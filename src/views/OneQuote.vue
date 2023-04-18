@@ -882,8 +882,7 @@ export default{
                 }
             }
 
-            var choosen_product_qty = Object.keys(cp).length;
-            cp["choosen_product_qty"] = choosen_product_qty;
+            
             console.log("=====edit and upoad another quote:0 ");
 
             //var x = this.copy_exact_product.length;
@@ -928,7 +927,7 @@ export default{
             console.log("changed_sub_total   " + changed_sub_total  + "/" + changed_vat + "/" + changed_shipping + " / " + changed_final);
             
             const final_tt= {
-                tf_subtotal: changed_sub_total,
+                tf_sub_total: changed_sub_total,
                 tf_vat: changed_vat,
                 tf_shipping: changed_shipping,
                 tf_total: changed_final,
@@ -1023,7 +1022,23 @@ export default{
            
             })
             */
-            firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number).update({final_tt, cp, bill_ship})
+            var choosen_product_qty = Object.keys(cp).length;
+
+            firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number).update({final_tt, cp, bill_ship});
+            const get_id = firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number);
+            get_id
+              .update({
+                  choosen_product_qty: choosen_product_qty+1,
+              })
+              .then(() => {
+                alert("update success, now you have choosen_product_qty# " + choosen_product_qty );
+                document.getElementById("delivery_cpyname").value = ''
+                document.getElementById("d_address_1").value= ''
+                document.getElementById("d_address_2").value = ''
+                document.getElementById("d_city").value = ''
+                document.getElementById("d_post_code").value = ''
+                
+              }); 
             
             /*
             let zzz = await setDoc(ref, {final_tt}, { merge: true } ) 

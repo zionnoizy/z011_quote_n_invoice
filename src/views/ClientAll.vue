@@ -123,173 +123,172 @@ import { serverTimestamp } from 'firebase/firestore';
 import { collection, doc } from "@firebase/firestore";
 export default{
 
-    name: 'ClientAll',
-    setup() {
-        const s_product2 = reactive([]);
-        onMounted(async () => {
-            try {
-                const typing_product = await firebase
-                    .firestore()
-                    .collection("all_client")
-                    .get();
-                typing_product.forEach((doc) => {
-                    s_product2.push(doc.data());
-                });
-            } catch (e) {
-                console.log("Error Typing s_product2");
-            }
-        });
-        return { s_product2 };
-    },
-    data(){
-      
-        return{
-          all_clients: [],
-          client:{
-            c_fullname: null,
-            c_address_1: null,
-            c_address_2: null,
-            c_city: null,
-            c_insert_date: null,
-            c_post_code: null,
-            c_cid: null,
-            client_hashid: null,
-          },
-          delivery_client_hashid: '',
-          delivery_fullname: '',
-
-          delivery_cpyname: '',
-          d_address_1: '',
-          mysearch: '',
-        }
-    },
-    components: {
-      ClientAdd,
-      DeliveryAdd,
-    },
-    methods: {
-      passVariable(ev, c, i){
-        this.delivery_client_hashid = c.client_hashid;
-        console.log("you are adding delivery address in  " + c.c_fullname);
-        this.delivery_fullname = c.c_fullname;
-
-      },
-      client_hashid(client_hashid) {
-          this.client_hashid = client_hashid
-      },
-
-      async getAllClient() { 
-        var all_client_ref = await firebase.firestore().collection("all_clients");
-
-        all_client_ref.onSnapshot(snap => {
-            this.all_clients = [];
-            
-            snap.forEach(d => {
-                var client = d.data();
-                this.all_clients.push(client);
-            });
-        });
-        
-        
-      },
-
-      UpdateClient:function(msg){
-        setDoc(doc(db, 'all_clients', msg.id),{
-          text: msg.text,
-          data: msg.data
-        })
-      },
-      
-      deleteClient(id){
-        if (window.confirm("do you really want to delete? The system cannot undo.")){
-          db.child(id).remove().then(() =>{
-            alert("successully deleted.");
-          }).catch((error) => {
-            //console.log(error);
-          })
-        }
-      },
-
-      createDelieveryAddress(){
-        const client_fullname = this.delivery_fullname;
-        const d_fullname = document.getElementById("delivery_cpyname").value; //okay
-        const d_address_1 = document.getElementById("d_address_1").value;
-        const d_address_2 =  document.getElementById("d_address_2").value;
-        const d_city =  document.getElementById("d_city").value;
-        const d_post_code =  document.getElementById("d_post_code").value;
-
-        console.log(d_fullname + " " + d_address_1 + " " + d_address_2 + " " + d_city + " " + d_post_code);
-        
-        //if (d_fullname == '' || d_address_1 == '' || d_address_2 == '' || d_city == '' || d_post_code == ''){
-        const ref = collection(db, 'all_delivery', this.delivery_client_hashid,'this_client_delivery');
-        const get_id2 = firebase.firestore().collection('all_delivery').doc();
-
-        const obj_ref ={
-
-          d_fullname: d_fullname,
-          d_address_1: d_address_1,
-          d_address_2: d_address_2,
-          d_city: d_city,
-          d_post_code: d_post_code,
-
-          d_client_hash_id: this.delivery_client_hashid,
-          d_insert_date: serverTimestamp(),
-          c_fullname: client_fullname,
-        }
-        //, "this_client_delivery" , c_id2
-        //const docref = doc (collection(db, 'all_delivery'));
-        //const colref = collection (docref, 'this_client_delivery');
-
-        console.log("deliver address adding..." + this.delivery_client_hashid);
-
-
-        addDoc(ref , obj_ref )
-        .then(docRef => {
-          
-          console.log(docRef.id);
-          const get_id = firebase.firestore().collection("all_delivery").doc(this.delivery_client_hashid).collection("this_client_delivery").doc(docRef.id);
-          get_id
-              .update({
-                  delivery_hashid: docRef.id,
-              })
-              .then(() => {
-                alert("Added, delivery address for client: " + this.delivery_fullname );
-                document.getElementById("delivery_cpyname").value = ''
-                document.getElementById("d_address_1").value= ''
-                document.getElementById("d_address_2").value = ''
-                document.getElementById("d_city").value = ''
-                document.getElementById("d_post_code").value = ''
-                
+  name: 'ClientAll',
+  setup() {
+      const s_product2 = reactive([]);
+      onMounted(async () => {
+          try {
+              const typing_product = await firebase
+                  .firestore()
+                  .collection("all_client")
+                  .get();
+              typing_product.forEach((doc) => {
+                  s_product2.push(doc.data());
               });
-        })
-        console.log("deliver address adding2...");
-
+          } catch (e) {
+              console.log("Error Typing s_product2");
+          }
+      });
+      return { s_product2 };
+  },
+  data(){
+    return{
+      all_clients: [],
+      client:{
+        c_fullname: null,
+        c_address_1: null,
+        c_address_2: null,
+        c_city: null,
+        c_insert_date: null,
+        c_post_code: null,
+        c_cid: null,
+        client_hashid: null,
       },
+      delivery_client_hashid: '',
+      delivery_fullname: '',
 
-      async findSpecific() { 
-            var all_product_ref = await firebase.firestore().collection("all_products");
-            all_product_ref.onSnapshot((snapshot) => {
-                this.s_product = [];
-                snapshot.forEach(d => {
-                    var s_product_name =d.data();
-                    this.s_product.push(s_product_name);
-                })
-            })
-            
-        },
+      delivery_cpyname: '',
+      d_address_1: '',
+      mysearch: '',
+    }
+  },
+  components: {
+    ClientAdd,
+    DeliveryAdd,
+  },
+  methods: {
+    passVariable(ev, c, i){
+      this.delivery_client_hashid = c.client_hashid;
+      console.log("you are adding delivery address in  " + c.c_fullname);
+      this.delivery_fullname = c.c_fullname;
+
     },
-    computed: {
-      f_all_clients(){
+    client_hashid(client_hashid) {
+        this.client_hashid = client_hashid
+    },
 
-        return this.all_clients.filter(all_clients => 
-          all_clients.c_fullname.toLowerCase().includes(this.mysearch.toLocaleLowerCase())
-        );
+    async getAllClient() { 
+      var all_client_ref = await firebase.firestore().collection("all_clients");
+
+      all_client_ref.onSnapshot(snap => {
+          this.all_clients = [];
+          
+          snap.forEach(d => {
+              var client = d.data();
+              this.all_clients.push(client);
+          });
+      });
+      
+      
+    },
+
+    UpdateClient:function(msg){
+      setDoc(doc(db, 'all_clients', msg.id),{
+        text: msg.text,
+        data: msg.data
+      })
+    },
+    
+    deleteClient(id){
+      if (window.confirm("do you really want to delete? The system cannot undo.")){
+        db.child(id).remove().then(() =>{
+          alert("successully deleted.");
+        }).catch((error) => {
+          //console.log(error);
+        })
       }
     },
-    created() {
-      this.getAllClient();
-      this.getUser();
+
+    createDelieveryAddress(){
+      const client_fullname = this.delivery_fullname;
+      const d_fullname = document.getElementById("delivery_cpyname").value; //okay
+      const d_address_1 = document.getElementById("d_address_1").value;
+      const d_address_2 =  document.getElementById("d_address_2").value;
+      const d_city =  document.getElementById("d_city").value;
+      const d_post_code =  document.getElementById("d_post_code").value;
+
+      console.log(d_fullname + " " + d_address_1 + " " + d_address_2 + " " + d_city + " " + d_post_code);
+      
+      //if (d_fullname == '' || d_address_1 == '' || d_address_2 == '' || d_city == '' || d_post_code == ''){
+      const ref = collection(db, 'all_delivery', this.delivery_client_hashid,'this_client_delivery');
+      const get_id2 = firebase.firestore().collection('all_delivery').doc();
+
+      const obj_ref ={
+
+        d_fullname: d_fullname,
+        d_address_1: d_address_1,
+        d_address_2: d_address_2,
+        d_city: d_city,
+        d_post_code: d_post_code,
+
+        d_client_hash_id: this.delivery_client_hashid,
+        d_insert_date: serverTimestamp(),
+        c_fullname: client_fullname,
+      }
+      //, "this_client_delivery" , c_id2
+      //const docref = doc (collection(db, 'all_delivery'));
+      //const colref = collection (docref, 'this_client_delivery');
+
+      console.log("deliver address adding..." + this.delivery_client_hashid);
+
+
+      addDoc(ref , obj_ref )
+      .then(docRef => {
+        
+        console.log(docRef.id);
+        const get_id = firebase.firestore().collection("all_delivery").doc(this.delivery_client_hashid).collection("this_client_delivery").doc(docRef.id);
+        get_id
+            .update({
+                delivery_hashid: docRef.id,
+            })
+            .then(() => {
+              alert("Added, delivery address for client: " + this.delivery_fullname );
+              document.getElementById("delivery_cpyname").value = ''
+              document.getElementById("d_address_1").value= ''
+              document.getElementById("d_address_2").value = ''
+              document.getElementById("d_city").value = ''
+              document.getElementById("d_post_code").value = ''
+              
+            });
+      })
+      console.log("deliver address adding2...");
+
     },
+
+    async findSpecific() { 
+          var all_product_ref = await firebase.firestore().collection("all_products");
+          all_product_ref.onSnapshot((snapshot) => {
+              this.s_product = [];
+              snapshot.forEach(d => {
+                  var s_product_name =d.data();
+                  this.s_product.push(s_product_name);
+              })
+          })
+          
+      },
+  },
+  computed: {
+    f_all_clients(){
+
+      return this.all_clients.filter(all_clients => 
+        all_clients.c_fullname.toLowerCase().includes(this.mysearch.toLocaleLowerCase())
+      );
+    }
+  },
+  created() {
+    this.getAllClient();
+    this.getUser();
+  },
 }
 </script>
 

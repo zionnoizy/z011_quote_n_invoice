@@ -2,11 +2,16 @@
 
     <th>PRODUCT IN DATABASE:</th>
     <div class="">
-      <div class="grid grid-cols-3 gap-3" style="display: flex; justify-content: center;">
+      <div class="grid grid-cols-4 gap-3" style="display: flex; justify-content: center;">
         <div>
           <label>Search Product Name</label>
           <input type="text" v-model="mysearch" placeholder="search here.." />
         </div>
+        <select :id= "`ep_category_${i}`" class="form-select form-select bg-dark text-white" data-field="p_category">
+          <option selected>Find Product Category..</option>
+          <option   v-for="c in all_category" :value="`${c.category_fullname}`" > {{c.category_fullname}} </option>
+        </select>
+
         <div> <button class="btn btn-primary " @click.prevent="getAllProductsNewest()">Sort From Oldest </button> </div>
         <div> <button class="btn btn-primary " @click.prevent="getAllProductsOldest()">Sort From Newest </button> </div>
       </div>
@@ -43,12 +48,15 @@
                 <td style="color: grey;"> {{i}} </td>
                 <td contenteditable="true" data-field="p_code" :id= "`ep_code_${i}`" > {{ p.p_code }} </td>
                 <td contenteditable="true" data-field="p_fullname" :id= "`ep_fn_${i}`" > {{ p.p_fullname }} </td>
-                <td contenteditable="true"  > 
+                <td> {{ p.p_category }} 
+                  <td contenteditable="true"  > 
                   <select :id= "`ep_category_${i}`" class="form-select form-select bg-dark text-white" data-field="p_category">
-                    <option selected>Select Category Here</option>
+                    <option selected>Re-Select Category</option>
                     <option   v-for="c in all_category" :value="`${c.category_fullname}`" > {{c.category_fullname}} </option>
                   </select>
-                </td>
+                  </td>
+                </td> 
+                
                 <td contenteditable="true" data-field="p_cost" :id= "`ep_cost_${i}`" > {{ p.p_cost }} </td>
                 <td contenteditable="true" data-field="p_margin" :id= "`ep_margin_${i}`" > {{ p.p_margin }} </td>
                 <td contenteditable="true" data-field="p_sell" :id= "`ep_sell_${i}`" disabled> {{ p.p_sell }} </td>

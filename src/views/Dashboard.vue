@@ -8,9 +8,15 @@
         <div class="cms_loader overlay" >
             <img src="../assets/load1.gif" class="loading">
         </div>
-        <section class="warehouse_background sticky top-0" style="background-image: url(&quot;/assets/Warehouse_Nologo-3ff955ec.png&quot;); z-index: 998;">
+        <section class="warehouse_background " style="background-image: url(&quot;/assets/Warehouse_Nologo-3ff955ec.png&quot;); z-index: 998;">
             
-            <h2 class="dont_blur info_head text-4xl font-sans-b mb-16 mt-3 text-left max-w-lg uppercase  text-white"> Welcome Back To CMS-QuoteIn </h2>
+            <h2 class="dont_blur info_head text-4xl font-sans-b mb-16 ml-5 mt-3 text-left max-w-lg uppercase  text-white"> 
+                
+                <img class="logo justify-center mx-auto mb-3" src="../assets/logo/logo-white.png" />
+            
+                Welcome Back To CMS-QuoteIn 
+            
+            </h2>
             
             <div class="  mx-auto" style="">
                 <div class=" grid gird-cols-1 lg:grid-cols-2 gap-5" style="z-index: 2;">
@@ -91,7 +97,7 @@
         <div v-if="user">
             You're logged in as {{user.displayName}}
         </div>
-        <button @click="sign_out">Logout</button>
+        <button @click="SING_OUT()">Logout</button>
     </div>
 </template>
 
@@ -139,7 +145,7 @@ export default{
                 var email = user.email;
                 my_email.value = email;
                 var email_split = email.split(['@'])[0];
-                
+                console.log("put this to top" + email_split);
                 var emailVerified = user.emailVerified;
                 var photoURL = user.photoURL;
                 var isAnonymous = user.isAnonymous;
@@ -156,11 +162,18 @@ export default{
     beforeMount() {
     
         const user = firebase.auth().currentUser;
-        //console.log("[Dashboard-onBeforeMount] " + user);
         if (user){
             this_usr_name.value = user.email.split(['@'])[0];
         }
    
+    },
+    method:{
+        SING_OUT(){
+            commit('CLEAR_USER')
+            firebase.auth().signOut().then(() => {
+                this.$router.push('/')
+            })
+        }
     },
 };
 
@@ -168,11 +181,7 @@ export default{
 
          
 
-const sign_out = () =>{
-    signOut(auth)
-    commit('CLEAR_USER')
-    router.push('/')
-}
+
 
 
 
@@ -200,7 +209,7 @@ const sign_out = () =>{
     background-size: cover;
     display: flex;
     z-index: -2;
-    height: 120px;
+    height: 300px;
 }
 
 

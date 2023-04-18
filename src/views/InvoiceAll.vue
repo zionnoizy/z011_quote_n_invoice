@@ -46,7 +46,7 @@
 
             <tbody >
                 
-                <tr   v-for="i in f_all_invoices">
+                <tr   v-for="i in all_invoices">
                     <td scope="col" style="width: 150px;"> 
                     <router-link 
                     tag="tr"
@@ -71,7 +71,7 @@
                       :to="{ name: 'OneInvoice', 
                       params: { id: i.obj_ref.qi_invoice_number, },
                       query: {this_one_i_hash_number: i.invoice_hashid, this_one_i_pdf_link: i.i_pdf_link}}">
-                      {{ i.obj_ref.qi_bill_fullname}} 
+                      {{ i.obj_ref.qi_bill_fullname }} 
                     </router-link>
                     </td>
                     <td scope="col" style="width: 150px;"> 
@@ -105,7 +105,7 @@
                     
                     </td>
 
-                    <td scope="col" style="width: 200px;"> 
+                    <!-- <td scope="col" style="width: 200px;"> 
                       <router-link 
                       tag="tr"
                       :to="{ name: 'OneInvoice', 
@@ -113,7 +113,7 @@
                       query: {this_one_i_hash_number: i.invoice_hashid, this_one_i_pdf_link: i.i_pdf_link}}">
                       {{ i.i_pdf_link }} 
                     </router-link>
-                    </td>
+                    </td> -->
                 
                   
                 </tr>
@@ -240,7 +240,7 @@ export default {
             var n_invoice = i.data();
             var n_invoice_cleint = i.data();
             this.all_invoices.push(n_invoice);
-
+            console.log("print1");
             console.log("ipad2    " + n_invoice_cleint.bill_ship.qi_bill_fullname);
             
             if(!this.all_clients.includes(n_invoice_cleint.bill_ship.qi_bill_fullname))

@@ -20,8 +20,11 @@ import { faBoxArchive } from '@fortawesome/free-solid-svg-icons'
 import { faPaperclip } from '@fortawesome/free-solid-svg-icons'
 import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { faElevator } from '@fortawesome/free-solid-svg-icons'
+import { faAddressCard } from '@fortawesome/free-solid-svg-icons'
+import { faPlane } from '@fortawesome/free-solid-svg-icons'
+
 /* add icons to the library */
-library.add(faUserSecret, faUser, faBoxArchive, faPaperclip, faArrowUpFromBracket, faElevator)
+library.add( faUserSecret, faUser, faBoxArchive, faPaperclip, faArrowUpFromBracket, faElevator, faAddressCard, faPlane )
 
 createApp(App)
 .use(router)
