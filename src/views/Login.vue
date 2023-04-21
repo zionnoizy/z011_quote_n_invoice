@@ -36,7 +36,7 @@
 
         <p><button id="login_btn"    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded" @click="login">Login</button></p>
             
-        <p class="my-3" id="something_wrong" style="color: red;"> </p>
+        <p class="my-3" id="complain_text" style="color: red;"> </p>
         <p class="my-3">Need an account or reset password? Please Send an email it@companiesms.co.uk for registration</p>
 
 
@@ -68,7 +68,7 @@ const login = () => {
     .catch(error => {
         console.log(error.code)
 
-        var paragraph = document.getElementById("something_wrong");
+        var paragraph = document.getElementById("complain_text");
         if (paragraph.textContent <=0 || paragraph.textContent == null || paragraph.textContent == ''){
             paragraph.textContent += "Incorrect login details, email it@companiesms.co.uk for extra help.";
         }      
@@ -102,7 +102,7 @@ export default{
                 //console.log(error.code)
                 switch (error.code){
                     case "auth/invalid-email":
-                        var paragraph = document.getElementById("something_wrong");
+                        var paragraph = document.getElementById("complain_text");
                         //if (paragraph.textContent <=0 || paragraph.textContent == null || paragraph.textContent == ''){
                             paragraph.textContent += "Incorrect login details, email it@companiesms.co.uk for extra help.";
                         //}     
@@ -150,8 +150,8 @@ export default{
 
                 } else {
                     console.log('NO Login!');
-                    //this.something_wrong = "Incorrect login details, email it@companiesms.co.uk for extra help"
-                    var paragraph = document.getElementById("something_wrong");
+                    //this.complain_text = "Incorrect login details, email it@companiesms.co.uk for extra help"
+                    var paragraph = document.getElementById("complain_text");
                     if (paragraph.textContent <=0 || paragraph.textContent == null || paragraph.textContent == ''){
                         paragraph.textContent += "Incorrect login details, email it@companiesms.co.uk for extra help.";
                     }

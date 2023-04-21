@@ -132,4 +132,20 @@ tr:hover td {
 
 
 }
+
+.top_background{
+
+  background: rgba(0, 0, 0, .65) url('./assets/Warehouse_Nologo.png') no-repeat;
+
+  /* background-blend-mode: darken; */
+  background-repeat: no-repeat;
+
+  background-attachment: fixed;
+  background-position: bottom;
+  background-size: cover;
+  display: flex;
+
+  background-size: cover;
+  display: flex;
+}
 </style>

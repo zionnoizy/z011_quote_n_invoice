@@ -1,19 +1,10 @@
 <template>
   <!--this page is components only-->
   <div class="ProductAdd">
-      <p class="pb-2">= Purpose: User can ADD + UPDATE + DELETE products they created, all products will reflect on quote pages </p>
-      <p class="pb-20">= *The Sell Will Auto-Generate After Typing Cost & Margin Sessions. </p>
+      
 
-      <figure class="text-center">
-      <blockquote class="blockquote">
-        <p>code // name // category // cost // margin // sell == REQUIREMENT </p>
-      </blockquote>
-      <figcaption class="blockquote-footer">
-        Cost * (1 + Margin) <cite title="Source Title"> = Product Sell</cite>
-      </figcaption>
-      </figure>
 
-      <p class="text-danger" id="warning_msg"></p>
+      
 
       <form @sumbit.prevent="addProduct">
 
@@ -63,7 +54,7 @@
       </form>
       <!---------------------------------->
       
-
+      <p id="complain_text" style="color: red;">  </p>
   </div>
 </template>
 
@@ -106,7 +97,8 @@ export default{
       let flag_2 = await validate_p_fullname();
       console.log("flag2" + flag_2);
 
-      if (flag && flag_2){
+
+      if (flag && flag_2 ){
         const db_id = firebase.firestore();
 
         const pcategory = document.getElementById("p_category").value;
@@ -142,7 +134,15 @@ export default{
 
               });
         })
+        this.clearFields();
       }
+      else{
+        var paragraph = document.getElementById("complain_text");
+        if (paragraph.textContent <=0 || paragraph.textContent == null || paragraph.textContent == ''){
+            paragraph.textContent += "Product Entering is Incorrect. Double Check If Product Pre-exist/ Red Text above!";
+        }    
+      }
+      
     },
     
     NumbersOnly(e){
@@ -170,7 +170,19 @@ export default{
       document.getElementById('pi_sell').value = sell_final;
 
     },
-    
+    clearFields() {
+      // Reset the input fields to empty strings
+      document.getElementById('p_code').value = '';
+      document.getElementById('p_enter').value = '';
+      document.getElementById('p_cost').value = '';
+      document.getElementById('p_margin').value = '';
+      document.getElementById('p_sell').value = '';
+
+      // Reset the select option to the default (first) option
+      const categoryDropdown = document.getElementById('p_category');
+      categoryDropdown.selectedIndex = 0;
+      categoryDropdown.classList.remove('red-text');
+    },
   },
   created() {
 
@@ -182,6 +194,7 @@ export default{
 
 }
 function validate_p_input(){
+
       let flag = true;
       var pc_1 = document.getElementById('pi_code').value;
       var pc_2 = document.getElementById('pi_name').value;
@@ -194,6 +207,8 @@ function validate_p_input(){
       var pcc_3 = document.getElementById('p_category');
       var pcc_4 = document.getElementById('pi_cost');
       var pcc_5 = document.getElementById('pi_margin');
+      var category = document.getElementById('p_category').value;
+
       console.log("[ProductAdd]  " + pc_3 + " " + pc_2.length);
 
       if (pc_1.length <= 0){
@@ -214,6 +229,10 @@ function validate_p_input(){
       }
       if (pc_5.length <= 0){
         pcc_5.classList.add("red");
+        flag = false;
+      }
+      if (category === 'Select Category Here'){
+        document.getElementById('p_category').classList.add('red-text');
         flag = false;
       }
       return flag;
@@ -254,5 +273,7 @@ color:red;
   background-color: white;
   color: #FFF;
 }
-
+.red-text {
+    color: red;
+}
 </style>

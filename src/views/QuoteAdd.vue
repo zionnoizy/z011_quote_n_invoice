@@ -8,7 +8,7 @@
             choosen_client_fullname(not bill to):: {{ choosen_client_fullname }}
         </div> -->
 
-        <p class="cms_background  "   >
+        <p class="top_background  "   >
             
             <div class="dashboard_txt pt-5 pb-3 mx-6 text-start">
                 
@@ -1746,21 +1746,7 @@ function clear_q_entry(){
     top: 0;
 
 }
-.cms_background{
 
-    background: rgba(0, 0, 0, .65) url('../assets/Warehouse_Nologo.png') no-repeat;
-    
-    /* background-blend-mode: darken; */
-    background-repeat: no-repeat;
-
-    background-attachment: fixed;
-    background-position: bottom;
-    background-size: cover;
-    display: flex;
-    
-    background-size: cover;
-    display: flex;
-}
 .eat-width{
     position: absolute;
     left:0px;

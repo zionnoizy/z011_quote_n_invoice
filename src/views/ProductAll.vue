@@ -2,15 +2,20 @@
 
   <div class="ProductAll">
 
-        <p class="dashboard_txt pt-5 pb-2" style="border-bottom: 3px solid #fff;">
-          
-          <router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  > 
+        <p class="top_background  "   >
             
-          <router-link to="/dashboard/all_product" exact><a><strong class="link">Product Add
-            <font-awesome-icon icon="fa-solid fa-box-archive" style="color: #ffffff;" />
-          </strong></a></router-link>
-        
+            <div class="dashboard_txt pt-5 pb-3 mx-6 text-start">
+                
+                <router-link to="/dashboard/quote" exact>
+            
+                <a> <strong class="link underline">Dashboard</strong> </a></router-link>  > Product Add
+                
+                <font-awesome-icon icon="fa-solid fa-box-archive" style="color: #ffffff;" />
+            
+            </div>
         </p>
+
+
         <router-link :to="{name: 'CategoyAddAll'}">
           <button class="btn btn-primary">Go To Add Category
             <font-awesome-icon icon="fa-solid fa-elevator" style="color: #ffffff;" />
