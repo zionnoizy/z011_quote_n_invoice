@@ -78,7 +78,11 @@ textarea,
 }
 /* add product, category */
 .red::-webkit-input-placeholder{
-color:red;
+color:red !important;;
+}
+
+.txt_red{
+color:red;;
 }
 
 .client_card{

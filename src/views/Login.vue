@@ -12,29 +12,32 @@
 
         <div class="grid grid-cols-2 gap-2">
             <div>
-                <img alt="Vue logo" class="logo justify-center mx-auto mb-3" src="../assets/cms_logo_small.png" />
+                <img  width="225" height="105" class="qi_logo logo justify-center mx-auto " src="../assets/logo/logo-no-background.png" />
+                
             </div>
             <div>
-                <img  width="195" height="105" class="qi_logo logo justify-center mx-auto " src="../assets/logo/logo-no-background.png" />
+                <img width="335" height="105" alt="Vue logo" class="logo justify-center mx-auto mb-3" src="../assets/design_it/Artboard1.png" />
             </div>
         </div>
 
 
 
         <p class="pb-3">
-            <label class="text-secondary" >Email</label>
-            <input class="form-control" type="text" placeholder="Email" style=" color: #2c3e50 !important;" v-model="email" /></p>
+            <label id="e_tag" class=" " >Email</label>
+            <input  type="text" class="form-control" placeholder="Email" id="em" v-model="email" required/>
+            <!--class="form-control"   style=" color: #2c3e50 !important;"   v-model="email" -->
+            <!-- <input id="em"  type="text" placeholder="Email"   required/> --> </p>
         
         <p class="pb-3">
-            <label class="text-secondary" >Password</label>
-            <input id="pw" class="form-control" type="password" placeholder="Password" style=" color: #2c3e50 !important;" v-model="password" /></p>
+            <label id="p_tag" class=" " >Password</label>
+            <input id="pw" class="form-control" type="password" placeholder="Password" style=" color: #2c3e50 !important;" v-model="password" required/></p>
 
         <p v-if="err_msg">{{ err_msg }}</p>
 
         <p><button id="login_btn"    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded" @click="login">Login</button></p>
             
-
-        <p class="my-3">Need an account? Please Send an email it@companiesms.co.uk for registration</p>
+        <p class="my-3" id="something_wrong" style="color: red;"> </p>
+        <p class="my-3">Need an account or reset password? Please Send an email it@companiesms.co.uk for registration</p>
 
 
         <img alt="" class="position-absolute bottom-0 end-0" src="../assets/contact-form-bg.png" style="z-index:-999; ;;" />
@@ -50,37 +53,45 @@ import { useRouter } from 'vue-router';
 
 
 import { auth } from "@/firebase.js";
-const email = ref("");
-const password = ref("");
+
 const router = useRouter();
 
+const email = ref("");
+const password = ref("");
+const login = () => {
+    signInWithEmailAndPassword(auth, email.value, password.value)
+    .then((data) =>{
+        //context.commit('SET_USER', response.user);
+        //console.log('Successfully Login!');
+        router.push('/dashboard/client');
+    })
+    .catch(error => {
+        console.log(error.code)
+
+        var paragraph = document.getElementById("something_wrong");
+        if (paragraph.textContent <=0 || paragraph.textContent == null || paragraph.textContent == ''){
+            paragraph.textContent += "Incorrect login details, email it@companiesms.co.uk for extra help.";
+        }      
+
+    })
+}
 
 
 </script>
 
 <script>
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useRouter } from 'vue-router';
+import { auth } from "@/firebase.js";
+import {ref} from 'vue';
+
 export default{
     name: 'ProductAll',
     setup() {
-    },
-    data(){
-        return{
-
-        }
-    },
-    mounted(){
-        var a = document.getElementById("pw");
-        a.addEventListener("keyup", function(event) {
-            event.preventDefault();
-            if (event.keyCode === 13) {
-
-                document.getElementById("login_btn").click();
-            }
-        });
-    },
-
-    methods: {
-        login() {
+        const router = useRouter();
+        const email = ref("");
+        const password = ref("");
+        const login = () => {
             signInWithEmailAndPassword(auth, email.value, password.value)
             .then((data) =>{
                 //context.commit('SET_USER', response.user);
@@ -91,11 +102,64 @@ export default{
                 //console.log(error.code)
                 switch (error.code){
                     case "auth/invalid-email":
-                        err_msg.value = "Invalid Email or Password, Please Try Again."
-                        break;
+                        var paragraph = document.getElementById("something_wrong");
+                        //if (paragraph.textContent <=0 || paragraph.textContent == null || paragraph.textContent == ''){
+                            paragraph.textContent += "Incorrect login details, email it@companiesms.co.uk for extra help.";
+                        //}     
                 }
             })
+        return { login };
+    }
+    },
+    data(){
+        return{
+            email: '',
+            password: '',
+            
         }
+    },
+    mounted(){
+
+        var a = document.getElementById("pw");
+        a.addEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+
+                document.getElementById("login_btn").click();
+            }
+        });
+
+    },
+
+    methods: {
+        /*
+        async login(){
+            var flag = validate_l_input();
+            console.log(this.email + " " + this.password + " " + flag);
+            
+            
+            if (flag){
+            const response = await signInWithEmailAndPassword(auth, this.email, this.password)
+            console.log(response);
+                if (response) {
+
+                    //commit('SET_USER', response.user);
+                    console.log('Successfully Login!');
+                    
+                    router.push('/dashboard/client');
+
+                } else {
+                    console.log('NO Login!');
+                    //this.something_wrong = "Incorrect login details, email it@companiesms.co.uk for extra help"
+                    var paragraph = document.getElementById("something_wrong");
+                    if (paragraph.textContent <=0 || paragraph.textContent == null || paragraph.textContent == ''){
+                        paragraph.textContent += "Incorrect login details, email it@companiesms.co.uk for extra help.";
+                    }
+                }
+            }
+            
+        },
+        */
     },
     computed: {
       
@@ -107,6 +171,26 @@ export default{
     },
 }
 
+function validate_l_input(){
+      let flag = true;
+      var lc_1 = document.getElementById('em').value;
+      var lc_2 = document.getElementById('pw').value;
+
+      var lcc_1 = document.getElementById('e_tag');
+      var lcc_2 = document.getElementById('p_tag');
+      if (lc_1.length <= 0){
+        console.log("email empty");
+        lcc_1.classList.add("txt_red");
+        flag = false;
+      }
+      if (lc_2.length <= 0){
+        console.log("pw empty");
+        lcc_2.classList.add("txt_red");
+        flag = false;
+      }
+      
+      return flag;
+}
 </script>
 <style>
 #login{

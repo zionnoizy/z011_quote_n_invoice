@@ -8,10 +8,15 @@
             choosen_client_fullname(not bill to):: {{ choosen_client_fullname }}
         </div> -->
 
-        <p class="dashboard_txt pt-5 pb-3 mx-6 text-start" style="border-bottom: 3px solid #fff;" ><router-link to="/dashboard/quote" exact>
+        <p class="cms_background  "   >
             
-            <a><strong class="link underline">Dashboard</strong></a></router-link>  > Quote Add
-
+            <div class="dashboard_txt pt-5 pb-3 mx-6 text-start">
+                
+                <router-link to="/dashboard/quote" exact>
+            
+                <a> <strong class="link underline">Dashboard</strong> </a></router-link>  > Quote Add
+            
+            </div>
         </p>
 
 
@@ -22,50 +27,18 @@
             <p>4A.Shipping == REQUIREMENT </p>
         </p> -->
 
-        
-        <div class="grid grid-cols-2 gap-1 mt-5">
-
-            <div class="pl-3 lg:pl-12">
-                <div class="grid grid-flow-row gap-4">
-
-                    <font-awesome-icon icon="fa-solid fa-address-card"  size="lg" />
-
-                </div>
-
-                <div class="grid grid-flow-row gap-4">
-
-                    <font-awesome-icon icon=" fa-solid fa-plane" size="xl" />
-
-                </div>
-
-                <div class="grid grid-flow-row gap-4">
+        <p>please fill out session 1.BILL TO -- 5.REFERENCE NUMBER</p>
+        <div class="grid grid-cols-3 gap-1 mt-5">
+            <!--a--->
+            <div class="grid grid-flow-row gap-4">
                     
-                    <font-awesome-icon icon=" fa-solid fa-box-archive"  size="xl" style="color: #ffffff;" />
+                    <div class="flex-grow-0 mx-2 px-3">
+                    <label>
+                        1.BILL TO 
+                        <font-awesome-icon icon="fa-solid fa-address-card"  size="lg" />
+                    </label>
 
-                </div>
-
-                <div class="grid grid-flow-row gap-4">
-                    a4
-                </div>
-            </div>
-
-            <div class="pl-3 lg:pl-12">
-                
-                <div class="grid grid-flow-row gap-4 test-center" style="text-align: center;">
-                    INVOICE
-                </div>
-
-                
-            </div>
-
-
-
-            <!--1/3-------------------BILL-SHIP-TO-------------------------------------->
-            <div class="mx-auto" style="display: flex;;">
-                <!--1/3-->
-                <div class="flex-grow-0 mx-2 px-3">
-                    <label>1.BILL TO</label>
-                    <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button" id="choose_bill_btn"
+                    <button  class="choose_address_btn border btn btn-secondary btn-square-lg" type="button" id="choose_bill_btn"
                         data-bs-toggle="modal" data-bs-target="#choose_bill_to" v-on:click="this.getAllClient1();">
 
                         <p ref="tmp_b_fullname" id="tmp_b_fullname"></p>
@@ -75,9 +48,9 @@
                         <p ref="tmp_b_postcode" id="tmp_b_postcode"></p>
 
                     </button>
-                </div>    
-                <!-------------------modal//BillTo------------------------->
-                <div class="modal fade" id="choose_bill_to" tabindex="-1" aria-labelledby="" aria-hidden="true">
+                    </div>    
+                    <!-------------------modal//BillTo------------------------->
+                    <div class="modal fade" id="choose_bill_to" tabindex="-1" aria-labelledby="" aria-hidden="true">
                     <div class="modal-dialog modal-xl">
 
                         <div class="modal-content text-black">
@@ -123,319 +96,400 @@
                             </div>
                         </div>
                     </div>
+                    </div>
+                    
+            </div>
+            <!---a--->
+
+            <!---b-->
+            <div>
+                <label>
+                    2.SHIP TO <font-awesome-icon icon=" fa-solid fa-plane" size="xl" />
+                    [<b>{{ choosen_bill_2 }}</b>]
+                </label>
+
+                <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button " id="choose_delivery_btn"
+                    data-bs-toggle="modal" data-bs-target="#choose_ship_to" v-on:click="this.getAllDelivery();">
+
+                    <p ref="tmp_s_fullname" id="tmp_s_fullname"></p>
+                    <p ref="tmp_s_address1" id="tmp_s_address1"></p>
+                    <p ref="tmp_s_address2" id="tmp_s_address2"></p>
+                    <p ref="tmp_s_city" id="tmp_s_city"></p>
+                    <p ref="tmp_s_postcode" id="tmp_s_postcode"></p>
+                </button>
+                <!-------------------modal//ShipTo------------------------->
+                <div class="modal fade" id="choose_ship_to" tabindex="-1" aria-labelledby="" aria-hidden="true">
+
+                    <div class="modal-dialog modal-xl">
+
+                        <div class="modal-content text-black">
+
+                            <div class="modal-header">
+                                <h4 class="modal-title"> List of Address from Client <b>{{ choosen_client_fullname }}</b></h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"
+                                    v-on:click="showShipToModal = false"> X </button>
+                            </div>
+                            <div class="modal-body" style="background-color: #1267aa;">
+                                <div class="px-5 mx-5 grid grid-cols-3 gap-2  ">
+                                    <div class="" v-for="s, i in this_client_delivey">
+                                        <div class="delivery_card row" @click="ChooseShipTo($event, s, i);"
+                                            data-bs-dismiss="modal" aria-label="close">
+                                            <div>
+                                                <strong>{{ s.d_fullname }}</strong>
+                                            </div>
+                                            <div>
+                                                <strong>{{ s.d_address_1 }}</strong>
+                                            </div>
+                                            <div>
+                                                <strong>{{ s.d_address_2 }}</strong>
+                                            </div>
+                                            <div>
+                                                <p>{{ s.d_city }}, {{ s.d_post_code }} </p>
+                                            </div>
+
+                                        </div>
+
+
+
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="modal-footer" style="background-color: #1267aa;">
+
+                            </div>
+                        </div>
+
+
+                    </div>
                 </div>
+            </div>
+            <!---b-->
+
+            <div class="">
+                This is the Quotation Generate: {{ this_one_q_number }}.
+                Please Refer to Home Page to find out the Quotation.
+            </div>
+
+            
+            <!--4-->
+            <!--1/3-------------------BILL-SHIP-TO-------------------------------------->
+            <div class="mx-auto" style="display: flex;;">
+                <!--1/3-->
+                
                 <!-----------------------------------modal//BillTo------------------------------------->
 
                 <!--1/3-->
                 <div class="float-to-bottom">
-                    <label>2.SHIP TO</label>
-                    <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button " id="choose_delivery_btn"
-                        data-bs-toggle="modal" data-bs-target="#choose_ship_to" v-on:click="this.getAllDelivery();">
-
-                        <p ref="tmp_s_fullname" id="tmp_s_fullname"></p>
-                        <p ref="tmp_s_address1" id="tmp_s_address1"></p>
-                        <p ref="tmp_s_address2" id="tmp_s_address2"></p>
-                        <p ref="tmp_s_city" id="tmp_s_city"></p>
-                        <p ref="tmp_s_postcode" id="tmp_s_postcode"></p>
-                    </button>
-                    <!-------------------modal//ShipTo------------------------->
-                    <div class="modal fade" id="choose_ship_to" tabindex="-1" aria-labelledby="" aria-hidden="true">
-
-                        <div class="modal-dialog modal-xl">
-
-                            <div class="modal-content text-black">
-
-                                <div class="modal-header">
-                                    <h4 class="modal-title"> List of Address from Client <b>{{ choosen_client_fullname }}</b></h4>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"
-                                        v-on:click="showShipToModal = false"> X </button>
-                                </div>
-                                <div class="modal-body" style="background-color: #1267aa;">
-                                    <div class="px-5 mx-5 grid grid-cols-3 gap-2  ">
-                                        <div class="" v-for="s, i in this_client_delivey">
-                                            <div class="delivery_card row" @click="ChooseShipTo($event, s, i);"
-                                                data-bs-dismiss="modal" aria-label="close">
-                                                <div>
-                                                    <strong>{{ s.d_fullname }}</strong>
-                                                </div>
-                                                <div>
-                                                    <strong>{{ s.d_address_1 }}</strong>
-                                                </div>
-                                                <div>
-                                                    <strong>{{ s.d_address_2 }}</strong>
-                                                </div>
-                                                <div>
-                                                    <p>{{ s.d_city }}, {{ s.d_post_code }} </p>
-                                                </div>
-
-                                            </div>
-
-
-
-
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                                <div class="modal-footer" style="background-color: #1267aa;">
-
-                                </div>
-                            </div>
-
-
-                        </div>
-                    </div>
+                    
                     <!---------------------[END] BILL-SHIP-TO-------------------------------------->
                 </div>
 
 
                 <!--3/3-->
-                <p class="text-2xl underline">4.Final Calculation</p>
-                <div class="grid grid-cols-1 gap-1 ">
-
-                    <div>
-                        <label for="q_subtotal">Subtotal </label>
-                        <!--disabled @change="CalculateSubtotal" @input="addVatSHip($event.target.value)"-->
-
-                        <input ref="q_subtotal" placeholder="Subtotal"  id="q_subtotal"  disabled  />
-                    </div>
-
-
-                    <div>
-                        <!--min="1" max="100"-->
-                        <label for="q_vat">VAT </label>
-                        <input ref="q_vat" placeholder="Vat" id="q_vat"   disabled />
-                    </div>
-                    <div class="">
-                        <label for="q_shipping"> 4A. Shipping </label>
-                        <input ref="q_shipping" placeholder="Shipping" id="q_shipping" @focusout="addShip" onkeypress="only_decimial($event)" value="0"/>
-                    </div>
-                    <div>
-                        <label for="q_total">Total </label>
-                        <input ref="q_total" placeholder="Total" id="q_total" class="input-lg"  @input="addVatSHip($event)"
-                        disabled />
-                    </div>
-                    <div>-----------------------------</div>
-                    <div>
-                        <label for="q_total">5. Reference Number</label>
-                        <input ref="q_reference_number" placeholder="Reference" id="q_reference_number" class="input-lg" />
-                    </div>
-                </div>
+                
 
 
             </div>
             <!--2/3--------------------------------------------------------------------->
             
-            <div class="mx-auto grid grid-cols-2 gap-2" style="display: flex;;">
-                <div>
-                    <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button " id="add_products_btn"
-                        data-bs-toggle="modal" data-bs-target="#choose_products" v-on:click="this.getAllProducts();">
-                        3.Add Products of Goods
-                    </button>
-                    <!--NEW-----product-modal---------------------------------------------------------------------->
-                    <div class="modal fade" id="choose_products" tabindex="-1" aria-labelledby="" aria-hidden="true">
-                        <div class="modal-dialog modal-xl">
-
-                            <div class="modal-content text-black">
-
-                                <div class="modal-header">
-                                    <h4 class="modal-title"> Choose From Product Below (Only Press Once, No Need to Double Click)</h4>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="close">X</button>
-                                </div>
-                                <!---->
-                                <div class="modal-body">
-                                    <!--v-on:tmp_sell="getChoosenProducts($event);"     -->
-                                    <all-products-choose 
-
-                                        v-on:choosen_products="getChoosenProducts($event); " 
-
-                                        :tmp_sell="getTmpSell"
-
-                                    >
-                                     
-                                    </all-products-choose>
-
-                                    <!--all-rpducts-choose -->
-                                    <th>PRODUCT IN DATABASE:</th>
-                                    <button class="btn btn-primary " @click.prevent="getAllProductsNewest()">Sort From Oldest </button>
-                                    <button class="btn btn-primary " @click.prevent="getAllProductsOldest()">Sort From Newest </button>
-                                    <table class="table table-dark" >
-                                        <thead>
-                                        <tr>
-                                            <th scope="col">tmp#</th>
-                                            <th scope="col">Code</th>
-                                            <th scope="col">Name</th>
-                                                
-                                            <th scope="col">&#163; Cost</th>
-                                            <th scope="col">Margin &percnt;</th>
-                                            <th scope="col">Sell</th>
-                                            <th scopr="col">choose</th>
-                                        </tr>
-
-                                        </thead>
-
-                                        <tbody>
-                                        
-                                        <tr class="choose_product" v-for="p, i in all_products"  @click.prevent="choosenOneProduct($event,p, i); ">
-                                            <td> {{ i }} </td>
-                                            <td> {{ p.p_code }} </td>
-                                            <td> {{ p.p_fullname }} </td>
-                                            <td> {{ p.p_category }} </td>
-                                            <td> {{ p.p_cost }} </td>
-                                            <td> {{ p.p_margin }} </td>
-                                            <td> {{ p.p_sell }} </td>
-
-                                            <td> <div><button class="btn btn-info" @click.prevent="choosenOneProduct($event,p, i); " > [+] </button> </div> </td>
-                                        </tr>
-                                        
-                                        </tbody>
-
-                                        
-                                    </table>  
-
-
-                                    <!--all products choose end-->
-
-
-                                </div>
-
-
-                                <div class="modal-footer">
-                                    <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="close">Add Product To Quote</button>
-                                </div>
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!--show choosen products-->
-                <div>
-                    <table class="table table-dark" id="my_favoriate_table">
-                        <thead>
-                            <tr class="">
-                                <th class="col-5" scope="col">Choosen Product Name</th>
-                                <th class="col" scope="col">Product Code</th>
-                                <th scope="col">Product Category</th>
-                                <th scope="col">Product Cost</th>
-                                <th scope="col">Product Margin</th>
-                                <th scope="col" style="text-decoration:underline;">Product Sell</th>
-                                <th scope="col" style="color:grey;">Add Qunatity #</th>
-                                <th scope="col" style="color:grey;" title="This is the text of the tooltip">Add Unit (eg. mm, box)</th>
-                                <th scope="col" style="color:grey;">Add Discount %</th>
-                                <th scope="col" style="color:grey;">Discount Deduction £ </th>
-                                <th scope="col" style="color:grey; text-decoration-line: underline; text-decoration-style: double;">Final Total</th>
-                                <th scope="col"> Delete</th>
-                            </tr>
-                        </thead>
-
-
-                        <tbody>
-
-
-                            <tr v-for="p, i in choosen_products" @focusout="handleFocusout($event,  p.pid, data-field, i  )" >
-
-                                <td class="col-5" scope="col"> {{ p.p_fullname }} </td>
-                                <td class="col"> {{ p.p_code }} </td>
-                                <td> {{ p.p_category }} </td>
-                                <td> {{ p.p_cost }} </td>
-                                <td> {{ p.p_margin }} </td>
-                                <td :ref="'add_all_sell'+i" :id="'add_all_sell'+i" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i);" style="text-decoration:underline;"> 
-                                    {{ p.p_sell }} 
-                                </td>
-                                <td contenteditable="true"  data-field="p_qty" :id="`ep_qty_${i}`"  > {{p.p_quantity}} </td>
-                                <td contenteditable="true"  data-field="p_unit" :id="`ep_unit_${i}`"> {{p.p_unit}} </td>
-                                <td contenteditable="true"  data-field="p_discount" :id= "`ep_discount_${i}`" th:onChange="c();">{{p.p_discount}}</td>
-                                
-                                <td contenteditable="true"  data-field="p_m_discount" :id= "`ep_m_discount_${i}`" th:onChange="c();"> - </td>
-
-                                <td :ref="'qd_total_sell'+i" :id="`qd_total_${i}`" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i)" style="text-decoration-line: underline; text-decoration-style: double;" >
-                                    {{ p.p_final_total }} 
-                                </td>
-                                   
-                                <td> 
-                                    <button class="btn btn-warning" @click.prevent="minusProduct(i, p.p_fullname)"> [-] </button>
-                                </td>
-                            </tr>
-
-
-                            
-                    
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            
 
             <buttons @navigate="navigateTo" ></buttons>
 
-            <div class="grid grid-cols-2 gap2">
-
-                <div>
-                    <div class="px-2">
-
-                    <button class="preview_btn btn btn-info btn-lg btn-block" data-bs-toggle="modal"
-                        data-bs-target="#preview_quotation" @click.prevent=previewBtn2()> Preview Quotation</button>
-                    <!--@click.prevent="uploadQuotePDF($event)" download -->
-
-                    <!------------------modal start-------------------->
-                    <div class="modal fade" id="preview_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true" >
-
-                        <div class="modal-dialog modal-xl">
-
-                            <div class="modal-content text-black" style="height:1000px;">
-
-                                <div class="modal-header">
-
-                                    <h4 class="modal-title"> Preview Qutotation, Please make sure all information is fill-out. 
-                                        The information you do not fillout has already highlighted in red.
-                                    </h4>
-
-                                </div>
-
-                                <div class="modal-body">
-
-
-                                    <embed id="preview_quotationPDF" width='100%' height='100%' src='' />
-
-
-
-
-                                </div>
-                                <!-- <div class="modal-footer" style="background-color: #1267aa;">
-
-                                    <button type="button" class="btn btn-primary" @click="uploadQuotePDF($event)">
-                                        Submit Qutotation 
-                                    </button>
-
-                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel This Screen</button>
-                                </div> -->
-                            </div>
-
-
-                        </div>
-                    </div>
-                    <!------------------modal end---------------------->
-                    </div>
-                </div>
-
-                <div class="px-2">
-
-                    <button class="preview_btn btn btn-primary btn-lg btn-block" @click.prevent="previewBtn($event);"> Upload Quotation </button>
-                
-                </div>
-
-            </div>
+            
                 
         </div>
 
 
-
+        <!--2 buttons -->
         
+        <div class="grid grid-cols-2 gap2 mt-5">
+            <!--PUT_PRODUCT-->
+            <div class="flex pl-3 lg:pl-12 mt-5 ">
+                
+                <div class="grid grid-flow-row gap-4 test-center" style="text-align: center;">
+                    <!-----c-->
+                    <div class="mx-auto grid grid-cols-2 gap-2" style="display: flex;;">
+                    <div style="">
+                        <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button " id="add_products_btn"
+                            data-bs-toggle="modal" data-bs-target="#choose_products" v-on:click="this.getAllProducts();">
+                            3.Add Products of Goods
+                            <font-awesome-icon icon=" fa-solid fa-box-archive"  size="xl" style="color: #ffffff;" />
+                        </button>
+                        <!--NEW-----product-modal---------------------------------------------------------------------->
+                        <div class="modal fade" id="choose_products" tabindex="-1" aria-labelledby="" aria-hidden="true">
+                            <div class="modal-dialog modal-xl">
+
+                                <div class="modal-content text-black">
+
+                                    <div class="modal-header">
+                                        <h4 class="modal-title"> Choose From Product Below (Only Press Once, No Need to Double Click)</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="close">X</button>
+                                    </div>
+                                    <!---->
+                                    <div class="modal-body">
+                                        <!--v-on:tmp_sell="getChoosenProducts($event);"     -->
+                                        <all-products-choose 
+
+                                            v-on:choosen_products="getChoosenProducts($event); " 
+
+                                            :tmp_sell="getTmpSell"
+
+                                        >
+                                        
+                                        </all-products-choose>
+
+                                        <!--all-rpducts-choose -->
+                                        <th>PRODUCT IN DATABASE:</th>
+                                        <div class="grid gird-cols-3 gap-2">
+                                            <div>
+                                                <input type="text" class="form-control" placeholder="Search..." v-model="scp">
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-primary " @click.prevent="getAllProductsNewest()">Sort From Oldest </button>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-primary " @click.prevent="getAllProductsOldest()">Sort From Newest </button>
+                                            </div>
+
+                                        </div>
+                                        
+                                        <table class="table table-dark" >
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">tmp#</th>
+                                                <th scope="col">Code</th>
+                                                <th scope="col">Name</th>
+                                                    
+                                                <th scope="col">&#163; Cost</th>
+                                                <th scope="col">Margin &percnt;</th>
+                                                <th scope="col">Sell</th>
+                                                <th scopr="col">choose</th>
+                                            </tr>
+
+                                            </thead>
+
+                                            <tbody>
+                                            
+                                            <tr class="choose_product" v-for="p, i in f_all_products" :class="{disabled: p.selected}"  @click.prevent="choosenOneProduct($event,p, i); ">
+                                                <td> {{ i }} </td>
+                                                <td> {{ p.p_code }} </td>
+                                                <td> {{ p.p_fullname }} </td>
+                                                <td> {{ p.p_category }} </td>
+                                                <td> {{ p.p_cost }} </td>
+                                                <td> {{ p.p_margin }} </td>
+                                                <td> {{ p.p_sell }} </td>
+
+                                                <td> <div><button class="btn btn-info" :disabled="p.selected"  @click.prevent="choosenOneProduct($event,p, i); p.selected=true;" > [+] </button> </div> </td>
+                                            </tr>
+                                            
+                                            </tbody>
+
+                                            
+                                        </table>  
+
+
+                                        <!--all products choose end-->
+
+
+                                    </div>
+
+
+                                    <div class="modal-footer">
+                                        <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="close">Add Product To Quote</button>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--show choosen products-->
+                    <div>
+                        <table class="table table-dark" id="my_favoriate_table">
+                            <thead>
+                                <tr class="">
+                                    <th class="col-5" scope="col">Choosen Product Name</th>
+                                    <th class="col" scope="col">Product Code</th>
+                                    <th scope="col">Product Category</th>
+                                    <th scope="col">Product Cost</th>
+                                    <th scope="col">Product Margin</th>
+                                    <th scope="col" style="text-decoration:underline;">Product Sell</th>
+                                    <th scope="col" style="color:grey;">Add Qunatity #</th>
+                                    <th scope="col" style="color:grey;" title="This is the text of the tooltip">Add Unit (eg. mm, box)</th>
+                                    <th scope="col" style="color:grey;">Add Discount %</th>
+                                    <th scope="col" style="color:grey;">Discount Deduction £ </th>
+                                    <th scope="col" style="color:grey; text-decoration-line: underline; text-decoration-style: double;">Final Total</th>
+                                    <th scope="col"> Delete</th>
+                                </tr>
+                            </thead>
+
+
+                            <tbody>
+
+
+                                <tr v-for="p, i in choosen_products" @focusout="handleFocusout($event,  p.pid, data-field, i  )" >
+
+                                    <td class="col-5" scope="col"> {{ p.p_fullname }} </td>
+                                    <td class="col"> {{ p.p_code }} </td>
+                                    <td> {{ p.p_category }} </td>
+                                    <td> {{ p.p_cost }} </td>
+                                    <td> {{ p.p_margin }} </td>
+                                    <td :ref="'add_all_sell'+i" :id="'add_all_sell'+i" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i);" style="text-decoration:underline;"> 
+                                        {{ p.p_sell }} 
+                                    </td>
+                                    <td contenteditable="true"  data-field="p_qty" :id="`ep_qty_${i}`"  > {{p.p_quantity}} </td>
+                                    <td contenteditable="true"  data-field="p_unit" :id="`ep_unit_${i}`"> {{p.p_unit}} </td>
+                                    <td contenteditable="true"  data-field="p_discount" :id= "`ep_discount_${i}`" th:onChange="c();">{{p.p_discount}}</td>
+                                    
+                                    <td contenteditable="true"  data-field="p_m_discount" :id= "`ep_m_discount_${i}`" th:onChange="c();"> - </td>
+
+                                    <td :ref="'qd_total_sell'+i" :id="`qd_total_${i}`" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i)" style="text-decoration-line: underline; text-decoration-style: double;" >
+                                        {{ p.p_final_total }} 
+                                    </td>
+                                    
+                                    <td> 
+                                        <button class="btn btn-warning" @click.prevent="minusProduct(i, p.p_fullname)"> [-] </button>
+                                    </td>
+                                </tr>
+
+
+                                
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                    <!-----c-->
+                </div>
+
+                
+            </div>
+
+
+
+            <!--d-final calculationPUT_FINAL_CAL-->
+            <div>
+                    <p class="text-2xl underline">4.Final Calculation</p>
+
+                <div class="grid grid-cols-2 " style="  ">
+
+                    <div class="fc grid grid-cols-1" style="">
+                        <div>
+                            <label for="q_subtotal">Subtotal </label>
+                            <!--disabled @change="CalculateSubtotal" @input="addVatSHip($event.target.value)"-->
+                        </div>
+                        <div>
+                            <input ref="q_subtotal" placeholder="Subtotal"  id="q_subtotal"  disabled  />
+                        </div>
+                    </div>
+
+
+                    <div class="grid grid-cols-1" style="">
+                        <!--min="1" max="100"-->
+                        <div>
+                        <label for="q_vat">VAT </label>
+                        </div>
+                        <div>
+                        <input ref="q_vat" placeholder="Vat" id="q_vat"   disabled />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1" style="">
+                        <div>
+                        <label for="q_shipping"> 4A. Shipping </label>
+                        </div>
+                        <div>
+                        <input ref="q_shipping" placeholder="Shipping" id="q_shipping" @focusout="addShip" onkeypress="only_decimial($event)" value="0"/>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1" style="">
+                        <div>
+                        <label for="q_total">Total </label>
+                        </div>
+                        <div>
+                        <input ref="q_total" placeholder="Total" id="q_total" class="input-lg"  @input="addVatSHip($event)"
+                        disabled />
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1" style=";;">
+                        <div>
+                        <label for="q_total">5. Reference Number</label>
+                        </div>
+                        <div>
+                        <input ref="q_reference_number" placeholder="Reference" id="q_reference_number" class="input-lg" />
+                        </div>
+                    </div>
+
+
+                    <div class="px-2">
+                        <button class="preview_btn btn btn-info btn-lg btn-block" data-bs-toggle="modal"
+                            data-bs-target="#preview_quotation" @click.prevent=previewBtn2()> Preview Quotation</button>
+                        <!--@click.prevent="uploadQuotePDF($event)" download -->
+
+                        <!------------------modal start-------------------->
+                        <div class="modal fade" id="preview_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true" >
+
+                            <div class="modal-dialog modal-xl">
+
+                                <div class="modal-content text-black" style="height:1000px;">
+
+                                    <div class="modal-header">
+
+                                        <h4 class="modal-title"> Preview Qutotation, Please make sure all information is fill-out. 
+                                            The information you do not fillout has already highlighted in red.
+                                        </h4>
+
+                                    </div>
+
+                                    <div class="modal-body">
+
+
+                                        <embed id="preview_quotationPDF" width='100%' height='100%' src='' />
+
+
+
+
+                                    </div>
+                                    <!-- <div class="modal-footer" style="background-color: #1267aa;">
+
+                                        <button type="button" class="btn btn-primary" @click="uploadQuotePDF($event)">
+                                            Submit Qutotation 
+                                        </button>
+
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel This Screen</button>
+                                    </div> -->
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <!------------------modal end---------------------->
+                    </div>
+                
+
+                    <div class="px-2">
+
+                        <button class="preview_btn btn btn-primary btn-lg btn-block" @click.prevent="previewBtn($event);"> Submit Quotation </button>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+            </div>
+
+        <!--2 buttons -->
         
 
-        <div>
+
+        <!-- <div>
             <p class="dashboard_txt pt-5 pb-3 mx-6 text-start" > 
                 This is a Quote PDF, refer this quote number= {{ this_one_q_number }} , can be found on Dashboard > Quote 
                 <router-link 
@@ -449,10 +503,10 @@
                 </router-link>
             </p>
 
-        </div>
-        <embed id="hidden_quotationPDF" width="1200px" height="800px" src='' />
+        </div> -->
+        
 
-
+        <!-- <img alt="" class="position-absolute  bottom-0 " src="../assets/design_it/cms_logo_long.png" style="z-index:-999; ;;" /> -->
     </div>
 </template>
 
@@ -647,7 +701,12 @@ export default {
 
             this_one_q_hash_number: '',
             this_one_q_pdf_link: '',
-            this_one_q_number: '',
+            this_one_q_number: 'no-quotation-create-yet',
+
+            choosen_bill_2: 'no bill to selected',
+
+            scp: '',
+
         }
     },
     components: {
@@ -723,6 +782,8 @@ export default {
             document.getElementById('tmp_s_address2').innerHTML = '';
             document.getElementById('tmp_s_city').innerHTML = '';
             document.getElementById('tmp_s_postcode').innerHTML = '';
+
+            this.choosen_bill_2 = b.c_fullname;
         },
         ChooseShipTo(ev, s, i) {
             //////console.log("[QuoteAdd-ChooseShipTo] comming soon, click client and retrieve text." + ev + "  " + i);
@@ -823,9 +884,10 @@ export default {
                 let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK");
                 
                 const quote_number = await auto_quote_no_generator2();
+
                 this.this_one_q_number = quote_number;
 
-                console.log("quote number:    " + this.this_one_q_number);
+                console.log("quote number:    " + this.this_one_q_number + " " + quote_number);
 
                 let reference_number = document.getElementById('q_reference_number').value;
 
@@ -1052,6 +1114,7 @@ export default {
             const a = document.getElementById('hidden_quotationPDF');
             var clone = a.cloneNode(true);
             clone.setAttribute('src', string);
+
 
             document.getElementById('hidden_quotationPDF').src = string;
 
@@ -1318,17 +1381,25 @@ export default {
 
                 snapshot.docs.forEach(d => {
                     var product = d.data();
-                    this.choosen_products.push(product);
-                    var tmp_one_sell = parseFloat(d.data().p_final_total);  //p_final_total
-                    this.tmp_sell = this.tmp_sell + tmp_one_sell;
 
-                    
-                    //console.log("!!!!!!!!!2 " + this.tmp_sell + "+" + tmp_one_sell)
+                    // check if the product is already in the list
+                    if (!this.choosen_products.some((p) => p.p_fullname === product.p_fullname)) {
 
-                    document.getElementById('q_subtotal').setAttribute('value', this.tmp_sell);
-                    
-                    addVatSHip(this.tmp_sell);
-                    
+                        this.choosen_products.push(product);
+
+                        var tmp_one_sell = parseFloat(d.data().p_final_total);  //p_final_total
+
+                        console.log("!!!!!!!!!! " + this.tmp_sell + "+" + tmp_one_sell)
+
+                        this.tmp_sell = this.tmp_sell + tmp_one_sell;
+
+                        
+                        //
+
+                        document.getElementById('q_subtotal').setAttribute('value', this.tmp_sell);
+                        
+                        addVatSHip(this.tmp_sell);
+                    }
                     //NEW
                     
                     //this.$root.$emit('choosenOneProduct', this.tmp_sell);
@@ -1484,6 +1555,13 @@ export default {
 
         this.getAllProducts();
 
+    },
+    computed: {
+        f_all_products() {
+        return this.all_products.filter((all_products) =>
+            all_products.p_fullname.toLowerCase().includes(this.scp.toLowerCase())
+        );
+        },
     },
 }
 ////////////////////////////////////////////////////////////////////////////////////
@@ -1659,4 +1737,33 @@ function clear_q_entry(){
 </script>
 
 <style>
+.choose_address_btn{
+    width: 200px;
+    height: 200px;
+}
+.fc{
+    position: relative;
+    top: 0;
+
+}
+.cms_background{
+
+    background: rgba(0, 0, 0, .65) url('../assets/Warehouse_Nologo.png') no-repeat;
+    
+    /* background-blend-mode: darken; */
+    background-repeat: no-repeat;
+
+    background-attachment: fixed;
+    background-position: bottom;
+    background-size: cover;
+    display: flex;
+    
+    background-size: cover;
+    display: flex;
+}
+.eat-width{
+    position: absolute;
+    left:0px;
+    right:0px;
+}
 </style>

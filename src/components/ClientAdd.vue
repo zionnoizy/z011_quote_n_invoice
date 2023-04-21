@@ -2,10 +2,9 @@
     <!--this page is components only-->
     <div class="ClientAdd">
 
-        <p>test20</p>
-        <p>Add Client Page.</p>
 
-        <p> client address is in UK / outside of UK</p>
+        <p>Add Client Page</p>
+
         <!--@sumbit.prevent="addClient"-->
 
         <form>

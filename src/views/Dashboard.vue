@@ -12,20 +12,23 @@
             
             <h2 class="dont_blur info_head text-4xl font-sans-b mb-16 ml-5 mt-3 text-left max-w-lg uppercase  text-white"> 
                 
-                <img class="logo justify-center mx-auto mb-3" src="../assets/logo/logo-white.png" />
+                <img  width="225" height="105"  class="logo justify-center mx-auto mb-3" src="../assets/logo/logo-white.png" />
             
                 Welcome Back To CMS-QuoteIn 
             
             </h2>
             
             <div class="  mx-auto" style="">
-                <div class=" grid gird-cols-1 lg:grid-cols-2 gap-5" style="z-index: 2;">
-                    <div><button class="btn btn-primary btn-lg mt-3  font-weight-bold" style="background-color: rgb(161, 204, 254) !important; border: none; height: 80px;">
+                <div class=" grid gird-cols-1 lg:grid-cols-1 gap-5" style="z-index: 2;">
+                    <!--background-color: rgb(161, 204, 254) !important; border: none; height: 80px;-->
+                    <div>
+                        <button class="btn btn-primary btn-lg mt-3  font-weight-bold" style="">
                         <a href="/dashboard/all_client" class=""> View / Add Client 
                             <font-awesome-icon icon="fa-solid fa-user" style="color: #ffffff;" />
                         </a>
-                    </button></div>
-                    <div><button class="btn btn-primary btn-lg mt-3  font-weight-bold" style="background-color: rgb(161, 204, 254) !important; border: none; height: 80px;">
+                        </button>
+                    </div>
+                    <div><button class="btn btn-primary btn-lg mt-3  font-weight-bold" style="">
                         <a href="/dashboard/all_product" class=""> View / Add Product 
                             <font-awesome-icon icon="fa-solid fa-box-archive" style="color: #ffffff;" />
                         </a>
@@ -43,7 +46,7 @@
 
                     <button class="btn btn-primary btn-lg mb-3 btn-block mx-auto mt-5" style="width:100%; ">  
                         <router-link :to="{name: 'QuoteAdd' }"> 
-                            Add New Quote 
+                            Create New Quotation Here
                             <font-awesome-icon icon="fa-solid fa-paperclip" style="color: #ffffff;" />
                         </router-link> 
                     </button>

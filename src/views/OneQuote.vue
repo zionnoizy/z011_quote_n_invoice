@@ -516,7 +516,7 @@ export default{
 
             console.log(this.copy_q_b_f + " / " + this.copy_q_b_a1 + " / " + this.copy_q_b_a2 + " / " + this.copy_q_b_c);
 
-            const bill_chip = {
+            const bill_ship = {
                 qi_bill_fullname: this.copy_q_b_f,
                 qi_bill_address1: this.copy_q_b_a1,
                 qi_bill_address2: this.copy_q_b_a2, 
@@ -562,7 +562,7 @@ export default{
             const pro_ref = this.copy_exact_product;
             
 
-            await addDoc(ref, {obj_ref, pro_ref, price_ref, bill_chip}) 
+            await addDoc(ref, {obj_ref, pro_ref, price_ref, bill_ship}) 
             .then(docRef => {
                 console.log(docRef.id);
                 const get_id = firebase.firestore().collection("ALL_invoice").doc(docRef.id);

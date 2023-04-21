@@ -55,7 +55,7 @@
                     query: {this_one_i_hash_number: i.invoice_hashid, this_one_i_pdf_link: i.i_pdf_link}}">
                     {{ i.obj_ref.qi_quote_number}}  
                     </router-link>
-                  </td>
+                    </td>
                     <td scope="col" style="width: 150px;"> 
                       <router-link 
                       tag="tr"

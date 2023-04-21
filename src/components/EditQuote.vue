@@ -203,8 +203,6 @@ export default{
  
             var all_client_ref = await firebase.firestore().collection("all_clients");
             all_client_ref.onSnapshot(snap => {
-
-
                 snap.forEach(d => {
                     this.selectedAnotherClient = d.data().c_fullname;
                     //console.log("[ ]" + d.data().c_fullname);

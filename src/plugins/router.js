@@ -25,7 +25,7 @@ const Empty = () => import('@/views/Empty.vue');
 
 
 const router = createRouter({
-    history: createWebHistory(),
+  history: createWebHistory(),
   routes:[
     //, meta: {requiresGuest: true} meta: {requiresVisitor: true},
       {path: "/", name: "Login", component: Login },
