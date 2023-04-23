@@ -1,14 +1,19 @@
 <template>
   <div class="ClientCard">
     
-
-    <div class="lg:px-5 lg:mx-5 grid grid-cols-5 gap-3 ">
-      <div>
+    <div class="grid grid-cols-1 gap-1">
         <label>Search Client Name</label>
-        <input type="text" v-model="myCsearch" placeholder="search here.." />
+        <input type="text" class="form-control mx-5" v-model="myCsearch" placeholder="search client name here.." />
       </div>
-          <div class="client_card row col-span-1 flex-col text-center"  v-for="c, i in f_all_client_card"
-            data-bs-toggle="modal" data-bs-target="#show_delievery_address" @click.prevent="this.showDelivery($event, c, i)" > 
+
+    <div class="lg:px-5 lg:mx-5 grid-cols-2 md:grid grid-cols-3 lg:grid-cols-5 gap-3 ">
+      
+          <div class="client_card row col-span-1 flex-col text-center"  
+            v-for="c, i in f_all_client_card.slice(0, (page + 1) * perPage)"
+            :key="i"
+            data-bs-toggle="modal" 
+            data-bs-target="#show_delievery_address" 
+            @click.prevent="this.showDelivery($event, c, i)" > 
             <div class="row" >
               <div>
                 <strong>{{ c.c_fullname }}</strong>
@@ -90,12 +95,18 @@ export default{
             perpage: 3,
             pageNumber:0,
             myCsearch: '',
+
+            page: 0,
+            perPage: 10,
         }
     },
     mounted () {
-
+      window.addEventListener('scroll', this.handleScroll)
      
     },
+    beforeUnmount() {
+  window.removeEventListener('scroll', this.handleScroll)
+},
     methods:{
 
         async getAllClient() { 
@@ -203,6 +214,12 @@ export default{
         },
         previous(){
         this.pageNumber--;
+        },
+        handleScroll() {
+          const bottomOfPage = window.innerHeight + window.pageYOffset >= document.body.offsetHeight
+          if (bottomOfPage) {
+            this.perPage += 10
+          }
         },
     },
     created(){

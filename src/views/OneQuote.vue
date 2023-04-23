@@ -43,7 +43,7 @@
                     <div class="modal fade" id="edit_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true" >
                         <div class="modal-dialog modal-xl" style="display: table; width: auto; overflow-y: auto; overflow-x: auto; position: relative;   ">
 
-                            <div class="modal-content text-black" style="height: 600px;width:1338px;">
+                            <div class="modal-content text-black " id="editQuotationModal" style="height: 600px;width:1338px;">
 
                                 <div class="modal-header">
                                     <h4 class="modal-title"> Edit Your Quotation Below. </h4>
@@ -154,7 +154,7 @@
                                             </div>
                                             <button @click="removeRow(i)">Remove Row</button>
                                         </div>
-                                        <button @click="addRow">Add Row</button>
+                                        <button class="btn btn-primary" @click="addRow">Add Row</button>
                                     </div>
 
                                     <div class="">
@@ -187,7 +187,7 @@
                                 </div>
 
                                 <div class="modal-footer" style="background-color: #1267aa;">
-                                    <button type="button" data-bs-dismiss="modal" aria-label="close" class="btn btn-warning" @click="UpdateQuote($event, this.this_one_q_hash_number, copy_exact_product , id, showREFERENCE2  )">SAVE / CHANGE YOUR QUOTE</button>
+                                    <button id="edit_btn" type="button" data-bs-dismiss="modal" aria-label="close" class="btn btn-warning" @click="UpdateQuote($event, this.this_one_q_hash_number, copy_exact_product , id, showREFERENCE2  )">SAVE / CHANGE YOUR QUOTE</button>
                                 </div>
                                 
                             </div>
@@ -327,6 +327,13 @@ export default{
         return {  handleFocusout };
 
     },
+    mounted(){
+        const myModal = document.getElementById('editQuotationModal');
+        myModal.addEventListener('hidden.bs.modal', this.modalChangeCheck);
+        
+        const selectElement = document.querySelector('select');
+        selectElement.addEventListener('change', this.optionChanged);
+    },
     data(){
         return{
 
@@ -400,6 +407,7 @@ export default{
             reorganize_choosen_products: [],
 
             build_to_hash: '',
+            changed_flag: false,
         }
     },
     components:{
@@ -1296,6 +1304,7 @@ export default{
 
 
         async addRow() {
+            this.changed_flag = true;
             await this.copy_exact_product.push(this.add_empty);
             let re_cimulat_du = "EITHER ONE FINAL TOTAL IS EMPTY!";
             document.getElementById('e_q_subtotal').innerHTML = re_cimulat_du;
@@ -1309,36 +1318,64 @@ export default{
         },
         removeRow(row) {
             if (this.copy_exact_product.length == 1){
-
+                alert("at least one product must exist in quotation!");
+                return;
             }
-            this.copy_exact_product.splice(this.copy_exact_product.indexOf(row), 1)
+            else{
+                this.changed_flag = true;
+                console.log("row index? " + row);
+                this.copy_exact_product.splice(row, 1);
 
-            //STEP1: RE-CALCULATE Final
-            var x = Object.keys(copy_exact_product).length; //this.copy_exact_product.length;
-            console.log("x " + x);
 
-            let re_cimulat_du = 0;
-            for (let rs=0; rs < x; ++rs){
-                
-                let dynamic_ = "i_final_total"+rs;
 
-                var one_du = document.getElementById(dynamic_).innerHTML;
-                
-                console.log("re-final_total   +" + one_du);
-                if (one_du == "" || one_du == null){
-                    re_cimulat_du = "EITHER ONE FINAL TOTAL IS EMPTY!";
+                //STEP1: RE-CALCULATE Final
+                var x = Object.keys(this.copy_exact_product).length; //this.copy_exact_product.length;
+                console.log("x " + x);
+
+                let re_cimulat_du = 0;
+
+                for (let rs=0; rs < x; ++rs){
+                    
+                    let dynamic_ = "i_final_total"+rs;
+
+                    var one_du = document.getElementById(dynamic_).innerHTML;
+                    
+                    console.log("re-final_total   +" + one_du);
+                    if (one_du == "" || one_du == null){
+                        re_cimulat_du = "EITHER ONE FINAL TOTAL IS EMPTY!";
+                    }
+                    else{
+                        re_cimulat_du = +re_cimulat_du + +one_du;
+                        console.log("re-double_underline?" + rs + "  " + one_du + " / " + re_cimulat_du);
+                    }
+                    
                 }
-                else{
-                    re_cimulat_du = +re_cimulat_du + +one_du;
-                    console.log("re-double_underline?" + rs + "  " + one_du + " / " + re_cimulat_du);
-                }
-                
+                document.getElementById('e_q_subtotal').innerHTML = re_cimulat_du;
+                console.log("re-ipad check first if cimulate ecist?  " + re_cimulat_du);
+
+                addVatSHip(re_cimulat_du);
             }
-            document.getElementById('e_q_subtotal').innerHTML = re_cimulat_du;
-            console.log("re-ipad check first if cimulate ecist?  " + re_cimulat_du);
-            addVatSHip(re_cimulat_du);
-        }
-    
+        },
+        
+        modalClosed() {
+            console.log('Modal closed!');
+            // Any other code you want to run when the modal is closed
+            if (this.changed_flag == true) {
+                const confirmed = window.confirm('Do you want to save changes?');
+                if (confirmed) {
+                    document.getElementById("edit_btn").click();
+                }
+            }
+        },
+        option1Changed() {
+            this.changed_flag = true;
+        },
+        option2Changed() {
+            this.changed_flag = true;
+        },
+        productChanged() {
+            this.changed_flag = true;
+        },
     },
     created() {
 

@@ -61,22 +61,24 @@
         
         <div class="grid grid-cols-3 text-xl pb-6">
         
-            <div><router-link :to="{name: 'ClientCard' }"> 
+            <div>
+                <router-link :to="{name: 'ClientCard' }"  class="router-link" active-class="router-link-active"> 
                 <p class="text-3xl font-bold"> Client 
 
                     <font-awesome-icon icon="fa-solid fa-user" style="color: #ffffff;" />
                 </p> 
             
-            </router-link></div>
+                </router-link>
+            </div>
 
-            <div><router-link :to="{name: 'QuoteAll' }"> 
+            <div><router-link :to="{name: 'QuoteAll' }" class="router-link" active-class="router-link-active"> 
                 <p class="text-3xl font-bold"> Quote 
                     <font-awesome-icon icon="fa-solid fa-arrow-up-from-bracket" style="color: #ffffff;" />
 
                 </p> 
             </router-link></div>
 
-            <div><router-link :to="{name: 'InvoiceAll' }"> 
+            <div><router-link :to="{name: 'InvoiceAll' }" class="router-link" active-class="router-link-active"> 
                 <p class="text-3xl font-bold"> Invoice 
                     <font-awesome-icon icon="fa-solid fa-paperclip" style="color: #ffffff;" />
                 </p> 
@@ -243,5 +245,29 @@ export default{
     height: 100vh;
     width: 100vw;
     background: rgba(0, 0, 0, 0.5);
+}
+
+.router-link {
+  position: relative;
+}
+
+.router-link::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s;
+}
+.router-link{
+  position: relative;
+  display: inline-block;
+}
+.router-link-active::before {
+  transform: scaleX(1);
 }
 </style>

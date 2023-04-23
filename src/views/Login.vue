@@ -10,7 +10,7 @@
             <input class="ref_num" id="ref_num"/> 
         </div> -->
 
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-2 gap-2 mb-3">
             <div>
                 <img  width="225" height="105" class="qi_logo logo justify-center mx-auto " src="../assets/logo/logo-no-background.png" />
                 

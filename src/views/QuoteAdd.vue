@@ -169,8 +169,62 @@
             <!---b-->
 
             <div class="">
-                This is the Quotation Generate: {{ this_one_q_number }}.
-                Please Refer to Home Page to find out the Quotation.
+                <p class="text-2xl underline">4.Final Calculation</p>
+
+                <div class="grid grid-cols-2 " style="  ">
+
+                    <div class="fc grid grid-cols-1" style="">
+                        <div>
+                            <label for="q_subtotal">Subtotal </label>
+                            <!--disabled @change="CalculateSubtotal" @input="addVatSHip($event.target.value)"-->
+                        </div>
+                        <div>
+                            <input ref="q_subtotal" placeholder="Subtotal"  id="q_subtotal"  disabled  />
+                        </div>
+                    </div>
+
+
+                    <div class="grid grid-cols-1" style="">
+                        <!--min="1" max="100"-->
+                        <div>
+                        <label for="q_vat">VAT </label>
+                        </div>
+                        <div>
+                        <input ref="q_vat" placeholder="Vat" id="q_vat"   disabled />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1" style="">
+                        <div>
+                        <label for="q_shipping"> 4A. Shipping </label>
+                        </div>
+                        <div>
+                        <input ref="q_shipping" placeholder="Shipping" id="q_shipping" @focusout="addShip" onkeypress="only_decimial($event)" value="0"/>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1" style="">
+                        <div>
+                        <label for="q_total">Total </label>
+                        </div>
+                        <div>
+                        <input ref="q_total" placeholder="Total" id="q_total" class="input-lg"  @input="addVatSHip($event)"
+                        disabled />
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1" style=";;">
+                        <div>
+                        <label for="q_total">5. Reference Number</label>
+                        </div>
+                        <div>
+                        <input ref="q_reference_number" placeholder="Reference" id="q_reference_number" class="input-lg" />
+                        </div>
+                    </div>
+
+
+                    
+
+                </div>
             </div>
 
             
@@ -374,60 +428,7 @@
 
             <!--d-final calculationPUT_FINAL_CAL-->
             <div>
-                    <p class="text-2xl underline">4.Final Calculation</p>
-
-                <div class="grid grid-cols-2 " style="  ">
-
-                    <div class="fc grid grid-cols-1" style="">
-                        <div>
-                            <label for="q_subtotal">Subtotal </label>
-                            <!--disabled @change="CalculateSubtotal" @input="addVatSHip($event.target.value)"-->
-                        </div>
-                        <div>
-                            <input ref="q_subtotal" placeholder="Subtotal"  id="q_subtotal"  disabled  />
-                        </div>
-                    </div>
-
-
-                    <div class="grid grid-cols-1" style="">
-                        <!--min="1" max="100"-->
-                        <div>
-                        <label for="q_vat">VAT </label>
-                        </div>
-                        <div>
-                        <input ref="q_vat" placeholder="Vat" id="q_vat"   disabled />
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1" style="">
-                        <div>
-                        <label for="q_shipping"> 4A. Shipping </label>
-                        </div>
-                        <div>
-                        <input ref="q_shipping" placeholder="Shipping" id="q_shipping" @focusout="addShip" onkeypress="only_decimial($event)" value="0"/>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1" style="">
-                        <div>
-                        <label for="q_total">Total </label>
-                        </div>
-                        <div>
-                        <input ref="q_total" placeholder="Total" id="q_total" class="input-lg"  @input="addVatSHip($event)"
-                        disabled />
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-1" style=";;">
-                        <div>
-                        <label for="q_total">5. Reference Number</label>
-                        </div>
-                        <div>
-                        <input ref="q_reference_number" placeholder="Reference" id="q_reference_number" class="input-lg" />
-                        </div>
-                    </div>
-
-
-                    <div class="px-2">
+                <div class="px-2">
                         <button class="preview_btn btn btn-info btn-lg btn-block" data-bs-toggle="modal"
                             data-bs-target="#preview_quotation" @click.prevent=previewBtn2()> Preview Quotation</button>
                         <!--@click.prevent="uploadQuotePDF($event)" download -->
@@ -477,9 +478,7 @@
 
                         <button class="preview_btn btn btn-primary btn-lg btn-block" @click.prevent="previewBtn($event);"> Submit Quotation </button>
 
-                    </div>
-
-                </div>
+                    </div>  
             </div>
 
 

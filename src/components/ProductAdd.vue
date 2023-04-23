@@ -1,12 +1,9 @@
 <template>
   <!--this page is components only-->
-  <div class="ProductAdd">
+  <div class="ProductAdd mx-7">
       
-
-
-      
-
-      <form @sumbit.prevent="addProduct">
+    <div id="add_p_table">
+      <form @sumbit.prevent="addProduct" class="">
 
         <table class="table table-dark" >
           <thead>
@@ -26,7 +23,7 @@
               <th scope="row">
                 <div><button class="btn btn-info"   @click.prevent="createProduct" > [+] </button> </div>
               </th>
-              <td> <input ref="p_code" placeholder="Product Code" id="pi_code" required/> </td>
+              <td> <input ref="p_code" placeholder="Product Code" id="pi_code round_input_box" required/> </td>
               <td> <input ref="p_enter" placeholder="Item Name" id="pi_name" required/> </td>
               <td> 
                 <select id="p_category" class="form-select" aria-label="Default select example">
@@ -53,7 +50,8 @@
         
       </form>
       <!---------------------------------->
-      
+    </div> 
+
       <p id="complain_text" style="color: red;">  </p>
   </div>
 </template>
@@ -194,48 +192,47 @@ export default{
 
 }
 function validate_p_input(){
+  let flag = true;
+  var pc_1 = document.getElementById('pi_code').value;
+  var pc_2 = document.getElementById('pi_name').value;
+  var pc_3 = document.getElementById('p_category').value;
+  var pc_4 = document.getElementById('pi_cost').value;
+  var pc_5 = document.getElementById('pi_margin').value;
+  
+  var pcc_1 = document.getElementById('pi_code');
+  var pcc_2 = document.getElementById('pi_name');
+  var pcc_3 = document.getElementById('p_category');
+  var pcc_4 = document.getElementById('pi_cost');
+  var pcc_5 = document.getElementById('pi_margin');
+  var category = document.getElementById('p_category').value;
 
-      let flag = true;
-      var pc_1 = document.getElementById('pi_code').value;
-      var pc_2 = document.getElementById('pi_name').value;
-      var pc_3 = document.getElementById('p_category').value;
-      var pc_4 = document.getElementById('pi_cost').value;
-      var pc_5 = document.getElementById('pi_margin').value;
-      
-      var pcc_1 = document.getElementById('pi_code');
-      var pcc_2 = document.getElementById('pi_name');
-      var pcc_3 = document.getElementById('p_category');
-      var pcc_4 = document.getElementById('pi_cost');
-      var pcc_5 = document.getElementById('pi_margin');
-      var category = document.getElementById('p_category').value;
+  console.log("[ProductAdd]  " + pc_3 + " " + pc_2.length);
 
-      console.log("[ProductAdd]  " + pc_3 + " " + pc_2.length);
-
-      if (pc_1.length <= 0){
-        pcc_1.classList.add("red");
-        flag = false;
-      }
-      if (pc_2.length <= 0){
-        pcc_2.classList.add("red");
-        flag = false;
-      }
-      if (pc_3.length <= 0){
-        pcc_3.classList.add("red");
-        flag = false;
-      }
-      if (pc_4.length <= 0){
-        pcc_4.classList.add("red");
-        flag = false;
-      }
-      if (pc_5.length <= 0){
-        pcc_5.classList.add("red");
-        flag = false;
-      }
-      if (category === 'Select Category Here'){
-        document.getElementById('p_category').classList.add('red-text');
-        flag = false;
-      }
-      return flag;
+  if (pc_1.length <= 0){
+    pcc_1.classList.add("red");
+    flag = false;
+  }
+  if (pc_2.length <= 0){
+    pcc_2.classList.add("red");
+    flag = false;
+  }
+  if (pc_3.length <= 0){
+    pcc_3.classList.add("red");
+    flag = false;
+  }
+  if (pc_4.length <= 0){
+    pcc_4.classList.add("red");
+    flag = false;
+  }
+  if (pc_5.length <= 0){
+    pcc_5.classList.add("red");
+    flag = false;
+  }
+  if (category === 'Select Category Here'){
+    document.getElementById('p_category').classList.add('red-text');
+    flag = false;
+  }
+  return flag;
 }
 
 async function validate_p_fullname(){
@@ -275,5 +272,11 @@ color:red;
 }
 .red-text {
     color: red;
+}
+.round_input_box{
+
+  border-radius: 18px;
+  -moz-border-radius: 5px;
+
 }
 </style>
