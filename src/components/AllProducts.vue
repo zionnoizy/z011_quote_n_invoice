@@ -2,12 +2,14 @@
 
 
     <div class="mx-7">
+
       <div class="grid grid-cols-4 gap-3" style="display: flex; justify-content: center;">
         <div>
           <label>Search Product Name</label>
-          <input type="text" v-model="mysearch" placeholder="search here.." />
+          <input type="text" class="form-control" v-model="mysearch" placeholder="search here.." />
         </div>
-        <select :id= "`ep_category_${i}`" class="form-select form-select bg-dark text-white" data-field="p_category">
+
+        <select :id= "`ep_category_${i}`" class="my-3 form-select form-select bg-dark text-white" data-field="p_category" v-model="myselectedcategory">
           <option selected>Find Product Category..</option>
           <option   v-for="c in all_category" :value="`${c.category_fullname}`" > {{c.category_fullname}} </option>
         </select>
@@ -20,8 +22,7 @@
       {{statuss}}
       </div>
         <!-- <button @click.prevent="ChangingProduct">EDIT ALL</button> -->
-        <p>click eith one field on the table to edit, please type sometinhg on it otherwise will have a chance to hit a bug return '0'</p>
-        <p>edit, search and, input cannot preform at the same time, please refresh the page if you do so.</p>
+        
          status: <strong> <p ref="statuss"> {{statuss.value}} </p></strong>
         <table class="table table-dark" id="store_to_excel" >
             <thead>
@@ -260,6 +261,7 @@ export default{
           },
           //statuss: 'NOTHING CHANGE',
           mysearch: '',
+          myselectedcategory: '',
           all_category: [],
         }
     },
@@ -368,13 +370,47 @@ export default{
               });
           });
       },
+      async sortProductsByCategory(selectedCategory) {
+        
+        const productsRef = firebase.firestore().collection('all_products');
+
+        let query = productsRef;
+
+        if (selectedCategory) {
+          query = query.where('p_category', '===', selectedCategory);
+        }
+        query = query.orderBy('p_fullname');
+
+        const snapshot = await query.get();
+        const sortedProducts = snapshot.docs.map(doc => doc.data());
+        
+        return sortedProducts;
+      },
     },
     computed: {
       f_all_products(){
+        let filteredProducts = this.all_products;
 
-        return this.all_products.filter(all_products => 
-        all_products.p_fullname.toLowerCase().includes(this.mysearch.toLocaleLowerCase())
+        if (this.myselectedcategory) {
+          filteredProducts =  this.all_products.filter(all_products => 
+          all_products.p_category.toLowerCase() === this.myselectedcategory.toLowerCase());
+          console.log("sort category");
+
+        }
+        
+        if (this.mysearch) {
+          filteredProducts =  this.all_products.filter(all_products => 
+          all_products.p_fullname.toLowerCase().includes(this.mysearch.toLocaleLowerCase()));
+         
+        }
+        /*
+        if (this.mysearch)
+          return this.all_products.filter(all_products => 
+          all_products.p_fullname.toLowerCase().includes(this.mysearch.toLocaleLowerCase())
+        
         );
+        */
+       return filteredProducts;
       }
     },
 

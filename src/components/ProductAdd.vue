@@ -2,8 +2,8 @@
   <!--this page is components only-->
   <div class="ProductAdd mx-7">
       
-    <div id="add_p_table">
-      <form @sumbit.prevent="addProduct" class="">
+    <div class="container " >
+      <form @sumbit.prevent="addProduct" class=" rounded p-3 "  >
 
         <table class="table table-dark" >
           <thead>
@@ -278,5 +278,12 @@ color:red;
   border-radius: 18px;
   -moz-border-radius: 5px;
 
+}
+form {
+  border-radius: 10px;
+}
+.curved-form {
+  border-radius: 10px;
+  overflow: hidden; /* hide overflow content to prevent clipping */
 }
 </style>

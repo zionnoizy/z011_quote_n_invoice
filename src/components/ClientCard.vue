@@ -1,10 +1,10 @@
 <template>
   <div class="ClientCard">
     
-    <div class="grid grid-cols-1 gap-1">
+    <div class="col-sm-12 col-md-6 mx-auto">
         <label>Search Client Name</label>
-        <input type="text" class="form-control mx-5" v-model="myCsearch" placeholder="search client name here.." />
-      </div>
+        <input type="text" class="mb-3 form-control mx-5" v-model="myCsearch" placeholder="search client name here.." />
+    </div>
 
     <div class="lg:px-5 lg:mx-5 grid-cols-2 md:grid grid-cols-3 lg:grid-cols-5 gap-3 ">
       

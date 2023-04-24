@@ -17,216 +17,231 @@
             <p>Subtotal? {{copy_ft_sub_total}}</p>
             <p>$ {{ copy_ft  }}</p>
         </div>-->
-        <p class="dashboard_txt pt-5 pb-3 mx-6 text-start" style="border-bottom: 3px solid #fff;" ><router-link to="/dashboard/quote" exact>
+        
+        <p class="top_background  "   >
             
-            <a><strong class="link underline">Dashboard</strong></a></router-link>  > One Quote
-          
+            <div class="dashboard_txt pt-5 pb-3 mx-6 text-start">
+                
+                <router-link to="/dashboard/quote" exact>
+            
+                <a> <strong class="link underline">Dashboard</strong> </a></router-link>  > One Quote
+            
+            </div>
         </p>
 
-        <div class="grid lg:grid-cols-3 grid-cols-2">
 
-            <div>
+        <div class="grid lg:grid-cols-3 gap-3" style="display: flex; justify-content: center; text-align: center;">
+            
+
+<!--1-->
+<div>
+    <button class="bigger_btn border btn btn-secondary mt-5" type="button"
+        id="m_edit_quotation" data-bs-toggle="modal" data-bs-target="#edit_quotation">
+        Edit Quotation
+    </button>
+    <div class="modal fade" id="edit_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true" >
+        <div class="modal-dialog modal-xl" style="display: table; width: auto; overflow-y: auto; overflow-x: auto; position: relative;   ">
+
+            <div class="modal-content text-black " id="editQuotationModal" style="height: 600px;width:1338px;">
+
+                <div class="modal-header">
+                    <h4 class="modal-title"> Edit Your Quotation Below. </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="close">X</button>
+                </div>
+
+                <div class="modal-body">
+                    <!--------------------------EDIT QUOTATION START----------------------->
+                    
+                    <div class="grid grid-cols-2 gap-1 ">
+                        <div class="mx-auto" style="display: flex;;">
+                            <div class="flex-grow-0 mx-2 px-3">
+                                <label>1.BILL TO (CLIENT)</label>
+                                <select id="select_bill_to" class="form-select" aria-label="Default select example" 
+                                @change="doSort3(`${copy_q_b_f}`);" >
+                                    <option selected> {{copy_q_b_f}} </option>
+                                    <option v-for="c in all_clients" :value="`${c.c_fullname}`">{{c.c_fullname}}</option>
+                                </select>
+                            </div> 
+                            <p class="hidden" id="select_fullname"></p>   
+                            <p class="hidden" id="select_a1"></p>   
+                            <p class="hidden" id="select_a2"></p>   
+                            <p class="hidden" id="select_city"></p>   
+                            <p class="hidden" id="select_postcode"></p>   
+                            <div class="flex-grow-0 mx-2 px-3">
+                                <label>2.SHIP TO (DELIVERY)</label>
+                                <select id="select_ship_to" class="form-select" aria-label="Default select example"  
+                                @change="doSort4(`${copy_q_s_f}`);">
+                                    <option selected> {{ copy_q_s_f }} </option>
+                                    <!--:value="`${d.d_fullname}`"-->
+                                    <option v-for="d in all_deliverys" :value="`${d.d_fullname}`" >{{d.d_fullname}}</option>
+                                </select>
+                                <p class="hidden" id="select_b_fullname"></p>  
+                                <p class="hidden" id="select_b_a1"></p>   
+                                <p class="hidden" id="select_b_a2"></p>   
+                                <p class="hidden" id="select_b_city"></p>   
+                                <p class="hidden" id="select_b_postcode"></p>   
+                            </div>  
+
+                        </div>
+
+                        <div class="mx-auto" style="display: flex;">    
+                            <div class=" mx-2 px-3">
+                                <label>3.Referecne Number</label>
+                                <p><strong> {{ showREFERENCE2 }} </strong></p>
+                                
+                            </div>   
+                            <div class=" mx-2 px-3 " style="display: flex;;">
+                            <label>4. Quote No. </label>
+                            <strong><p id="set_q_number"></p></strong>
+                            </div> 
+                        </div>    
+                    </div>    
+                    <div class="" >
+                        <label>5. Products Edit </label>
+                        <div class="grid grid-cols-8 gap-1">
+      
+                            <div>ProductName</div>
+                            <div>ProductCode</div>
+                            <div>ProductSell</div>
+                            <div>Qty</div> 
+                            <div>Unit</div>
+                            <div>Discount%</div>
+                            <div>Discount£</div>
+
+                            <div style="text-decoration-line: underline; text-decoration-style: double;" >FInal-Total</div>
+                        </div>
+                        <div class="grid grid-cols-8 gap-1" v-for="(k, i) in copy_exact_product" @focusout="handleFocusout($event,  i, copy_exact_product   )" :props="props" >
+                            <div>
+                                <select :id="'so_product'+i" class="form-select" aria-label="select client from quote list below, and it will do sorting." 
+                                    @change="clearRest(i);" onfocus="this.selectedIndex = 0;">
+                                    <option selected>{{ k.p_fullname }}</option>
+                                    <option v-for="ep in e_all_product_list" :value="`${ep.p_fullname}`" > {{ ep.p_fullname }} </option>
+                                </select>
+                            </div>
+
+
+                            <div>
+                                <p :id="'i_code'+i" style="color:grey;">  {{ k.p_code }} </p>
+                            </div>
+                            <div>
+                                <p :id="'i_sell'+i" :ref="'i_sell'+i"  style="color:grey; text-decoration-line: underline; "> {{ k.p_sell }} </p>
+                            </div>
+                            
+                            <div>
+                                <input class="form-control" :ref="'i_quantity'+i" :id="'i_quantity'+i"  placeholder="Enter #Quantity" v-model="k.p_quantity" 
+                                 data-field="i_quantity">
+                            </div>
+                            
+                            <div>
+                                <input class="form-control" :ref="'i_unit'+i" :id="'i_unit'+i"  placeholder="Enter Unit (box,mm)" v-model="k.p_unit"
+                                 data-field="i_input"> 
+                            </div>
+                            
+                            <div>
+                                <input class="form-control" :ref="'i_discount'+i" :id="'i_discount'+i" placeholder="Enter %Discount" v-model="k.p_discount" /> 
+                            </div>
+
+                            <div>
+                                <p  :ref="'i_discount_m'+i" :id="'i_discount_m'+i" style="color:grey;">  </p> 
+                            </div>
+
+
+
+                            <div>
+                                <p :id="'i_final_total'+i" :ref="'i_final_total'+i"  style="color:grey; text-decoration-line: underline; text-decoration-style: double;"> {{ k.p_final_total }} </p>
+                            </div>
+                            <button @click="removeRow(i)">Remove Row</button>
+                        </div>
+                        <button class="btn btn-primary" @click="addRow">Add Row</button>
+                    </div>
+
+                    <div class="">
+                        <label>6. Edited Final Total </label>
+                        <div class="grid grid-cols-4 gap1" >
+                            <div><label>Subtotal</label></div>
+                            <div><label>VAT</label></div>
+                            <div><label>Shipping</label></div>
+                            <div><label>Total</label></div>
+                        </div>
+
+                        <div class="grid grid-cols-4 gap1"    >
+                            <div>    
+                                <p id="e_q_subtotal" style="color:grey;"> {{ copy_ft.tf_sub_total }} </p> 
+                            </div>
+                            <div> 
+                                <p id="e_q_vat" style="color:grey;"> {{ copy_ft.tf_vat }} </p> 
+                            </div>
+                            <div> 
+                                <p id="e_q_shipping" style="color:grey;"> {{ copy_ft.tf_shipping }} </p> 
+                            </div>
+                            <div> 
+                                <p id="e_q_final" style="color:grey; "> {{ copy_ft.tf_total }} </p> 
+                            </div>
+                        </div>
+                    </div>
+
+
+                    
+                </div>
+
+                <div class="modal-footer" style="background-color: #1267aa;">
+                    <button id="edit_btn" type="button" data-bs-dismiss="modal" aria-label="close" class="btn btn-warning" @click="UpdateQuote($event, this.this_one_q_hash_number, copy_exact_product , id, showREFERENCE2  )">SAVE / CHANGE YOUR QUOTE</button>
+                </div>
+                
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+<div>
+    <img  class="my-5 logo d-flex align-items-center justify-content-center justify-center mx-auto " src="../assets/design_it/clock-in-out.png" />
+</div>
+<div>
+    <button class="bigger_btn border btn btn-secondary  mt-5" type="button"
+        id="m_new_invoice" data-bs-toggle="modal" data-bs-target="#add_po_number" >
+        Enter Your PO Number + Ready For New Invoice
+    </button>
+    <p>don't add the invoice again if you see right-hand-side has one already.</p>
+    <div class="modal fade" id="add_po_number" tabindex="-1" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+
+            <div class="modal-content text-black">
+
+                <div class="modal-header">
+                    <h4 class="modal-title"> After you've checked you quotation has no problem, please type you PO number, PO number is mandetory for an invoice.</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="close">X</button>
+                </div>
+                <div class="modal-body">
+                    <input ref="po_number" id="po_number" placeholder="PO Number" />
+                    
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="close" v-on:click="this.submitQuotation(this.this_one_q_hash_number);">Submit Quotation to Invoice</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        </div>
+
+        <div class="grid lg:grid-cols-2 grid-cols-2">
+
+            <div class="mx-5 my-5">
 
                 <embed id="pdf_quote"  class="pdf_quote" width="800px" height="600px"  :download="`${ copy_q_b_f }`" src='' />
                 
                 
             </div>
 
-            <div class="grid grid-cols-1 gap-1">
+            
 
-                <!--1-->
-                <div>
-                    <button class="choose_address_btn border btn btn-secondary" type="button"
-                        id="m_edit_quotation" data-bs-toggle="modal" data-bs-target="#edit_quotation">
-                        Edit Quotation
-                    </button>
-                    <div class="modal fade" id="edit_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true" >
-                        <div class="modal-dialog modal-xl" style="display: table; width: auto; overflow-y: auto; overflow-x: auto; position: relative;   ">
-
-                            <div class="modal-content text-black " id="editQuotationModal" style="height: 600px;width:1338px;">
-
-                                <div class="modal-header">
-                                    <h4 class="modal-title"> Edit Your Quotation Below. </h4>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="close">X</button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <!--------------------------EDIT QUOTATION START----------------------->
-                                    
-                                    <div class="grid grid-cols-2 gap-1 ">
-                                        <div class="mx-auto" style="display: flex;;">
-                                            <div class="flex-grow-0 mx-2 px-3">
-                                                <label>1.BILL TO (CLIENT)</label>
-                                                <select id="select_bill_to" class="form-select" aria-label="Default select example" 
-                                                @change="doSort3(`${copy_q_b_f}`);" >
-                                                    <option selected> {{copy_q_b_f}} </option>
-                                                    <option v-for="c in all_clients" :value="`${c.c_fullname}`">{{c.c_fullname}}</option>
-                                                </select>
-                                            </div> 
-                                            <p class="hidden" id="select_fullname"></p>   
-                                            <p class="hidden" id="select_a1"></p>   
-                                            <p class="hidden" id="select_a2"></p>   
-                                            <p class="hidden" id="select_city"></p>   
-                                            <p class="hidden" id="select_postcode"></p>   
-                                            <div class="flex-grow-0 mx-2 px-3">
-                                                <label>2.SHIP TO (DELIVERY)</label>
-                                                <select id="select_ship_to" class="form-select" aria-label="Default select example"  
-                                                @change="doSort4(`${copy_q_s_f}`);">
-                                                    <option selected> {{ copy_q_s_f }} </option>
-                                                    <!--:value="`${d.d_fullname}`"-->
-                                                    <option v-for="d in all_deliverys" :value="`${d.d_fullname}`" >{{d.d_fullname}}</option>
-                                                </select>
-                                                <p class="hidden" id="select_b_fullname"></p>  
-                                                <p class="hidden" id="select_b_a1"></p>   
-                                                <p class="hidden" id="select_b_a2"></p>   
-                                                <p class="hidden" id="select_b_city"></p>   
-                                                <p class="hidden" id="select_b_postcode"></p>   
-                                            </div>  
-
-                                        </div>
-
-                                        <div class="mx-auto" style="display: flex;">    
-                                            <div class=" mx-2 px-3">
-                                                <label>3.Referecne Number</label>
-                                                <p><strong> {{ showREFERENCE2 }} </strong></p>
-                                                
-                                            </div>   
-                                            <div class=" mx-2 px-3 " style="display: flex;;">
-                                            <label>4. Quote No. </label>
-                                            <strong><p id="set_q_number"></p></strong>
-                                            </div> 
-                                        </div>    
-                                    </div>    
-                                    <div class="" >
-                                        <label>5. Products Edit </label>
-                                        <div class="grid grid-cols-8 gap-1">
-                      
-                                            <div>ProductName</div>
-                                            <div>ProductCode</div>
-                                            <div>ProductSell</div>
-                                            <div>Qty</div> 
-                                            <div>Unit</div>
-                                            <div>Discount%</div>
-                                            <div>Discount£</div>
-
-                                            <div style="text-decoration-line: underline; text-decoration-style: double;" >FInal-Total</div>
-                                        </div>
-                                        <div class="grid grid-cols-8 gap-1" v-for="(k, i) in copy_exact_product" @focusout="handleFocusout($event,  i, copy_exact_product   )" :props="props" >
-                                            <div>
-                                                <select :id="'so_product'+i" class="form-select" aria-label="select client from quote list below, and it will do sorting." 
-                                                    @change="clearRest(i);" onfocus="this.selectedIndex = 0;">
-                                                    <option selected>{{ k.p_fullname }}</option>
-                                                    <option v-for="ep in e_all_product_list" :value="`${ep.p_fullname}`" > {{ ep.p_fullname }} </option>
-                                                </select>
-                                            </div>
-
-
-                                            <div>
-                                                <p :id="'i_code'+i" style="color:grey;">  {{ k.p_code }} </p>
-                                            </div>
-                                            <div>
-                                                <p :id="'i_sell'+i" :ref="'i_sell'+i"  style="color:grey; text-decoration-line: underline; "> {{ k.p_sell }} </p>
-                                            </div>
-                                            
-                                            <div>
-                                                <input class="form-control" :ref="'i_quantity'+i" :id="'i_quantity'+i"  placeholder="Enter #Quantity" v-model="k.p_quantity" 
-                                                 data-field="i_quantity">
-                                            </div>
-                                            
-                                            <div>
-                                                <input class="form-control" :ref="'i_unit'+i" :id="'i_unit'+i"  placeholder="Enter Unit (box,mm)" v-model="k.p_unit"
-                                                 data-field="i_input"> 
-                                            </div>
-                                            
-                                            <div>
-                                                <input class="form-control" :ref="'i_discount'+i" :id="'i_discount'+i" placeholder="Enter %Discount" v-model="k.p_discount" /> 
-                                            </div>
-
-                                            <div>
-                                                <p  :ref="'i_discount_m'+i" :id="'i_discount_m'+i" style="color:grey;">  </p> 
-                                            </div>
-
-
-
-                                            <div>
-                                                <p :id="'i_final_total'+i" :ref="'i_final_total'+i"  style="color:grey; text-decoration-line: underline; text-decoration-style: double;"> {{ k.p_final_total }} </p>
-                                            </div>
-                                            <button @click="removeRow(i)">Remove Row</button>
-                                        </div>
-                                        <button class="btn btn-primary" @click="addRow">Add Row</button>
-                                    </div>
-
-                                    <div class="">
-                                        <label>6. Edited Final Total </label>
-                                        <div class="grid grid-cols-4 gap1" >
-                                            <div><label>Subtotal</label></div>
-                                            <div><label>VAT</label></div>
-                                            <div><label>Shipping</label></div>
-                                            <div><label>Total</label></div>
-                                        </div>
-
-                                        <div class="grid grid-cols-4 gap1"    >
-                                            <div>    
-                                                <p id="e_q_subtotal" style="color:grey;"> {{ copy_ft.tf_sub_total }} </p> 
-                                            </div>
-                                            <div> 
-                                                <p id="e_q_vat" style="color:grey;"> {{ copy_ft.tf_vat }} </p> 
-                                            </div>
-                                            <div> 
-                                                <p id="e_q_shipping" style="color:grey;"> {{ copy_ft.tf_shipping }} </p> 
-                                            </div>
-                                            <div> 
-                                                <p id="e_q_final" style="color:grey; "> {{ copy_ft.tf_total }} </p> 
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    
-                                </div>
-
-                                <div class="modal-footer" style="background-color: #1267aa;">
-                                    <button id="edit_btn" type="button" data-bs-dismiss="modal" aria-label="close" class="btn btn-warning" @click="UpdateQuote($event, this.this_one_q_hash_number, copy_exact_product , id, showREFERENCE2  )">SAVE / CHANGE YOUR QUOTE</button>
-                                </div>
-                                
-                            </div>
-
-
-
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <button class="border btn btn-secondary" type="button"
-                        id="m_new_invoice" data-bs-toggle="modal" data-bs-target="#add_po_number" >
-                        Create New Invoice From This Quotation w/ PO, Don't Add The Invoice Again If you see right-hand-side has one already.
-                    </button>
-                    <div class="modal fade" id="add_po_number" tabindex="-1" aria-labelledby="" aria-hidden="true">
-                        <div class="modal-dialog modal-xl">
-
-                            <div class="modal-content text-black">
-
-                                <div class="modal-header">
-                                    <h4 class="modal-title"> After you've checked you quotation has no problem, please type you PO number, PO number is mandetory for an invoice.</h4>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="close">X</button>
-                                </div>
-                                <div class="modal-body">
-                                    <input ref="po_number" id="po_number" placeholder="PO Number" />
-                                    
-                                </div>
-                                <div class="modal-footer">
-                                    <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="close" v-on:click="this.submitQuotation(this.this_one_q_hash_number);">Submit Quotation to Invoice</button>
-                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="show-invoice-area">
+            <div class="mx-5 my-5 show-invoice-area">
                 <embed id="preview_invoicenPDF" class="preview_invoicenPDF" src='' width="800px" height="600px"    />
             </div>
             
@@ -1575,5 +1590,10 @@ function validate_q_update(){
 <style>
 .check_invoice{
     border: 1px dashed black;
+}
+.bigger_btn{
+    font-size: 24px;
+    padding: 12px 24px;
+    border-radius: 10px;
 }
 </style>
