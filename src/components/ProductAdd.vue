@@ -5,6 +5,7 @@
     <div class="container " >
       <form @sumbit.prevent="addProduct" class=" rounded p-3 "  >
 
+        <p>Add New Product Here:</p>
         <table class="table table-dark" >
           <thead>
             <tr>
@@ -23,10 +24,10 @@
               <th scope="row">
                 <div><button class="btn btn-info"   @click.prevent="createProduct" > [+] </button> </div>
               </th>
-              <td> <input ref="p_code" placeholder="Product Code" id="pi_code round_input_box" required/> </td>
+              <td> <input ref="p_code" placeholder="Product Code" id="pi_code" required/> </td>
               <td> <input ref="p_enter" placeholder="Item Name" id="pi_name" required/> </td>
               <td> 
-                <select id="p_category" class="form-select" aria-label="Default select example">
+                <select id="pi_category" class="form-select" aria-label="Default select example">
                   <option selected>Select Category Here</option>
                   <option   v-for="c in all_category" :value="`${c.category_fullname}`" > {{c.category_fullname}} </option>
                 </select>
@@ -52,7 +53,7 @@
       <!---------------------------------->
     </div> 
 
-      <p id="complain_text" style="color: red;">  </p>
+      <p id="complain_text" class="mb-2" style="color: red;">  </p>
   </div>
 </template>
 
@@ -99,9 +100,9 @@ export default{
       if (flag && flag_2 ){
         const db_id = firebase.firestore();
 
-        const pcategory = document.getElementById("p_category").value;
+        const pcategory = document.getElementById("pi_category").value;
         console.log(pcategory);
-
+        
         const ref = collection(db, 'all_products'); //how to add sepcific id
         const obj_ref = {
           p_code: this.$refs.p_code.value,
@@ -170,15 +171,21 @@ export default{
     },
     clearFields() {
       // Reset the input fields to empty strings
-      document.getElementById('p_code').value = '';
-      document.getElementById('p_enter').value = '';
-      document.getElementById('p_cost').value = '';
-      document.getElementById('p_margin').value = '';
-      document.getElementById('p_sell').value = '';
+      document.getElementById('pi_code').value = '';
+      document.getElementById('pi_name').value = '';
+      document.getElementById('pi_cost').value = '';
+      document.getElementById('pi_margin').value = '';
+      document.getElementById('pi_sell').value = '';
 
       // Reset the select option to the default (first) option
-      const categoryDropdown = document.getElementById('p_category');
+      const categoryDropdown = document.getElementById('pi_category');
       categoryDropdown.selectedIndex = 0;
+
+      document.getElementById('pi_code').classList.remove('red-text');
+      document.getElementById('pi_name').classList.remove('red-text');
+      document.getElementById('pi_cost').classList.remove('red-text');
+      document.getElementById('pi_margin').classList.remove('red-text');
+      document.getElementById('pi_margin').classList.remove('red-text');
       categoryDropdown.classList.remove('red-text');
     },
   },
@@ -195,16 +202,16 @@ function validate_p_input(){
   let flag = true;
   var pc_1 = document.getElementById('pi_code').value;
   var pc_2 = document.getElementById('pi_name').value;
-  var pc_3 = document.getElementById('p_category').value;
+  var pc_3 = document.getElementById('pi_category').value;
   var pc_4 = document.getElementById('pi_cost').value;
   var pc_5 = document.getElementById('pi_margin').value;
   
   var pcc_1 = document.getElementById('pi_code');
   var pcc_2 = document.getElementById('pi_name');
-  var pcc_3 = document.getElementById('p_category');
+  var pcc_3 = document.getElementById('pi_category');
   var pcc_4 = document.getElementById('pi_cost');
   var pcc_5 = document.getElementById('pi_margin');
-  var category = document.getElementById('p_category').value;
+  var category = document.getElementById('pi_category').value;
 
   console.log("[ProductAdd]  " + pc_3 + " " + pc_2.length);
 
@@ -229,7 +236,7 @@ function validate_p_input(){
     flag = false;
   }
   if (category === 'Select Category Here'){
-    document.getElementById('p_category').classList.add('red-text');
+    document.getElementById('pi_category').classList.add('red-text');
     flag = false;
   }
   return flag;

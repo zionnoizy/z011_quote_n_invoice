@@ -1,7 +1,7 @@
 <template>
   <div class="ClientCard">
     
-    <div class="col-sm-12 col-md-6 mx-auto">
+    <div class="mx-auto">
         <label>Search Client Name</label>
         <input type="text" class="mb-3 form-control mx-5" v-model="myCsearch" placeholder="search client name here.." />
     </div>
@@ -49,7 +49,7 @@
                                   <div>
                                       <strong>{{ d.d_address_1 }}</strong>
                                   </div>
-                                  <div>
+                                  <div v-if="d.d_address_2">
                                       <strong>{{ d.d_address_2 }}</strong>
                                   </div>
                                   <div>
@@ -105,8 +105,8 @@ export default{
      
     },
     beforeUnmount() {
-  window.removeEventListener('scroll', this.handleScroll)
-},
+      window.removeEventListener('scroll', this.handleScroll)
+    },
     methods:{
 
         async getAllClient() { 

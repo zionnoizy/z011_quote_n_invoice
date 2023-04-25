@@ -17,8 +17,8 @@
 
 
         <router-link :to="{name: 'CategoyAddAll'}">
-          
-          <button class="btn btn-primary btn-lg btn-block mx-auto">Go To Add Category
+
+          <button class="my-2 btn btn-primary btn-lg btn-block mx-auto">Go To Add Category
             <font-awesome-icon icon="fa-solid fa-elevator" style="color: #ffffff;" />
           </button>
 

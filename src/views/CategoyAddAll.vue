@@ -1,6 +1,25 @@
 <template>
     <div class="CategoyAddAll">
 
+
+        <p class="top_background  "   >
+            
+            <div class="dashboard_txt">
+                
+                <router-link to="/dashboard/quote" exact>
+            
+                <a> <strong class="link underline">Dashboard</strong> </a></router-link> >
+                <router-link to="/dashboard/all_product" exact><a><strong class="link">All Products
+                <font-awesome-icon icon="fa-solid fa-box-archive" style="color: #ffffff;" />
+
+                </strong></a></router-link> >
+                
+                Category
+                <font-awesome-icon icon="fa-solid fa-elevator" style="color: #ffffff;" />
+            </div>
+        </p>
+
+
         <p class="dashboard_txt" ><router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  >
             
             <router-link to="/dashboard/all_product" exact><a><strong class="link">All Products
@@ -14,7 +33,7 @@
         <from @sumbit.prevent="addCategory">
 
             <div class="grid gird-cols-2 gap-2">
-                <div><label>Category Name</label></div>
+                
                 <br>
                 <div>
                     <label ref="category">Category Name </label>
@@ -32,12 +51,15 @@
         <br>
 
         <p>LIST OF CATEGORY</p>
-        <div class="px-5 mx-5 grid grid-cols-2 gap-1 border">
+        <div id="category-container" class="px-5 mx-5 grid grid-cols-2 gap-1 border">
             <div  v-for="ca, i in all_categories">
 
-                <p>  #{{ i }}: {{ ca.category_fullname }} </p> 
+                <p >  #{{ i }}: {{ ca.category_fullname }} </p> 
             </div>
         </div>
+
+        <img alt="" class="position-absolute bottom-0 start-0" src="../assets/design_it/cms-bg.png" style="z-index:-999; ;;" />
+
     </div>
 </template>
 
@@ -105,10 +127,15 @@ export default{
                 });
             }); 
         },
+        scrollable(){
+            const categoryContainer = document.getElementById("category-container");
+            categoryContainer.scrollTop = categoryContainer.scrollHeight; /* Scroll to the bottom of the container */
+        },
         
     },
     created(){
             this.getCategory();
+            this.scrollable();
     },
 }
 
@@ -134,3 +161,10 @@ async function validate_category_input(){
 
 }
 </script>
+
+<style>
+#category-container {
+    overflow: auto; /* Make the container scrollable */
+    height: 200px; /* Set the maximum height of the container */
+}
+</style>

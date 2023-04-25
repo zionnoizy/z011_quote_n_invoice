@@ -3,19 +3,25 @@
 
     <div class="mx-7">
 
-      <div class="grid grid-cols-4 gap-3" style="display: flex; justify-content: center;">
+      <div class="grid grid-cols-4 gap-3 mx-auto" style="display: flex; justify-content: center;">
+
         <div>
           <label>Search Product Name</label>
           <input type="text" class="form-control" v-model="mysearch" placeholder="search here.." />
         </div>
 
-        <select :id= "`ep_category_${i}`" class="my-3 form-select form-select bg-dark text-white" data-field="p_category" v-model="myselectedcategory">
-          <option selected>Find Product Category..</option>
-          <option   v-for="c in all_category" :value="`${c.category_fullname}`" > {{c.category_fullname}} </option>
-        </select>
+        <div>
+          <label>Search Product Name</label>
+          <select :id= "`ep_category_${i}`" class="my-3 form-select form-select bg-dark text-white" data-field="p_category" v-model="myselectedcategory">
+            <option selected>Find Product Category..</option>
+            <option   v-for="c in all_category" :value="`${c.category_fullname}`" > {{c.category_fullname}} </option>
+          </select>
+        </div>
 
-        <div> <button class="btn btn-primary " @click.prevent="getAllProductsNewest()">Sort From Oldest </button> </div>
-        <div> <button class="btn btn-primary " @click.prevent="getAllProductsOldest()">Sort From Newest </button> </div>
+        <div> <button id="sort_oldest" class=" btn btn-primary  mx-1" @click.prevent="getAllProductsNewest()">Sort From Oldest </button> </div>
+        <div> <button id="sort_newest" class=" btn btn-primary  mx-1" @click.prevent="getAllProductsOldest()">Sort From Newest </button> </div>
+      
+        <div> <button class="btn btn-success" @click="exportToExcel()">SAVE TO EXCEL</button> </div>
       </div>
         
         
@@ -24,7 +30,7 @@
         <!-- <button @click.prevent="ChangingProduct">EDIT ALL</button> -->
         
          status: <strong> <p ref="statuss"> {{statuss.value}} </p></strong>
-        <table class="table table-dark" id="store_to_excel" >
+        <table class="table table-dark" id="my_table" >
             <thead>
             <tr>
             <th scope="col">#</th>
@@ -87,6 +93,8 @@ import { orderBy, query } from "@firebase/firestore";
 import { serverTimestamp } from 'firebase/firestore';
 import { onMounted, ref, reactive } from "vue";
 
+//import * as XLSX from 'vue3-xlsx'
+import * as XLSX from 'xlsx';
 export default{
     name: 'ProductAll',
     setup() {
@@ -265,6 +273,12 @@ export default{
           all_category: [],
         }
     },
+    mounted() {
+    const btn = document.getElementById("sort_newest");
+    if (btn) {
+      btn.disabled = true;
+    }
+    },
     computed:{
         currentPageItems(){
           return this.perguntas.slice(this.pageNumber*this.perpage, this.pageNumber*this.perpage+1+this.perpage)
@@ -273,7 +287,16 @@ export default{
 
     methods: {
 
-      async getAllProductsNewest() { 
+      async getAllProductsOldest() { 
+        var btn_o = await document.getElementById("sort_oldest");
+        var btn_n = await document.getElementById("sort_newest");
+        if (btn_o) {
+        btn_o.disabled = true;
+        }
+        if (btn_n){
+        btn_n.disabled = false;
+        }
+
         var all_product_ref = await firebase.firestore().collection("all_products");
         all_product_ref.orderBy("p_insert_date", "asc")
 
@@ -293,7 +316,14 @@ export default{
         
       },
 
-      async getAllProductsOldest() { 
+      async getAllProductsNewest() { 
+        var btn_n = await document.getElementById("sort_newest");
+        var btn_o = await document.getElementById("sort_oldest");
+        if (btn_n) 
+        btn_n.disabled = true;
+        if (btn_o) 
+        btn_o.disabled = false;
+
         var all_product_ref = await firebase.firestore().collection("all_products");
         all_product_ref.orderBy("p_insert_date", "desc")
           .onSnapshot((snapshot) => {
@@ -386,6 +416,45 @@ export default{
         
         return sortedProducts;
       },
+      async exportToExcel() {
+        const table = document.getElementById('my_table')
+        // Get the table data
+        const data = []
+        const rows = table.rows
+
+        for (let i = 0; i < rows.length; i++) {
+          const row = []
+          const cells = rows[i].cells
+
+          for (let j = 0; j < cells.length; j++) {
+            const cell = cells[j];
+
+            
+
+            if (!cells[j].textContent.includes('Re-Select') ) {
+              console.log("cell.nodeName:" + cell.textContent );
+
+              row.push(cells[j].textContent);
+            }
+          }
+
+          data.push(row)
+        }
+
+        // Format the data (if necessary)
+
+        // Create the worksheet
+        const worksheet = XLSX.utils.json_to_sheet(data)
+
+        // Create the workbook
+        const workbook = XLSX.utils.book_new()
+
+        // Add the worksheet to the workbook
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
+
+        // Write the Excel file and trigger the download
+        XLSX.writeFile(workbook, 'table_data.xlsx')
+      },
     },
     computed: {
       f_all_products(){
@@ -420,7 +489,7 @@ export default{
       this.getAllCategory();
       
     },
-}
+} 
 /*
 var editable_elements = document.querySelectorAll("[contenteditable]").forEach(function(el) 
 { 

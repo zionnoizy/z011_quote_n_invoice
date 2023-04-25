@@ -2,13 +2,10 @@
     <!--this page is components only-->
     <div class="ClientAdd">
 
-
-        <p>Add Client Page</p>
-
-        <!--@sumbit.prevent="addClient"-->
-
-        <form>
-          <div class="grid grid-cols-2 gap-2" >
+        
+        <h2>Client Name or Company Name</h2>
+        <form class="mt-5">
+          <div class="grid grid-cols-2 gap-2 " >
             <div><label>Client Company Name*</label></div>
             <div><input ref="client_cpyname" type="text" placeholder="Client Company Name" id="c_fullname" required/></div>
           </div>
@@ -16,13 +13,11 @@
           <h2>Client Full Address</h2>
 
           <div class="grid grid-cols-2 gap-3">
-
             <div><label>Address Line1* </label> </div><div> <input ref="address_1" placeholder="Address Line1" id="c_address1"  required/></div>
             <div><label>Address Line2 (Optional)</label>  </div><div> <input ref="address_2" placeholder="Address Line2" id="c_address2" /></div>
             <div><label>City*</label> </div><div><input ref="city" placeholder="City" id="c_city" required/></div>
             <div><label>Post Code*</label> </div><div> <input ref="post_code" placeholder="Post Code" id="c_postcode" required/></div>
             <div  class="hidden" ><label>Country*</label> </div><div class="hidden"> <input ref="country" placeholder="Country" id="c_country" required/></div>
-          
           </div>
         </form>
         <!---------------------------------->
@@ -86,13 +81,13 @@ function validate_c_input(){
       let flag = true;
       var cc_1 = document.getElementById('c_fullname').value;
       var cc_2 = document.getElementById('c_address1').value;
-      var cc_3 = document.getElementById('c_address2').value;
+      //var cc_3 = document.getElementById('c_address2').value;
       var cc_4 = document.getElementById('c_city').value;
       var cc_5 = document.getElementById('c_postcode').value;
       
       var ccc_1 = document.getElementById('c_fullname');
       var ccc_2 = document.getElementById('c_address1');
-      var ccc_3 = document.getElementById('c_address2');
+      //var ccc_3 = document.getElementById('c_address2');
       var ccc_4 = document.getElementById('c_city');
       var ccc_5 = document.getElementById('c_postcode');
 
@@ -105,10 +100,12 @@ function validate_c_input(){
         ccc_2.classList.add("red");
         flag = false;
       }
+      /*
       if (cc_3.length <= 0){
         ccc_3.classList.add("red");
         flag = false;
       }
+      */
       if (cc_4.length <= 0){
         ccc_4.classList.add("red");
         flag = false;

@@ -1,5 +1,6 @@
 <template>
 
+        
         <button class="choose_address_btn border btn btn-secondary btn-square-lg" type="button"
                         data-bs-toggle="modal" data-bs-target="#add_category" v-on:click="this.getAllCateogry();">
                         Add Category IN Here
@@ -29,6 +30,7 @@
                 </div>
             </div>
         </div>
+
 </template>
 
 

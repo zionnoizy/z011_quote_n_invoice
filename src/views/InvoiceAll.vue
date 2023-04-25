@@ -46,7 +46,7 @@
 
             <tbody >
                 
-                <tr   v-for="i in all_invoices">
+                <tr   v-for="i in f_all_invoices.slice(0, (page + 1) * perPage)">
                     <td scope="col" style="width: 150px;"> 
                     <router-link 
                     tag="tr"
@@ -71,7 +71,7 @@
                       :to="{ name: 'OneInvoice', 
                       params: { id: i.obj_ref.qi_invoice_number, },
                       query: {this_one_i_hash_number: i.invoice_hashid, this_one_i_pdf_link: i.i_pdf_link}}">
-                      {{ i.obj_ref.qi_bill_fullname }} 
+                      {{ i.bill_ship.qi_bill_fullname }} 
                     </router-link>
                     </td>
                     <td scope="col" style="width: 150px;"> 
@@ -199,12 +199,21 @@ export default {
           all_i_clients: [],
           
         },
+
+        page: 0,
+        perPage: 10,
         
       }
     },
 
     components: {},
-    
+    mounted () {
+      window.addEventListener('scroll', this.handleScroll)
+     
+    },
+    beforeUnmount() {
+      window.removeEventListener('scroll', this.handleScroll)
+    },
     methods: {
       async getAllInvoiceOldest() { //not check yet
         var all_invoice_ref = await firebase.firestore().collection("ALL_invoice");
@@ -313,8 +322,17 @@ export default {
         })
 
       },
+      handleScroll() {
+          const bottomOfPage = window.innerHeight + window.pageYOffset >= document.body.offsetHeight
+          if (bottomOfPage) {
+            this.perPage += 10
+          }
+      },
     },
     computed: {
+      currentPageItems(){
+        return this.f_all_invoices.slice(this.pageNumber*this.perpage,this.pageNumber*this.perpage+1+this.perpage);
+      },
 
       f_all_invoices(){
         return this.all_invoices.filter(all_invoices => 

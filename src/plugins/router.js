@@ -21,7 +21,10 @@ const QuickerQuoteIn = () => import('@/views/QuickerQuoteIn.vue');
 const ClientCard = () => import('@/components/ClientCard.vue');
 
 const OneInvoice = () => import('@/views/OneInvoice.vue');
+const Intro = () => import('@/views/Intro.vue');
+
 const Empty = () => import('@/views/Empty.vue');
+import { requireAuth } from '@/auth.js'
 
 
 const router = createRouter({
@@ -29,29 +32,35 @@ const router = createRouter({
   routes:[
     //, meta: {requiresGuest: true} meta: {requiresVisitor: true},
       {path: "/", name: "Login", component: Login },
-      {path: "/register", name: "Register", component: Register },
+      
       {
         path: "/dashboard", 
         name: "Dashboard",
         component: Dashboard,
-        auth: true,
-        //meta: { requiredAuth: true},
+
+        
         children: [ {path: 'client',name: 'ClientCard',component: ClientCard},
                     {path: 'quote',name: 'QuoteAll',component: QuoteAll},
                     {path: 'invoice',name: 'InvoiceAll',component: InvoiceAll}
-                  ]
+                  ],
+        meta: {
+          requireAuth: true
+        },
+        beforeEnter: requireAuth, 
+        
+        
       },
-      {path: '/dashboard/quote/:id', name: 'OneQuote', component: OneQuote, props: true},
-      {path: '/dashboard/all_client', name: 'ClientAll',component: ClientAll},
+      {path: '/dashboard/quote/:id', name: 'OneQuote', component: OneQuote, props: true, meta: {requireAuth: true},beforeEnter: requireAuth  },
+      {path: '/dashboard/all_client', name: 'ClientAll',component: ClientAll, meta:{requireAuth: true},beforeEnter: requireAuth},
 
-      {path: '/dashboard/all_product', name: 'ProductAll',component: ProductAll},
-      {path: '/dashboard/all_product/category',name: 'CategoyAddAll',component: CategoyAddAll},
+      {path: '/dashboard/all_product', name: 'ProductAll',component: ProductAll, meta:{requireAuth: true},beforeEnter: requireAuth},
+      {path: '/dashboard/all_product/category',name: 'CategoyAddAll',component: CategoyAddAll, meta: {requireAuth: true},beforeEnter: requireAuth},
 
-      {path: '/dashboard/add_quote', name: 'QuoteAdd', component: QuoteAdd},
+      {path: '/dashboard/add_quote', name: 'QuoteAdd', component: QuoteAdd, meta: {requireAuth: true},beforeEnter: requireAuth},
 
-      {path: '/dashboard/invoice/:id', name: 'OneInvoice', component: OneInvoice, props: true},
-      {path: "/quicker-quote-in", name: "QuickerQuoteIn", component: QuickerQuoteIn},
-
+      {path: '/dashboard/invoice/:id', name: 'OneInvoice', component: OneInvoice, props: true, meta: {requireAuth: true},beforeEnter: requireAuth},
+      {path: "/quicker-quote-in", name: "QuickerQuoteIn", component: QuickerQuoteIn, meta: {requireAuth: true},beforeEnter: requireAuth},
+      {path: "/dashboard/intro", name: "Intro", component: Intro},
   ]
 
 })

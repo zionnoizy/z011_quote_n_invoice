@@ -1591,9 +1591,12 @@ function validate_q_update(){
 .check_invoice{
     border: 1px dashed black;
 }
+
 .bigger_btn{
     font-size: 24px;
     padding: 12px 24px;
     border-radius: 10px;
 }
+
+
 </style>

@@ -14,7 +14,7 @@
                 
                 <img  width="225" height="105"  class="logo justify-center mx-auto mb-3" src="../assets/logo/logo-white.png" />
             
-                Welcome Back To CMS-QuoteIn 
+                Welcome Back To CMS-QuoteIn, {{ userEmail }}
             
             </h2>
             
@@ -22,10 +22,12 @@
                 <div class=" grid gird-cols-1 lg:grid-cols-1 gap-5" style="z-index: 2;">
                     <!--background-color: rgb(161, 204, 254) !important; border: none; height: 80px;-->
                     <div>
-                        <button class="btn btn-primary btn-lg mt-3  font-weight-bold" style="">
+                        <button class="btn btn-primary btn-lg mt-5  font-weight-bold" style="">
+
                         <a href="/dashboard/all_client" class=""> View / Add Client 
                             <font-awesome-icon icon="fa-solid fa-user" style="color: #ffffff;" />
                         </a>
+
                         </button>
                     </div>
                     <div><button class="btn btn-primary btn-lg mt-3  font-weight-bold" style="">
@@ -33,6 +35,13 @@
                             <font-awesome-icon icon="fa-solid fa-box-archive" style="color: #ffffff;" />
                         </a>
                     </button></div>
+
+                    <div><button class="btn btn-primary btn-lg mt-3  font-weight-bold" style="">
+                        <a href="/dashboard/intro" class=""> Introduction for QuoteIn
+                            <font-awesome-icon icon="fa-solid fa-box-archive" style="color: #ffffff;" />
+                        </a>
+                    </button></div>
+
                 </div>
             </div>
         </section>
@@ -126,6 +135,7 @@ export default{
             my_email: null,
             warehouse: warehouse,
             isLoaded: false,
+            userEmail: '',
         }
     },
     mounted(){
@@ -179,6 +189,10 @@ export default{
                 this.$router.push('/')
             })
         }
+    },
+    created() {
+        const user = auth.currentUser
+        this.userEmail = user ? user.email : ''
     },
 };
 

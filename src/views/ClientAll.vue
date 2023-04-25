@@ -7,14 +7,22 @@
         <!--https://pbs.twimg.com/media/DrM0nIdU0AEhG5b.jpg-->
 
 
-        <p class="dashboard_txt" >
-          <router-link to="/dashboard" exact><a><strong class="link">Dashboard</strong></a></router-link>  > All Clients
-          <font-awesome-icon icon="fa-solid fa-elevator" style="color: #ffffff;" />
+        <p class="top_background  "   >
+            
+            <div class="dashboard_txt pt-5 pb-3 mx-6 text-start">
+                
+                <router-link to="/dashboard/quote" exact>
+            
+                <a> <strong class="link underline">Dashboard</strong> </a></router-link>  > All Clients
+                <font-awesome-icon icon="fa-solid fa-user" style="color: #ffffff;" />
+            </div>
         </p>
+
+        <img alt="" class=" position-absolute top-50 start-50" src="../assets/design_it/on-site-selfie-main-bg.png" style="z-index:-999; ;;" />  
 
         <client-add ></client-add>
 
-        <p>...................................................</p>
+        
 
         <div class="px-5 mx-5 grid grid-cols-2 gap-1 ">
           <div>
@@ -65,7 +73,7 @@
                   <div class="modal-body">
 
 
-                      <p id="this_is_edit_fullname" class="this_is_edit_fullname"> You Are Adding Client Delivery Address: <b>{{ delivery_fullname }}</b>  </p>
+                      <p id="this_is_edit_fullname" class="this_is_edit_fullname mt-5"> You Are Adding Client Delivery Address: <b>{{ delivery_fullname }}</b>  </p>
                         <div class="grid grid-cols-2 gap-2" >
                           
                           <div><label>Delievery Company Name*</label></div>

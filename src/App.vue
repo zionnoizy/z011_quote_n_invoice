@@ -148,4 +148,11 @@ tr:hover td {
   background-size: cover;
   display: flex;
 }
+
+.bigger_btn{
+    font-size: 24px;
+    padding: 12px 24px;
+    border-radius: 10px;
+}
+
 </style>

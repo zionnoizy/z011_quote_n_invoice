@@ -23,7 +23,9 @@
     "jspdf-autotable": "^3.5.28",
     "pdf-lib": "^1.17.1",
     "vue": "^3.2.45",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "vue3-xlsx": "^1.1.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",

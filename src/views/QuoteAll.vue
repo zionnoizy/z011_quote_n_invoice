@@ -55,7 +55,8 @@
 
         <tbody>
 
-            <tr v-for="p in f_all_quotes">
+            <tr v-for="p in f_all_quotes.slice(0, (page + 1) * perPage)">
+              
               <td scope="col" style="width: 150px;"> 
                 <router-link 
                 tag="tr"
@@ -130,7 +131,9 @@
                 { id: p.obj_ref.q_quote_number, 
                   //[that's a lot to pass]
                 }, query: { this_one_q_hash_number: p.quote_hashid, this_one_q_pdf_link: p.q_pdf_link}}">
+                
                 {{ p.obj_ref.q_uploaded_date }} 
+
                 </router-link>
               </td>
               <!-- <td scope="col" style="width: 200px;"> {{ p.q_pdf_link }} </td> -->
@@ -189,10 +192,19 @@ export default{
             
           },
           myQsearch: '',
+          page: 0,
+          perPage: 10,
         }
     },
 
     components: {},
+    mounted () {
+      window.addEventListener('scroll', this.handleScroll)
+     
+    },
+    beforeUnmount() {
+      window.removeEventListener('scroll', this.handleScroll)
+    },
     methods: {
       async getAllQuoteNewest() { //not check yet
         var all_product_ref = await firebase.firestore().collection("ALL_quote");
@@ -289,20 +301,30 @@ export default{
 
       },
 
+      handleScroll() {
+          const bottomOfPage = window.innerHeight + window.pageYOffset >= document.body.offsetHeight
+          if (bottomOfPage) {
+            this.perPage += 10
+          }
+      },
+
     },
     computed: {
-      
+      currentPageItems(){
+        return this.f_all_quotes.slice(this.pageNumber * this.perpage,this.pageNumber*this.perpage+1+this.perpage);
+      },
       f_all_quotes(){
         return this.all_quotes.filter(all_quotes => 
           all_quotes.obj_ref.q_quote_number.toLowerCase().includes(this.myQsearch.toLocaleLowerCase())
         );
 
-      }
+      },
     },
     created() {
       this.getAllQuoteNClient();
 
     },
+    
 }
 </script>
 

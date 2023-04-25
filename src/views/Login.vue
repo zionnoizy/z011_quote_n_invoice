@@ -58,14 +58,20 @@ const router = useRouter();
 
 const email = ref("");
 const password = ref("");
-const login = () => {
-    signInWithEmailAndPassword(auth, email.value, password.value)
-    .then((data) =>{
-        //context.commit('SET_USER', response.user);
-        //console.log('Successfully Login!');
-        router.push('/dashboard/client');
-    })
-    .catch(error => {
+
+
+
+const login = async () => {
+    try {
+    const response = await signInWithEmailAndPassword(auth, email.value, password.value)
+    
+    const user = response.user
+    const token = await user.getIdToken() 
+    localStorage.setItem('token', token)
+
+    router.push('/dashboard/client');
+    return user;
+    } catch(error) {
         console.log(error.code)
 
         var paragraph = document.getElementById("complain_text");
@@ -73,7 +79,7 @@ const login = () => {
             paragraph.textContent += "Incorrect login details, email it@companiesms.co.uk for extra help.";
         }      
 
-    })
+    }
 }
 
 
