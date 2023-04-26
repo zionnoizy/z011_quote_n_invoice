@@ -26,9 +26,7 @@
           </div>
       </div>
 
-      <figcaption class="blockquote-footer">
-          <p> Point to the "Text", and it will redirect to invoice page. </p>
-      </figcaption>
+
 
         <table class="table table-dark mx-auto" >
             <thead>
@@ -309,17 +307,21 @@ export default {
       },
       async doSort2(){
         var optionValue = document.getElementById("so_client").value;
+        if (optionValue !== "Select Client Here"){
+          var sort_client = await firebase.firestore().collection("ALL_invoice").where("bill_ship.qi_bill_fullname", "==", optionValue);
+          sort_client.onSnapshot(snap => {
+            this.all_invoices = [];
+            snap.forEach(d => {
 
-        var sort_client = await firebase.firestore().collection("ALL_invoice").where("obj_ref.qi_bill_fullname", "==", optionValue);
-        sort_client.onSnapshot(snap => {
-          this.all_invoices = [];
-          snap.forEach(d => {
-
-            var sort_invoice= d.data();
-            this.all_invoices.push(sort_invoice);
-          
-          });
-        })
+              var sort_invoice= d.data();
+              this.all_invoices.push(sort_invoice);
+            
+            });
+          })
+        }
+        else{
+          this.getAllInvoice_Newest();
+        }
 
       },
       handleScroll() {

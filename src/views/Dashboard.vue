@@ -19,7 +19,7 @@
             </h2>
             
             <div class="  mx-auto" style="">
-                <div class=" grid gird-cols-1 lg:grid-cols-1 gap-5" style="z-index: 2;">
+                <div class=" grid gird-cols-1 lg:grid-cols-2 gap-5" style="z-index: 2;">
                     <!--background-color: rgb(161, 204, 254) !important; border: none; height: 80px;-->
                     <div>
                         <button class="btn btn-primary btn-lg mt-5  font-weight-bold" style="">
@@ -30,17 +30,20 @@
 
                         </button>
                     </div>
+
+                    <div><button class="btn btn-primary btn-lg  mt-5  font-weight-bold" style="">
+                        <a href="/dashboard/intro" class=""> Information
+                            
+                        </a>
+                    </button></div>
+
                     <div><button class="btn btn-primary btn-lg mt-3  font-weight-bold" style="">
                         <a href="/dashboard/all_product" class=""> View / Add Product 
                             <font-awesome-icon icon="fa-solid fa-box-archive" style="color: #ffffff;" />
                         </a>
                     </button></div>
 
-                    <div><button class="btn btn-primary btn-lg mt-3  font-weight-bold" style="">
-                        <a href="/dashboard/intro" class=""> Introduction for QuoteIn
-                            <font-awesome-icon icon="fa-solid fa-box-archive" style="color: #ffffff;" />
-                        </a>
-                    </button></div>
+                    
 
                 </div>
             </div>

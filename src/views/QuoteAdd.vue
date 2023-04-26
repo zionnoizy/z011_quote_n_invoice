@@ -584,14 +584,9 @@ export default {
           let cum99 = document.getElementById(dynamic_complain_text_id);
           
           if (cum1 == 0){ // no qty
-
             
-            if (cum99.textContent <=0 || cum99.textContent == null || cum99.textContent == ''){
-                cum99.textContent += "Delete this product if you are not included in this quotation!";
-            }   
-          }
-          else{
-            cum99.textContent = "";
+            alert("Delete this product if you are not included in this quotation!");
+              
           }
 
           let s_times_q = cum0 * cum1;
@@ -1032,7 +1027,9 @@ export default {
             console.log("previewBtn1---------");
 
             let flag = await validate_q_input();
+
             if (flag){
+                 
             const doc = new jsPDF(); 
             doc.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297); // w h
             //A-add all48 text
@@ -1104,41 +1101,108 @@ export default {
   
                 bodyData.push(tmp);
             });    
+            
+            
 
             //https://github.com/simonbengtsson/jsPDF-AutoTable/blob/master/examples/examples.js
-            var finalY = doc.lastAutoTable.finalY || 10
-            autoTable(doc, {
-                //html: '#cms-quote-table',
-                theme: 'striped',
-                startY: finalY + 112, //important
-                columnStyles: {
-                    0: { cellWidth: 65 },
-                    1: { cellWidth: 18 },
-                    2: { cellWidth: 15 },
-                    3: { cellWidth: 15 },
-                    4: { cellWidth: 23 },
-                    5: { cellWidth: 30 },
-                    // etc
-                },
-                tableWidth: 'auto',
-                margin: { top: 0, right: 10, bottom: 0, left: 10 }, //important2
-                head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
-                body: bodyData
-            })
+            var finalY = doc.lastAutoTable.finalY || 10;
+            var startY = finalY + 112;
+            var remainingData = bodyData.slice();
+            var currentPage = 1;
+            var splitIndex = 0;
+            var loop_height = 0;
+            let tableHeight = startY + (doc.lastAutoTable.finalY || 0) + 20;
+            var dynamic_height = 0;
+            var loop_height = 0;
+
+for (let i = 0; i < remainingData.length; i++) {
+  // check if there is enough space on the current page
+  const pageHeight = doc.internal.pageSize.height;
+  const rowHeight = 31;
+
+  console.log(tableHeight +" + "+ rowHeight +" > "+ pageHeight);
+
+  // check if the table height exceeds the page height
+  if (startY + rowHeight > pageHeight) {
+
+    dynamic_height = 31;
+    // create a new page
+    doc.addPage();
+    startY = 31;
+    doc.addImage(cms_empty_q, "JPEG", 0, 0, 210, 297); // add the background image
+    // reset the startY and tableHeight values for the new page
+    
+    tableHeight = startY;
+    currentPage++;
+    splitIndex = i; // set the split index to the current index
+  }
+  else{
+    dynamic_height = tableHeight + rowHeight;
+
+  }
+
+  autoTable(doc, {
+    theme: 'striped',
+    startY: startY,
+    columnStyles: {
+      0: { cellWidth: 65 },
+      1: { cellWidth: 18 },
+      2: { cellWidth: 15 },
+      3: { cellWidth: 15 },
+      4: { cellWidth: 23 },
+      5: { cellWidth: 30 },
+    },
+    tableWidth: 'auto',
+    margin: { top: 0, right: 10, bottom: 0, left: 10 },
+    head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
+    body: remainingData.slice(splitIndex, i + 1),
+  });
+
+  // update the table height
+  console.log("finalY " + finalY + " " + rowHeight);
+  tableHeight += doc.lastAutoTable.finalY + rowHeight;
+
+
+// add a new page if there are remaining rows
+/*
+if (remainingData.length > 0) {
+  doc.addPage();
+  doc.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297); // add the background image
+  autoTable(doc, {
+    theme: 'striped',
+    startY: startY,
+    columnStyles: {
+      0: { cellWidth: 65 },
+      1: { cellWidth: 18 },
+      2: { cellWidth: 15 },
+      3: { cellWidth: 15 },
+      4: { cellWidth: 23 },
+      5: { cellWidth: 30 },
+    },
+    tableWidth: 'auto',
+    margin: { top: 0, right: 10, bottom: 0, left: 10 },
+    head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
+    body: remainingData.slice(0, i + 1),
+  });
+                
+}
+*/
+}
             console.log("previewBtn2---------");
             const st = document.getElementById('q_subtotal').value;
             const v = document.getElementById('q_vat').value;
             const s = document.getElementById('q_shipping').value;
             const t = document.getElementById('q_total').value;
+
             doc.setFontSize(12);
             doc.text('Sub-Total', 139, doc.lastAutoTable.finalY + 20, {align: 'right'})
-            doc.text( "£"+Number(st).toFixed(2) , 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
+            doc.text( "£"+st , 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
             doc.text('VAT', 139, doc.lastAutoTable.finalY + 25 , {align: 'right'})
-            doc.text( "£"+Number(v).toFixed(2), 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
+            doc.text( "£"+v, 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
             doc.text('Shipping', 139, doc.lastAutoTable.finalY + 30 , {align: 'right'})
-            doc.text( "£"+Number(s).toFixed(2), 182, doc.lastAutoTable.finalY + 30 , {align: 'right'})
+            doc.text( "£"+s, 182, doc.lastAutoTable.finalY + 30 , {align: 'right'})
             doc.text('Total', 139, doc.lastAutoTable.finalY + 35 , {align: 'right'})
-            doc.text( "£"+Number(t).toFixed(2)  , 182, doc.lastAutoTable.finalY + 35 , {align: 'right'})
+            doc.text( "£"+t  , 182, doc.lastAutoTable.finalY + 35 , {align: 'right'})
 
             doc.setFontSize(9);
             doc.text('Terms & Instructions', 6,  doc.lastAutoTable.finalY + 40).setFont(undefined, 'bold');
@@ -1407,10 +1471,12 @@ export default {
         async choosenOneProduct(ev, p, i){ //IMPORTANT
             //var size = Object.size(this.choosen_products);
             console.log("size   " + this.choosen_products.length);
+            /*
             if (this.choosen_products.length > 12){
                 alert("reach maximum item in v1.0 at this moment.");
             }
-            else{
+            */
+            
             var choose_product_ref = await firebase.firestore().collection("all_products").where("p_fullname", "==", p.p_fullname);
             let new_subtotal = 0;
             await choose_product_ref.onSnapshot((snapshot) => {
@@ -1443,7 +1509,7 @@ export default {
                 })
                 new_subtotal = this.tmp_sell;
             })
-            }
+            
         ////console.log(new_subtotal);
         //document.getElementById('q_subtotal').setAttribute('value', this.tmp_sell);
         //new_subtotal= document.getElementById('q_subtotal').value; 
@@ -1497,9 +1563,10 @@ export default {
         },
 
         async previewBtn2() {
-            //console.log("[previewBtn] +++++++++++++++++++++++++++++++++++++++++++=--");
+            
             const doc = new jsPDF(); 
             doc.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297);
+
             //A-add all48 text
             const oo_b_fullname = document.getElementById('tmp_b_fullname').innerHTML;
             const oo_b_a1 = document.getElementById('tmp_b_address1').innerHTML;
@@ -1525,6 +1592,7 @@ export default {
             const oo_s_a2 = document.getElementById('tmp_s_address2').innerHTML;
             const oo_s_city = document.getElementById('tmp_s_city').innerHTML;
             const oo_s_postcode = document.getElementById('tmp_s_postcode').innerHTML;
+            
             doc.setFontSize(10);
             doc.text(oo_s_fullname, 72, 94);
             doc.text(oo_s_a1, 72, 99);
@@ -1573,6 +1641,25 @@ export default {
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
                 body: bodyData2
             })
+            console.log("previewBtn2---------");
+            const st = document.getElementById('q_subtotal').value;
+            const v = document.getElementById('q_vat').value;
+            const s = document.getElementById('q_shipping').value;
+            const t = document.getElementById('q_total').value;
+            doc.setFontSize(12);
+            doc.text('Sub-Total', 139, doc.lastAutoTable.finalY + 20, {align: 'right'})
+            doc.text( "£"+st , 182, doc.lastAutoTable.finalY + 20 , {align: 'right'})
+            doc.text('VAT', 139, doc.lastAutoTable.finalY + 25 , {align: 'right'})
+            doc.text( "£"+v, 182, doc.lastAutoTable.finalY + 25 , {align: 'right'})
+            doc.text('Shipping', 139, doc.lastAutoTable.finalY + 30 , {align: 'right'})
+            doc.text( "£"+s, 182, doc.lastAutoTable.finalY + 30 , {align: 'right'})
+            doc.text('Total', 139, doc.lastAutoTable.finalY + 35 , {align: 'right'})
+            doc.text( "£"+t  , 182, doc.lastAutoTable.finalY + 35 , {align: 'right'})
+
+            doc.setFontSize(9);
+            doc.text('Terms & Instructions', 6,  doc.lastAutoTable.finalY + 40).setFont(undefined, 'bold');
+            doc.text('Quote only valid for 30 days', 6, doc.lastAutoTable.finalY + 44);
+
             var string = doc.output('datauristring');
             var embed = "<embed width='100%' height='100%' src='" + string + "'/>"
             const a = document.getElementById('preview_quotationPDF');
@@ -1672,13 +1759,16 @@ async function addVatSHip(i_subtotal){
     let i_shipping = document.getElementById('q_shipping').value;
 
     let added_vat = 0;
+    let find_vat_n_round = 0;
     let find_vat = 0;
     let added_shipping = 0;
     let final = 0;
 
     added_vat = i_subtotal * 1.20; 
 
-    find_vat = +added_vat - +i_subtotal;
+    find_vat_n_round = +added_vat - +i_subtotal;
+    find_vat = parseFloat(find_vat_n_round.toFixed(2));
+
     document.getElementById('q_vat').setAttribute('value', find_vat);
     //console.log("find vat? " + find_vat );
 

@@ -18,7 +18,8 @@
           </div>
 
           <div>
-          <select id="so_client" class="form-select" aria-label="select client from quote list below, and it will do sorting." @change="doSort1();" onfocus="this.selectedIndex = 1;">
+          <select id="so_client" class="form-select" aria-label="select client from quote list below, and it will do sorting." 
+          @change="doSort1();" onfocus="this.selectedIndex = 1;">
             <option selected>Select Client Here</option>
             <option v-for="c in all_clients" :value="`${c}`" > {{ c }} </option>
           </select>
@@ -288,16 +289,22 @@ export default{
 
       async doSort1(){
         var optionValue = document.getElementById("so_client").value;
-        console.log("sort list from choosen cleint: " + optionValue);
-        var sort_client = await firebase.firestore().collection("ALL_quote").where("bill_ship.q_bill_fullname", "==", optionValue);
-        sort_client.onSnapshot(snap => {
-          this.all_quotes = [];
-          snap.forEach(d => {
-            
-          var sort_quote = d.data();
-          this.all_quotes.push(sort_quote);
-          });
-        })
+        
+        if (optionValue !== "Select Client Here"){
+          console.log("sort list from choosen cleint: " + optionValue);
+          var sort_client = await firebase.firestore().collection("ALL_quote").where("bill_ship.q_bill_fullname", "==", optionValue);
+          sort_client.onSnapshot(snap => {
+            this.all_quotes = [];
+            snap.forEach(d => {
+              
+            var sort_quote = d.data();
+            this.all_quotes.push(sort_quote);
+            });
+          })
+        }
+        else{
+          this.getAllQuoteNClient();
+        }
 
       },
 
