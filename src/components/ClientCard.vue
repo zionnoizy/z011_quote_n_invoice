@@ -6,11 +6,15 @@
         <input type="text" class="mb-3 form-control mx-5" v-model="myCsearch" placeholder="search client name here.." />
     </div>
 
+  
+
     <div class="lg:px-5 lg:mx-5 grid-cols-2 md:grid grid-cols-3 lg:grid-cols-5 gap-3 ">
       
-          <div class="client_card row col-span-1 flex-col text-center"  
+          <div class="client_card row col-span-1 flex-col text-center"
+            
             v-for="c, i in f_all_client_card.slice(0, (page + 1) * perPage)"
             :key="i"
+            :id="'i_cc'+i"
             data-bs-toggle="modal" 
             data-bs-target="#show_delievery_address" 
             @click.prevent="this.showDelivery($event, c, i)" > 
@@ -27,7 +31,7 @@
               <div>
                 <p>{{ c.c_city }}, {{ c.c_post_code }} </p>
               </div>
-              <div> {{ c.client_hashid }} </div>
+              
             </div>
           </div>
           <div class="modal fade" id="show_delievery_address" tabindex="-1" aria-labelledby="" aria-hidden="true" @close="resetPages()" @hide="resetPages()">
@@ -109,20 +113,34 @@ export default{
     },
     methods:{
 
-        async getAllClient() { 
-        var all_client_ref = await firebase.firestore().collection("all_clients");
+      async getAllClient() {
+        var all_client_ref = firebase.firestore().collection("all_clients");
+        all_client_ref.onSnapshot(async (snap) => {
+          this.all_client_card = [];
 
-        await all_client_ref.onSnapshot(snap => {
-            this.all_client_card = [];
-            
-            snap.forEach(d => {
-                var client = d.data();
-                this.all_client_card.push(client);
-            });
+          const promises = snap.docs.map(async (d, i) => {
+            var client = d.data();
+            this.all_client_card.push(client);
+            var ch = client.client_hashid;
+
+            console.log("each hadhid " + ch);
+
+            const delivery_ref = firebase.firestore().collection("all_delivery").doc(ch);
+            const docSnapshot = await delivery_ref.get();
+
+            if (docSnapshot.exists) {
+              console.log("Document exists, doing nothing.");
+            } else {
+              console.log("HELP HERE: Document does not exist.");
+              var dynamic = "i_cc" + i;
+              var pcc_2 = await document.getElementById(dynamic);
+              //pcc_2.classList.add('red-background');
+            }
+          });
+
+          await Promise.all(promises);
         });
-        
-        
-        },
+      },
         async showDelivery(e, c, i) {
           document.getElementById('previous_btn').style.visibility = 'hidden';
           this.delivery_fullname = c.c_fullname;
@@ -221,9 +239,12 @@ export default{
             this.perPage += 10
           }
         },
+        
     },
     created(){
       this.getAllClient();
+
+      
     },
     computed:{
         currentPageItems(){
@@ -239,3 +260,9 @@ export default{
 
 }
 </script>
+
+<style>
+.red-background {
+  background: linear-gradient(to bottom, #FF4E50, #F9D423);
+}
+</style>

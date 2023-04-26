@@ -197,7 +197,7 @@
     </div>
 </div>
 <div>
-    <img  class="my-5 logo d-flex align-items-center justify-content-center justify-center mx-auto " src="../assets/design_it/clock-in-out.png" />
+    <img class="my-5 logo d-flex align-items-center justify-content-center justify-center mx-auto " src="../assets/design_it/clock-in-out.png" />
 </div>
 <div>
     <button class="bigger_btn border btn btn-secondary  mt-5" type="button"
