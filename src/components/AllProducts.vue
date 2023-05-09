@@ -37,6 +37,7 @@
             <th scope="col">Code</th>
             <th scope="col">Name</th>
             <th scope="col">Category</th>
+            <th scope="col">Change Category</th>
 
             <th scope="col">&#163; Cost</th>
             <th scope="col">Margin &percnt;</th>
@@ -58,7 +59,7 @@
                 <td> {{ p.p_category }} 
                   <td contenteditable="true"  > 
                   <select :id= "`ep_category_${i}`" class="form-select form-select bg-dark text-white" data-field="p_category">
-                    <option selected>Re-Select Category</option>
+                    
                     <option   v-for="c in all_category" :value="`${c.category_fullname}`" > {{c.category_fullname}} </option>
                   </select>
                   </td>
