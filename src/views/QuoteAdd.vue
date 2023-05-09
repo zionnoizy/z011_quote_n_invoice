@@ -30,14 +30,14 @@
         <p class="my-2" >Create Quotation, fillout 1-5</p>
 
 
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-2 gap-2"> 
             <div class="">
                     <button class="bigger_btn preview_btn btn btn-info btn-lg btn-block" data-bs-toggle="modal"
                         data-bs-target="#preview_quotation" @click.prevent=previewBtn2()> Preview Quotation</button>
                     <!--@click.prevent="uploadQuotePDF($event)" download -->
 
                     <!------------------modal start-------------------->
-                    <div class="modal fade" id="preview_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true" >
+                    <div class="modal fade" id="preview_quotation" tabindex="-1" aria-labelledby="" aria-hidden="true"  >
 
                         <div class="modal-dialog modal-xl">
 
@@ -82,7 +82,7 @@
             </div>  
         </div>
 
-        <div class="grid grid-cols-3 gap-1 mt-5">
+        <div class="grid grid-cols-3 gap-1 mt-5" style="display: flex; justify-content: center; text-align: center;">
             <!--a--->
             <div class="grid grid-flow-row gap-4">
                     
@@ -110,7 +110,7 @@
                         
                     </div>    
                     <!-------------------modal//BillTo------------------------->
-                    <div class="modal fade" id="choose_bill_to" tabindex="-1" aria-labelledby="" aria-hidden="true">
+                    <div class="modal fade" id="choose_bill_to" tabindex="-1" aria-labelledby="" aria-hidden="true" >
                     <div class="modal-dialog modal-xl">
 
                         <div class="modal-content text-black">
@@ -120,10 +120,13 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"
                                     v-on:click="showBillToModal = false">X</button>
                             </div>
-                            <div class="modal-body" style="background-color: #1267aa;">
 
+                            <div class="scrollable modal-body" style="background-color: #1267aa;">
+                                <div class="my-2">
+                                    <input type="text" class="form-control" placeholder="Search Client Address..." v-model="sbt">
+                                </div>
                                 <div class="px-5 mx-5 grid grid-cols-3 gap-2  ">
-                                    <div class="" v-for="b, i in all_clients1">
+                                    <div class="" v-for="b, i in f_all_clients1">
                                         <div class="client_card row" @click="ChooseBillTo($event, b, i); "
                                             data-bs-dismiss="modal" aria-label="close">
                                             <div>
@@ -149,11 +152,7 @@
 
 
                             </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-success" v-on:click="submitManufacturer()">Submit Bill
-                                    In </button>
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                            </div>
+                            
                         </div>
                     </div>
                     </div>
@@ -233,11 +232,12 @@
                 
             </div>
             <!---b-->
+            
 
             <div class="">
                 <p class="text-2xl underline my-2 ">4.Final Calculation</p>
 
-                <div class="grid grid-cols-2 " style="  ">
+                <div class="grid grid-cols-2 gap-1 " style="  ">
 
                     <div class="fc grid grid-cols-1" style="">
                         <div>
@@ -245,7 +245,7 @@
                             <!--disabled @change="CalculateSubtotal" @input="addVatSHip($event.target.value)"-->
                         </div>
                         <div>
-                            £<input ref="q_subtotal" placeholder="Subtotal"  id="q_subtotal"  disabled  />
+                            £<input class="price_price form-control" ref="q_subtotal" placeholder="Subtotal"  id="q_subtotal" @input="addVatSHip($event); " disabled  />
                         </div>
                     </div>
 
@@ -256,7 +256,7 @@
                         <label for="q_vat">VAT </label>
                         </div>
                         <div>
-                            £<input ref="q_vat" placeholder="Vat" id="q_vat"   disabled />
+                            £<input class="price_price form-control" ref="q_vat" placeholder="Vat" id="q_vat"   disabled />
                         </div>
                     </div>
 
@@ -265,7 +265,7 @@
                         <label for="q_shipping"> 4A. Shipping </label>
                         </div>
                         <div>
-                            £<input ref="q_shipping" placeholder="Shipping" id="q_shipping" @focusout="addShip" onkeypress="only_decimial($event)" value="0"/>
+                            £<input class="price_price form-control" ref="q_shipping" placeholder="Shipping" id="q_shipping" @focusout="addShip" onkeypress="only_decimial($event)" value="0"/>
                         </div>
                     </div>
                     <div class="grid grid-cols-1" style="">
@@ -273,23 +273,28 @@
                         <label for="q_total">Total </label>
                         </div>
                         <div>
-                            = £<input ref="q_total" placeholder="Total" id="q_total" class="input-lg"  @input="addVatSHip($event)"
+                            = £<input class="price_price form-control" ref="q_total" placeholder="Total" id="q_total"   @input="addVatSHip($event)"
                         disabled />
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-1" style=";;">
-                        <div>
-                        <label for="q_total">5. Reference Number</label>
-                        </div>
-                        <div>
-                        <input ref="q_reference_number" placeholder="Reference" id="q_reference_number" class="input-lg" />
-                        </div>
-                    </div>
+                    
 
 
                     
 
+                </div>
+                
+                <br>
+                <br>
+
+                <div class="grid grid-cols-1" style=";;">
+                        <div>
+                        <label for="q_total">5. Reference Number</label>
+                        </div>
+                        <div>
+                        <input class="form-control"  ref="q_reference_number" placeholder="Reference" id="q_reference_number"  />
+                        </div>
                 </div>
             </div>
 
@@ -330,7 +335,7 @@
             <!--PUT_PRODUCT-->
             <div class="flex pl-3 lg:pl-12 mt-5 ">
                 
-                <div class="grid grid-cols-2 gap-3 test-center" style="text-align: center;">
+                <div class="" style="text-align: center;">
                     <!-----c-->
                     <div class="mx-auto grid grid-cols-2 gap-2" style="">
                     <div style="display: block;">
@@ -365,6 +370,7 @@
 
                                         <!--all-rpducts-choose -->
                                         <th>PRODUCT IN DATABASE:</th>
+
                                         <div class="grid gird-cols-3 gap-2">
                                             <div>
                                                 <input type="text" class="form-control" placeholder="Search..." v-model="scp">
@@ -530,6 +536,11 @@
 
         <!-- <img alt="" class="position-absolute  bottom-0 " src="../assets/design_it/cms_logo_long.png" style="z-index:-999; ;;" /> -->
         <embed id="hidden_quotationPDF" width="1200px" height="800px" src='' />
+        
+        <!--Toast-->
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055">
+        </div>
+    
     </div>
 </template>
 
@@ -567,10 +578,10 @@ export default {
     },
     setup() {
         const handleFocusout = (e, pid, df, i) => {
-          ////console.log("handleFocusout: " + e.target.id + "   pid= " + pid + "    data-field=" + df + "     i=" + i);
+          //////console.log("handleFocusout: " + e.target.id + "   pid= " + pid + "    data-field=" + df + "     i=" + i);
             
           var updated_field = document.getElementById(e.target.id);
-          //console.log("handleFocusout");
+          ////console.log("handleFocusout");
 
           let dynamic_sell_id = "add_all_sell"+i;
           let dynamic_qty_id = "ep_qty_"+i;
@@ -611,28 +622,37 @@ export default {
 
           ///reCalculateFCSubtotal
             let cimulat_du = 0;
-            //console.log("recalcu.");
+            ////console.log("recalcu.");
             var x = document.getElementById("my_favoriate_table").rows.length;
             for (let rs=0; rs < x-1; ++rs){
                 
                 let dynamic_ = "qd_total_"+rs;
-                //console.log("recalcu." + dynamic_);
+                ////console.log("recalcu." + dynamic_);
                 var one_du = document.getElementById(dynamic_).innerHTML;
                 cimulat_du = +cimulat_du + +one_du;
 
-                //console.log("recalcu.loop" + cimulat_du);
+                ////console.log("recalcu.loop" + cimulat_du);
             }
-            //console.log("recalcuatle total= " + cimulat_du);
+            ////console.log("recalcuatle total= " + cimulat_du);
             document.getElementById('q_subtotal').value = cimulat_du;
           ///reCalculateFCSubtotal
-          ////console.log("ABZ" + this.choosen_products);
+          //////console.log("ABZ" + this.choosen_products);
           addVatSHip(cimulat_du);
 
           //change_cp_object();
-
-          
         }
-        return { handleFocusout };
+
+        const q_subtotal = ref(null);
+        const subtotal = ref(0);
+        
+
+        watch(subtotal, (newValue) => {
+            q_subtotal.value.value = formatNumber(newValue.toString());
+        });
+
+
+        return { handleFocusout, formatNumber, q_subtotal, subtotal};
+
     },
     data() {
         return {
@@ -737,9 +757,11 @@ export default {
             choosen_bill_2: 'no bill to selected',
 
             scp: '',
+            sbt: '',
 
         }
     },
+
     components: {
         AllProductsChoose,
 
@@ -762,13 +784,13 @@ export default {
 
         async getAllClient1() {
 
-            //////console.log("[QuoteAdd-getAllClient] print-1");
+            ////////console.log("[QuoteAdd-getAllClient] print-1");
             var all_client_ref = await firebase.firestore().collection("all_clients");
             all_client_ref.onSnapshot(snap => {
                 this.all_clients1 = [];
 
                 snap.forEach(d => {
-                    //////console.log("[QuoteAdd-getAllClient] print");
+                    ////////console.log("[QuoteAdd-getAllClient] print");
 
                     var client = d.data();
                     
@@ -780,15 +802,15 @@ export default {
         },
         async getAllDelivery() {
 
-        ////console.log("[QuoteAdd-getAllClient] print-1" + this.store_bill_2_info);
+            //////console.log("[QuoteAdd-getAllClient] print-1" + this.store_bill_2_info);
 
-        const all_client_s_delivey_ref = await firebase.firestore().collection("all_delivery").doc(this.store_bill_2_info).collection("this_client_delivery");
-        all_client_s_delivey_ref.onSnapshot(snap => {
+            const all_client_s_delivey_ref = await firebase.firestore().collection("all_delivery").doc(this.store_bill_2_info).collection("this_client_delivery");
+            all_client_s_delivey_ref.onSnapshot(snap => {
 
             //if snap onSnapshot empty()
             this.this_client_delivey = [];
             snap.forEach(d => {
-                //////console.log("[QuoteAdd-getAllClient] print");
+                ////////console.log("[QuoteAdd-getAllClient] print");
 
                 var delivery = d.data();
                 this.this_client_delivey.push(delivery);
@@ -817,8 +839,8 @@ export default {
             this.choosen_bill_2 = b.c_fullname;
         },
         ChooseShipTo(ev, s, i) {
-            //////console.log("[QuoteAdd-ChooseShipTo] comming soon, click client and retrieve text." + ev + "  " + i);
-            //////console.log("[QuoteAdd-ChooseShipTo] you have chosen" + s.c_fullname);
+            ////////console.log("[QuoteAdd-ChooseShipTo] comming soon, click client and retrieve text." + ev + "  " + i);
+            ////////console.log("[QuoteAdd-ChooseShipTo] you have chosen" + s.c_fullname);
             document.getElementById('tmp_s_fullname').innerHTML = s.d_fullname;
             document.getElementById('tmp_s_address1').innerHTML = s.d_address_1;
             document.getElementById('tmp_s_address2').innerHTML = s.d_address_2;
@@ -829,8 +851,8 @@ export default {
         },
         async EnterProduct() {
             const typed_product = document.getElementById('p_enter').value;
-            //////console.log("[><QuoteAdd-EnterProduct] ");
-            //////console.log("[><QuoteAdd-EnterProduct] typed_product" + typed_product);
+            ////////console.log("[><QuoteAdd-EnterProduct] ");
+            ////////console.log("[><QuoteAdd-EnterProduct] typed_product" + typed_product);
             var one_product_ref = await firebase.firestore().collection("all_products").where( 'p_fullname', '==', typed_product );
             one_product_ref
                 .get()
@@ -845,9 +867,9 @@ export default {
                         document.getElementById('p_margin').value = d.data().p_margin;
                         document.getElementById('p_sell1').value = d.data().p_sell;
 
-                        //////console.log(d.data().p_code);
+                        ////////console.log(d.data().p_code);
 
-                        //////console.log("[><QuoteAdd-EnterProduct]loop=1 " + one_product);
+                        ////////console.log("[><QuoteAdd-EnterProduct]loop=1 " + one_product);
 
                         this.o_products.push(one_product);
                     })
@@ -862,11 +884,11 @@ export default {
         },
 
         async writePDF() {
-            //////console.log("[QuoteAdd-writePDF] write pdf.");
+            ////////console.log("[QuoteAdd-writePDF] write pdf.");
 
             const doc = new jsPDF();
             doc.addImage(cms_empty_quote, "JPEG", 0, 0, 210, 297);
-            //////console.log("[QuoteAdd-writePDF] write pdf.");
+            ////////console.log("[QuoteAdd-writePDF] write pdf.");
             //
             doc.save("quote.pdf");
         },
@@ -901,13 +923,13 @@ export default {
         },
 
         suggesting() {
-            //////console.log("[QuoteAdd]-suggesting  turn on s_flag");
+            ////////console.log("[QuoteAdd]-suggesting  turn on s_flag");
             this.s_flag = true;
         },
         
         
         async uploadQuotePDF(base64) { //step2
-
+            
             let flag = validate_q_input();
 
             if (flag){
@@ -918,13 +940,13 @@ export default {
 
                 this.this_one_q_number = quote_number;
 
-                console.log("quote number:    " + this.this_one_q_number + " " + quote_number);
+                //console.log("quote number:    " + this.this_one_q_number + " " + quote_number);
 
                 let reference_number = document.getElementById('q_reference_number').value;
 
                 const ref = collection(db, "ALL_quote");
 
-                console.log("uploadQuotePDF2---------" + base64);
+                //console.log("uploadQuotePDF2---------" + base64);
         
                 const bill_ship = {          
                     q_bill_fullname: document.getElementById('tmp_b_fullname').innerHTML,
@@ -967,53 +989,53 @@ export default {
             }
             //NEW NEW NEW NEW --
             const cp = JSON.parse(JSON.stringify(this.choosen_products));
-            //console.log(typeof cp);
+            ////console.log(typeof cp);
             for (var key in cp) {
                 if (cp.hasOwnProperty(key)) {
-                    //console.log(key + " -> " + cp[key].p_fullname);
+                    ////console.log(key + " -> " + cp[key].p_fullname);
                     let d_qty = "ep_qty_"+key; 
                     let d_discount = "ep_discount_"+key;
                     let d_unit = "ep_unit_"+key; 
                     let cum1 = document.getElementById(d_qty).innerHTML;
                     let cum2 = document.getElementById(d_discount).innerHTML;
                     let cum3 = document.getElementById(d_unit).innerHTML;
-                    console.log(cum1 + "=====" + cum2 + "=====" + cum3);
+                    //console.log(cum1 + "=====" + cum2 + "=====" + cum3);
                     cp[key].p_quantity = cum1;
                     cp[key].p_discount = cum2;
                     cp[key].p_unit = cum3;
-                    //console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
+                    ////console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
                 }
             }
             
-            console.log("uploadQuotePDF4---------" + base64);
+            //console.log("uploadQuotePDF4---------" + base64);
 
             await addDoc(ref, {obj_ref, cp, final_tt, bill_ship})
             .then(docRef => {
-                console.log(docRef.id);
+                //console.log(docRef.id);
                 const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
                 const string = "/all_quote/" + docRef.id + "/";
 
                 this.this_one_q_pdf_link = test2_storage( docRef.id, string, base64);//use this 
 
-                console.log("uploadQuotePDF5---------   " + this.this_one_q_pdf_link);
+                //console.log("uploadQuotePDF5---------   " + this.this_one_q_pdf_link);
 
 
                 //NEW NEW
                 var choosen_product_qty = Object.keys(this.choosen_products).length;
                 cp["choosen_product_qty"] = choosen_product_qty;
-                console.log("uploadQuotePDF6---------" + choosen_product_qty);
+                //console.log("uploadQuotePDF6---------" + choosen_product_qty);
                 get_id
                 .update({
                     quote_hashid: docRef.id,
                     choosen_product_qty: choosen_product_qty,
                 })
                 .then(() => {
-                      console.log("Z-clearning");
+                      //console.log("Z-clearning");
                       clean_input_field();
 
                 })
                 .catch((error) => {
-                    console.log(error);
+                    //console.log(error);
                 })
             })
 
@@ -1024,7 +1046,7 @@ export default {
 
         async previewBtn() { //step1
             
-            console.log("previewBtn1---------");
+            //console.log("previewBtn1---------");
 
             let flag = await validate_q_input();
 
@@ -1120,7 +1142,7 @@ for (let i = 0; i < remainingData.length; i++) {
   const pageHeight = doc.internal.pageSize.height;
   const rowHeight = 31;
 
-  console.log(tableHeight +" + "+ rowHeight +" > "+ pageHeight);
+  //console.log(tableHeight +" + "+ rowHeight +" > "+ pageHeight);
 
   // check if the table height exceeds the page height
   if (startY + rowHeight > pageHeight) {
@@ -1159,7 +1181,7 @@ for (let i = 0; i < remainingData.length; i++) {
   });
 
   // update the table height
-  console.log("finalY " + finalY + " " + rowHeight);
+  //console.log("finalY " + finalY + " " + rowHeight);
   tableHeight += doc.lastAutoTable.finalY + rowHeight;
 
 
@@ -1188,7 +1210,7 @@ if (remainingData.length > 0) {
 }
 */
 }
-            console.log("previewBtn2---------");
+            //console.log("previewBtn2---------");
             const st = document.getElementById('q_subtotal').value;
             const v = document.getElementById('q_vat').value;
             const s = document.getElementById('q_shipping').value;
@@ -1223,7 +1245,7 @@ if (remainingData.length > 0) {
             var base64 = doc.output('datauri');
             this.return_base64 = await base64;
 
-            console.log("previewBtn3---------   "    + string + this.return_base64);
+            //console.log("previewBtn3---------   "    + string + this.return_base64);
 
             //////
             /*
@@ -1235,7 +1257,7 @@ if (remainingData.length > 0) {
 
             const ref = collection(db, "ALL_quote");
 
-            console.log("uploadQuotePDF2---------" + base64);
+            //console.log("uploadQuotePDF2---------" + base64);
        
             const bill_ship = {          
                 q_bill_fullname: document.getElementById('tmp_b_fullname').innerHTML,
@@ -1278,47 +1300,47 @@ if (remainingData.length > 0) {
             
             //NEW NEW NEW--
             const cp = JSON.parse(JSON.stringify(this.choosen_products));
-            //console.log(typeof cp);
+            ////console.log(typeof cp);
             for (var key in cp) {
                 if (cp.hasOwnProperty(key)) {
-                    //console.log(key + " -> " + cp[key].p_fullname);
+                    ////console.log(key + " -> " + cp[key].p_fullname);
                     let d_qty = "ep_qty_"+key;
                     let d_discount = "ep_discount_"+key;
                     let d_final_total = "qd_total_"+key;
                     let cum1 = document.getElementById(d_qty).innerHTML;
                     let cum2 = document.getElementById(d_discount).innerHTML;
                     let cum3 = document.getElementById(d_final_total).innerHTML;
-                    //console.log(cum1 + "=====" + cum2);
+                    ////console.log(cum1 + "=====" + cum2);
                     cp[key].p_quantity = cum1;
                     cp[key].p_discount = cum2;
                     cp[key].p_final_total = cum3;
-                    //console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
+                    ////console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
 
                 }
             }
-            console.log("uploadQuotePDF4---------" + base64);
+            //console.log("uploadQuotePDF4---------" + base64);
             await addDoc(ref, {obj_ref, cp, final_tt, bill_ship})
             .then(docRef => {
                 //**
                 this.this_one_q_hash_number = docRef.id;
 
-                console.log(docRef.id);
+                //console.log(docRef.id);
                 const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
                 const string = "/all_quote/" + docRef.id + "/";
 
                 test2_storage( docRef.id, string, base64);//use this 
 
-                console.log("uploadQuotePDF5---------");
+                //console.log("uploadQuotePDF5---------");
                 //NEW NEW
                 var choosen_product_qty = Object.keys(this.choosen_products).length;
                 cp["choosen_product_qty"] = choosen_product_qty;
-                console.log("uploadQuotePDF6---------" + choosen_product_qty);
+                //console.log("uploadQuotePDF6---------" + choosen_product_qty);
                 get_id
                 .update({
                     quote_hashid: docRef.id,
                     choosen_product_qty: choosen_product_qty,
                 }).catch((error) => {
-                    console.log(error);
+                    //console.log(error);
                 })
             })
             }//flag
@@ -1332,7 +1354,7 @@ if (remainingData.length > 0) {
             const myTimestamp = firebase.firestore.Timestamp.now();
             const today_year = myTimestamp.toDate().getFullYear();
             const tmp_today_month = myTimestamp.toDate().getMonth();
-            //////console.log("[firebaseStorageUpload] " + myTimestamp + " " + today_year + " " + tmp_today_month);
+            ////////console.log("[firebaseStorageUpload] " + myTimestamp + " " + today_year + " " + tmp_today_month);
             const month_folder = this.convert_to_month[tmp_today_month];
 
             //const today_month = convert_month(tmp_today_month);
@@ -1347,11 +1369,11 @@ if (remainingData.length > 0) {
             uploadtask.on(
                 'state_changed',
                 (snapshot) => {
-                    //////console.log("[firebaseStorageUpload]  uploaded");
+                    ////////console.log("[firebaseStorageUpload]  uploaded");
                     //this.uploadValue = ( snapshot.bytesTransferred / snapshot.totalBytes )*100;
                 },
                 error => {
-                    //////console.log(error.message)
+                    ////////console.log(error.message)
                 },
                 () => {
                     this.uploadValue = 'upload success';
@@ -1360,12 +1382,12 @@ if (remainingData.length > 0) {
                     });
                 },
                 async () => {
-                    //////console.log("[firebaseStorageUpload] 2 uploaded");
+                    ////////console.log("[firebaseStorageUpload] 2 uploaded");
                     downloadUrl.value = await getDownloadURL(uploadtask.snapshot.ref)
 
                 },
             );
-            //////console.log("[firebaseStorageUpload]==================================");
+            ////////console.log("[firebaseStorageUpload]==================================");
         },
         danny(){
             let q_number = auto_quote_no_generator2();
@@ -1389,7 +1411,7 @@ if (remainingData.length > 0) {
             //firebaseStorageUpload()
         },
         CalculateSubtotal(i){ //not use?
-            //console.log("print thi1");
+            ////console.log("print thi1");
             choosen_products.forEach(element => {      
 
             this.tmp_sell = this.tmp_sell + element.p_sell;
@@ -1407,7 +1429,7 @@ if (remainingData.length > 0) {
                 ans = ans + cum;
                 
             }
-            //console.log("print thi2");
+            ////console.log("print thi2");
             document.getElementById('q_subtotal').value = this.tmp_ans;
             ////new
             
@@ -1419,6 +1441,8 @@ if (remainingData.length > 0) {
         minusProduct(i, p_fullname){
             var find_i = this.choosen_products.indexOf(this.choosen_products.p_fullname);
             this.choosen_products.splice(i, 1);
+
+            this.showToast('Delete', 'You deleted product: ' + p_fullname,  3000, 'delete');;
 
         },
         createSHipping(){
@@ -1432,7 +1456,7 @@ if (remainingData.length > 0) {
         all_product_ref.orderBy("p_insert_date", "desc")
             .onSnapshot((snapshot) => {
             if (snapshot.empty) {
-                //////console.log("[getAllProductsNewest] all_products not exist.")
+                ////////console.log("[getAllProductsNewest] all_products not exist.")
                 
             }
             else{
@@ -1441,7 +1465,7 @@ if (remainingData.length > 0) {
 
 
                     var product = d.data();
-                    //////console.log("[ProductAll]-2 " + product);
+                    ////////console.log("[ProductAll]-2 " + product);
                     this.all_products.push(product);
                 })
             }  
@@ -1454,23 +1478,87 @@ if (remainingData.length > 0) {
         all_product_ref.orderBy("p_insert_date", "asc")
             .onSnapshot((snapshot) => {
             if (snapshot.empty) {
-                //////console.log("[getAllProductsNewest] all_products not exist.")
+                ////////console.log("[getAllProductsNewest] all_products not exist.")
                 
             }
             else{
                 this.all_products = [];
                 snapshot.forEach(d => {
                     var product = d.data();
-                    //////console.log("[ProductAll]-3 " + product);
+                    ////////console.log("[ProductAll]-3 " + product);
                     this.all_products.push(product);
                 })
             }  
             })
         },
+        showToast(title, body, timeout, my_style) {
+        // Create the toast element
+        var toast = document.createElement('div');
+        if (my_style=="success"){
+            toast.classList.add('bg-success');
+        }
+        if (my_style=="delete"){
+            toast.classList.add('bg-warning');
+        }
+        toast.classList.add('toast');
+        toast.classList.add('fade');
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
 
-        async choosenOneProduct(ev, p, i){ //IMPORTANT
+        // Create the header element
+        var header = document.createElement('div');
+        header.classList.add('toast-header');
+
+        // Create the title element
+        var titleElem = document.createElement('strong');
+        titleElem.classList.add('mr-auto');
+        titleElem.textContent = title;
+
+        // Create the button to close the toast
+        //var button = document.createElement('button');
+        //button.classList.add('ml-2', 'mb-1', 'close');
+        //button.setAttribute('type', 'button');
+        //button.setAttribute('data-dismiss', 'toast');
+        //button.setAttribute('aria-label', 'Close');
+
+        // Create the span for the close icon
+        var span = document.createElement('span');
+        span.setAttribute('aria-hidden', 'true');
+        span.innerHTML = '&times;';
+
+        // Add the span to the button and the button to the header
+        //button.appendChild(span);
+        //header.appendChild(titleElem);
+        //header.appendChild(button);
+
+        // Create the body element
+        var bodyElem = document.createElement('div');
+        bodyElem.classList.add('toast-body');
+        bodyElem.textContent = body;
+
+        // Add the header and body to the toast
+        toast.appendChild(header);
+        toast.appendChild(bodyElem);
+
+        // Add the toast to the container
+        document.querySelector('.toast-container').appendChild(toast);
+
+        // Show the toast
+        toast.classList.add('show');
+
+        // Set a timeout to hide the toast after 3000 milliseconds (3 seconds)
+        setTimeout(function() {
+        toast.classList.remove('show');
+        }, timeout);
+
+        },
+
+        async choosenOneProduct(ev, p, i){
             //var size = Object.size(this.choosen_products);
-            console.log("size   " + this.choosen_products.length);
+            this.showToast('Added', 'You added one product, check in the dark table.',  2000, 'success');;
+
+            //console.log("size   " + this.choosen_products.length);
             /*
             if (this.choosen_products.length > 12){
                 alert("reach maximum item in v1.0 at this moment.");
@@ -1491,7 +1579,7 @@ if (remainingData.length > 0) {
 
                         var tmp_one_sell = parseFloat(d.data().p_final_total);  //p_final_total
 
-                        console.log("!!!!!!!!!! " + this.tmp_sell + "+" + tmp_one_sell)
+                        //console.log("!!!!!!!!!! " + this.tmp_sell + "+" + tmp_one_sell)
 
                         this.tmp_sell = this.tmp_sell + tmp_one_sell;
 
@@ -1510,7 +1598,7 @@ if (remainingData.length > 0) {
                 new_subtotal = this.tmp_sell;
             })
             
-        ////console.log(new_subtotal);
+        //////console.log(new_subtotal);
         //document.getElementById('q_subtotal').setAttribute('value', this.tmp_sell);
         //new_subtotal= document.getElementById('q_subtotal').value; 
         
@@ -1524,7 +1612,7 @@ if (remainingData.length > 0) {
             let i_vat = document.getElementById('q_vat').value;
             let i_shipping = document.getElementById('q_shipping').value;
             //var i_shipping2 = document.getElementById(e.target.id);
-            //console.log("SUBtotal input tag changed " + i_shipping + " ");
+            ////console.log("SUBtotal input tag changed " + i_shipping + " ");
             let added_vat = +i_subtotal + (+(i_subtotal / 100) * +i_vat); 
             let ans = +added_vat + +i_shipping;
 
@@ -1534,33 +1622,22 @@ if (remainingData.length > 0) {
         },
 
         change_cp_object(){
-            //console.log("change_cp_object" + this.choosen_products);
+            ////console.log("change_cp_object" + this.choosen_products);
         },
         
         
         testCharacter(event) {
             if ((event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode === 13) {
-                console.log("number");
+                //console.log("number");
                 return true;
             } else {
-                console.log("no number!")
+                //console.log("no number!")
                 return false;
             }
 
         },
 
-        showOkayToast(){
-            console.log("show toast");
-            /*
-            const toastLiveExample = document.getElementById('my_toast1')
-            toastTrigger.addEventListener('click', () => {
-                const toast = new bootstrap.Toast(toastLiveExample)
-
-                toast.show()
-            })
-            */
-
-        },
+        
 
         async previewBtn2() {
             
@@ -1641,7 +1718,7 @@ if (remainingData.length > 0) {
                 head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
                 body: bodyData2
             })
-            console.log("previewBtn2---------");
+            //console.log("previewBtn2---------");
             const st = document.getElementById('q_subtotal').value;
             const v = document.getElementById('q_vat').value;
             const s = document.getElementById('q_shipping').value;
@@ -1683,6 +1760,12 @@ if (remainingData.length > 0) {
         f_all_products() {
         return this.all_products.filter((all_products) =>
             all_products.p_fullname.toLowerCase().includes(this.scp.toLowerCase())
+        );
+        },
+
+        f_all_clients1() {
+        return this.all_clients1.filter((all_clients1) =>
+            all_clients1.c_fullname.toLowerCase().includes(this.sbt.toLowerCase())
         );
         },
     },
@@ -1742,7 +1825,7 @@ async function auto_quote_no_generator2(){
     
 
      ans =  first_half + addedz;
-     //////console.log("auto_quote_no_generator5 " + ans);
+     ////////console.log("auto_quote_no_generator5 " + ans);
     
     
      
@@ -1770,15 +1853,16 @@ async function addVatSHip(i_subtotal){
     find_vat = parseFloat(find_vat_n_round.toFixed(2));
 
     document.getElementById('q_vat').setAttribute('value', find_vat);
-    //console.log("find vat? " + find_vat );
+    ////console.log("find vat? " + find_vat );
 
-    //console.log("SUBtotal input tag changed added_vat" + added_vat);
+    ////console.log("SUBtotal input tag changed added_vat" + added_vat);
 
 
     added_shipping = await +added_vat + +i_shipping;
     final = added_shipping;
 
-    //console.log("SUBtotal input tag changed added_vat" + added_shipping);
+    console.log( i_subtotal + " + " +i_vat + "+" + added_shipping + "=" + final);
+
     let r_final = Number(final).toFixed(2);
     document.getElementById('q_total').setAttribute('value', r_final);
 
@@ -1798,21 +1882,21 @@ function validate_q_input(){
       var qcc_2 = document.getElementById('tmp_s_fullname');
       var qcc_4 = document.getElementById('q_reference_number');
 
-      //console.log("no0" + qc_1 + "      " + qcc_1 + qcc_2 + "     " + x);
+      ////console.log("no0" + qc_1 + "      " + qcc_1 + qcc_2 + "     " + x);
 
       if (qc_1.length <= 0){
         document.getElementById("choose_bill_btn").style.background='#990000';
-        //console.log("no1");
+        ////console.log("no1");
         flag = false;
       }
       if (qc_2.length <= 0){
         document.getElementById("choose_delivery_btn").style.background='#990000';
-        //console.log("no2");
+        ////console.log("no2");
         flag = false;
       }
       if (x <= 1){
         document.getElementById("add_products_btn").style.background='#990000';
-        //console.log("no3");
+        ////console.log("no3");
         flag = false;
       }
       if (qc_4.length <= 0){
@@ -1860,6 +1944,27 @@ function clear_q_entry(){
 
 
 }
+
+function formatNumber(event) {
+
+    
+  let value = event.target.value;
+
+  // Remove any non-numeric characters
+  value = value.replace(/[^0-9\.]/g, '');
+  //console.log(value);
+  // Add commas every three digits
+  const parts = value.split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  let formattedValue = parts.join('.');
+
+  // If the value is a whole number, add .00 at the end
+  if (value === parts[0]) {
+    formattedValue += '.00';
+  }
+
+  event.target.value = formattedValue;
+}
 </script>
 
 <style>
@@ -1883,5 +1988,20 @@ function clear_q_entry(){
     font-size: 24px;
     padding: 12px 24px;
     border-radius: 10px;
+}
+
+.price_price {
+  font-size: 1.5em;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  text-align: right;
+}
+
+.scrollable {
+  overflow: auto;
+}
+
+.bg-custom {
+  background-color: #ffd700;
 }
 </style>

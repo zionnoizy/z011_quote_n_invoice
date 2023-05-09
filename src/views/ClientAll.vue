@@ -18,7 +18,7 @@
             </div>
         </p>
 
-        <img alt="" class=" position-absolute top-50 start-50" src="../assets/design_it/on-site-selfie-main-bg.png" style="z-index:-999; ;;" />  
+        <img alt="" class=" position-absolute top-50 start-50" src="../assets/design_it/hub-allows-bg-2x.png" style="z-index:-999; ;;" />  
 
         <client-add ></client-add>
 
@@ -32,7 +32,7 @@
         
         </div>
 
-        <div class="lg:px-5 lg:mx-5 grid grid-cols-5 gap-3 ">
+        <div class="lg:px-5 lg:mx-5 grid grid-cols-5 gap-3 " style="background-image: url(../assets/design_it/on-site-selfie-main-bg.png); background-position: center center; background-size: cover;">
 
           <div class="client_card"  v-for="c, i in f_all_clients" :key="c.client_hashid"     > 
             

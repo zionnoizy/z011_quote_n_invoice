@@ -22,6 +22,9 @@ export default {
       alert ("Error exist, please report the bug or issue, email to it@companiesms.co.uk with your error message below:");
       console.log(whats_going_on_msg);
     },
+
+    
+
   } 
 
 }
@@ -85,13 +88,28 @@ color:red !important;;
 color:red;;
 }
 
-.client_card{
+.client_card {
+  border: 2px solid #73AD21;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  width: 275px;
+  height: 175px;
 
-border: 2px solid #73AD21;
-padding: 20px;
-width: 275px;
-height: 175px;
+  transition: box-shadow 0.3s ease-in-out;
 }
+
+.client_card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+
+
+
+
+
+
+
 
 .delivery_card{
 
@@ -153,6 +171,40 @@ tr:hover td {
     font-size: 24px;
     padding: 12px 24px;
     border-radius: 10px;
+}
+
+.table-custom {
+  background-color: #212529;
+  color: #fff;
+}
+
+.table-custom thead th {
+  color: #fff;
+  background-color: #343a40;
+  border-color: #454d55;
+}
+
+.table-custom tbody+tbody {
+  border-top: 2px solid #343a40;
+}
+
+.table-custom tbody tr:first-of-type {
+  border-top: 2px solid #343a40;
+}
+
+.table-custom tbody tr {
+  border-color: #454d55;
+}
+
+.table-custom tbody tr:nth-of-type(even) {
+  background-color: #454d55;
+}
+
+
+.custom_select {
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
 }
 
 </style>

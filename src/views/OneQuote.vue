@@ -196,15 +196,20 @@
         </div>
     </div>
 </div>
+
 <div>
     <img class="my-5 logo d-flex align-items-center justify-content-center justify-center mx-auto " src="../assets/design_it/clock-in-out.png" />
 </div>
+
 <div>
+
     <button class="bigger_btn border btn btn-secondary  mt-5" type="button"
         id="m_new_invoice" data-bs-toggle="modal" data-bs-target="#add_po_number" >
         Enter Your PO Number + Ready For New Invoice
     </button>
+
     <p>don't add the invoice again if you see right-hand-side has one already.</p>
+
     <div class="modal fade" id="add_po_number" tabindex="-1" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog modal-xl">
 
@@ -1391,6 +1396,9 @@ export default{
         productChanged() {
             this.changed_flag = true;
         },
+
+
+       
     },
     created() {
 
@@ -1598,5 +1606,8 @@ function validate_q_update(){
     border-radius: 10px;
 }
 
+.modal-body {
+  overflow: auto;
+}
 
 </style>

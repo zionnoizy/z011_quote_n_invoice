@@ -6,7 +6,7 @@
       <form @sumbit.prevent="addProduct" class=" rounded p-3 "  >
 
         <p>Add New Product Here:</p>
-        <table class="table table-dark" >
+        <table class="table table-custom" >
           <thead>
             <tr>
               <th scope="col">[Add]</th>
@@ -22,10 +22,13 @@
           <tbody>
               <tr>
               <th scope="row">
-                <div><button class="btn btn-info"   @click.prevent="createProduct" > [+] </button> </div>
+                <div><button class="btn btn-info"   @click.prevent="createProduct" > ADD PRODUCT + </button> </div>
               </th>
-              <td> <input ref="p_code" placeholder="Product Code" id="pi_code" required/> </td>
-              <td> <input ref="p_enter" placeholder="Item Name" id="pi_name" required/> </td>
+              
+              <td> <input ref="p_code" placeholder="Product Code" id="pi_code" class="custom_input_2" required/> </td>
+              
+              <td> <input ref="p_enter" placeholder="Item Name" id="pi_name" class="custom_input_4" required style="width: 300px;"/> </td>
+              
               <td> 
                 <select id="pi_category" class="form-select" aria-label="Default select example">
                   <option selected>Select Category Here</option>
@@ -34,10 +37,10 @@
               </td>
               
 
-              
-              <td> <input ref="p_cost" type="number" placeholder="Product Cost (number only)" id="pi_cost" v-on:keypress="NumbersOnly" @input="CalculateSell" required /> </td>
-              <td> <input ref="p_margin" type="number" placeholder="Product Margin (number only)" id="pi_margin" onkeypress='return event.charCode >= 48 && event.charCode <= 57' @input="CalculateSell" required /> </td>
-              <td> <input ref="p_sell" type="number" placeholder="Product Sell" id="pi_sell" @input="CalculateSell" disabled/> </td>
+              <!--@input="CalculateSell"   ; NumbersOnly($event);  v-on:keypress="NumbersOnly"-->
+              <td> <input ref="p_cost" placeholder="Product Cost (number only)" id="pi_cost" @input="CalculateSell()" v-on:keypress="NoEnglishLetter" class="custom_input_3" required /> </td>           
+              <td> <input ref="p_margin"  placeholder="Product Margin (number only)" id="pi_margin"  @input="CalculateSell" required /> </td>
+              <td> <input ref="p_sell"  placeholder="Product Sell" id="pi_sell" @input="CalculateSell" /> </td>
 
             </tr>
 
@@ -54,6 +57,8 @@
     </div> 
 
       <p id="complain_text" class="mb-2" style="color: red;">  </p>
+      <p id="complain_text_2" class="mb-2" style="color: red;">  </p>
+      
   </div>
 </template>
 
@@ -72,6 +77,13 @@ export default{
   data() {
     return {
       all_category: [],
+      messageTimeout: null,
+    }
+  },
+  computed: {
+    showWarning() {
+      // Check if input value is invalid
+      return this.inputValue.trim() !== '' && !/^[0-9]+(\.[0-9]{1,2})?$/.test(this.inputValue);
     }
   },
   methods:{
@@ -138,29 +150,45 @@ export default{
       else{
         var paragraph = document.getElementById("complain_text");
         if (paragraph.textContent <=0 || paragraph.textContent == null || paragraph.textContent == ''){
-            paragraph.textContent += "Product Entering is Incorrect. Double Check If Product Pre-exist/ Red Text above!";
+            paragraph.textContent += "Product Insert Has Error!";
         }    
       }
       
     },
     
     NumbersOnly(e){
-      e = (e) ? e : window.event;
-      var code = (e.which) ? e.which : e.keyCode;
-      if ((code > 31 && (code < 48 || code > 57)) && code !== 46){
-        e.preventDefault();;
-        
+      console.log("run numbersonly");
+      var input = e.target;
+      // Remove all non-numeric characters except decimal point
+      input.value = input.value.replace(/[^\d.]/g, '');
+      if (/^\d+\.\d{3,}/.test(input.value)) {
+        input.value = input.value.slice(0, -1);
       }
-      else{
-
-        return true;
+      // Format the input with two decimal places
+      input.value = Number(input.value).toFixed(2);
+      // Show message for a few seconds if input is invalid
+      
+    },
+    NoEnglishLetter(e){
+      console.log("run noEnglishLetter");
+      var input = e.target;
+      if (!/^\d+(\\.\d{0,2})?$/.test(input.value)) {
+        var paragraph = document.getElementById("complain_text");
+        if (paragraph.textContent <=0 || paragraph.textContent == null || paragraph.textContent == ''){
+            paragraph.textContent += "Please Only Type Valid Numbers!";
+        }  
+        clearTimeout(this.messageTimeout);
+        this.messageTimeout = setTimeout(() => {
+          paragraph.textContent = '';
+        }, 5000);
       }
-
     },
     CalculateSell(){
 
       const cost = document.getElementById('pi_cost').value;
+
       const margin = document.getElementById('pi_margin').value;
+
       const tmp_ans = +cost + (+(cost / 100) * margin);
 
       //console.log("[ProductAdd]" + cost + " " + margin + " " + tmp_ans);
@@ -188,6 +216,9 @@ export default{
       document.getElementById('pi_margin').classList.remove('red-text');
       categoryDropdown.classList.remove('red-text');
     },
+
+
+
   },
   created() {
 
@@ -251,9 +282,16 @@ async function validate_p_fullname(){
   var all_client_ref = firebase.firestore().collection("all_products").where("p_fullname", "==", pc_2);
   await all_client_ref.get().then(function(doc) {
     if (!doc.empty) {
+      var input = document.getElementById("p_enter");
+      input.style.color = "red";
+
         flag = false;
-        var wm = document.getElementById('warning_msg');
-        wm.textContent += "Product pre-exist! please check the product name again.";
+        var paragraph = document.getElementById("complain_text_2");
+        if (paragraph.textContent <=0 || paragraph.textContent == null || paragraph.textContent == ''){
+            paragraph.textContent += "Product pre-exist! Please type your product name in search bar in order to prevent name conflict.";
+        } 
+
+        
         vpc_2.style.color = '#FF0000';
         console.log("1Document data NOT Empty:");
         return flag;
@@ -292,5 +330,25 @@ form {
 .curved-form {
   border-radius: 10px;
   overflow: hidden; /* hide overflow content to prevent clipping */
+}
+
+.custom_input_2 {
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+}
+
+.custom_input_3 {
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  font-size: 20px;
+}
+
+.custom_input_4 {
+  border-radius: 10px;
+  width: 150%;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
 }
 </style>

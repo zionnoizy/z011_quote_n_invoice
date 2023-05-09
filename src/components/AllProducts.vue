@@ -18,8 +18,8 @@
           </select>
         </div>
 
-        <div> <button id="sort_oldest" class=" btn btn-primary  mx-1" @click.prevent="getAllProductsNewest()">Sort From Oldest </button> </div>
-        <div> <button id="sort_newest" class=" btn btn-primary  mx-1" @click.prevent="getAllProductsOldest()">Sort From Newest </button> </div>
+        <!-- <div> <button id="sort_oldest" class=" btn btn-primary  mx-1" @click.prevent="getAllProductsNewest()">Sort From Oldest </button> </div>
+        <div> <button id="sort_newest" class=" btn btn-primary  mx-1" @click.prevent="getAllProductsOldest()">Sort From Newest </button> </div> -->
       
         <div> <button class="btn btn-success" @click="exportToExcel()">SAVE TO EXCEL</button> </div>
       </div>

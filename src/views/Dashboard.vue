@@ -10,11 +10,11 @@
         </div>
         <section class="warehouse_background " style="background-image: url(&quot;/assets/Warehouse_Nologo-3ff955ec.png&quot;); z-index: 998;">
             
-            <h2 class="dont_blur info_head text-4xl font-sans-b mb-16 ml-5 mt-3 text-left max-w-lg uppercase  text-white"> 
+            <h2 class="dont_blur info_head text-4xl font-sans-b mb-16 ml-5 mt-3 text-left uppercase  text-white"> 
                 
-                <img  width="225" height="105"  class="logo justify-center mx-auto mb-3" src="../assets/logo/logo-white.png" />
+                <img  width="225" height="105"  class="qi_logo logo justify-center mx-auto mb-3" src="../assets/logo/logo-white.png" />
             
-                Welcome Back To CMS-QuoteIn, {{ userEmail }}
+                Welcome Back To CMS-QuoteIn {{ userEmail }}
             
             </h2>
             
@@ -286,5 +286,17 @@ export default{
 }
 .router-link-active::before {
   transform: scaleX(1);
+}
+
+.qi_logo {
+
+
+transition: transform .2s; /* Animation */
+
+margin: 0 auto;
+}
+
+.qi_logo:hover {
+transform: scale(1.05); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 }
 </style>
