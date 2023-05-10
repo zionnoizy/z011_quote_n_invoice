@@ -395,13 +395,15 @@
                                                 <th scope="col">Margin &percnt;</th>
                                                 <th scope="col">Sell</th>
                                                 <th scopr="col">choose</th>
+                                                
+                                                <th scopr="col">Type Quantity</th>
                                             </tr>
 
                                             </thead>
 
                                             <tbody>
-                                            
-                                            <tr class="choose_product" v-for="p, i in f_all_products" :class="{disabled: p.selected}"  @click.prevent="choosenOneProduct($event,p, i); ">
+                                            <!-- @click.prevent="choosenOneProduct($event,p, i,$event.currentTarget);-->
+                                            <tr class="point_it choose_product" v-for="p, i in f_all_products" :class="{disabled: p.selected}"  >
                                                 <td> {{ i }} </td>
                                                 <td> {{ p.p_code }} </td>
                                                 <td> {{ p.p_fullname }} </td>
@@ -410,7 +412,9 @@
                                                 <td> {{ p.p_margin }} </td>
                                                 <td> {{ p.p_sell }} </td>
 
-                                                <td> <div><button class="btn btn-info" :disabled="p.selected"  @click.prevent="choosenOneProduct($event,p, i); p.selected=true;" > [+] </button> </div> </td>
+                                                <td><input :id= "`typed_qty_${i}`" type="number" min="1"></td>
+
+                                                <td> <div><button class="btn btn-info" :disabled="p.selected"  @click.prevent="choosenOneProduct($event,p, i,$event.currentTarget); p.selected=true;" > [+] </button> </div> </td>
                                             </tr>
                                             
                                             </tbody>
@@ -446,7 +450,7 @@
                                     <th scope="col">Product Margin</th>
                                     <th scope="col" style="text-decoration:underline;">Product Sell</th>
                                     <th scope="col" style="color:grey;">Add Qunatity #</th>
-                                    <th scope="col" style="color:grey;" title="This is the text of the tooltip">Add Unit (eg. mm, box)</th>
+                                    <th scope="col" style="color:grey;" >Unit £</th>
                                     <th scope="col" style="color:grey;">Add Discount %</th>
                                     <th scope="col" style="color:grey;">Discount Deduction £ </th>
                                     <th scope="col" style="color:grey; text-decoration-line: underline; text-decoration-style: double;">Final Total</th>
@@ -469,14 +473,14 @@
                                     <td :ref="'add_all_sell'+i" :id="'add_all_sell'+i" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i);" style="text-decoration:underline;"> 
                                         {{ p.p_sell }} 
                                     </td>
-                                    <td contenteditable="true"  data-field="p_qty" :id="`ep_qty_${i}`"  > {{p.p_quantity}} </td>
-                                    <td contenteditable="true"  data-field="p_unit" :id="`ep_unit_${i}`"> {{p.p_unit}} </td>
-                                    <td contenteditable="true"  data-field="p_discount" :id= "`ep_discount_${i}`" th:onChange="c();">{{p.p_discount}}</td>
-                                    
-                                    <td contenteditable="true"  data-field="p_m_discount" :id= "`ep_m_discount_${i}`" th:onChange="c();"> - </td>
+                                    <!--{{p.p_quantity}}   {{p.p_unit}}   {{p.p_discount}}-->
+                                    <td contenteditable="true"  data-field="p_qty" :id="`ep_qty_${i}`"  > {{ tmp_qty }} </td>
+                                    <td contenteditable="true"  data-field="p_unit" :id="`ep_unit_${i}`"> {{ tmp_sell_p_q }} </td>
+                                    <td contenteditable="true"  data-field="p_discount" :id= "`ep_discount_${i}`" th:onChange="c();"> {{ tmp_discount_precentage }} </td>
+                                    <td contenteditable="true"  data-field="p_m_discount" :id= "`ep_m_discount_${i}`" th:onChange="c();"> {{ tmp_discount_price }}  </td>
 
                                     <td :ref="'qd_total_sell'+i" :id="`qd_total_${i}`" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i)" style="text-decoration-line: underline; text-decoration-style: double;" >
-                                        {{ p.p_final_total }} 
+                                        {{ tmp_final_total }} 
                                     </td>
                                     
                                     <td> 
@@ -585,32 +589,51 @@ export default {
 
           let dynamic_sell_id = "add_all_sell"+i;
           let dynamic_qty_id = "ep_qty_"+i;
+          let dynamic_unit_id = "ep_unit_"+i;
+
           let dynamic_ep_discount_id = "ep_discount_"+i;
           let dynamic_complain_text_id = "complain_text_"+i;
 
 
           let cum0 = document.getElementById(dynamic_sell_id).innerHTML;
           let cum1 = document.getElementById(dynamic_qty_id).innerHTML;
+
+          let cum2 = document.getElementById(dynamic_unit_id).innerHTML;
+
           let cum3 = document.getElementById(dynamic_ep_discount_id).innerHTML;
           let cum99 = document.getElementById(dynamic_complain_text_id);
           
-          if (cum1 == 0){ // no qty
+          if (cum1 <= 0){ // no qty
             
             alert("Delete this product if you are not included in this quotation!");
               
           }
 
           let s_times_q = cum0 * cum1;
+          let unit = 0;
+        //Calculate Discount% + $
           if(cum3 != 0){
-            let s_minus_d = s_times_q - (+(s_times_q / 100) * +cum3);;
+
+            let find_disount_precent = cum3 ;
+            let find_discount_dollar = +cum2 * +find_disount_precent;
+            
+
+            //let s_minus_d = s_times_q - (+(s_times_q / 100) * +cum3);;
 
             let dynamic_m_discount_id = "ep_m_discount_"+i;
             let cum4 = document.getElementById(dynamic_m_discount_id).innerHTML;
-            cum4 = s_minus_d;
-            let double_underline = +s_times_q - +cum4  ;
+            cum4 = find_discount_dollar;
+            //cum4 = s_minus_d;
+
+
+            //let double_underline = +s_times_q - +cum4  ;
+
+            let after_discount = +cum2 - +find_discount_dollar;
             //final goal
             let dynamic_each_p_total_id = "qd_total_"+i;
-            document.getElementById(dynamic_each_p_total_id).innerHTML = double_underline;
+            //document.getElementById(dynamic_each_p_total_id).innerHTML = double_underline;
+
+            document.getElementById(dynamic_each_p_total_id).innerHTML = after_discount;
           }
           else{
             let double_underline = +s_times_q;
@@ -759,6 +782,13 @@ export default {
             scp: '',
             sbt: '',
 
+            typed_qty: '',
+
+            tmp_qty: '',
+            tmp_sell_p_q: '',
+            tmp_discount_price: '',
+            tmp_discount_precentage: '',              
+            tmp_final_total: '',
         }
     },
 
@@ -1554,37 +1584,40 @@ if (remainingData.length > 0) {
 
         },
 
-        async choosenOneProduct(ev, p, i){
+        async choosenOneProduct(ev, p, i, row){
             //var size = Object.size(this.choosen_products);
             this.showToast('Added', 'You added one product, check in the dark table.',  2000, 'success');;
-
-            //console.log("size   " + this.choosen_products.length);
-            /*
-            if (this.choosen_products.length > 12){
-                alert("reach maximum item in v1.0 at this moment.");
-            }
-            */
+            const rows = document.querySelectorAll('table tbody tr');
+            row.classList.add('bg-gray'); //not work
             
+            const dynamic = "typed_qty_"+i;
+            let tqty = document.getElementById(dynamic).value;
+            console.log("tqty" + tqty);
             var choose_product_ref = await firebase.firestore().collection("all_products").where("p_fullname", "==", p.p_fullname);
             let new_subtotal = 0;
+            let get_qty = 0;
+
             await choose_product_ref.onSnapshot((snapshot) => {
 
                 snapshot.docs.forEach(d => {
                     var product = d.data();
-
                     // check if the product is already in the list
                     if (!this.choosen_products.some((p) => p.p_fullname === product.p_fullname)) {
-
                         this.choosen_products.push(product);
-
-                        var tmp_one_sell = parseFloat(d.data().p_final_total);  //p_final_total
-
-                        //console.log("!!!!!!!!!! " + this.tmp_sell + "+" + tmp_one_sell)
-
-                        this.tmp_sell = this.tmp_sell + tmp_one_sell;
-
                         
-                        //
+                        get_qty = d.data().p_sell;
+                        
+                        let tmp_ans = +tqty * +d.data().p_sell; //tmp_ans = sell * qty
+                        //console.log( tqty + " * " + " = " + tmp_ans + " " + this.tmp_sell_p_q);
+
+                        //3_dark_table
+                        this.tmp_sell_p_q = tmp_ans; //
+                        this.tmp_final_total = tmp_ans;
+
+                        //4_final_calculation
+                        var tmp_one_sell = parseFloat(d.data().p_final_total);
+                        this.tmp_sell = this.tmp_sell + tmp_one_sell;
+                        
 
                         document.getElementById('q_subtotal').setAttribute('value', this.tmp_sell);
                         
@@ -1595,16 +1628,23 @@ if (remainingData.length > 0) {
                     //this.$root.$emit('choosenOneProduct', this.tmp_sell);
                     
                 })
-                new_subtotal = this.tmp_sell;
+                
+                //new_subtotal = 
+                
+
             })
+
+            this.tmp_qty = tqty; //
+            console.log("check    " + this.typed_qty + " " + tqty );
+             
+
+            //let dynamicx = "ep_unit_"+i;
+            //let test = document.getElementById(dynamicx).innerHTML;
+
             
-        //////console.log(new_subtotal);
-        //document.getElementById('q_subtotal').setAttribute('value', this.tmp_sell);
-        //new_subtotal= document.getElementById('q_subtotal').value; 
-        
-        
-        
             
+
+
         },
 
         addShip(){
@@ -2003,5 +2043,9 @@ function formatNumber(event) {
 
 .bg-custom {
   background-color: #ffd700;
+}
+.point_it{
+    cursor: pointer;
+
 }
 </style>

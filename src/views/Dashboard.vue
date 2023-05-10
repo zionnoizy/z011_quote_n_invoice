@@ -108,13 +108,10 @@
 
         <font-awesome-icon icon="fa-solid fa-user-secret" style=""/>
         <font-awesome-icon icon="fa-sharp fa-solid fa-user" size="lg" />
-        <i class="fa-sharp fa-solid fa-user"></i>
+        
 
 
-        <div v-if="user">
-            You're logged in as {{user.displayName}}
-        </div>
-        <button @click="SING_OUT()">Logout</button>
+       
     </div>
 </template>
 
@@ -133,6 +130,18 @@ import warehouse from "@/assets/Warehouse_Nologo.png";
 import load1 from "@/assets/load1.gif";
 export default{
     name:"Dashboard",
+    setup() {
+        const auth = getAuth()
+        const userEmail = ref('')
+
+        onMounted(() => {
+        const user = auth.currentUser
+        userEmail.value = user ? user.email : ''
+        })
+
+        console.log("userEmail?" + userEmail);
+        return { userEmail }
+    },
     data(){
         return{
             my_email: null,
@@ -193,10 +202,7 @@ export default{
             })
         }
     },
-    created() {
-        const user = auth.currentUser
-        this.userEmail = user ? user.email : ''
-    },
+
 };
 
 

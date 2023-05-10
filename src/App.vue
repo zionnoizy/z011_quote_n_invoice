@@ -6,7 +6,19 @@
 
 <!-- <router-link to="/" exact><a>Login</a></router-link> | 
 <router-link :to="{name: 'Register'}">Register</router-link> | -->
-<p>©2023 Companies Management Systems Ltd.</p>
+
+  <div v-if="user">
+
+      <p>You are logged in as {{ user.value.email }}</p>
+
+      <i class="fa-sharp fa-solid fa-user"></i>
+      <button @click="logout">Logout</button>
+      
+  </div>
+  <div v-else>
+      <p>Please log in first.</p>
+  </div>
+  <p>©2023 Companies Management Systems Ltd.</p>
 
 
 
@@ -14,9 +26,18 @@
 
 <script>
 import right_corner from '@/assets/cms_logo_small.png'
-
+import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
+import { ref, onMounted  } from "vue";
+import { auth } from "@/firebase.js";
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { useRouter } from 'vue-router';
 export default {
   name: 'app',
+  setup() {
+    
+
+    
+  },
   methods: {
     Oh_error_exist(whats_going_on_msg) {
       alert ("Error exist, please report the bug or issue, email to it@companiesms.co.uk with your error message below:");

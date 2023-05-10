@@ -4,6 +4,7 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 import { collection, addDoc, DocumentReference } from "firebase/firestore";
+import { getAnalytics } from "firebase/analytics";
 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -11,12 +12,13 @@ import { collection, addDoc, DocumentReference } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBmnk75XdGraJ2LbDC6VQAM-_J5wkwCAtw",
-  authDomain: "quote-n-invoice.firebaseapp.com",
-  projectId: "quote-n-invoice",
-  storageBucket: "quote-n-invoice.appspot.com",
-  messagingSenderId: "183239941114",
-  appId: "1:183239941114:web:001bd5427fcab85a6ce243"
+  apiKey: "AIzaSyCAngkJ-6TpCPwMGdyzj_V4iri4NY5HkyI",
+  authDomain: "cms-quote-in.firebaseapp.com",
+  projectId: "cms-quote-in",
+  storageBucket: "cms-quote-in.appspot.com",
+  messagingSenderId: "896823047304",
+  appId: "1:896823047304:web:278749f93d8ae906e61b3d",
+  measurementId: "G-RSFCNFXWR1"
 };
 
 // Initialize Firebase

@@ -7,7 +7,7 @@
         <form class="mt-5">
           <div class="grid grid-cols-2 gap-2 " >
             <div><label>Client Company Name*</label></div>
-            <div><input ref="client_cpyname" type="text" placeholder="Client Company Name" id="c_fullname" required/></div>
+            <div><input ref="client_cpyname" type="text" placeholder="Delivery Name" id="c_fullname" required/></div>
           </div>
 
           <h2>Client Full Address</h2>
@@ -39,7 +39,10 @@ export default{
     components: {},
     methods:{
       async createClient() {
+        console.log("createClient ");
+
         let flag = validate_c_input();
+        
         if (flag){
           const db_id = firebase.firestore();
           const get_id = db_id.collection('all_clients');
