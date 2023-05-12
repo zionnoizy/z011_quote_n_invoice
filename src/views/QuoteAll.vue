@@ -134,7 +134,7 @@
                 }, query: { this_one_q_hash_number: p.quote_hashid, this_one_q_pdf_link: p.q_pdf_link}}">
                 
                 {{ p.obj_ref.q_uploaded_date }} 
-
+                {{ p.quote_hashid }}
                 </router-link>
               </td>
               <!-- <td scope="col" style="width: 200px;"> {{ p.q_pdf_link }} </td> -->

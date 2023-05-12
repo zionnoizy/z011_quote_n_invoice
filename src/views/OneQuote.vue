@@ -471,7 +471,7 @@ export default{
         },
         async retrieveOneQuoteInfo(){
 
-            console.log(this.this_one_q_hash_number);
+            console.log("this.this_one_q_hash_number " + this.this_one_q_hash_number);
 
             await firebase.firestore().collection("ALL_quote").doc(this.this_one_q_hash_number)
             .onSnapshot(doc => {

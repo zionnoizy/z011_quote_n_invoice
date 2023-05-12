@@ -46,7 +46,7 @@
                                 <div class="modal-header">
 
                                     <h4 class="modal-title"> Preview Qutotation, Please make sure all information is fill-out. 
-                                        The information you do not fillout has already highlighted in red.
+                                        1.BILL TO + 2.SHIP TO + 3.choosen product(s) + 5. Refernece Number
                                     </h4>
 
                                 </div>
@@ -242,10 +242,10 @@
                     <div class="fc grid grid-cols-1" style="">
                         <div>
                             <label for="q_subtotal">Subtotal </label>
-                            <!--disabled @change="CalculateSubtotal" @input="addVatSHip($event.target.value)"-->
+                            <!--disabled @change="ReCalculateSubtotal" @input="addVatSHip($event.target.value)"-->
                         </div>
                         <div>
-                            £<input class="price_price form-control" ref="q_subtotal" placeholder="Subtotal"  id="q_subtotal" @input="addVatSHip($event); " disabled  />
+                            £<input class="price_price form-control" ref="q_subtotal" placeholder="Subtotal"  id="q_subtotal" @input="addVatSHip($event); "   />
                         </div>
                     </div>
 
@@ -253,10 +253,10 @@
                     <div class="grid grid-cols-1" style="">
                         <!--min="1" max="100"-->
                         <div>
-                        <label for="q_vat">VAT </label>
+                        <label for="q_vat">VAT <p style="font-size: 18px;">≈</p></label>
                         </div>
                         <div>
-                            £<input class="price_price form-control" ref="q_vat" placeholder="Vat" id="q_vat"   disabled />
+                            <input class="price_price form-control" ref="q_vat" placeholder="Vat" id="q_vat" />
                         </div>
                     </div>
 
@@ -270,11 +270,10 @@
                     </div>
                     <div class="grid grid-cols-1" style="">
                         <div>
-                        <label for="q_total">Total </label>
+                        <label for="q_total">Total =</label>
                         </div>
                         <div>
-                            = £<input class="price_price form-control" ref="q_total" placeholder="Total" id="q_total"   @input="addVatSHip($event)"
-                        disabled />
+                             £<input class="price_price form-control" ref="q_total" placeholder="Total" id="q_total"   @input="addVatSHip($event)"/>
                         </div>
                     </div>
                     
@@ -439,6 +438,8 @@
                     </div>
 
                     <!--show choosen products-->
+                    <p id="complain_text" class="mb-2" style="color: red;">  </p>
+
                     <div  style="display: block;">
                         <table class="table table-dark" id="my_favoriate_table">
                             <thead>
@@ -448,11 +449,11 @@
                                     <th scope="col">Product Category</th>
                                     <th scope="col">Product Cost</th>
                                     <th scope="col">Product Margin</th>
-                                    <th scope="col" style="text-decoration:underline;">Product Sell</th>
-                                    <th scope="col" style="color:grey;">Add Qunatity #</th>
-                                    <th scope="col" style="color:grey;" >Unit £</th>
+                                    <th  scope="col" style="text-decoration:underline;">Product Sell</th>
+                                    <th  class="vert-line" scope="col" style="color:grey;">Add Qunatity #</th>
+                                    <th  scope="col" style="color:grey;" >Unit £</th>
                                     <th scope="col" style="color:grey;">Add Discount %</th>
-                                    <th scope="col" style="color:grey;">Discount Deduction £ </th>
+                                    <!-- <th scope="col" style="color:grey;">Discount Deduction £ </th> -->
                                     <th scope="col" style="color:grey; text-decoration-line: underline; text-decoration-style: double;">Final Total</th>
                                     <th scope="col"> Delete</th>
                                     <th scope="col"></th>
@@ -468,19 +469,23 @@
                                     <td class="col-5" scope="col"> {{ p.p_fullname }} </td>
                                     <td class="col"> {{ p.p_code }} </td>
                                     <td> {{ p.p_category }} </td>
-                                    <td> {{ p.p_cost }} </td>
+                                    <td > {{ p.p_cost }} </td>
                                     <td> {{ p.p_margin }} </td>
-                                    <td :ref="'add_all_sell'+i" :id="'add_all_sell'+i" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i);" style="text-decoration:underline;"> 
+                                    
+                                    <td  :ref="'add_all_sell'+i" :id="'add_all_sell'+i" th:onload="ReCalculateSubtotal(i); CalculateEachPTotal(i);" style="text-decoration:underline;"> 
                                         {{ p.p_sell }} 
                                     </td>
                                     <!--{{p.p_quantity}}   {{p.p_unit}}   {{p.p_discount}}-->
-                                    <td contenteditable="true"  data-field="p_qty" :id="`ep_qty_${i}`"  > {{ tmp_qty }} </td>
-                                    <td contenteditable="true"  data-field="p_unit" :id="`ep_unit_${i}`"> {{ tmp_sell_p_q }} </td>
-                                    <td contenteditable="true"  data-field="p_discount" :id= "`ep_discount_${i}`" th:onChange="c();"> {{ tmp_discount_precentage }} </td>
-                                    <td contenteditable="true"  data-field="p_m_discount" :id= "`ep_m_discount_${i}`" th:onChange="c();"> {{ tmp_discount_price }}  </td>
 
-                                    <td :ref="'qd_total_sell'+i" :id="`qd_total_${i}`" th:onload="CalculateSubtotal(i); CalculateEachPTotal(i)" style="text-decoration-line: underline; text-decoration-style: double;" >
-                                        {{ tmp_final_total }} 
+                                    <!--!!!{{ tmp_qty }} wrong!!!! check how to make changes on p.p_quantity p.p_unit -->
+                                    <td class="vert-line" contenteditable="true"  data-field="p_qty" :id="`ep_qty_${i}`" v-on:keypress="handleComplain" > {{p.p_quantity}} </td>
+                                    
+                                    <td contenteditable="true"  data-field="p_unit" :id="`ep_unit_${i}`"> {{p.p_unit}} </td>
+
+                                    <td class="vert-line-grey" contenteditable="true"  data-field="p_discount" :id= "`ep_discount_${i}`" th:onChange="c();"> {{p.p_discount}} </td>
+                                    <!-- <td contenteditable="true"  data-field="p_m_discount" :id= "`ep_m_discount_${i}`" th:onChange="c();"> {{ discount_m }} </td> -->
+                                    <td class="vert-line enlarged-text" :ref="'qd_total_sell'+i" :id="`qd_total_${i}`" th:onload="ReCalculateSubtotal(i); CalculateEachPTotal(i)" style="text-decoration-line: underline; text-decoration-style: double;" >
+                                        {{ p.p_final_total }} 
                                     </td>
                                     
                                     <td> 
@@ -539,7 +544,7 @@
         
 
         <!-- <img alt="" class="position-absolute  bottom-0 " src="../assets/design_it/cms_logo_long.png" style="z-index:-999; ;;" /> -->
-        <embed id="hidden_quotationPDF" width="1200px" height="800px" src='' />
+        <embed class="my_border" id="hidden_quotationPDF" width="1200px" height="800px" src='' />
         
         <!--Toast-->
         <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055">
@@ -572,6 +577,7 @@ import { app, db, auth } from "@/firebase.js";
 
 import { arrayUnion, arrayRemove } from "firebase/firestore";
 
+import { useRouter } from 'vue-router';
 
 export default {
     name: 'QuoteAdd',
@@ -581,16 +587,18 @@ export default {
 
     },
     setup() {
+        
+
+        //renew discount/ quantity
         const handleFocusout = (e, pid, df, i) => {
-          //////console.log("handleFocusout: " + e.target.id + "   pid= " + pid + "    data-field=" + df + "     i=" + i);
+          ////////console.log("handleFocusout: " + e.target.id + "   pid= " + pid + "    data-field=" + df + "     i=" + i);
             
           var updated_field = document.getElementById(e.target.id);
-          ////console.log("handleFocusout");
+          //////console.log("handleFocusout");
 
           let dynamic_sell_id = "add_all_sell"+i;
           let dynamic_qty_id = "ep_qty_"+i;
           let dynamic_unit_id = "ep_unit_"+i;
-
           let dynamic_ep_discount_id = "ep_discount_"+i;
           let dynamic_complain_text_id = "complain_text_"+i;
 
@@ -605,61 +613,75 @@ export default {
           
           if (cum1 <= 0){ // no qty
             
-            alert("Delete this product if you are not included in this quotation!");
+            alert("Quantity is 0! Delete this product if you are not included in this quotation!");
               
           }
 
           let s_times_q = cum0 * cum1;
           let unit = 0;
         //Calculate Discount% + $
-          if(cum3 != 0){
+          if(cum3 > 0 && cum3 !== 0 ){
 
             let find_disount_precent = cum3 ;
-            let find_discount_dollar = +cum2 * +find_disount_precent;
+            let convert_2_precentage = (find_disount_precent / 100);
+            let find_discount_dollar = +cum2 * +convert_2_precentage;
             
+            //console.log("find_discount_dollar " + cum2 +"  "+ cum3 +"  "+ find_discount_dollar);
+            //console.log(find_discount_dollar)
 
+            let rounded_discount_dollor = parseFloat(find_discount_dollar.toFixed(2));
             //let s_minus_d = s_times_q - (+(s_times_q / 100) * +cum3);;
 
-            let dynamic_m_discount_id = "ep_m_discount_"+i;
-            let cum4 = document.getElementById(dynamic_m_discount_id).innerHTML;
-            cum4 = find_discount_dollar;
+            //let dynamic_m_discount_id = "ep_m_discount_"+i;
+            //let cum4 = document.getElementById(dynamic_m_discount_id).innerHTML;
+            //cum4 = find_discount_dollar;
+
+            //this.tmp_discount_price = rounded_discount_dollor;
             //cum4 = s_minus_d;
 
 
             //let double_underline = +s_times_q - +cum4  ;
 
             let after_discount = +cum2 - +find_discount_dollar;
+            let round_after_discount = parseFloat(after_discount.toFixed(2));;
             //final goal
             let dynamic_each_p_total_id = "qd_total_"+i;
-            //document.getElementById(dynamic_each_p_total_id).innerHTML = double_underline;
-
-            document.getElementById(dynamic_each_p_total_id).innerHTML = after_discount;
+            let dynamic_m_discount_id = "ep_m_discount_"+i;
+            //let dynamic_unit_id = "ep_unit_"+i;
+            console.log("AAA");
+            document.getElementById(dynamic_each_p_total_id).innerHTML = round_after_discount;
+            document.getElementById(dynamic_m_discount_id).innerHTML = find_discount_dollar;
+            //document.getElementById(dynamic_unit_id).innerHTML = after_discount;
           }
-          else{
+          else{ //no discount typed
+
             let double_underline = +s_times_q;
             let dynamic_each_p_total_id = "qd_total_"+i;
+            let dynamic_unit_id = "ep_unit_"+i;
             document.getElementById(dynamic_each_p_total_id).innerHTML = double_underline;
-          }
+            document.getElementById(dynamic_unit_id).innerHTML = double_underline;
+        }
 
           
 
-          ///reCalculateFCSubtotal
+          ///deal with each product subtotal
             let cimulat_du = 0;
-            ////console.log("recalcu.");
+            //////console.log("recalcu.");
             var x = document.getElementById("my_favoriate_table").rows.length;
+            
             for (let rs=0; rs < x-1; ++rs){
                 
                 let dynamic_ = "qd_total_"+rs;
-                ////console.log("recalcu." + dynamic_);
+                //////console.log("recalcu." + dynamic_);
                 var one_du = document.getElementById(dynamic_).innerHTML;
                 cimulat_du = +cimulat_du + +one_du;
 
-                ////console.log("recalcu.loop" + cimulat_du);
+                //////console.log("recalcu.loop" + cimulat_du);
             }
-            ////console.log("recalcuatle total= " + cimulat_du);
+            //////console.log("recalcuatle total= " + cimulat_du);
             document.getElementById('q_subtotal').value = cimulat_du;
           ///reCalculateFCSubtotal
-          //////console.log("ABZ" + this.choosen_products);
+          ////////console.log("ABZ" + this.choosen_products);
           addVatSHip(cimulat_du);
 
           //change_cp_object();
@@ -667,14 +689,32 @@ export default {
 
         const q_subtotal = ref(null);
         const subtotal = ref(0);
-        
-
         watch(subtotal, (newValue) => {
             q_subtotal.value.value = formatNumber(newValue.toString());
         });
 
 
-        return { handleFocusout, formatNumber, q_subtotal, subtotal};
+        
+        const handleComplain = (event) => {
+            const input = event.key;
+            const parsedNumber = parseInt(input);
+            
+            if (!/^\d$/.test(input)) {
+                event.preventDefault();
+                console.log('Please enter a whole digit number.');
+                var paragraph = document.getElementById("complain_text");
+                if (paragraph.textContent <=0 || paragraph.textContent == null || paragraph.textContent == ''){
+                    paragraph.textContent += "Only Numbers Allow In This Field!";
+                } 
+            } else {
+                
+                var paragraph = document.getElementById("complain_text");
+                paragraph.textContent = '';
+                // You can store the parsedNumber value or perform any other action with it
+            }
+        };
+        
+        return { handleFocusout, handleComplain, formatNumber, q_subtotal, subtotal};
 
     },
     data() {
@@ -786,9 +826,11 @@ export default {
 
             tmp_qty: '',
             tmp_sell_p_q: '',
-            tmp_discount_price: '',
-            tmp_discount_precentage: '',              
+            
+            tmp_discount_precentage: '',  
+            tmp_discount_price: '',            
             tmp_final_total: '',
+            discount_m: '',
         }
     },
 
@@ -814,13 +856,13 @@ export default {
 
         async getAllClient1() {
 
-            ////////console.log("[QuoteAdd-getAllClient] print-1");
+            //////////console.log("[QuoteAdd-getAllClient] print-1");
             var all_client_ref = await firebase.firestore().collection("all_clients");
             all_client_ref.onSnapshot(snap => {
                 this.all_clients1 = [];
 
                 snap.forEach(d => {
-                    ////////console.log("[QuoteAdd-getAllClient] print");
+                    //////////console.log("[QuoteAdd-getAllClient] print");
 
                     var client = d.data();
                     
@@ -832,7 +874,7 @@ export default {
         },
         async getAllDelivery() {
 
-            //////console.log("[QuoteAdd-getAllClient] print-1" + this.store_bill_2_info);
+            ////////console.log("[QuoteAdd-getAllClient] print-1" + this.store_bill_2_info);
 
             const all_client_s_delivey_ref = await firebase.firestore().collection("all_delivery").doc(this.store_bill_2_info).collection("this_client_delivery");
             all_client_s_delivey_ref.onSnapshot(snap => {
@@ -840,7 +882,7 @@ export default {
             //if snap onSnapshot empty()
             this.this_client_delivey = [];
             snap.forEach(d => {
-                ////////console.log("[QuoteAdd-getAllClient] print");
+                //////////console.log("[QuoteAdd-getAllClient] print");
 
                 var delivery = d.data();
                 this.this_client_delivey.push(delivery);
@@ -869,8 +911,8 @@ export default {
             this.choosen_bill_2 = b.c_fullname;
         },
         ChooseShipTo(ev, s, i) {
-            ////////console.log("[QuoteAdd-ChooseShipTo] comming soon, click client and retrieve text." + ev + "  " + i);
-            ////////console.log("[QuoteAdd-ChooseShipTo] you have chosen" + s.c_fullname);
+            //////////console.log("[QuoteAdd-ChooseShipTo] comming soon, click client and retrieve text." + ev + "  " + i);
+            //////////console.log("[QuoteAdd-ChooseShipTo] you have chosen" + s.c_fullname);
             document.getElementById('tmp_s_fullname').innerHTML = s.d_fullname;
             document.getElementById('tmp_s_address1').innerHTML = s.d_address_1;
             document.getElementById('tmp_s_address2').innerHTML = s.d_address_2;
@@ -881,8 +923,8 @@ export default {
         },
         async EnterProduct() {
             const typed_product = document.getElementById('p_enter').value;
-            ////////console.log("[><QuoteAdd-EnterProduct] ");
-            ////////console.log("[><QuoteAdd-EnterProduct] typed_product" + typed_product);
+            //////////console.log("[><QuoteAdd-EnterProduct] ");
+            //////////console.log("[><QuoteAdd-EnterProduct] typed_product" + typed_product);
             var one_product_ref = await firebase.firestore().collection("all_products").where( 'p_fullname', '==', typed_product );
             one_product_ref
                 .get()
@@ -897,9 +939,9 @@ export default {
                         document.getElementById('p_margin').value = d.data().p_margin;
                         document.getElementById('p_sell1').value = d.data().p_sell;
 
-                        ////////console.log(d.data().p_code);
+                        //////////console.log(d.data().p_code);
 
-                        ////////console.log("[><QuoteAdd-EnterProduct]loop=1 " + one_product);
+                        //////////console.log("[><QuoteAdd-EnterProduct]loop=1 " + one_product);
 
                         this.o_products.push(one_product);
                     })
@@ -914,11 +956,11 @@ export default {
         },
 
         async writePDF() {
-            ////////console.log("[QuoteAdd-writePDF] write pdf.");
+            //////////console.log("[QuoteAdd-writePDF] write pdf.");
 
             const doc = new jsPDF();
             doc.addImage(cms_empty_quote, "JPEG", 0, 0, 210, 297);
-            ////////console.log("[QuoteAdd-writePDF] write pdf.");
+            //////////console.log("[QuoteAdd-writePDF] write pdf.");
             //
             doc.save("quote.pdf");
         },
@@ -953,16 +995,17 @@ export default {
         },
 
         suggesting() {
-            ////////console.log("[QuoteAdd]-suggesting  turn on s_flag");
+            //////////console.log("[QuoteAdd]-suggesting  turn on s_flag");
             this.s_flag = true;
         },
         
-        
+        //it will upload to pdf
         async uploadQuotePDF(base64) { //step2
             
             let flag = validate_q_input();
 
             if (flag){
+
                 const myTimestamp = firebase.firestore.Timestamp.now();
                 let todayDateTime = myTimestamp.toDate().toLocaleDateString("en-UK");
                 
@@ -970,13 +1013,13 @@ export default {
 
                 this.this_one_q_number = quote_number;
 
-                //console.log("quote number:    " + this.this_one_q_number + " " + quote_number);
+                ////console.log("quote number:    " + this.this_one_q_number + " " + quote_number);
 
                 let reference_number = document.getElementById('q_reference_number').value;
 
                 const ref = collection(db, "ALL_quote");
 
-                //console.log("uploadQuotePDF2---------" + base64);
+                ////console.log("uploadQuotePDF2---------" + base64);
         
                 const bill_ship = {          
                     q_bill_fullname: document.getElementById('tmp_b_fullname').innerHTML,
@@ -1019,53 +1062,57 @@ export default {
             }
             //NEW NEW NEW NEW --
             const cp = JSON.parse(JSON.stringify(this.choosen_products));
-            ////console.log(typeof cp);
+            
+            ////WRONG, MISSING UNIT + DISCOUNT + FINAL TOTAL
             for (var key in cp) {
                 if (cp.hasOwnProperty(key)) {
-                    ////console.log(key + " -> " + cp[key].p_fullname);
+                    //////console.log(key + " -> " + cp[key].p_fullname);
                     let d_qty = "ep_qty_"+key; 
-                    let d_discount = "ep_discount_"+key;
                     let d_unit = "ep_unit_"+key; 
-                    let cum1 = document.getElementById(d_qty).innerHTML;
-                    let cum2 = document.getElementById(d_discount).innerHTML;
-                    let cum3 = document.getElementById(d_unit).innerHTML;
-                    //console.log(cum1 + "=====" + cum2 + "=====" + cum3);
-                    cp[key].p_quantity = cum1;
-                    cp[key].p_discount = cum2;
-                    cp[key].p_unit = cum3;
-                    ////console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
+                    let d_discount = "ep_discount_"+key;
+                    let d_final = "qd_total_"+key;
+
+                    let retrieve_qty = document.getElementById(d_qty).innerHTML;
+                    let retrieve_discount = document.getElementById(d_discount).innerHTML;
+                    let retrieve_unit = document.getElementById(d_unit).innerHTML;
+                    let retrieve_final = document.getElementById(d_final).innerHTML;
+                    ////console.log(cum1 + "=====" + cum2 + "=====" + cum3);
+                    cp[key].p_quantity = retrieve_qty;
+                    cp[key].p_discount = retrieve_discount;
+                    cp[key].p_unit = retrieve_unit;
+                    cp[key].p_final_total = retrieve_final;
+                    console.log("CCC" + cp[key].p_quantity + "======" +cp[key].p_unit +"          " +cp[key].p_discount);
                 }
             }
             
-            //console.log("uploadQuotePDF4---------" + base64);
+            ////console.log("uploadQuotePDF4---------" + base64);
 
             await addDoc(ref, {obj_ref, cp, final_tt, bill_ship})
             .then(docRef => {
-                //console.log(docRef.id);
+                console.log("upload JJJ");
                 const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
                 const string = "/all_quote/" + docRef.id + "/";
 
                 this.this_one_q_pdf_link = test2_storage( docRef.id, string, base64);//use this 
 
-                //console.log("uploadQuotePDF5---------   " + this.this_one_q_pdf_link);
-
-
+                console.log("upload KKK" + this.this_one_q_pdf_link);
                 //NEW NEW
                 var choosen_product_qty = Object.keys(this.choosen_products).length;
                 cp["choosen_product_qty"] = choosen_product_qty;
-                //console.log("uploadQuotePDF6---------" + choosen_product_qty);
+                
+                console.log("upload QQQ" + choosen_product_qty);
                 get_id
                 .update({
                     quote_hashid: docRef.id,
                     choosen_product_qty: choosen_product_qty,
                 })
                 .then(() => {
-                      //console.log("Z-clearning");
+                      ////console.log("Z-clearning");
                       clean_input_field();
 
                 })
                 .catch((error) => {
-                    //console.log(error);
+                    ////console.log(error);
                 })
             })
 
@@ -1076,13 +1123,15 @@ export default {
 
         async previewBtn() { //step1
             
-            //console.log("previewBtn1---------");
+            ////console.log("previewBtn1---------");
+            console.log("EEE");
 
             let flag = await validate_q_input();
-
+            console.log("HHH" + flag);
             if (flag){
                  
             const doc = new jsPDF(); 
+            console.log("III");
             doc.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297); // w h
             //A-add all48 text
             const oo_b_fullname = document.getElementById('tmp_b_fullname').innerHTML;
@@ -1102,6 +1151,7 @@ export default {
                 doc.text(oo_b_city, 6, 109);
                 doc.text(oo_b_postcode, 6, 114);
             }
+            console.log("FFF");
             //B-add all48 text
             const oo_s_fullname = document.getElementById('tmp_s_fullname').innerHTML;
             const oo_s_a1 = document.getElementById('tmp_s_address1').innerHTML;
@@ -1128,34 +1178,40 @@ export default {
             doc.text(quote_number, 159, 94);
             doc.text(todayDateTime, 159, 100);
             doc.text(input_reference_number, 159, 105);
+            
             let tt = JSON.parse(JSON.stringify(this.choosen_products));
-
+            console.log("JJJ");
             for (var key in tt) {
+                console.log("KKK");
                 if (tt.hasOwnProperty(key)) {
 
                     let d_qty = "ep_qty_"+key;
                     let d_unit = "ep_unit_"+key;
                     let d_discount = "ep_discount_"+key;
-                    let cum1 = document.getElementById(d_qty).innerHTML;
-                    let cum2 = document.getElementById(d_unit).innerHTML;
-                    let cum3 = document.getElementById(d_discount).innerHTML;
-                    
-                    tt[key].p_quantity = cum1;
-                    tt[key].p_unit = cum2;
-                    tt[key].p_discount = cum3;
+                    let d_final = "qd_total_"+key;
 
+                    let r_qty = document.getElementById(d_qty).innerHTML;
+                    let r_unit = document.getElementById(d_unit).innerHTML;
+                    let r_discount = document.getElementById(d_discount).innerHTML;
+                    let r_final = document.getElementById(d_final).innerHTML;
+                    
+                    tt[key].p_quantity = r_qty;
+                    tt[key].p_unit = r_unit;
+                    tt[key].p_discount = r_discount;
+                    tt[key].p_final_total = r_final;
+                    console.log("DDD" + tt[key].p_quantity + "======" + tt[key].p_unit +"          " + tt[key].p_discount);
                 }
             }
-
+            console.log("GGG");
             let bodyData = [];
             tt.forEach(element => {      
-                var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_unit, element.p_discount, "£"+element.p_sell];
+                var tmp = [element.p_fullname, element.p_code, element.p_quantity, element.p_unit, element.p_discount+"%", "£"+element.p_sell];
   
                 bodyData.push(tmp);
             });    
             
             
-
+            console.log("HHH");
             //https://github.com/simonbengtsson/jsPDF-AutoTable/blob/master/examples/examples.js
             var finalY = doc.lastAutoTable.finalY || 10;
             var startY = finalY + 112;
@@ -1172,7 +1228,7 @@ for (let i = 0; i < remainingData.length; i++) {
   const pageHeight = doc.internal.pageSize.height;
   const rowHeight = 31;
 
-  //console.log(tableHeight +" + "+ rowHeight +" > "+ pageHeight);
+  ////console.log(tableHeight +" + "+ rowHeight +" > "+ pageHeight);
 
   // check if the table height exceeds the page height
   if (startY + rowHeight > pageHeight) {
@@ -1205,13 +1261,13 @@ for (let i = 0; i < remainingData.length; i++) {
       5: { cellWidth: 30 },
     },
     tableWidth: 'auto',
-    margin: { top: 0, right: 10, bottom: 0, left: 10 },
-    head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
+    margin: { top: 0, right: 10, bottom: 0, left: 6 },
+    head: [['PRODUCT NAME', 'CODE', 'QTY', 'UNIT', 'DISCOUNT%', 'TOTAL']],
     body: remainingData.slice(splitIndex, i + 1),
   });
 
   // update the table height
-  //console.log("finalY " + finalY + " " + rowHeight);
+  ////console.log("finalY " + finalY + " " + rowHeight);
   tableHeight += doc.lastAutoTable.finalY + rowHeight;
 
 
@@ -1240,7 +1296,7 @@ if (remainingData.length > 0) {
 }
 */
 }
-            //console.log("previewBtn2---------");
+            ////console.log("previewBtn2---------");
             const st = document.getElementById('q_subtotal').value;
             const v = document.getElementById('q_vat').value;
             const s = document.getElementById('q_shipping').value;
@@ -1275,7 +1331,7 @@ if (remainingData.length > 0) {
             var base64 = doc.output('datauri');
             this.return_base64 = await base64;
 
-            //console.log("previewBtn3---------   "    + string + this.return_base64);
+            ////console.log("previewBtn3---------   "    + string + this.return_base64);
 
             //////
             /*
@@ -1287,7 +1343,7 @@ if (remainingData.length > 0) {
 
             const ref = collection(db, "ALL_quote");
 
-            //console.log("uploadQuotePDF2---------" + base64);
+            ////console.log("uploadQuotePDF2---------" + base64);
        
             const bill_ship = {          
                 q_bill_fullname: document.getElementById('tmp_b_fullname').innerHTML,
@@ -1330,47 +1386,47 @@ if (remainingData.length > 0) {
             
             //NEW NEW NEW--
             const cp = JSON.parse(JSON.stringify(this.choosen_products));
-            ////console.log(typeof cp);
+            //////console.log(typeof cp);
             for (var key in cp) {
                 if (cp.hasOwnProperty(key)) {
-                    ////console.log(key + " -> " + cp[key].p_fullname);
+                    //////console.log(key + " -> " + cp[key].p_fullname);
                     let d_qty = "ep_qty_"+key;
                     let d_discount = "ep_discount_"+key;
                     let d_final_total = "qd_total_"+key;
                     let cum1 = document.getElementById(d_qty).innerHTML;
                     let cum2 = document.getElementById(d_discount).innerHTML;
                     let cum3 = document.getElementById(d_final_total).innerHTML;
-                    ////console.log(cum1 + "=====" + cum2);
+                    //////console.log(cum1 + "=====" + cum2);
                     cp[key].p_quantity = cum1;
                     cp[key].p_discount = cum2;
                     cp[key].p_final_total = cum3;
-                    ////console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
+                    //////console.log(cp[key].p_quantity + "======" + cp[key].p_discount);
 
                 }
             }
-            //console.log("uploadQuotePDF4---------" + base64);
+            ////console.log("uploadQuotePDF4---------" + base64);
             await addDoc(ref, {obj_ref, cp, final_tt, bill_ship})
             .then(docRef => {
                 //**
                 this.this_one_q_hash_number = docRef.id;
 
-                //console.log(docRef.id);
+                ////console.log(docRef.id);
                 const get_id = firebase.firestore().collection("ALL_quote").doc(docRef.id);
                 const string = "/all_quote/" + docRef.id + "/";
 
                 test2_storage( docRef.id, string, base64);//use this 
 
-                //console.log("uploadQuotePDF5---------");
+                ////console.log("uploadQuotePDF5---------");
                 //NEW NEW
                 var choosen_product_qty = Object.keys(this.choosen_products).length;
                 cp["choosen_product_qty"] = choosen_product_qty;
-                //console.log("uploadQuotePDF6---------" + choosen_product_qty);
+                ////console.log("uploadQuotePDF6---------" + choosen_product_qty);
                 get_id
                 .update({
                     quote_hashid: docRef.id,
                     choosen_product_qty: choosen_product_qty,
                 }).catch((error) => {
-                    //console.log(error);
+                    ////console.log(error);
                 })
             })
             }//flag
@@ -1384,7 +1440,7 @@ if (remainingData.length > 0) {
             const myTimestamp = firebase.firestore.Timestamp.now();
             const today_year = myTimestamp.toDate().getFullYear();
             const tmp_today_month = myTimestamp.toDate().getMonth();
-            ////////console.log("[firebaseStorageUpload] " + myTimestamp + " " + today_year + " " + tmp_today_month);
+            //////////console.log("[firebaseStorageUpload] " + myTimestamp + " " + today_year + " " + tmp_today_month);
             const month_folder = this.convert_to_month[tmp_today_month];
 
             //const today_month = convert_month(tmp_today_month);
@@ -1399,11 +1455,11 @@ if (remainingData.length > 0) {
             uploadtask.on(
                 'state_changed',
                 (snapshot) => {
-                    ////////console.log("[firebaseStorageUpload]  uploaded");
+                    //////////console.log("[firebaseStorageUpload]  uploaded");
                     //this.uploadValue = ( snapshot.bytesTransferred / snapshot.totalBytes )*100;
                 },
                 error => {
-                    ////////console.log(error.message)
+                    //////////console.log(error.message)
                 },
                 () => {
                     this.uploadValue = 'upload success';
@@ -1412,12 +1468,12 @@ if (remainingData.length > 0) {
                     });
                 },
                 async () => {
-                    ////////console.log("[firebaseStorageUpload] 2 uploaded");
+                    //////////console.log("[firebaseStorageUpload] 2 uploaded");
                     downloadUrl.value = await getDownloadURL(uploadtask.snapshot.ref)
 
                 },
             );
-            ////////console.log("[firebaseStorageUpload]==================================");
+            //////////console.log("[firebaseStorageUpload]==================================");
         },
         danny(){
             let q_number = auto_quote_no_generator2();
@@ -1440,8 +1496,10 @@ if (remainingData.length > 0) {
             
             //firebaseStorageUpload()
         },
-        CalculateSubtotal(i){ //not use?
-            ////console.log("print thi1");
+
+        //ReCalculate 4.Final Calculation
+        ReCalculateSubtotal(i){ //not use?
+            //////console.log("print thi1");
             choosen_products.forEach(element => {      
 
             this.tmp_sell = this.tmp_sell + element.p_sell;
@@ -1459,7 +1517,7 @@ if (remainingData.length > 0) {
                 ans = ans + cum;
                 
             }
-            ////console.log("print thi2");
+            //////console.log("print thi2");
             document.getElementById('q_subtotal').value = this.tmp_ans;
             ////new
             
@@ -1486,7 +1544,7 @@ if (remainingData.length > 0) {
         all_product_ref.orderBy("p_insert_date", "desc")
             .onSnapshot((snapshot) => {
             if (snapshot.empty) {
-                ////////console.log("[getAllProductsNewest] all_products not exist.")
+                //////////console.log("[getAllProductsNewest] all_products not exist.")
                 
             }
             else{
@@ -1495,7 +1553,7 @@ if (remainingData.length > 0) {
 
 
                     var product = d.data();
-                    ////////console.log("[ProductAll]-2 " + product);
+                    //////////console.log("[ProductAll]-2 " + product);
                     this.all_products.push(product);
                 })
             }  
@@ -1508,14 +1566,14 @@ if (remainingData.length > 0) {
         all_product_ref.orderBy("p_insert_date", "asc")
             .onSnapshot((snapshot) => {
             if (snapshot.empty) {
-                ////////console.log("[getAllProductsNewest] all_products not exist.")
+                //////////console.log("[getAllProductsNewest] all_products not exist.")
                 
             }
             else{
                 this.all_products = [];
                 snapshot.forEach(d => {
                     var product = d.data();
-                    ////////console.log("[ProductAll]-3 " + product);
+                    //////////console.log("[ProductAll]-3 " + product);
                     this.all_products.push(product);
                 })
             }  
@@ -1584,6 +1642,7 @@ if (remainingData.length > 0) {
 
         },
 
+        //when user click one product run this function
         async choosenOneProduct(ev, p, i, row){
             //var size = Object.size(this.choosen_products);
             this.showToast('Added', 'You added one product, check in the dark table.',  2000, 'success');;
@@ -1592,34 +1651,47 @@ if (remainingData.length > 0) {
             
             const dynamic = "typed_qty_"+i;
             let tqty = document.getElementById(dynamic).value;
-            console.log("tqty" + tqty);
+            //console.log("tqty" + tqty);
             var choose_product_ref = await firebase.firestore().collection("all_products").where("p_fullname", "==", p.p_fullname);
             let new_subtotal = 0;
             let get_qty = 0;
-
+            
             await choose_product_ref.onSnapshot((snapshot) => {
 
                 snapshot.docs.forEach(d => {
                     var product = d.data();
                     // check if the product is already in the list
                     if (!this.choosen_products.some((p) => p.p_fullname === product.p_fullname)) {
-                        this.choosen_products.push(product);
+                        
                         
                         get_qty = d.data().p_sell;
-                        
                         let tmp_ans = +tqty * +d.data().p_sell; //tmp_ans = sell * qty
-                        //console.log( tqty + " * " + " = " + tmp_ans + " " + this.tmp_sell_p_q);
+                        let rounded_tmp_ans = parseFloat(tmp_ans.toFixed(2));
+
+                        product.p_quantity = tqty;
+                        product.p_unit = rounded_tmp_ans;
+                        product.p_discount = "0";
+                        product.p_final_total = rounded_tmp_ans;
+                        console.log("changing cp. " + product.p_quantity + "      " + product.p_discount);
+
+                        ////console.log( tqty + " * " + " = " + tmp_ans + " " + this.tmp_sell_p_q);
 
                         //3_dark_table
-                        this.tmp_sell_p_q = tmp_ans; //
-                        this.tmp_final_total = tmp_ans;
+                        //this.tmp_sell_p_q = tmp_ans; //
+                        //this.tmp_final_total = tmp_ans;
+
+                        //***
+                        this.choosen_products.push(product);
 
                         //4_final_calculation
-                        var tmp_one_sell = parseFloat(d.data().p_final_total);
-                        this.tmp_sell = this.tmp_sell + tmp_one_sell;
-                        
+                        var tmp_one_sell = parseFloat(rounded_tmp_ans);
 
-                        document.getElementById('q_subtotal').setAttribute('value', this.tmp_sell);
+                        console.log( "this.tmp_sell " + this.tmp_sell +"+"+ tmp_one_sell);
+                        
+                        this.tmp_sell = this.tmp_sell + tmp_one_sell;
+                        let rounded_4_subtotal = parseFloat(this.tmp_sell.toFixed(2));
+                        //WRONG SUBTOTAL INCORRECT!! and not round!
+                        document.getElementById('q_subtotal').setAttribute('value', rounded_4_subtotal);
                         
                         addVatSHip(this.tmp_sell);
                     }
@@ -1635,7 +1707,7 @@ if (remainingData.length > 0) {
             })
 
             this.tmp_qty = tqty; //
-            console.log("check    " + this.typed_qty + " " + tqty );
+            //console.log("check    " + this.typed_qty + " " + tqty );
              
 
             //let dynamicx = "ep_unit_"+i;
@@ -1652,7 +1724,7 @@ if (remainingData.length > 0) {
             let i_vat = document.getElementById('q_vat').value;
             let i_shipping = document.getElementById('q_shipping').value;
             //var i_shipping2 = document.getElementById(e.target.id);
-            ////console.log("SUBtotal input tag changed " + i_shipping + " ");
+            //////console.log("SUBtotal input tag changed " + i_shipping + " ");
             let added_vat = +i_subtotal + (+(i_subtotal / 100) * +i_vat); 
             let ans = +added_vat + +i_shipping;
 
@@ -1662,16 +1734,16 @@ if (remainingData.length > 0) {
         },
 
         change_cp_object(){
-            ////console.log("change_cp_object" + this.choosen_products);
+            //////console.log("change_cp_object" + this.choosen_products);
         },
         
         
         testCharacter(event) {
             if ((event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode === 13) {
-                //console.log("number");
+                ////console.log("number");
                 return true;
             } else {
-                //console.log("no number!")
+                ////console.log("no number!")
                 return false;
             }
 
@@ -1680,7 +1752,7 @@ if (remainingData.length > 0) {
         
 
         async previewBtn2() {
-            
+            console.log("FFF");
             const doc = new jsPDF(); 
             doc.addImage(cms_empty_quote_no_table, "JPEG", 0, 0, 210, 297);
 
@@ -1733,7 +1805,7 @@ if (remainingData.length > 0) {
             let tt0 = JSON.parse(JSON.stringify(this.choosen_products));
             let bodyData2 = [];
             tt0.forEach(element => {      
-                var tmp2 = [element.p_fullname, element.p_code, element.p_quantity, element.p_unit, element.p_discount, "£"+element.p_sell];
+                var tmp2 = [element.p_fullname, element.p_code, element.p_quantity, element.p_unit, element.p_discount+"%", "£"+element.p_sell];
   
                 bodyData2.push(tmp2);
             });    
@@ -1754,11 +1826,11 @@ if (remainingData.length > 0) {
                     // etc
                 },
                 tableWidth: 'auto',
-                margin: { top: 0, right: 10, bottom: 0, left: 10 }, //important2
-                head: [['DESCRIPTION', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
+                margin: { top: 0, right: 10, bottom: 0, left: 6 }, //important2
+                head: [['PRODUCT NAME', 'CODE', 'QTY', 'UNIT', 'DISCOUNT', 'TOTAL']],
                 body: bodyData2
             })
-            //console.log("previewBtn2---------");
+            ////console.log("previewBtn2---------");
             const st = document.getElementById('q_subtotal').value;
             const v = document.getElementById('q_vat').value;
             const s = document.getElementById('q_shipping').value;
@@ -1865,7 +1937,7 @@ async function auto_quote_no_generator2(){
     
 
      ans =  first_half + addedz;
-     ////////console.log("auto_quote_no_generator5 " + ans);
+     //////////console.log("auto_quote_no_generator5 " + ans);
     
     
      
@@ -1875,6 +1947,7 @@ async function auto_quote_no_generator2(){
     return ans.toString();
 }
 
+//
 async function addVatSHip(i_subtotal){
 
     //let i_subtotal = document.getElementById('q_subtotal').value;
@@ -1893,15 +1966,15 @@ async function addVatSHip(i_subtotal){
     find_vat = parseFloat(find_vat_n_round.toFixed(2));
 
     document.getElementById('q_vat').setAttribute('value', find_vat);
-    ////console.log("find vat? " + find_vat );
+    //////console.log("find vat? " + find_vat );
 
-    ////console.log("SUBtotal input tag changed added_vat" + added_vat);
+    //////console.log("SUBtotal input tag changed added_vat" + added_vat);
 
 
     added_shipping = await +added_vat + +i_shipping;
     final = added_shipping;
 
-    console.log( i_subtotal + " + " +i_vat + "+" + added_shipping + "=" + final);
+    //console.log( i_subtotal + " + " +i_vat + "+" + added_shipping + "=" + final);
 
     let r_final = Number(final).toFixed(2);
     document.getElementById('q_total').setAttribute('value', r_final);
@@ -1922,26 +1995,33 @@ function validate_q_input(){
       var qcc_2 = document.getElementById('tmp_s_fullname');
       var qcc_4 = document.getElementById('q_reference_number');
 
-      ////console.log("no0" + qc_1 + "      " + qcc_1 + qcc_2 + "     " + x);
+      //////console.log("no0" + qc_1 + "      " + qcc_1 + qcc_2 + "     " + x);
 
       if (qc_1.length <= 0){
         document.getElementById("choose_bill_btn").style.background='#990000';
-        ////console.log("no1");
+        //////console.log("no1");
         flag = false;
       }
       if (qc_2.length <= 0){
         document.getElementById("choose_delivery_btn").style.background='#990000';
-        ////console.log("no2");
+        //////console.log("no2");
         flag = false;
       }
       if (x <= 1){
         document.getElementById("add_products_btn").style.background='#990000';
-        ////console.log("no3");
+        //////console.log("no3");
         flag = false;
       }
       if (qc_4.length <= 0){
         qcc_4.classList.add("red");
         flag = false;
+      }
+
+      if (flag == false){
+        var paragraph = document.getElementById("complain_text");
+        if (paragraph.textContent <=0 || paragraph.textContent == null || paragraph.textContent == ''){
+            paragraph.textContent += "Do Not Forget, Some Input Field Missing (Highlight In Red)";
+        } 
       }
 
       return flag;
@@ -1992,7 +2072,7 @@ function formatNumber(event) {
 
   // Remove any non-numeric characters
   value = value.replace(/[^0-9\.]/g, '');
-  //console.log(value);
+  ////console.log(value);
   // Add commas every three digits
   const parts = value.split('.');
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -2047,5 +2127,34 @@ function formatNumber(event) {
 .point_it{
     cursor: pointer;
 
+}
+
+td.vert-line {
+    border-left: 1px solid white;
+}
+td.vert-line-grey {
+    border-left: 1px solid grey;
+}
+
+td.vert-line::before {
+    content: '\2715';
+    position: absolute;
+    top: 50%;
+    left: -10px;
+    transform: translateY(-50%);
+    font-weight: bold;
+    font-size: 14px;
+}
+
+td.enlarged-text {
+    font-size: 20px;
+}
+
+.my_border{
+    border: 2px dashed gray;
+    padding: 20px;
+    width: 1200px;
+    height: 800px;
+    box-sizing: border-box;
 }
 </style>

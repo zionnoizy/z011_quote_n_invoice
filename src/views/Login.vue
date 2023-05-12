@@ -94,6 +94,9 @@ export default{
         const login = () => {
             signInWithEmailAndPassword(auth, email.value, password.value)
             .then((data) =>{
+                let token = data.user.getIdToken();
+                localStorage.setItem('token', token);
+                
                 //context.commit('SET_USER', response.user);
                 //console.log('Successfully Login!');
                 router.push('/dashboard/client');

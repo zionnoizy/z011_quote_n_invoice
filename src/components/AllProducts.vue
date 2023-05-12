@@ -25,11 +25,12 @@
       </div>
         
         
-      {{statuss}}
-      </div>
+
+   const statussRef = toRef(statuss);const statussRef = toRef(statuss);console.log(statuss.value); console.log(statuss.value);console.log(statuss.value);   </div>
         <!-- <button @click.prevent="ChangingProduct">EDIT ALL</button> -->
         
-         status: <strong> <p ref="statuss"> {{statuss.value}} </p></strong>
+         status: <p><strong>{{ statuss.value }}</strong></p>
+
         <table class="table table-dark" id="my_table" >
             <thead>
             <tr>
@@ -42,7 +43,7 @@
             <th scope="col">&#163; Cost</th>
             <th scope="col">Margin &percnt;</th>
             <th scope="col">Sell</th>
-            <th scope="col">Hash</th>
+            <!-- <th scope="col">Hash</th> -->
             </tr>
             </thead>
             <tbody>
@@ -56,14 +57,15 @@
                 <td style="color: grey;"> {{i}} </td>
                 <td contenteditable="true" data-field="p_code" :id= "`ep_code_${i}`" > {{ p.p_code }} </td>
                 <td contenteditable="true" data-field="p_fullname" :id= "`ep_fn_${i}`" > {{ p.p_fullname }} </td>
-                <td> {{ p.p_category }} 
-                  <td contenteditable="true"  > 
+                
+                <td> {{ p.p_category }} </td> 
+
+                <td contenteditable="true"  > 
                   <select :id= "`ep_category_${i}`" class="form-select form-select bg-dark text-white" data-field="p_category">
                     
                     <option   v-for="c in all_category" :value="`${c.category_fullname}`" > {{c.category_fullname}} </option>
                   </select>
-                  </td>
-                </td> 
+                </td>
                 
                 <td contenteditable="true" data-field="p_cost" :id= "`ep_cost_${i}`" > {{ p.p_cost }} </td>
                 <td contenteditable="true" data-field="p_margin" :id= "`ep_margin_${i}`" > {{ p.p_margin }} </td>
@@ -75,7 +77,7 @@
         </table>  
 
         
-        <figure class="text-center">
+        <!-- <figure class="text-center">
           <blockquote class="blockquote">
             <p>option2: EXPORT + IMPORT, Please refer to 
               <a class="font-weight-bold" style="text-decoration:underline; "  target="_blank"
@@ -85,22 +87,22 @@
           <figcaption class="blockquote-footer">
              <cite title="Source Title"> </cite>
           </figcaption>
-        </figure>
+        </figure> -->
 </template>
 
 <script>
 import ProductAdd from "@/components/ProductAdd.vue";
 import { orderBy, query } from "@firebase/firestore";
 import { serverTimestamp } from 'firebase/firestore';
-import { onMounted, ref, reactive } from "vue";
+import { onMounted, ref, reactive, toRef } from "vue";
 
 //import * as XLSX from 'vue3-xlsx'
 import * as XLSX from 'xlsx';
 export default{
     name: 'ProductAll',
     setup() {
-      const statuss = ref('');
-
+      const statuss = ref('NOTHING CHANGE');
+      const statussRef = toRef(statuss);
 
         onMounted(async () => {
 
@@ -155,10 +157,11 @@ export default{
 
               "p_sell" : new_sell,
             }).then(function(){
+              console.log("GGG");
               statuss.value = "UPDATED " + sortOrder + " OK.";
 
             }).catch(function(error) {
-              console.log("DEBUG" + error);
+              console.log("HHH");
               statuss.value = "ERROR! " + error;
             });
 
@@ -181,9 +184,10 @@ export default{
               [sortOrder] : tdText,
               "p_sell" : new_sell,
             }).then(function(){
+              console.log("III");
               statuss.value = "UPDATED"  + sortOrder + " OK.";
             }).catch(function(error) {
-              console.log("DEBUG" + error);
+              console.log("JJJ");
               statuss.value = "ERROR! " + error;
             });
 
@@ -236,12 +240,12 @@ export default{
               [sortOrder] : tdText,
             }).then(function(){
               
-              statuss.value = "UPDATED"  + sortOrder + " OK.";
-              console.log("statuss   " + statuss + " " + statuss.value);
-
+              statussRef.value = 'Focusout event occurred';
+              console.log("999 statuss   " + statuss.value);
+              
             }).catch(function(error) {
               console.log("DEBUG" + error);
-              statuss.value = "ERROR! " + error;
+              statussRef.value = "ERROR! " + error;
             });
           }
           /*
@@ -251,8 +255,11 @@ export default{
 
           })
           */
+
         }
         //, statuss
+
+        //console.log("statuss.value??? " + statuss.value + statuss);
         return { handleBlur, handleFocusout, statuss };
     },
     data(){
@@ -268,10 +275,11 @@ export default{
               p_sell: null,
 
           },
-          //statuss: 'NOTHING CHANGE',
+          
           mysearch: '',
           myselectedcategory: '',
           all_category: [],
+          
         }
     },
     mounted() {
@@ -422,6 +430,7 @@ export default{
         // Get the table data
         const data = []
         const rows = table.rows
+        const excludeColumnIndex = getColumnIndex('Change Category');
 
         for (let i = 0; i < rows.length; i++) {
           const row = []
@@ -432,7 +441,7 @@ export default{
 
             
 
-            if (!cells[j].textContent.includes('Re-Select') ) {
+            if (j !== excludeColumnIndex) {
               console.log("cell.nodeName:" + cell.textContent );
 
               row.push(cells[j].textContent);
@@ -500,5 +509,17 @@ var editable_elements = document.querySelectorAll("[contenteditable]").forEach(f
 
 
 
+function getColumnIndex(columnName) {
+  const table = document.getElementById('my_table');
+  const headerRow = table.rows[0];
+  const cells = headerRow.cells;
 
+  for (let i = 0; i < cells.length; i++) {
+    if (cells[i].textContent === columnName) {
+      return i;
+    }
+  }
+
+  return -1; // Column not found
+}
 </script>
