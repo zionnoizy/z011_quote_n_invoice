@@ -11,12 +11,13 @@
         </div> -->
 
         <div class="grid grid-cols-2 gap-2 mb-3">
+            
+            <div>
+                <img width="335" height="105" alt="Vue logo" class="logo justify-center mx-auto mb-3" src="../assets/design_it/Artboard1.png" />
+            </div>
             <div>
                 <img  width="225" height="105" class="qi_logo logo justify-center mx-auto " src="../assets/logo/logo-no-background.png" />
                 
-            </div>
-            <div>
-                <img width="335" height="105" alt="Vue logo" class="logo justify-center mx-auto mb-3" src="../assets/design_it/Artboard1.png" />
             </div>
         </div>
 
@@ -37,8 +38,11 @@
         <p><button id="login_btn"    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded" @click="login">Login</button></p>
             
         <p class="my-3" id="complain_text" style="color: red;"> </p>
-        <p class="my-3">Need an account or reset password? Please Send an email it@companiesms.co.uk for registration</p>
-
+        <p class="my-3">Question? Please Send an email zionn951@gmail.com for inquery</p>
+        
+        <h1>Current Time:</h1>
+        <div id="current-time"></div>
+        <h2 id="le" class="my-3">Edition v1.0: 14/05/2023 21:39(Sun)</h2>
 
         <img alt="" class="position-absolute bottom-0 end-0" src="../assets/contact-form-bg.png" style="z-index:-999; ;;" />
             
@@ -199,6 +203,12 @@ function validate_l_input(){
       
       return flag;
 }
+function displayCurrentTime() {
+      var date = new Date();
+      var currentTime = date.toLocaleTimeString();
+      document.getElementById('current-time').innerHTML = currentTime;
+    }
+    setInterval(displayCurrentTime, 1000); // Update every second
 </script>
 <style>
 #login{
@@ -217,5 +227,7 @@ function validate_l_input(){
   transform: scale(1.05); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 }
 
-
+h1, #current-time, #le {
+      display: inline;
+}
 </style>

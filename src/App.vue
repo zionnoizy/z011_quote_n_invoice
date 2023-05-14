@@ -7,7 +7,7 @@
 <!-- <router-link to="/" exact><a>Login</a></router-link> | 
 <router-link :to="{name: 'Register'}">Register</router-link> | -->
 
-  <div v-if="user">
+  <!-- <div v-if="user">
 
       <p>You are logged in as {{ user.value.email }}</p>
 
@@ -17,7 +17,7 @@
   </div>
   <div v-else>
       <p>Please log in first.</p>
-  </div>
+  </div> -->
   <p>©2023 Companies Management Systems Ltd.</p>
 
 
