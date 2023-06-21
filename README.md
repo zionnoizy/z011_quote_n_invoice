@@ -3,10 +3,10 @@
 
 ## Quote-In Porject
 
-The website can generate quotation and Invoice, code are belongs to Zion Wong and Companies Management Systems Ltd, Authentication required for access, but please ahve look for the demo youtube video below for quick understnading aobut this project.
+The website can generate quotation and Invoice, code are belongs to Zion Wong and Companies Management Systems Ltd, Authentication required for access, but please have a look for the demo youtube video below for quick understanding about this project.
 
 ### Quote-In Demo Video
-![Quote-In](https://img.youtube.com/vi/nDNBNOhSahE/default.jpg)(http://www.youtube.com/watch?v=nDNBNOhSahE)
+![Quote-In](https://img.youtube.com/vi/nDNBNOhSahE/maxresdefault.jpg)(http://www.youtube.com/watch?v=nDNBNOhSahE)
 
 ## Useful Code
 ```sh
